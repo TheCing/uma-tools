@@ -69,6 +69,17 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
+					<h2>2026-01-08 (Fork)</h2>
+					<ul>
+						<li><strong>Uma Card Export/Import:</strong> Save and share horse builds as PNG images with embedded JSON data, similar to SillyTavern character cards. Export via Save dropdown → "Uma Card (PNG)", import via Load dropdown → "JSON/PNG".</li>
+						<li><strong>OCR Screenshot Import:</strong> Extract horse stats and skills directly from in-game screenshots using Google Gemini AI. Access via Load dropdown → "OCR Screenshot".</li>
+						<li><strong>Enhanced OCR Review:</strong> Added editable dropdowns for aptitudes and strategy in the OCR extract data screen for quick corrections.</li>
+						<li><strong>Improved Save/Load UI:</strong> Added dropdown menus to Save/Load buttons with mutual exclusion behavior.</li>
+						<li><strong>New Race Preset:</strong> Added CM 8 - Sagittarius Cup (Nakayama 2500m, January 22, 2026).</li>
+						<li><em>Fork maintained at <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live at <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
+					</ul>
+				</section>
+				<section>
 					<h2>2025-12-11</h2>
 					<ul>
 						<li>Added back simplified wit toggles just in-case people want to experiment with them.</li>
