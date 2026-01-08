@@ -70,13 +70,12 @@ export function IntroText(props) {
 				<summary>Changelog</summary>
 				<section>
 					<h2>2026-01-08 (Fork)</h2>
+					<p><em>This fork adds quality-of-life features for sharing and importing uma builds.</em></p>
 					<ul>
-						<li><strong>Uma Card Export/Import:</strong> Save and share horse builds as PNG images with embedded JSON data, similar to SillyTavern character cards. Export via Save dropdown → "Uma Card (PNG)", import via Load dropdown → "JSON/PNG".</li>
-						<li><strong>OCR Screenshot Import:</strong> Extract horse stats and skills directly from in-game screenshots using Google Gemini AI. Access via Load dropdown → "OCR Screenshot".</li>
-						<li><strong>Enhanced OCR Review:</strong> Added editable dropdowns for aptitudes and strategy in the OCR extract data screen for quick corrections.</li>
-						<li><strong>Improved Save/Load UI:</strong> Added dropdown menus to Save/Load buttons with mutual exclusion behavior.</li>
-						<li><strong>New Race Preset:</strong> Added CM 8 - Sagittarius Cup (Nakayama 2500m, January 22, 2026).</li>
-						<li><em>Fork maintained at <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live at <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
+						<li><strong>Uma Cards:</strong> Share your uma builds as PNG images with the build data embedded inside, similar to SillyTavern character cards. The image shows your uma's portrait and can be loaded directly back into the simulator. Find it in the Save/Load dropdowns.</li>
+						<li><strong>Screenshot OCR:</strong> Import uma builds directly from in-game screenshots using AI. Just paste or upload a screenshot, review the extracted stats and skills, and load it into the simulator. Powered by Google Gemini.</li>
+						<li><strong>CM 8 - Sagittarius Cup preset:</strong> Nakayama 2500m (Inner), Firm, Sunny, Day, Winter (January 22, 2026).</li>
+						<li><em>Fork: <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live: <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
 					</ul>
 				</section>
 				<section>
