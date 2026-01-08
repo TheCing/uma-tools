@@ -69,10 +69,10 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
-					<h2>2026-01-08 (Fork)</h2>
+					<h2>2026-01-08 (Cing's Fork)</h2>
 					<p><em>This fork adds quality-of-life features for sharing and importing uma builds.</em></p>
 					<ul>
-						<li><strong>Uma Cards:</strong> Share your uma builds as PNG images with the build data embedded inside, similar to SillyTavern character cards. The image shows your uma's portrait and can be loaded directly back into the simulator. Find it in the Save/Load dropdowns.</li>
+						<li><strong>Uma Cards:</strong> Share your uma builds as PNG images with the build data embedded inside. The image shows your uma's portrait and can be loaded directly back into the simulator. Find it in the Save/Load dropdowns.</li>
 						<li><strong>Screenshot OCR:</strong> Import uma builds directly from in-game screenshots using AI. Just paste or upload a screenshot, review the extracted stats and skills, and load it into the simulator. Powered by Google Gemini.</li>
 						<li><strong>CM 8 - Sagittarius Cup preset:</strong> Nakayama 2500m (Inner), Firm, Sunny, Day, Winter (January 22, 2026).</li>
 						<li><em>Fork: <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live: <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
