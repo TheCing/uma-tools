@@ -476,11 +476,14 @@ export function RaceTrack(props) {
 	const {joiner} = useText('ui.joiner');
 	const statThresholds = course.courseSetStatus.map(s => statStrings[s]).join(joiner);
 
+	const totalWidth = props.width + xOffset + xExtra;
+	const totalHeight = props.height + yOffset + yExtra;
+
 	return (
 		<IntlProvider definition={lang == 'ja' ? STRINGS_ja : STRINGS_en}>
-			<div class="racetrackWrapper" style={`width:${props.width + xOffset + xExtra}px`}>
+			<div class="racetrackWrapper" style={`--track-width:${totalWidth}px;--track-height:${totalHeight}px`}>
 				{trackNameHeader}
-				<svg version="1.1" width={props.width + xOffset + xExtra} height={props.height + yOffset + yExtra} xmlns="http://www.w3.org/2000/svg" class="racetrackView" data-courseid={props.courseid} onMouseMove={doMouseMove} onMouseLeave={doMouseLeave} 				onMouseUp={() => setDraggedSkill(null)}>
+				<svg version="1.1" viewBox={`0 0 ${totalWidth} ${totalHeight}`} xmlns="http://www.w3.org/2000/svg" class="racetrackView" data-courseid={props.courseid} onMouseMove={doMouseMove} onMouseLeave={doMouseLeave} onMouseUp={() => setDraggedSkill(null)}>
 					<svg x={props.xOffset} y={props.yOffset} width={props.width} height={props.height}>
 						{almostEverything}
 						{regions}

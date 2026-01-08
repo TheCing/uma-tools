@@ -2279,7 +2279,7 @@ function App(props) {
 					
 					<Histogram width={500} height={333} data={results} />
 					{staminaStats && (
-						<div style={{marginTop: '20px', width: '500px', paddingBottom: '20px'}}>
+						<div class="staminaStatsContainer" style={{marginTop: '20px', paddingBottom: '20px'}}>
 							<div style={{display: 'flex', marginBottom: '0'}}>
 								<div 
 									class={`umaTab staminaTab ${hpDeathPositionTab == 0 ? 'selected' : ''}`} 
@@ -2548,6 +2548,7 @@ function App(props) {
 					</div>
 				</div>
 				{resultsPane}
+				{!expanded && <button id="mobileUmaConfigBtn" onClick={toggleExpand} title="Configure Uma">⚙️ Uma Config</button>}
 				{expanded && <div id="umaPane" />}
 				<div id={expanded ? 'umaOverlay' : 'umaPane'}>
 					<div class={!expanded && currentIdx == 0 ? 'selected' : ''}>

@@ -581,6 +581,10 @@ body {
 	border-top-right-radius: 0;
 }
 
+.staminaStatsContainer {
+	width: 500px;
+}
+
 .umaTab.selected {
 	background: linear-gradient(rgb(153, 219, 68), rgb(112, 190, 18));
 	color: white;
@@ -781,3 +785,586 @@ body {
 }
 
 body { background: var(--bg); color: var(--fg); }
+
+/* Mobile floating button - hidden on desktop */
+#mobileUmaConfigBtn {
+	display: none;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE LAYOUT
+   ============================================ */
+
+/* Tablet and smaller screens */
+@media (max-width: 1024px) {
+	#app {
+		display: flex;
+		flex-direction: column;
+		height: auto;
+		min-height: 100vh;
+		gap: 10px;
+		padding: 10px;
+		overflow-x: hidden;
+	}
+
+	/* Hide uma pane in normal view on mobile - show via overlay instead */
+	#umaPane {
+		display: none;
+	}
+
+	/* Restructure topPane from grid to vertical stack on mobile */
+	#topPane {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+		min-height: auto;
+		padding-bottom: 20px;
+		overflow: visible;
+	}
+
+	/* Race track wrapper - scales to fit viewport */
+	#topPane .racetrackWrapper {
+		order: 1;
+		width: 100%;
+		max-width: 100%;
+	}
+
+	/* Buttons row (track select, weather, etc.) - below track */
+	#buttonsRow {
+		order: 2;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 0;
+		width: 100%;
+	}
+
+	/* Run controls panel - full width, below buttons */
+	#runPane {
+		order: 3;
+		grid-column: auto;
+		grid-row: auto;
+		max-width: 100%;
+		width: 100%;
+		margin: 0;
+		padding: 10px;
+		background: rgb(250, 250, 252);
+		border: 1px solid rgb(224, 214, 204);
+		border-radius: 8px;
+		box-sizing: border-box;
+	}
+
+	/* Results pane takes full width */
+	#resultsPane {
+		max-width: 100%;
+		margin: 0;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	#resultsPane.mode-chart {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	#resultsPaneWrapper {
+		max-width: 100%;
+		width: 100%;
+		box-sizing: border-box;
+		overflow-x: hidden;
+		flex-direction: column;
+	}
+
+	/* Info tables - stack below results on mobile */
+	#infoTables {
+		width: 100%;
+		max-width: 100%;
+		margin-top: 20px;
+	}
+
+	#infoTables tbody,
+	#infoTables > table tr {
+		width: 100%;
+		max-width: 100%;
+	}
+
+	#infoTables > table td {
+		width: auto;
+	}
+
+	/* Results summary circles - keep them circular on mobile */
+	#resultsSummary {
+		border-spacing: 8px 0;
+	}
+
+	#resultsSummary > tbody td {
+		/* Use equal dimensions to maintain circular shape */
+		width: 75px;
+		height: 75px;
+		min-width: unset;
+		padding: 12px;
+		font-size: 1.15em;
+		vertical-align: middle;
+	}
+
+	#resultsSummary > tfoot th {
+		font-size: 0.9em;
+		padding: 5px 2px;
+	}
+
+	/* Make uma overlay full screen on mobile */
+	#umaOverlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100vh;
+		margin: 0;
+		border-radius: 0;
+		border: none;
+		flex-direction: column;
+		gap: 20px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding: 60px 10px 20px 10px;
+		box-sizing: border-box;
+	}
+
+	/* Child divs fill width, but NOT the close button */
+	#umaOverlay > div:not(#closeUmaOverlay) {
+		width: 100%;
+		max-width: 100%;
+		flex-shrink: 0;
+		box-sizing: border-box;
+	}
+
+	/* Fix horseDef layout in overlay */
+	#umaOverlay .horseDef {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#umaOverlay .horseDefHeader {
+		flex-wrap: wrap;
+	}
+
+	#umaOverlay input[type="number"],
+	#umaOverlay select {
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	/* Close button - simple X, no circle background */
+	#closeUmaOverlay {
+		position: fixed !important;
+		right: 15px !important;
+		top: 10px !important;
+		width: auto !important;
+		height: auto !important;
+		min-width: unset !important;
+		min-height: unset !important;
+		max-width: unset !important;
+		font-size: 2em;
+		padding: 5px 10px;
+		z-index: 10000;
+		background: none;
+		border-radius: 0;
+		border: none;
+		box-shadow: none;
+		cursor: pointer;
+		color: rgb(100, 100, 100);
+	}
+
+	/* Copy Uma buttons - horizontal row at top of overlay */
+	#copyUmaButtons {
+		position: fixed !important;
+		top: 12px !important;
+		left: 50% !important;
+		transform: translateX(-50%) !important;
+		flex-direction: row !important;
+		gap: 10px;
+		z-index: 10001;
+		width: auto !important;
+		max-width: unset !important;
+	}
+
+	#copyUmaButtons > div {
+		width: 30px !important;
+		height: 30px !important;
+		line-height: 30px !important;
+		border-radius: 4px;
+	}
+
+	/* Arrow icons - shrink to 50%, centered in container */
+	#copyUmaButtons > div::after {
+		height: 12px !important;
+		width: 12px !important;
+		border-width: 1.5px !important;
+		top: 50% !important;
+		left: 50% !important;
+		right: auto !important;
+		bottom: auto !important;
+	}
+
+	#copyUmaToRight::after {
+		transform: translate(-70%, -50%) rotate(45deg) !important;
+	}
+
+	#copyUmaToLeft::after {
+		transform: translate(-30%, -50%) rotate(-135deg) !important;
+	}
+
+	#swapUmas {
+		font-size: 16px !important;
+		line-height: 30px !important;
+	}
+
+	/* Make tabs stack on mobile */
+	.umaTab {
+		font-size: 0.9em;
+		padding: 8px;
+	}
+
+	/* Stamina tabs - keep normal sizing */
+	.staminaTab {
+		font-size: 1em;
+		padding: 8px 16px;
+	}
+
+	/* Stamina stats container - responsive width on mobile */
+	.staminaStatsContainer {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#expandBtn {
+		width: 30px;
+		height: 30px;
+		margin: 6px 8px 0 0;
+	}
+
+	#expandBtn::after {
+		height: 12px;
+		width: 12px;
+		left: 5px;
+		top: 6px;
+	}
+
+	/* Mobile floating button to open uma config */
+	#mobileUmaConfigBtn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		position: fixed;
+		bottom: 20px;
+		right: 20px;
+		background: linear-gradient(rgb(153, 219, 68), rgb(112, 190, 18));
+		border: 3px solid rgb(170, 221, 154);
+		border-radius: 30px;
+		color: white;
+		font-weight: bold;
+		font-size: 1em;
+		padding: 14px 24px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		z-index: 999;
+		cursor: pointer;
+		transition: transform 0.2s;
+	}
+
+	#mobileUmaConfigBtn:active {
+		transform: scale(0.95);
+	}
+}
+
+/* Phone screens */
+@media (max-width: 768px) {
+	body {
+		font-size: 14px;
+	}
+
+	#app {
+		padding: 5px;
+		gap: 5px;
+	}
+
+	/* Buttons row improvements for phone */
+	#buttonsRow {
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+	}
+
+	#buttonsRowSpace {
+		display: none;
+	}
+
+	/* Stack track select properly - full width */
+	.trackSelect {
+		width: 100%;
+		display: flex;
+	}
+
+	.trackSelect > select {
+		flex: 1;
+	}
+
+	/* Weather/time/season icons - keep inline as a row, don't stretch */
+	.weatherSelect,
+	.seasonSelect,
+	.timeofdaySelect {
+		display: flex;
+		justify-content: center;
+		width: auto;
+		flex-wrap: nowrap;
+	}
+
+	/* Weather icons should maintain size */
+	.weatherSelect img,
+	.seasonSelect img,
+	.timeofdaySelect img {
+		width: auto;
+		height: 2em;
+		flex-shrink: 0;
+	}
+
+	/* Ground select centered */
+	.groundSelect {
+		text-align: center;
+	}
+
+	/* Responsive tables */
+	.basinnChartWrapper {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.basinnChart {
+		min-width: 600px;
+		font-size: 0.85em;
+	}
+
+	.basinnChart th:first-child {
+		width: 45%;
+	}
+
+	.basinnChart th {
+		width: auto;
+		min-width: 70px;
+	}
+
+	/* Results table adjustments */
+	table {
+		font-size: 0.85em;
+	}
+
+	/* Results summary circles - slightly smaller on phones */
+	#resultsSummary {
+		border-spacing: 5px 0;
+	}
+
+	#resultsSummary > tbody td {
+		width: 70px;
+		height: 70px;
+		padding: 10px;
+		font-size: 2em;
+	}
+
+	#resultsSummary > tfoot th {
+		font-size: 0.85em;
+	}
+
+	/* Make buttons touch-friendly */
+	button, .umaTab, #expandBtn {
+		min-height: 44px;
+		min-width: 44px;
+	}
+
+	/* Stamina tabs - override touch-friendly sizing */
+	.staminaTab {
+		min-height: unset;
+		min-width: unset;
+		padding: 8px 16px;
+		font-size: 1em;
+	}
+
+	#topControls button,
+	#topControls select {
+		font-size: 0.9em;
+		padding: 8px 12px;
+	}
+
+	/* Make preset selector full width on mobile */
+	#topControls select {
+		max-width: 100%;
+	}
+
+	/* Skill chart adjustments */
+	.chartSkillName {
+		font-size: 0.9em;
+	}
+
+	.chartSkillName > img {
+		height: 1.3em;
+	}
+
+	/* Hint buttons - slightly smaller */
+	.hintbtn {
+		width: 22px;
+		height: 16px;
+	}
+
+	.hintbtnText {
+		font-size: 16px;
+	}
+
+	.hintedCost {
+		width: 25px;
+		font-size: 0.9em;
+	}
+
+	/* Reduce spacing in uma overlay */
+	#umaOverlay {
+		padding: 50px 5px 5px 5px;
+	}
+
+	/* Intro text adjustments */
+	#introtext {
+		font-size: 0.9em;
+		max-width: 100%;
+		overflow-wrap: break-word;
+	}
+
+	#introtext details {
+		margin-bottom: 10px;
+	}
+
+	/* Run pane controls - make inputs full width */
+	#runPane {
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	#runPane fieldset {
+		max-width: 100%;
+		margin: 0 0 10px 0;
+		box-sizing: border-box;
+	}
+
+	#runPane > label {
+		display: block;
+		margin-top: 10px;
+	}
+
+	#runPane input[type="number"],
+	#runPane select {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		padding: 8px;
+	}
+
+	#seedWrapper {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	/* Position keep fieldset */
+	#posKeepFieldset {
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#posKeepFieldset select {
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	#seedWrapper input {
+		flex: 1;
+	}
+
+	/* Mobile floating button adjustment */
+	#mobileUmaConfigBtn {
+		font-size: 0.9em;
+		padding: 12px 20px;
+	}
+
+	/* Fix track/course select on mobile */
+	.trackCourseSelect {
+		flex-wrap: wrap;
+	}
+
+	.trackCourseSelect select {
+		min-width: 0;
+		flex: 1 1 auto;
+	}
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+	body {
+		font-size: 12px;
+	}
+
+	.basinnChart {
+		min-width: 500px;
+		font-size: 0.75em;
+	}
+
+	.umaTab {
+		font-size: 0.8em;
+		padding: 6px 4px;
+	}
+
+	#topControls {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	#topControls > * {
+		width: 100%;
+	}
+
+	button {
+		font-size: 0.85em;
+	}
+
+	/* Stack weather/season/time selectors */
+	.weatherSelect {
+		flex-wrap: wrap;
+		gap: 5px;
+	}
+
+	.weatherSelect img {
+		width: 36px;
+		height: 36px;
+	}
+
+	/* Stack track/course selects */
+	.trackCourseSelect {
+		flex-direction: column;
+	}
+
+	.trackCourseSelect select {
+		width: 100%;
+	}
+
+	/* Smaller floating button */
+	#mobileUmaConfigBtn {
+		font-size: 0.85em;
+		padding: 10px 16px;
+		bottom: 15px;
+		right: 15px;
+	}
+
+	/* Reduce race track padding on very small screens */
+	#topPane {
+		padding: 0;
+	}
+}

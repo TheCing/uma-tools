@@ -68,3 +68,16 @@
 .poskeep-label line {
 	filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.3)) opacity(1) !important;
 }
+
+/* Base wrapper styles - uses CSS custom properties for dimensions */
+.racetrackWrapper {
+	width: var(--track-width, 981px);
+	max-width: 100%;
+}
+
+/* SVG scales to fill wrapper width, maintaining aspect ratio via viewBox */
+.racetrackView {
+	width: 100%;
+	height: auto;
+	display: block;
+}
