@@ -413,3 +413,128 @@
 		max-height: 200px;
 	}
 }
+
+/* === DARK MODE === */
+.dark .ocrModalOverlay {
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.dark .ocrModal {
+	background: var(--bg-subtle);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.dark .ocrModalHeader {
+	background: linear-gradient(var(--orange-400), var(--orange-500));
+}
+
+.dark .ocrLabel {
+	color: var(--text-primary);
+}
+
+.dark .ocrInput {
+	background-color: var(--surface-input);
+	border-color: var(--border);
+	color: var(--fg);
+}
+
+.dark .ocrInput:focus {
+	border-color: var(--orange-400);
+}
+
+.dark .ocrCheckboxLabel {
+	color: var(--fg-muted);
+}
+
+.dark .ocrApiLink {
+	color: var(--blue-400);
+}
+
+.dark .ocrDropZone {
+	background: var(--bg-muted);
+	border-color: var(--gray-400);
+}
+
+.dark .ocrDropZone:hover {
+	border-color: var(--orange-400);
+	background: var(--bg-muted);
+}
+
+.dark .ocrDropZone.dragover {
+	border-color: var(--orange-400);
+	background: rgba(255, 167, 38, 0.1);
+}
+
+.dark .ocrDropZoneText {
+	color: var(--fg-muted);
+}
+
+.dark .ocrDropIcon {
+	color: var(--gray-400);
+}
+
+.dark .ocrError {
+	background: rgba(255, 100, 100, 0.1);
+	border-color: rgba(255, 100, 100, 0.3);
+	color: var(--orange-300);
+}
+
+.dark .ocrButtonCancel,
+.dark .ocrButtonBack {
+	background: linear-gradient(var(--gray-200), var(--gray-300)) padding-box,
+		linear-gradient(var(--gray-300), var(--gray-400)) border-box;
+	box-shadow: 0px 2px 0 var(--gray-400);
+	color: var(--fg);
+}
+
+.dark .ocrButtonCancel:hover,
+.dark .ocrButtonBack:hover {
+	background: linear-gradient(var(--gray-300), var(--gray-400)) padding-box,
+		linear-gradient(var(--gray-400), var(--gray-500)) border-box;
+	box-shadow: 0px 3px 0 var(--gray-400);
+}
+
+.dark .ocrReviewGrid {
+	background: var(--bg-muted);
+	border-color: var(--border);
+}
+
+.dark .ocrReviewItem {
+	border-bottom-color: var(--border);
+}
+
+.dark .ocrReviewLabel {
+	color: var(--text-primary);
+}
+
+.dark .ocrReviewValue {
+	color: var(--fg);
+}
+
+.dark .ocrSkillTag {
+	background: linear-gradient(var(--gray-200), var(--gray-300));
+	border-color: var(--gray-400);
+	color: var(--fg);
+}
+
+.dark .ocrReviewImage {
+	border-color: var(--border);
+	background: var(--bg-muted);
+}
+
+.dark .ocrAptitudeSelect,
+.dark .ocrStrategySelect {
+	background: var(--surface-input);
+	border-color: var(--border);
+	color: var(--fg);
+}
+
+.dark .ocrAptitudeSelect:hover,
+.dark .ocrStrategySelect:hover {
+	border-color: var(--orange-400);
+}
+
+.dark .ocrAptitudeSelect:focus,
+.dark .ocrStrategySelect:focus {
+	border-color: var(--orange-400);
+}

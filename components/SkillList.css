@@ -225,3 +225,85 @@
 	display: inline-block;
 	margin-top: 0.5em;
 }
+
+/* === DARK MODE === */
+.dark .filterButton {
+	background: var(--bg-muted);
+	box-shadow: 0 3px 0 var(--gray-300);
+	color: var(--text-primary);
+	text-stroke: 1px var(--text-primary);
+	-webkit-text-stroke: 1px var(--text-primary);
+}
+
+.dark .filterButton.active {
+	background: var(--green-400);
+	box-shadow: 0 3px 0 var(--green-500);
+	color: white;
+	text-stroke: 1px white;
+	-webkit-text-stroke: 1px white;
+}
+
+.dark .filterSearch {
+	background-color: var(--surface-input);
+	border: 2px solid var(--border);
+	color: var(--fg);
+}
+
+.dark .filterSearch::placeholder {
+	color: var(--fg-muted);
+}
+
+.dark .skill {
+	box-shadow: 0 3px 0 var(--gray-300);
+}
+
+.dark .skillName {
+	color: var(--text-primary);
+	text-stroke: 1px var(--text-primary);
+	-webkit-text-stroke: 1px var(--text-primary);
+	text-shadow: -1px -1px 0 rgba(0,0,0,0.3), 1px -1px 0 rgba(0,0,0,0.3), -1px 1px 0 rgba(0,0,0,0.3), 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.dark .skillDismiss {
+	color: var(--text-primary);
+}
+
+.dark .skill-white {
+	background: linear-gradient(90deg, var(--bg-muted), var(--gray-200)) padding-box,
+							linear-gradient(90deg, var(--gray-300), var(--gray-400)) border-box;
+}
+
+.dark .skill-gold {
+	background: linear-gradient(90deg, rgb(60, 50, 30), rgb(100, 75, 20)) padding-box,
+							linear-gradient(90deg, rgb(140, 100, 30), rgb(120, 80, 10)) border-box;
+}
+
+.dark .skill-pink {
+	background: linear-gradient(90deg, rgb(60, 35, 50), rgb(100, 40, 80)) padding-box,
+							linear-gradient(90deg, rgb(140, 50, 100), rgb(120, 30, 80)) border-box;
+}
+
+.dark .skill-unique {
+	background: linear-gradient(90deg, rgb(40, 50, 35), rgb(50, 65, 80), rgb(55, 55, 85), rgb(65, 45, 70)) padding-box,
+							linear-gradient(90deg, rgb(60, 80, 55), rgb(55, 75, 85), rgb(60, 65, 90), rgb(90, 40, 75)) border-box;
+}
+
+.dark .skillDetails {
+	color: var(--text-primary);
+}
+
+.dark .skill-white .skillDetails, .dark .skill-white .skillDetailsSection {
+	border-image: linear-gradient(var(--gray-300), var(--gray-400)) 90;
+}
+
+.dark .skill-gold .skillDetails, .dark .skill-gold .skillDetailsSection {
+	border-image: linear-gradient(rgb(140, 100, 30), rgb(120, 80, 10)) 90;
+}
+
+.dark .skill-pink .skillDetails, .dark .skill-pink .skillDetailsSection {
+	border-image: linear-gradient(rgb(140, 50, 100), rgb(120, 30, 80)) 90;
+}
+
+.dark .skill-unique .skillDetails, .dark .skill-unique .skillDetailsSection {
+	border-image: linear-gradient(var(--text-primary), var(--text-primary)) 90;
+}

@@ -276,3 +276,89 @@
 	color: rgb(255, 145, 29);
 	margin-left: 0.5em;
 }
+
+/* === DARK MODE === */
+.dark .basinnChartWrapper {
+	border-color: var(--gray-400);
+	background: var(--bg-subtle);
+}
+
+.dark .basinnChartWrapper.dirty {
+	border-color: var(--orange-400);
+}
+
+.dark .basinnChart {
+	color: var(--text-primary);
+}
+
+.dark .basinnChart th {
+	background: linear-gradient(var(--bg-muted), var(--gray-200));
+}
+
+.dark .basinnChart .columnHeader {
+	border-bottom-color: var(--gray-400);
+}
+
+.dark .basinnChartSortedAsc span::after,
+.dark .basinnChartSortedDesc span::after {
+	border-bottom-color: var(--text-primary);
+	border-right-color: var(--text-primary);
+}
+
+.dark .basinnChart tr.expanded {
+	background: var(--green-500);
+}
+
+.dark .basinnChart tr.expanded-content-row {
+	background: var(--bg-muted);
+}
+
+.dark .basinnChart tr.expanded-content-row td {
+	border-top-color: var(--gray-400);
+}
+
+.dark .basinnChart tr.selected {
+	background: var(--green-500);
+}
+
+.dark .basinnChart tbody tr:hover {
+	background: var(--bg-muted);
+}
+
+.dark .basinnChartRefresh {
+	color: var(--orange-400);
+}
+
+.dark .basinnChartRefresh:disabled {
+	color: var(--fg-muted);
+}
+
+.dark .basinnChartRefreshText {
+	color: var(--orange-400);
+}
+
+.dark .hintbtn.hintDown {
+	background: linear-gradient(var(--gray-200), var(--bg-muted));
+	outline-color: var(--gray-400);
+}
+
+.dark .hintbtn.hintDown::before,
+.dark .hintbtn.hintDown::after {
+	border-top-color: var(--gray-400);
+}
+
+.dark .hintbtn.hintDown::before {
+	background: linear-gradient(36deg, var(--gray-300), var(--gray-200) 50%);
+}
+
+.dark .hintDown .hintbtnDummyBackground {
+	background: linear-gradient(-36deg, var(--gray-300), var(--gray-200) 30%);
+}
+
+.dark .hintDown .hintbtnText {
+	color: var(--text-primary);
+}
+
+.dark .hintLevel {
+	color: var(--orange-400);
+}

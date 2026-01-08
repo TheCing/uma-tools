@@ -620,6 +620,130 @@
 }
 
 /* ============================================
+   DARK MODE STYLES
+   ============================================ */
+
+.dark .horseDef {
+	background: var(--bg-subtle);
+	border-color: var(--green-border-dark);
+}
+
+.dark .horseDefHeader {
+	background: linear-gradient(var(--green-400), var(--green-500));
+	border-bottom-color: var(--green-border-dark);
+}
+
+.dark .umaEpithet > span,
+.dark .umaSelectInput,
+.dark .horseParam > input {
+	color: var(--text-primary);
+}
+
+.dark .umaSuggestions {
+	border-color: var(--border);
+	background: var(--bg-subtle);
+}
+
+.dark .umaSuggestion {
+	background: var(--bg-subtle);
+	color: var(--fg);
+}
+
+.dark .umaSuggestion:nth-child(even) {
+	background: var(--bg-muted);
+}
+
+.dark .umaSuggestion.selected,
+.dark .umaSuggestion:hover {
+	background: var(--blue-500);
+	color: var(--text-on-accent);
+}
+
+.dark .horseParams {
+	background: var(--bg-muted);
+	border-color: var(--green-border-dark);
+}
+
+.dark .horseParamHeader {
+	background: var(--green-400);
+	border-left-color: var(--green-500);
+}
+
+.dark .horseParam {
+	border-left-color: var(--green-border-dark);
+}
+
+.dark .horseAptitudes > div {
+	background: var(--bg-muted);
+	border-color: var(--border);
+	color: var(--text-primary);
+}
+
+.dark .horseSkillHeader {
+	background: linear-gradient(var(--green-300), var(--green-500)) padding-box,
+	            linear-gradient(var(--green-200), var(--green-600)) border-box;
+}
+
+.dark .horseSkillListWrapper {
+	background: var(--bg-muted);
+}
+
+.dark .horseSkillPickerWrapper {
+	background: var(--bg-subtle);
+}
+
+.dark .horseSkillPickerOverlay {
+	background: var(--surface-overlay);
+}
+
+.dark .addSkillButton {
+	background: var(--bg-muted);
+	border-color: var(--border);
+	color: var(--text-primary);
+}
+
+.dark .loadDropdownMenu {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+}
+
+.dark .loadDropdownMenu li {
+	color: var(--fg);
+}
+
+.dark .loadDropdownMenu li:hover {
+	background: linear-gradient(90deg, rgba(255, 167, 38, 0.3), rgba(255, 167, 38, 0.15));
+}
+
+.dark .horseMoodSelect > ul {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+}
+
+.dark .horseMoodSelect > ul > li:hover {
+	background: var(--bg-muted);
+}
+
+.dark .horseAptitudeSelect > ul {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+}
+
+.dark .forcedPositionInput {
+	background: var(--surface-input);
+	border-color: var(--border);
+	color: var(--text-primary);
+}
+
+.dark .forcedPositionLabel {
+	color: var(--text-primary);
+}
+
+.dark .forcedPositionLabel.inline {
+	background: rgba(221, 184, 146, 0.2);
+}
+
+/* ============================================
    MOBILE RESPONSIVE STYLES
    ============================================ */
 

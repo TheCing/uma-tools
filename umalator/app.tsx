@@ -1365,8 +1365,14 @@ function StatsTable({ caption, captionColor, rows }) {
 }
 
 function App(props) {
-	//const [language, setLanguage] = useLanguageSelect(); 
-	const [darkMode, toggleDarkMode] = useReducer(b=>!b, false);
+	//const [language, setLanguage] = useLanguageSelect();
+	const [darkMode, toggleDarkMode] = useReducer(b=>!b, () => {
+		if (typeof window !== 'undefined') {
+			const saved = localStorage.getItem('darkMode');
+			return saved === 'true';
+		}
+		return false;
+	});
 	const [skillsOpen, setSkillsOpen] = useState(false);
 	const [racedef, setRaceDef] = useState(() => DEFAULT_PRESET.racedef);
 	const [nsamples, setSamples] = useState(DEFAULT_SAMPLES);
@@ -1379,8 +1385,10 @@ function App(props) {
 	const [showHp, toggleShowHp] = useReducer((b,_) => !b, false);
 	const [showLanes, toggleShowLanes] = useReducer((b,_) => !b, false);
 	
-	useEffect(() => { document.documentElement.classList.toggle('dark', darkMode);}, [darkMode]);
-	//fuck dark mode
+	useEffect(() => {
+		document.documentElement.classList.toggle('dark', darkMode);
+		localStorage.setItem('darkMode', String(darkMode));
+	}, [darkMode]);
 	
 	// Wrapper to handle mode changes and reset tab if needed
 	function setPosKeepMode(mode: PosKeepMode) {
@@ -2535,6 +2543,10 @@ function App(props) {
 
 						<a href="#" onClick={copyStateUrl}>Copy link</a>
 						<RacePresets courseId={courseId} racedef={racedef} set={(courseId, racedef) => { setCourseId(courseId); setRaceDef(racedef); }} />
+						<div>
+							<label for="darkMode">Dark Mode</label>
+							<input type="checkbox" id="darkMode" checked={darkMode} onClick={toggleDarkMode} />
+						</div>
 					</div>
 					<div id="buttonsRow">
 						<TrackSelect key={courseId} courseid={courseId} setCourseid={setCourseId} tabindex={2} />

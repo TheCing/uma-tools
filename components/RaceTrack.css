@@ -16,18 +16,47 @@
 }
 
 .racetrackName {
-	color: rgb(121,64,22);
-	font: 22px bold sans-serif;
-	margin-bottom: 0.3em;
+	font-family: 'Inter', 'Noto Sans JP', sans-serif;
+	font-size: 1.4em;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	margin-bottom: 0.4em;
 	text-align: center;
-	text-stroke: 1px rgb(121,64,22);
-	-webkit-text-stroke: 1px rgb(121,64,22);
-	text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+	/* Gradient text effect */
+	background: linear-gradient(135deg, rgb(90, 50, 15) 0%, rgb(140, 85, 35) 50%, rgb(100, 55, 20) 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	/* Fallback for browsers that don't support gradient text */
+	-webkit-text-fill-color: transparent;
+	/* Subtle shadow for depth */
+	filter: drop-shadow(1px 1px 1px rgba(255, 255, 255, 0.8));
+}
+
+/* Dark mode */
+.dark .racetrackName {
+	background: linear-gradient(135deg, #9cdcfe 0%, #4fc1ff 50%, #569cd6 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
 }
 
 .racetrackStatThresholds {
 	font-size: 0.8em;
 	text-align: center;
+}
+
+.dark .racetrackStatThresholds {
+	/* Gold gradient text for dark mode */
+	font-family: 'Inter', 'Noto Sans JP', sans-serif;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+	background: linear-gradient(135deg, #cd9b1d 0%, #f0c040 30%, #ffe066 50%, #f0c040 70%, #cd9b1d 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.5));
 }
 
 .mouseoverText {

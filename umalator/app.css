@@ -10,6 +10,15 @@
 
 body {
 	font-family: Inter, "Noto Sans JP", sans-serif;
+	background: var(--bg);
+	color: var(--fg);
+	transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode base overrides */
+.dark body {
+	background: var(--bg);
+	color: var(--fg);
 }
 
 #app {
@@ -736,19 +745,362 @@ body {
 	width: 345px;
 }
 
+/* ============================================
+   COLOR SYSTEM - Semantic CSS Custom Properties
+   ============================================ */
 :root {
+  /* === BASE COLORS === */
   --bg: #ffffff;
+  --bg-subtle: rgb(248, 248, 248);
+  --bg-muted: rgb(242, 242, 242);
   --fg: #111827;
-  --muted: #374151;
+  --fg-muted: #374151;
   --card: #f9fafb;
   --border: #e5e7eb;
+
+  /* === PRIMARY TEXT (Brown) === */
+  --text-primary: rgb(121, 64, 22);
+  --text-secondary: rgb(60, 60, 60);
+  --text-muted: rgb(100, 100, 100);
+  --text-on-accent: white;
+
+  /* === SURFACES === */
+  --surface-card: rgb(248, 248, 248);
+  --surface-input: white;
+  --surface-overlay: rgba(25, 25, 25, 0.6);
+  --surface-tooltip: black;
+
+  /* === BORDERS === */
+  --border-primary: rgb(148, 150, 189);
+  --border-secondary: rgb(224, 214, 204);
+  --border-muted: rgb(200, 200, 200);
+
+  /* === GREEN ACCENT (Primary Actions, HorseDef) === */
+  --green-50: rgb(170, 221, 154);
+  --green-100: rgb(163, 221, 111);
+  --green-200: rgb(153, 219, 68);
+  --green-300: rgb(121, 216, 35);
+  --green-400: rgb(112, 190, 18);
+  --green-500: rgb(97, 174, 22);
+  --green-600: rgb(85, 143, 24);
+  --green-border: rgb(170, 221, 154);
+  --green-border-dark: rgb(121, 206, 72);
+
+  /* === BLUE ACCENT (Run Button, Save, Focus) === */
+  --blue-50: rgb(100, 181, 246);
+  --blue-100: rgb(66, 165, 245);
+  --blue-200: #3b82f6;
+  --blue-300: #2563eb;
+  --blue-400: rgb(30, 136, 229);
+  --blue-500: #1d4ed8;
+  --blue-600: #1e40af;
+  --blue-700: #1e3a8a;
+  --blue-focus: rgba(66, 165, 245, 0.3);
+
+  /* === ORANGE ACCENT (Load Button, Warnings) === */
+  --orange-50: rgb(255, 203, 97);
+  --orange-100: rgb(255, 183, 77);
+  --orange-200: rgb(255, 167, 38);
+  --orange-300: rgb(251, 140, 0);
+  --orange-400: rgb(245, 124, 0);
+  --orange-500: rgb(222, 161, 87);
+
+  /* === PURPLE (Visited links) === */
+  --purple-200: #a78bfa;
+  --purple-300: #8b5cf6;
+  --purple-400: #7c3aed;
+
+  /* === GRAY (Secondary, Disabled) === */
+  --gray-50: rgb(245, 245, 245);
+  --gray-100: rgb(240, 240, 240);
+  --gray-200: rgb(228, 227, 234);
+  --gray-300: rgb(200, 200, 200);
+  --gray-400: rgb(180, 180, 180);
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* === SHADOWS === */
+  --shadow-sm: rgba(0, 0, 0, 0.1);
+  --shadow-md: rgba(0, 0, 0, 0.15);
+  --shadow-lg: rgba(0, 0, 0, 0.2);
+  --shadow-button: rgb(180, 178, 192);
+
+  /* === SKILL CARD COLORS === */
+  /* White/Normal */
+  --skill-white-bg-start: rgb(255, 243, 247);
+  --skill-white-bg-end: rgb(181, 178, 198);
+  --skill-white-border-start: rgb(214, 207, 231);
+  --skill-white-border-end: rgb(148, 150, 189);
+  /* Gold */
+  --skill-gold-bg-start: rgb(255, 255, 239);
+  --skill-gold-bg-end: rgb(255, 190, 40);
+  --skill-gold-border-start: rgb(255, 223, 115);
+  --skill-gold-border-end: rgb(255, 166, 16);
+  /* Pink */
+  --skill-pink-bg-start: rgb(255, 238, 239);
+  --skill-pink-bg-end: rgb(255, 155, 211);
+  --skill-pink-border-start: rgb(255, 142, 198);
+  --skill-pink-border-end: rgb(255, 89, 173);
+  /* Unique (rainbow) */
+  --skill-unique-bg-1: rgb(239, 255, 214);
+  --skill-unique-bg-2: rgb(161, 201, 248);
+  --skill-unique-bg-3: rgb(170, 170, 255);
+  --skill-unique-bg-4: rgb(255, 186, 231);
+  --skill-unique-border-1: rgb(197, 255, 190);
+  --skill-unique-border-2: rgb(189, 235, 255);
+  --skill-unique-border-3: rgb(195, 208, 255);
+  --skill-unique-border-4: rgb(255, 138, 222);
 }
+
+/* === DARK MODE (VS Code inspired) === */
 .dark {
-  --bg: #0b1020;
-  --fg: #e5e7eb;
-  --muted: #9ca3af;
-  --card: #121a2a;
-  --border: #1f2937;
+  /* Base - VS Code dark theme colors */
+  --bg: #1e1e1e;
+  --bg-subtle: #252526;
+  --bg-muted: #2d2d2d;
+  --fg: #d4d4d4;
+  --fg-muted: #858585;
+  --card: #252526;
+  --border: #3c3c3c;
+
+  /* Primary text - warm tan for dark mode (keeps brand feel) */
+  --text-primary: #ddb892;
+  --text-secondary: #cccccc;
+  --text-muted: #858585;
+  --text-on-accent: #ffffff;
+
+  /* Surfaces */
+  --surface-card: #252526;
+  --surface-input: #3c3c3c;
+  --surface-overlay: rgba(0, 0, 0, 0.6);
+  --surface-tooltip: #252526;
+
+  /* Borders */
+  --border-primary: #4a4a4a;
+  --border-secondary: #3c3c3c;
+  --border-muted: #333333;
+
+  /* Greens - vibrant for dark mode */
+  --green-50: #4ec9b0;
+  --green-100: #6a9955;
+  --green-200: #89d185;
+  --green-300: #4ec9b0;
+  --green-400: #6a9955;
+  --green-500: #4d7c4d;
+  --green-600: #3d6b3d;
+  --green-border: #4ec9b0;
+  --green-border-dark: #3d8b3d;
+
+  /* Blues - VS Code accent blue */
+  --blue-50: #9cdcfe;
+  --blue-100: #569cd6;
+  --blue-200: #4fc1ff;
+  --blue-300: #0078d4;
+  --blue-400: #569cd6;
+  --blue-500: #0078d4;
+  --blue-600: #005a9e;
+  --blue-700: #004578;
+  --blue-focus: rgba(0, 120, 212, 0.4);
+
+  /* Oranges - VS Code orange/warnings */
+  --orange-50: #ffcc66;
+  --orange-100: #dcdcaa;
+  --orange-200: #ce9178;
+  --orange-300: #d7ba7d;
+  --orange-400: #ce9178;
+  --orange-500: #b5854a;
+
+  /* Purples - VS Code style */
+  --purple-200: #c586c0;
+  --purple-300: #b267b2;
+  --purple-400: #9b4d9b;
+
+  /* Grays - VS Code style */
+  --gray-50: #252526;
+  --gray-100: #2d2d2d;
+  --gray-200: #333333;
+  --gray-300: #3c3c3c;
+  --gray-400: #4a4a4a;
+  --gray-500: #6e6e6e;
+  --gray-600: #858585;
+  --gray-700: #a0a0a0;
+  --gray-800: #cccccc;
+  --gray-900: #d4d4d4;
+
+  /* Shadows */
+  --shadow-sm: rgba(0, 0, 0, 0.4);
+  --shadow-md: rgba(0, 0, 0, 0.5);
+  --shadow-lg: rgba(0, 0, 0, 0.6);
+  --shadow-button: #1a1a1a;
+
+  /* Skill cards - darker but readable */
+  --skill-white-bg-start: #2d2d2d;
+  --skill-white-bg-end: #252526;
+  --skill-white-border-start: #4a4a4a;
+  --skill-white-border-end: #3c3c3c;
+  /* Gold */
+  --skill-gold-bg-start: #3d3520;
+  --skill-gold-bg-end: #4a3d1a;
+  --skill-gold-border-start: #8b7355;
+  --skill-gold-border-end: #a08050;
+  /* Pink */
+  --skill-pink-bg-start: #3d2535;
+  --skill-pink-bg-end: #4a2a40;
+  --skill-pink-border-start: #8b5570;
+  --skill-pink-border-end: #a06080;
+  /* Unique - subtle rainbow for dark mode */
+  --skill-unique-bg-1: #2d3d2a;
+  --skill-unique-bg-2: #2a3545;
+  --skill-unique-bg-3: #32324a;
+  --skill-unique-bg-4: #452d3d;
+  --skill-unique-border-1: #4a6b45;
+  --skill-unique-border-2: #456078;
+  --skill-unique-border-3: #505078;
+  --skill-unique-border-4: #784560;
+}
+
+/* === DARK MODE COMPONENT OVERRIDES === */
+.dark select,
+.dark option,
+.dark input,
+.dark textarea {
+  background-color: var(--surface-input);
+  color: var(--fg);
+  border-color: var(--border);
+}
+
+.dark select option {
+  background-color: var(--bg-subtle);
+  color: var(--fg);
+}
+
+.dark fieldset {
+  border-color: var(--border);
+}
+
+.dark legend {
+  color: var(--fg);
+}
+
+.dark label {
+  color: var(--fg);
+}
+
+.dark a {
+  color: var(--blue-100);
+}
+
+.dark a:hover {
+  color: var(--blue-50);
+}
+
+/* Uma Tabs */
+.dark .umaTab {
+  background: linear-gradient(var(--bg-muted), var(--gray-200));
+  color: var(--text-primary);
+  outline-color: var(--border);
+}
+
+.dark .umaTab.selected {
+  background: linear-gradient(var(--green-300), var(--green-500));
+  color: var(--text-on-accent);
+  outline-color: var(--green-border);
+}
+
+/* Horse Def Header in dark mode (override for non-component context) */
+.dark .horseDefHeader {
+  background: linear-gradient(var(--green-300), var(--green-500));
+  border-bottom-color: var(--green-border-dark);
+  color: var(--text-on-accent);
+}
+
+/* Pacemaker controls */
+.dark #posKeepFieldset {
+  border-color: var(--border);
+}
+
+.dark #posKeepFieldset select {
+  background-color: var(--surface-input);
+  border-color: var(--border);
+  color: var(--fg);
+}
+
+.dark #pacemakerIndicator span {
+  color: var(--text-primary);
+}
+
+.dark #pacemakerIndicator button {
+  background: var(--bg-muted);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.dark #pacemakerIndicator button:hover {
+  background: var(--gray-200);
+}
+
+.dark #pacemakerCountControl {
+  border-top-color: var(--border);
+}
+
+.dark #pacemakerCountControl label {
+  color: var(--text-primary);
+}
+
+.dark .pacemaker-combobox-button {
+  background: var(--surface-input);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.dark .pacemaker-combobox-button:hover {
+  background: var(--bg-muted);
+}
+
+.dark .pacemaker-combobox-dropdown {
+  background: var(--bg-subtle);
+  border-color: var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark .pacemaker-combobox-option {
+  border-bottom-color: var(--border);
+}
+
+.dark .pacemaker-combobox-option:hover {
+  background: var(--bg-muted);
+}
+
+/* Copy/Swap uma buttons */
+.dark #copyUmaToRight,
+.dark #copyUmaToLeft,
+.dark #swapUmas {
+  color: var(--text-primary);
+}
+
+.dark #copyUmaToRight::after,
+.dark #copyUmaToLeft::after {
+  border-top-color: var(--text-primary);
+  border-right-color: var(--text-primary);
+}
+
+/* Basinn chart popover */
+.dark .basinnChartPopover {
+  background: var(--bg-subtle);
+  border-color: var(--gray-400);
+}
+
+/* Tooltips */
+.dark .tooltip {
+  background: var(--surface-tooltip);
+  border: 1px solid var(--border);
+}
+
+.dark .tooltip .arrow {
+  border-top-color: var(--surface-tooltip);
 }
 
 .runAdditionalSamples {

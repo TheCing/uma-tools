@@ -76,6 +76,7 @@ export function IntroText(props) {
 						<li><strong>Screenshot OCR:</strong> Import uma builds directly from in-game screenshots using AI. Just paste or upload a screenshot, review the extracted stats and skills, and load it into the simulator. Powered by Google Gemini.</li>
 						<li><strong>CM 8 - Sagittarius Cup preset:</strong> Nakayama 2500m (Inner), Firm, Sunny, Day, Winter (January 22, 2026).</li>
 						<li><strong>Beta Mobile View:</strong> Responsive layout for phones and tablets. Track scales to fit screen, controls stack vertically, and Uma Config overlay is now mobile-friendly.</li>
+						<li><strong>Beta Dark Mode:</strong> Toggle in the run pane. VS Code-inspired dark theme with comprehensive styling across all components.</li>
 						<li><em>Fork: <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live: <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
 					</ul>
 				</section>
