@@ -1,0 +1,4 @@
+# Cloudflare Pages redirect rules
+# Rewrite /uma-tools/* paths to root for compatibility with GitHub Pages paths
+
+/uma-tools/* /:splat 200
