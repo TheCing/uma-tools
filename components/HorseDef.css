@@ -221,6 +221,138 @@
 	transform: translateY(-1px);
 }
 
+.resetUmaButton:active {
+	box-shadow: 0px 0px 0 rgb(180,178,192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+.saveUmaButton {
+	background: linear-gradient(rgb(66, 165, 245), rgb(30, 136, 229)) padding-box, linear-gradient(rgb(100, 181, 246), rgb(25, 118, 210)) border-box;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	box-shadow: 0px 2px 0 rgb(180,178,192);
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 4px 12px;
+	transition: all 0.2s;
+}
+
+.saveUmaButton:hover {
+	background: linear-gradient(rgb(86, 185, 255), rgb(50, 156, 249)) padding-box, linear-gradient(rgb(120, 201, 255), rgb(45, 138, 230)) border-box;
+	box-shadow: 0px 3px 0 rgb(180,178,192);
+	transform: translateY(-1px);
+}
+
+.saveUmaButton:active {
+	box-shadow: 0px 0px 0 rgb(180,178,192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+.loadUmaButton {
+	background: linear-gradient(rgb(255, 167, 38), rgb(251, 140, 0)) padding-box, linear-gradient(rgb(255, 183, 77), rgb(245, 124, 0)) border-box;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	box-shadow: 0px 2px 0 rgb(180,178,192);
+	box-sizing: border-box;
+	color: white;
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 4px 12px;
+	transition: all 0.2s;
+}
+
+.loadUmaButton:hover {
+	background: linear-gradient(rgb(255, 187, 58), rgb(255, 160, 20)) padding-box, linear-gradient(rgb(255, 203, 97), rgb(255, 144, 20)) border-box;
+	box-shadow: 0px 3px 0 rgb(180,178,192);
+	transform: translateY(-1px);
+}
+
+.loadUmaButton:active {
+	box-shadow: 0px 0px 0 rgb(180,178,192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+.loadButtonWrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.loadUmaButton {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.loadDropdownArrow {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 4px solid white;
+	transition: transform 0.2s;
+}
+
+.loadDropdownArrow.open {
+	transform: rotate(180deg);
+}
+
+.loadDropdownMenu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	margin: 0;
+	margin-top: 4px;
+	padding: 0;
+	list-style: none;
+	background: white;
+	border: 2px solid rgb(200, 200, 200);
+	border-radius: 8px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-5px);
+	transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+	z-index: 100;
+	min-width: 160px;
+}
+
+.loadDropdownMenu.open {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+.loadDropdownMenu li {
+	padding: 8px 12px;
+	font-size: 0.85em;
+	color: rgb(60, 60, 60);
+	cursor: pointer;
+	transition: background 0.1s;
+	white-space: nowrap;
+}
+
+.loadDropdownMenu li:hover {
+	background: linear-gradient(90deg, rgba(255, 167, 38, 0.2), rgba(255, 167, 38, 0.1));
+}
+
+.loadDropdownMenu li:first-child {
+	border-radius: 6px 6px 0 0;
+}
+
+.loadDropdownMenu li:last-child {
+	border-radius: 0 0 6px 6px;
+}
+
 .resetButtons {
 	position: absolute;
 	bottom: 8px;

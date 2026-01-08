@@ -4,6 +4,9 @@ import { IntlProvider, Text, Localizer } from 'preact-i18n';
 import { Set as ImmSet } from 'immutable';
 
 import { SkillList, Skill, ExpandedSkillDetails } from '../components/SkillList';
+import { OCRModal } from './OCRModal';
+import { OCRHorseData, mapSkillNamesToIds, mapOutfitNameToId } from './GeminiOCR';
+import { createUmaCard, extractDataFromPng } from './UmaCard';
 
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 
@@ -15,6 +18,111 @@ import umas from '../umas.json';
 import icons from '../icons.json';
 import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillmeta from '../skill_meta.json';
+
+// Convert HorseState (Immutable Record) to plain JSON object
+function horseStateToJson(horse: HorseState) {
+	return {
+		outfitId: horse.outfitId,
+		speed: horse.speed,
+		stamina: horse.stamina,
+		power: horse.power,
+		guts: horse.guts,
+		wisdom: horse.wisdom,
+		strategy: horse.strategy,
+		distanceAptitude: horse.distanceAptitude,
+		surfaceAptitude: horse.surfaceAptitude,
+		strategyAptitude: horse.strategyAptitude,
+		mood: horse.mood,
+		skills: Array.from(horse.skills.values()),
+		forcedSkillPositions: horse.forcedSkillPositions.toJS(),
+	};
+}
+
+// Export horse state as JSON file download
+function downloadHorseJson(horse: HorseState) {
+	const json = horseStateToJson(horse);
+	const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	const name = horse.outfitId ? umas[horse.outfitId.slice(0, 4)]?.name[1] || 'horse' : 'horse';
+	a.download = `${name.replace(/\s+/g, '_')}.json`;
+	a.click();
+	URL.revokeObjectURL(url);
+}
+
+// Export horse state as Uma Card PNG
+async function downloadUmaCard(horse: HorseState) {
+	try {
+		const json = horseStateToJson(horse);
+		const cardBlob = await createUmaCard(horse.outfitId, json);
+		const url = URL.createObjectURL(cardBlob);
+		const a = document.createElement('a');
+		a.href = url;
+		const name = horse.outfitId ? umas[horse.outfitId.slice(0, 4)]?.name[1] || 'horse' : 'horse';
+		a.download = `${name.replace(/\s+/g, '_')}_card.png`;
+		a.click();
+		URL.revokeObjectURL(url);
+	} catch (error) {
+		console.error('Failed to create uma card:', error);
+		alert('Failed to create uma card. Please try again.');
+	}
+}
+
+// Validate and convert JSON to HorseState
+function validateAndParseHorseJson(json: any): HorseState | null {
+	// Check required numeric fields
+	const numericFields = ['speed', 'stamina', 'power', 'guts', 'wisdom', 'mood'];
+	for (const field of numericFields) {
+		if (typeof json[field] !== 'number') return null;
+	}
+
+	// Check required string fields
+	const stringFields = ['strategy', 'distanceAptitude', 'surfaceAptitude', 'strategyAptitude'];
+	for (const field of stringFields) {
+		if (typeof json[field] !== 'string') return null;
+	}
+
+	// Validate strategy
+	const validStrategies = ['Nige', 'Senkou', 'Sasi', 'Oikomi', 'Oonige'];
+	if (!validStrategies.includes(json.strategy)) return null;
+
+	// Validate aptitudes
+	const validAptitudes = ['S', 'A', 'B', 'C', 'D', 'E', 'F', 'G'];
+	if (!validAptitudes.includes(json.distanceAptitude)) return null;
+	if (!validAptitudes.includes(json.surfaceAptitude)) return null;
+	if (!validAptitudes.includes(json.strategyAptitude)) return null;
+
+	// Validate mood (-2 to 2)
+	if (json.mood < -2 || json.mood > 2) return null;
+
+	// Validate skills is an array
+	if (!Array.isArray(json.skills)) return null;
+
+	// Build the HorseState
+	let horse = new HorseState({
+		outfitId: json.outfitId || '',
+		speed: json.speed,
+		stamina: json.stamina,
+		power: json.power,
+		guts: json.guts,
+		wisdom: json.wisdom,
+		strategy: json.strategy,
+		distanceAptitude: json.distanceAptitude,
+		surfaceAptitude: json.surfaceAptitude,
+		strategyAptitude: json.strategyAptitude,
+		mood: json.mood,
+		skills: SkillSet(json.skills.filter(id => typeof id === 'string' && skilldata[id.split('-')[0]])),
+	});
+
+	// Handle forcedSkillPositions if present
+	if (json.forcedSkillPositions && typeof json.forcedSkillPositions === 'object') {
+		const { Map: ImmMap } = require('immutable');
+		horse = horse.set('forcedSkillPositions', ImmMap(json.forcedSkillPositions));
+	}
+
+	return horse;
+}
 
 const umaAltIds = Object.keys(umas).flatMap(id => Object.keys(umas[id].outfits));
 const umaNamesForSearch = {};
@@ -33,7 +141,104 @@ export function UmaSelector(props) {
 	const u = props.value && umas[props.value.slice(0,4)];
 
 	const input = useRef(null);
+	const fileInput = useRef(null);
 	const suggestionsContainer = useRef(null);
+
+	async function handleFileSelect(e) {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		try {
+			// Check if it's a PNG file (uma card)
+			if (file.type === 'image/png' || file.name.endsWith('.png')) {
+				const cardData = await extractDataFromPng(file);
+				if (cardData) {
+					const horse = validateAndParseHorseJson(cardData);
+					if (horse && props.onLoad) {
+						props.onLoad(horse);
+					} else {
+						alert('Invalid uma card data. Please check the file format.');
+					}
+				} else {
+					alert('No uma card data found in PNG. Please use a valid uma card image.');
+				}
+			} else {
+				// Handle JSON file
+				const reader = new FileReader();
+				reader.onload = (event) => {
+					try {
+						const json = JSON.parse(event.target.result as string);
+						const horse = validateAndParseHorseJson(json);
+						if (horse && props.onLoad) {
+							props.onLoad(horse);
+						} else {
+							alert('Invalid horse JSON file. Please check the file format.');
+						}
+					} catch (err) {
+						alert('Failed to parse JSON file: ' + err.message);
+					}
+				};
+				reader.readAsText(file);
+			}
+		} catch (err) {
+			alert('Failed to load file: ' + err.message);
+		} finally {
+			// Reset file input so same file can be selected again
+			e.target.value = '';
+		}
+	}
+
+	function triggerFileInput() {
+		fileInput.current?.click();
+	}
+
+	const [loadDropdownOpen, setLoadDropdownOpen] = useState(false);
+	const loadDropdownRef = useRef(null);
+	const [saveDropdownOpen, setSaveDropdownOpen] = useState(false);
+	const saveDropdownRef = useRef(null);
+
+	function handleLoadOptionClick(option: 'json' | 'ocr') {
+		setLoadDropdownOpen(false);
+		if (option === 'json') {
+			triggerFileInput();
+		} else if (option === 'ocr') {
+			props.onOpenOCR?.();
+		}
+	}
+
+	function handleSaveOptionClick(option: 'json' | 'card') {
+		setSaveDropdownOpen(false);
+		if (option === 'json') {
+			props.onSave?.();
+		} else if (option === 'card') {
+			props.onSaveCard?.();
+		}
+	}
+
+	function handleLoadDropdownBlur(e) {
+		// Close dropdown if clicking outside
+		if (loadDropdownRef.current && !loadDropdownRef.current.contains(e.relatedTarget)) {
+			setLoadDropdownOpen(false);
+		}
+	}
+
+	function handleSaveDropdownBlur(e) {
+		// Close dropdown if clicking outside
+		if (saveDropdownRef.current && !saveDropdownRef.current.contains(e.relatedTarget)) {
+			setSaveDropdownOpen(false);
+		}
+	}
+
+	function handleSaveButtonClick() {
+		setLoadDropdownOpen(false); // Close load dropdown
+		setSaveDropdownOpen(!saveDropdownOpen);
+	}
+
+	function handleLoadButtonClick() {
+		setSaveDropdownOpen(false); // Close save dropdown
+		setLoadDropdownOpen(!loadDropdownOpen);
+	}
+
 	const [open, setOpen] = useState(false);
 	const [activeIdx, setActiveIdx] = useState(-1);
 	function update(q) {
@@ -110,6 +315,28 @@ export function UmaSelector(props) {
 			</div>
 			<div class="umaEpithet"><span>{props.value && u.outfits[props.value]}</span></div>
 			<div class="resetButtons">
+				{props.onSave && (
+					<div className="loadButtonWrapper" ref={saveDropdownRef} onBlur={handleSaveDropdownBlur}>
+						<button className="saveUmaButton" onClick={handleSaveButtonClick} title="Export this horse">
+							Save <span className={`loadDropdownArrow ${saveDropdownOpen ? 'open' : ''}`} />
+						</button>
+						<ul className={`loadDropdownMenu ${saveDropdownOpen ? 'open' : ''}`}>
+							<li onMouseDown={() => handleSaveOptionClick('json')}>JSON File</li>
+							<li onMouseDown={() => handleSaveOptionClick('card')}>Uma Card (PNG)</li>
+						</ul>
+					</div>
+				)}
+				{props.onLoad && (
+					<div className="loadButtonWrapper" ref={loadDropdownRef} onBlur={handleLoadDropdownBlur}>
+						<button className="loadUmaButton" onClick={handleLoadButtonClick} title="Import horse data">
+							Load <span className={`loadDropdownArrow ${loadDropdownOpen ? 'open' : ''}`} />
+						</button>
+						<ul className={`loadDropdownMenu ${loadDropdownOpen ? 'open' : ''}`}>
+							<li onMouseDown={() => handleLoadOptionClick('json')}>JSON/PNG</li>
+							<li onMouseDown={() => handleLoadOptionClick('ocr')}>OCR Screenshot</li>
+						</ul>
+					</div>
+				)}
 				{props.onReset && <button className="resetUmaButton" onClick={props.onReset} title="Reset this horse to default stats and skills">Reset</button>}
 				{props.onResetAll && <button className="resetUmaButton" onClick={props.onResetAll} title="Reset all horses to default stats and skills">Reset All</button>}
 			</div>
@@ -126,6 +353,7 @@ export function UmaSelector(props) {
 					})}
 				</ul>
 			</div>
+			<input type="file" accept=".json,.png" ref={fileInput} style={{ display: 'none' }} onChange={handleFileSelect} />
 		</div>
 	);
 }
@@ -273,6 +501,7 @@ export function HorseDef(props) {
 	const {state, setState} = props;
 	const [skillPickerOpen, setSkillPickerOpen] = useState(false);
 	const [expanded, setExpanded] = useState(() => ImmSet());
+	const [ocrModalOpen, setOcrModalOpen] = useState(false);
 
 	const tabstart = props.tabstart();
 	let tabi = 0;
@@ -312,6 +541,57 @@ export function HorseDef(props) {
 
 	function resetThisHorse() {
 		setState(new HorseState());
+	}
+
+	function saveThisHorse() {
+		downloadHorseJson(state);
+	}
+
+	function saveCardThisHorse() {
+		downloadUmaCard(state);
+	}
+
+	function loadThisHorse(horse: HorseState) {
+		setState(horse);
+	}
+
+	function handleOCRConfirm(data: OCRHorseData) {
+		// Convert OCR data to HorseState
+		const outfitId = mapOutfitNameToId(data.outfit || '');
+		let skillIds = mapSkillNamesToIds(data.skills || []);
+
+		// Add the unique skill for this outfit if we have a valid outfit ID
+		if (outfitId) {
+			const uniqueSkillId = uniqueSkillForUma(outfitId);
+			const uniqueBaseId = uniqueSkillId.split('-')[0];
+			const goldVersionId = '9' + uniqueBaseId.slice(1);
+			const isUmasOwnUniqueVariant = (id: string) => {
+				const baseId = id.split('-')[0];
+				return baseId === uniqueBaseId || baseId === goldVersionId;
+			};
+			skillIds = skillIds.filter(id => !isUmasOwnUniqueVariant(id));
+			skillIds.unshift(uniqueSkillId);
+		}
+
+		const horse = new HorseState({
+			outfitId: outfitId,
+			speed: data.speed,
+			stamina: data.stamina,
+			power: data.power,
+			guts: data.guts,
+			wisdom: data.wisdom,
+			strategy: data.strategy,
+			distanceAptitude: data.distanceAptitude,
+			surfaceAptitude: data.surfaceAptitude,
+			strategyAptitude: data.strategyAptitude,
+			mood: 2,
+			skills: SkillSet(skillIds),
+		});
+		setState(horse);
+	}
+
+	function openOCRModal() {
+		setOcrModalOpen(true);
 	}
 
 	function openSkillPicker(e) {
@@ -412,7 +692,7 @@ export function HorseDef(props) {
 	return (
 		<div class="horseDef">
 			<div class="horseDefHeader">{props.children}</div>
-			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onReset={resetThisHorse} onResetAll={props.onResetAll} />
+			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onSave={saveThisHorse} onSaveCard={saveCardThisHorse} onLoad={loadThisHorse} onOpenOCR={openOCRModal} onReset={resetThisHorse} onResetAll={props.onResetAll} />
 			<div class="horseParams">
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_00.png" /><span>Speed</span></div>
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_01.png" /><span>Stamina</span></div>
@@ -462,6 +742,11 @@ export function HorseDef(props) {
 			<div class={`horseSkillPickerWrapper ${skillPickerOpen ? "open" : ""}`}>
 				<SkillList ids={selectableSkills} selected={state.skills} setSelected={setSkillsAndClose} isOpen={skillPickerOpen} />
 			</div>
+			<OCRModal
+				open={ocrModalOpen}
+				onClose={() => setOcrModalOpen(false)}
+				onConfirm={handleOCRConfirm}
+			/>
 		</div>
 	);
 }

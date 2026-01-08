@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build:global": "cd umalator-global && node build.mjs",
+    "dev": "cd umalator-global && node build.mjs --serve 3000",
+    "serve": "npm run build:global && node serve.mjs"
+  },
   "author": "pecan",
   "license": "GPL-3.0-or-later",
   "devDependencies": {

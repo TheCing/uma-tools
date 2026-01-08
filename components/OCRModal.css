@@ -1,0 +1,415 @@
+/* OCR Modal Overlay */
+.ocrModalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(25, 25, 25, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+/* Modal Container */
+.ocrModal {
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	max-width: 900px;
+	width: 90%;
+	max-height: 90vh;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Modal Header */
+.ocrModalHeader {
+	background: linear-gradient(rgb(255, 167, 38), rgb(251, 140, 0));
+	color: white;
+	font-size: 1.3em;
+	font-weight: bold;
+	padding: 12px 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.ocrModalClose {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 1.5em;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	opacity: 0.8;
+	transition: opacity 0.2s;
+}
+
+.ocrModalClose:hover {
+	opacity: 1;
+}
+
+/* Modal Content */
+.ocrModalContent {
+	padding: 20px;
+	overflow-y: auto;
+}
+
+/* Sections */
+.ocrSection {
+	margin-bottom: 20px;
+}
+
+.ocrLabel {
+	display: block;
+	color: rgb(121, 64, 22);
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+
+/* API Key Input */
+.ocrApiKeyRow {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.ocrInput {
+	flex: 1;
+	padding: 10px 12px;
+	border: 2px solid rgb(224, 214, 204);
+	border-radius: 8px;
+	font-size: 1em;
+	transition: border-color 0.2s;
+}
+
+.ocrInput:focus {
+	outline: none;
+	border-color: rgb(251, 140, 0);
+}
+
+.ocrCheckboxLabel {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	color: rgb(100, 100, 100);
+	font-size: 0.9em;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.ocrCheckboxLabel input {
+	cursor: pointer;
+}
+
+.ocrApiLink {
+	display: inline-block;
+	margin-top: 6px;
+	color: rgb(30, 136, 229);
+	font-size: 0.85em;
+	text-decoration: none;
+}
+
+.ocrApiLink:hover {
+	text-decoration: underline;
+}
+
+/* Drop Zone */
+.ocrDropZone {
+	border: 2px dashed rgb(200, 200, 200);
+	border-radius: 12px;
+	padding: 40px 20px;
+	text-align: center;
+	cursor: pointer;
+	transition: all 0.2s;
+	background: rgb(250, 250, 250);
+	min-height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ocrDropZone:hover {
+	border-color: rgb(251, 140, 0);
+	background: rgb(255, 250, 245);
+}
+
+.ocrDropZone.dragover {
+	border-color: rgb(251, 140, 0);
+	background: rgba(255, 167, 38, 0.1);
+}
+
+.ocrDropZone.hasImage {
+	padding: 10px;
+}
+
+.ocrDropZoneText {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	color: rgb(150, 150, 150);
+}
+
+.ocrDropIcon {
+	font-size: 3em;
+	line-height: 1;
+	color: rgb(200, 200, 200);
+}
+
+.ocrPreviewImage {
+	max-width: 100%;
+	max-height: 300px;
+	border-radius: 8px;
+}
+
+/* Error Message */
+.ocrError {
+	background: rgb(255, 235, 235);
+	border: 1px solid rgb(255, 150, 150);
+	border-radius: 8px;
+	color: rgb(180, 40, 40);
+	padding: 10px 14px;
+	margin-bottom: 16px;
+	font-size: 0.9em;
+}
+
+/* Action Buttons */
+.ocrActions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 8px;
+}
+
+.ocrButtonCancel,
+.ocrButtonBack {
+	background: linear-gradient(rgb(220, 220, 220), rgb(200, 200, 200)) padding-box,
+		linear-gradient(rgb(210, 210, 210), rgb(180, 180, 180)) border-box;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	box-shadow: 0px 2px 0 rgb(180, 178, 192);
+	color: rgb(80, 80, 80);
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 8px 20px;
+	transition: all 0.2s;
+}
+
+.ocrButtonCancel:hover,
+.ocrButtonBack:hover {
+	background: linear-gradient(rgb(230, 230, 230), rgb(210, 210, 210)) padding-box,
+		linear-gradient(rgb(220, 220, 220), rgb(190, 190, 190)) border-box;
+	box-shadow: 0px 3px 0 rgb(180, 178, 192);
+	transform: translateY(-1px);
+}
+
+.ocrButtonCancel:active,
+.ocrButtonBack:active {
+	box-shadow: 0px 0px 0 rgb(180, 178, 192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+.ocrButtonExtract {
+	background: linear-gradient(rgb(255, 167, 38), rgb(251, 140, 0)) padding-box,
+		linear-gradient(rgb(255, 183, 77), rgb(245, 124, 0)) border-box;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	box-shadow: 0px 2px 0 rgb(180, 178, 192);
+	color: white;
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 8px 24px;
+	transition: all 0.2s;
+}
+
+.ocrButtonExtract:hover:not(:disabled) {
+	background: linear-gradient(rgb(255, 187, 58), rgb(255, 160, 20)) padding-box,
+		linear-gradient(rgb(255, 203, 97), rgb(255, 144, 20)) border-box;
+	box-shadow: 0px 3px 0 rgb(180, 178, 192);
+	transform: translateY(-1px);
+}
+
+.ocrButtonExtract:active:not(:disabled) {
+	box-shadow: 0px 0px 0 rgb(180, 178, 192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+.ocrButtonExtract:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.ocrButtonConfirm {
+	background: linear-gradient(rgb(168, 227, 5), rgb(97, 174, 22)) padding-box,
+		linear-gradient(rgb(173, 219, 60), rgb(85, 143, 24)) border-box;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	box-shadow: 0px 2px 0 rgb(180, 178, 192);
+	color: white;
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: bold;
+	padding: 8px 24px;
+	transition: all 0.2s;
+}
+
+.ocrButtonConfirm:hover {
+	background: linear-gradient(rgb(178, 237, 15), rgb(107, 184, 32)) padding-box,
+		linear-gradient(rgb(183, 229, 70), rgb(95, 153, 34)) border-box;
+	box-shadow: 0px 3px 0 rgb(180, 178, 192);
+	transform: translateY(-1px);
+}
+
+.ocrButtonConfirm:active {
+	box-shadow: 0px 0px 0 rgb(180, 178, 192);
+	transform: translateY(2px);
+	transition: all 0.05s;
+}
+
+/* Review Grid */
+.ocrReviewGrid {
+	background: rgb(250, 250, 250);
+	border: 2px solid rgb(224, 214, 204);
+	border-radius: 12px;
+	padding: 16px;
+}
+
+.ocrReviewItem {
+	display: flex;
+	padding: 8px 0;
+	border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.ocrReviewItem:last-child {
+	border-bottom: none;
+}
+
+.ocrReviewItem.ocrReviewStats,
+.ocrReviewItem.ocrReviewSkills {
+	flex-direction: column;
+	gap: 8px;
+}
+
+.ocrReviewLabel {
+	color: rgb(121, 64, 22);
+	font-weight: bold;
+	min-width: 100px;
+}
+
+.ocrReviewValue {
+	color: rgb(60, 60, 60);
+}
+
+.ocrSkillsList {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.ocrSkillTag {
+	background: linear-gradient(rgb(240, 240, 240), rgb(225, 225, 225));
+	border: 1px solid rgb(200, 200, 200);
+	border-radius: 12px;
+	color: rgb(80, 80, 80);
+	font-size: 0.85em;
+	padding: 4px 10px;
+}
+
+/* Review Layout - Side by Side */
+.ocrReviewLayout {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+.ocrReviewImageSection {
+	flex: 0 0 300px;
+}
+
+.ocrReviewImage {
+	width: 100%;
+	max-height: 400px;
+	object-fit: contain;
+	border: 2px solid rgb(224, 214, 204);
+	border-radius: 8px;
+	background: rgb(250, 250, 250);
+}
+
+.ocrReviewDataSection {
+	flex: 1;
+	margin-bottom: 0;
+}
+
+/* Dropdown Selects for Editable Fields */
+.ocrAptitudeSelect,
+.ocrStrategySelect {
+	padding: 6px 10px;
+	border: 2px solid rgb(224, 214, 204);
+	border-radius: 6px;
+	background: white;
+	color: rgb(60, 60, 60);
+	font-size: 0.95em;
+	cursor: pointer;
+	transition: border-color 0.2s;
+}
+
+.ocrAptitudeSelect {
+	width: 60px;
+}
+
+.ocrStrategySelect {
+	min-width: 140px;
+}
+
+.ocrAptitudeSelect:hover,
+.ocrStrategySelect:hover {
+	border-color: rgb(251, 140, 0);
+}
+
+.ocrAptitudeSelect:focus,
+.ocrStrategySelect:focus {
+	outline: none;
+	border-color: rgb(251, 140, 0);
+}
+
+/* Review Item Variants for Editable Fields */
+.ocrReviewItem.ocrReviewAptitude {
+	align-items: center;
+	gap: 12px;
+}
+
+/* Strategy Section Layout */
+.ocrReviewItem.ocrReviewStrategyContainer {
+	flex-direction: column;
+	gap: 10px;
+}
+
+.ocrReviewStrategyRow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+/* Responsive - stack on smaller screens */
+@media (max-width: 700px) {
+	.ocrReviewLayout {
+		flex-direction: column;
+	}
+
+	.ocrReviewImageSection {
+		flex: none;
+	}
+
+	.ocrReviewImage {
+		max-height: 200px;
+	}
+}
