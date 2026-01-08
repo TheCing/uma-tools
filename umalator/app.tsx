@@ -1502,6 +1502,11 @@ function App(props) {
 
 	const [lastRunChartUma, setLastRunChartUma] = useState(uma1);
 
+	const [hintLevels, setHintLevels] = useState(() => ImmMap(Object.keys(skilldata).map(id => [id, 0])));
+	function updateHintLevel(id, hint) {
+		setHintLevels(hintLevels.set(id, hint));
+	}
+
 	const [{mode, currentIdx, expanded}, updateUiState] = useReducer(nextUiState, DEFAULT_UI_STATE);
 	function toggleExpand(e: Event) {
 		e.stopPropagation();
@@ -2350,10 +2355,13 @@ function App(props) {
 			<div id="resultsPaneWrapper">
 				<div id="resultsPane" class="mode-chart">
 					<div class="basinnChartWrapperWrapper">
-						<BasinnChart 
-							data={Array.from(tableData.values())} 
+						<BasinnChart
+							data={Array.from(tableData.values())}
 							dirty={dirty}
 							hidden={mode == Mode.Chart ? uma1.skills : new Set()}
+							hasSkills={mode == Mode.Chart ? ImmMap(uma1.skills.map(id => [skillmeta[id].groupId, id])) : ImmMap()}
+							hints={hintLevels}
+							updateHint={updateHintLevel}
 							onSelectionChange={basinnChartSelection}
 							onRunTypeChange={setChartData}
 							onDblClickRow={addSkillFromTable}

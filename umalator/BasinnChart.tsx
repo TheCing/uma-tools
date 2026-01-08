@@ -23,10 +23,46 @@ import skillnames from '../uma-skill-tools/data/skillnames.json';
 import skillmeta from '../skill_meta.json';
 import umas from '../umas.json';
 import icons from '../icons.json';
+import { Map as ImmMap } from 'immutable';
 
 export function isPurpleSkill(id) {
 	const iconId = skillmeta[id].iconId;
 	return iconId[iconId.length-1] == '4';
+}
+
+export const skillGroups = Object.keys(skilldata).sort((a,b) =>
+	// sort by:
+	//   - rarity (lowest to highest, white → gold → pink)
+	//   - if rarity is the same, sort ○ before ◎ (◎ skills always have a lower ID than their ○ counterparts)
+	//   - sort purple versions of a skill last (to avoid counting towards the total cost)
+	isPurpleSkill(a) - isPurpleSkill(b) || skilldata[a].rarity - skilldata[b].rarity || +b - +a
+).reduce((groups, id) => {
+	const groupId = skillmeta[id].groupId;
+	if (groups.has(groupId)) {
+		groups.get(groupId).push(id);
+	} else {
+		groups.set(groupId, [id]);
+	}
+	return groups;
+}, new Map());
+
+function scaleBaseCost(baseCost: number, hint: number) {
+	return Math.floor(baseCost * (1 - (hint <= 3 ? 0.1 * hint : 0.3 + 0.05 * (hint - 3))));
+}
+
+function costForId(id, hints, owned) {
+	const group = skillGroups.get(skillmeta[id].groupId);
+	const existing = owned.get(skillmeta[id].groupId);
+	let cost = 0;
+	for (let i = 0; i < group.length; ++i) {
+		if (group[i] != existing) {
+			cost += scaleBaseCost(skillmeta[group[i]].baseCost, hints.get(group[i]));
+		}
+		if (group[i] == id) {
+			break;
+		}
+	}
+	return cost;
 }
 
 function umaForUniqueSkill(skillId: string): string | null {
@@ -97,6 +133,25 @@ function SkillNameCell(props) {
 	);
 }
 
+function SkillCostCell(props) {
+	return (
+		<Fragment>
+			<button class={`hintbtn hintDown${props.hint == 0 ? ' hintbtnDisabled' : ''}`} disabled={props.hint == 0}
+				onClick={() => props.updateHint(props.id, props.hint - 1)}>
+				<div class="hintbtnDummyBackground"></div>
+				<span class="hintbtnText">−</span>
+			</button>
+			<span class="hintedCost">{costForId(props.id, props.hints, props.ownedSkills)}</span>
+			<button class={`hintbtn hintUp${props.hint == 5 ? ' hintbtnDisabled' : ''}`} disabled={props.hint == 5}
+				onClick={() => props.updateHint(props.id, props.hint + 1)}>
+				<div class="hintbtnDummyBackground"></div>
+				<span class="hintbtnText">+</span>
+			</button>
+			{props.hint > 0 && <span class="hintLevel">{props.hint}</span>}
+		</Fragment>
+	);
+}
+
 function headerRenderer(radioGroup, selectedType, type, text, onClick) {
 	function click(e) {
 		e.stopPropagation();
@@ -156,7 +211,27 @@ export function BasinnChart(props) {
 		accessorKey: 'median',
 		cell: formatBasinn,
 		sortDescFirst: true
-	}], [selectedType, props.showUmaIcons]);
+	}, {
+		header: (c) => <span onClick={c.header.column.getToggleSortingHandler()}>SP Cost</span>,
+		id: 'spcost',
+		accessorFn: (row) => ({id: row.id, hint: props.hints.get(row.id)}),
+		cell: (info) => <SkillCostCell {...info.getValue()} hints={props.hints} ownedSkills={props.hasSkills} updateHint={props.updateHint} />,
+		sortFn: (a,b) => {
+			const ac = costForId(a.getValue('id'), props.hints, props.hasSkills),
+				  bc = costForId(b.getValue('id'), props.hints, props.hasSkills);
+			return +(bc < ac) - +(ac < bc);
+		},
+		sortDescFirst: false
+	}, {
+		header: (c) => <span onClick={c.header.column.getToggleSortingHandler()}>{CC_GLOBAL ? 'L / SP' : 'バ / SP'}</span>,
+		id: 'bsp',
+		accessorFn: (row) => row.mean / costForId(row.id, props.hints, props.hasSkills),
+		cell: (info) => {
+			const x = info.getValue();
+			return <span>{isNaN(x) || Math.abs(x) == Infinity ? '--' : x.toFixed(6)}</span>;
+		},
+		sortDescFirst: true
+	}], [selectedType, props.showUmaIcons, props.hints, props.hasSkills]);
 
 	const [sorting, setSorting] = useState<SortingState>([{id: 'median', desc: true}]);
 
