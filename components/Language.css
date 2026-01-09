@@ -7,3 +7,10 @@
 	right: 10px;
 	top: 10px;
 }
+
+/* === DARK MODE === */
+.dark .langSelect {
+	background: var(--surface-input);
+	border-color: var(--border);
+	color: var(--fg);
+}

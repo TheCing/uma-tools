@@ -1017,6 +1017,19 @@ body {
   color: var(--text-on-accent);
 }
 
+/* Seed randomize button */
+.dark #seedWrapper button {
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.dark #seedWrapper button:hover {
+  background: var(--gray-200);
+}
+
 /* Pacemaker controls */
 .dark #posKeepFieldset {
   border-color: var(--border);
@@ -1597,15 +1610,35 @@ body { background: var(--bg); color: var(--fg); }
 
 	/* Run pane controls - make inputs full width */
 	#runPane {
+		display: flex;
+		flex-direction: column;
 		max-width: 100%;
 		box-sizing: border-box;
 		overflow: hidden;
 	}
 
+	/* Reorder elements on mobile - Copy Link after Run Once */
+	#runPane > fieldset:first-child { order: 1; } /* Mode fieldset */
+	#runPane > #run { order: 2; }
+	#runPane > #runOnce { order: 3; }
+	#runPane > a[href="#"] { order: 4; margin: 10px 0; } /* Copy Link */
+	#runPane > label[for="nsamples"] { order: 5; }
+	#runPane > #nsamples { order: 6; }
+	#runPane > label[for="seed"] { order: 7; }
+	#runPane > #seedWrapper { order: 8; }
+	#runPane > #posKeepFieldset { order: 9; }
+	#runPane > div:has(#syncRng) { order: 10; }
+	#runPane > div:has(#skillWisdomCheck) { order: 11; }
+	#runPane > div:has(#rushedKakari) { order: 12; }
+	#runPane > div:has(#showhp) { order: 13; }
+	#runPane > .racePresets { order: 14; }
+	#runPane > div:has(#darkMode) { order: 15; }
+
 	#runPane fieldset {
 		max-width: 100%;
 		margin: 0 0 10px 0;
 		box-sizing: border-box;
+		margin-top: 16px;
 	}
 
 	#runPane > label {
@@ -1630,6 +1663,7 @@ body { background: var(--bg); color: var(--fg); }
 	#posKeepFieldset {
 		max-width: 100%;
 		box-sizing: border-box;
+		margin-top: 15px;
 	}
 
 	#posKeepFieldset select {
@@ -1639,6 +1673,101 @@ body { background: var(--bg); color: var(--fg); }
 
 	#seedWrapper input {
 		flex: 1;
+	}
+
+	/* Toggle switch styles for mobile */
+	#runPane > div:has(input[type="checkbox"]) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px 0;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	}
+
+	#runPane > div:has(input[type="checkbox"]) label {
+		margin: 0;
+		font-weight: 500;
+	}
+
+	#runPane > div input[type="checkbox"] {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 50px;
+		height: 28px;
+		background: #ccc;
+		border-radius: 14px;
+		position: relative;
+		cursor: pointer;
+		transition: background 0.2s ease;
+		flex-shrink: 0;
+	}
+
+	#runPane > div input[type="checkbox"]::before {
+		content: '';
+		position: absolute;
+		width: 24px;
+		height: 24px;
+		background: white;
+		border-radius: 50%;
+		top: 2px;
+		left: 2px;
+		transition: transform 0.2s ease;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	}
+
+	#runPane > div input[type="checkbox"]:checked {
+		background: #79d823;
+	}
+
+	#runPane > div input[type="checkbox"]:checked::before {
+		transform: translateX(22px);
+	}
+
+	/* Mode selection as tabs on mobile */
+	#runPane > fieldset:first-child {
+		border: none;
+		padding: 0;
+		display: flex;
+		width: 100%;
+	}
+
+	#runPane > fieldset:first-child legend {
+		display: none;
+	}
+
+	#runPane > fieldset:first-child > div {
+		flex: 1;
+		display: flex;
+	}
+
+	#runPane > fieldset:first-child input[type="radio"] {
+		display: none;
+	}
+
+	#runPane > fieldset:first-child label {
+		display: block;
+		width: 100%;
+		padding: 10px 12px;
+		background: #e0e0e0;
+		border: none;
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 0.9em;
+		transition: all 0.2s ease;
+		text-align: center;
+	}
+
+	#runPane > fieldset:first-child > div:first-of-type label {
+		border-radius: 8px 0 0 8px;
+	}
+
+	#runPane > fieldset:first-child > div:last-of-type label {
+		border-radius: 0 8px 8px 0;
+	}
+
+	#runPane > fieldset:first-child input[type="radio"]:checked + label {
+		background: #79d823;
+		color: white;
 	}
 
 	/* Mobile floating button adjustment */
@@ -1718,5 +1847,74 @@ body { background: var(--bg); color: var(--fg); }
 	/* Reduce race track padding on very small screens */
 	#topPane {
 		padding: 0;
+	}
+}
+
+/* ============================================
+   MOBILE DARK MODE OVERRIDES
+   ============================================ */
+@media (max-width: 1024px) {
+	html.dark #runPane {
+		background: var(--bg-subtle) !important;
+		border-color: var(--border) !important;
+	}
+
+	.dark #umaOverlay {
+		background: var(--bg);
+	}
+
+	.dark #closeUmaOverlay {
+		color: var(--fg-muted);
+	}
+
+	.dark #closeUmaOverlay:hover {
+		color: var(--fg);
+	}
+
+	.dark #mobileUmaConfigBtn {
+		background: linear-gradient(var(--green-300), var(--green-500));
+		border-color: var(--green-border);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	}
+
+	.dark #copyUmaButtons > div {
+		background: var(--bg-muted);
+		border: 1px solid var(--border);
+	}
+
+	.dark #copyUmaButtons > div:hover {
+		background: var(--gray-200);
+	}
+
+	/* Dark mode toggle switches */
+	.dark #runPane > div:has(input[type="checkbox"]) {
+		border-bottom-color: var(--border);
+	}
+
+	.dark #runPane > div input[type="checkbox"] {
+		background: var(--gray-400);
+	}
+
+	.dark #runPane > div input[type="checkbox"]::before {
+		background: var(--fg);
+	}
+
+	.dark #runPane > div input[type="checkbox"]:checked {
+		background: var(--green-400);
+	}
+
+	/* Dark mode Mode tabs */
+	.dark #runPane > fieldset:first-child label {
+		background: var(--gray-300);
+		color: var(--fg);
+	}
+
+	.dark #runPane > fieldset:first-child label:hover {
+		background: var(--gray-400);
+	}
+
+	.dark #runPane > fieldset:first-child input[type="radio"]:checked + label {
+		background: var(--green-400);
+		color: white;
 	}
 }
