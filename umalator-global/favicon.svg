@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="50%" style="stop-color:#ffb800"/>
+      <stop offset="100%" style="stop-color:#c9a000"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#79d823"/>
+      <stop offset="100%" style="stop-color:#4d9e10"/>
+    </linearGradient>
+  </defs>
+  <!-- Golden U horseshoe -->
+  <path d="M2 4 L2 18 Q2 28 9 28 Q16 28 16 18 L16 4 L12 4 L12 18 Q12 24 9 24 Q6 24 6 18 L6 4 Z"
+        fill="url(#gold)"
+        stroke="#a08000"
+        stroke-width="0.5"/>
+  <!-- Green M -->
+  <path d="M17 28 L17 4 L21 4 L24 14 L27 4 L31 4 L31 28 L27 28 L27 12 L24 22 L21 12 L21 28 Z"
+        fill="url(#green)"
+        stroke="#3d7a0d"
+        stroke-width="0.5"/>
+</svg>
