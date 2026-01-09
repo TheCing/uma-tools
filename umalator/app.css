@@ -1419,30 +1419,32 @@ body { background: var(--bg); color: var(--fg); }
 		top: 6px;
 	}
 
-	/* Mobile floating button to open uma config */
+	/* Mobile sticky banner button to open uma config */
 	#mobileUmaConfigBtn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
 		position: fixed;
-		bottom: 20px;
-		right: 20px;
+		bottom: 0;
+		left: 0;
+		width: 100%;
 		background: linear-gradient(rgb(153, 219, 68), rgb(112, 190, 18));
-		border: 3px solid rgb(170, 221, 154);
-		border-radius: 30px;
+		border: none;
+		border-top: 3px solid rgb(170, 221, 154);
+		border-radius: 0;
 		color: white;
 		font-weight: bold;
 		font-size: 1em;
-		padding: 14px 24px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+		padding: 16px 24px;
+		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
 		z-index: 999;
 		cursor: pointer;
-		transition: transform 0.2s;
+		transition: background 0.2s;
 	}
 
 	#mobileUmaConfigBtn:active {
-		transform: scale(0.95);
+		background: linear-gradient(rgb(140, 200, 60), rgb(100, 170, 15));
 	}
 }
 
@@ -1770,10 +1772,10 @@ body { background: var(--bg); color: var(--fg); }
 		color: white;
 	}
 
-	/* Mobile floating button adjustment */
+	/* Mobile banner button adjustment */
 	#mobileUmaConfigBtn {
 		font-size: 0.9em;
-		padding: 12px 20px;
+		padding: 14px 20px;
 	}
 
 	/* Fix track/course select on mobile */
@@ -1836,12 +1838,10 @@ body { background: var(--bg); color: var(--fg); }
 		width: 100%;
 	}
 
-	/* Smaller floating button */
+	/* Smaller banner button */
 	#mobileUmaConfigBtn {
-		font-size: 0.85em;
-		padding: 10px 16px;
-		bottom: 15px;
-		right: 15px;
+		font-size: 1.45em;
+		padding: 12px 16px;
 	}
 
 	/* Reduce race track padding on very small screens */
@@ -1873,8 +1873,8 @@ body { background: var(--bg); color: var(--fg); }
 
 	.dark #mobileUmaConfigBtn {
 		background: linear-gradient(var(--green-300), var(--green-500));
-		border-color: var(--green-border);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+		border-top-color: var(--green-border);
+		box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
 	}
 
 	.dark #copyUmaButtons > div {
