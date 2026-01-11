@@ -47,6 +47,8 @@ class RaceParams extends Record({
 const enum EventType { CM, LOH }
 
 const presets = (CC_GLOBAL ? [
+	{id: 10, type: EventType.CM, name: 'Aquarius Cup', date: '2026-03-07', courseId: 10611, season: Season.Winter, ground: GroundCondition.Good, weather: Weather.Sunny, time: Time.Midday},
+	{id: 9, type: EventType.CM, name: 'Capricorn Cup', date: '2026-02-14', courseId: 10701, season: Season.Winter, ground: GroundCondition.Soft, weather: Weather.Snowy, time: Time.Midday},
 	{id: 8, type: EventType.CM, name: 'Sagittarius Cup', date: '2026-01-22', courseId: 10506, season: Season.Winter, ground: GroundCondition.Good, weather: Weather.Sunny, time: Time.Midday},
 	{id: 7, type: EventType.CM, name: 'Scorpio Cup', date: '2026-01', courseId: 10604, season: Season.Autumn, ground: GroundCondition.Soft, weather: Weather.Rainy, time: Time.Midday},
 	{id: 6, type: EventType.CM, name: 'Libra Cup', date: '2025-12', courseId: 10810, season: Season.Autumn, ground: GroundCondition.Good, weather: Weather.Sunny, time: Time.Midday},
