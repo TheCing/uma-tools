@@ -739,6 +739,7 @@ body {
 	position: absolute;
 	top: 0;
 	width: 845px;
+	z-index: 10;
 }
 
 .basinnChartPopover .expandedSkill {
@@ -1160,8 +1161,8 @@ body { background: var(--bg); color: var(--fg); }
    MOBILE RESPONSIVE LAYOUT
    ============================================ */
 
-/* Tablet and smaller screens */
-@media (max-width: 1024px) {
+/* Tablet and smaller screens, plus phones in landscape */
+@media (max-width: 1024px), (max-height: 600px) and (orientation: landscape) {
 	#app {
 		display: flex;
 		flex-direction: column;
@@ -1448,8 +1449,8 @@ body { background: var(--bg); color: var(--fg); }
 	}
 }
 
-/* Phone screens */
-@media (max-width: 768px) {
+/* Phone screens, plus phones in landscape */
+@media (max-width: 768px), (max-height: 500px) and (orientation: landscape) {
 	body {
 		font-size: 14px;
 	}
@@ -1515,6 +1516,12 @@ body { background: var(--bg); color: var(--fg); }
 		font-size: 0.85em;
 	}
 
+	/* Fix z-fighting: expanded content should appear above sticky header */
+	.basinnChart tr.expanded-content-row {
+		position: relative;
+		z-index: 2;
+	}
+
 	.basinnChart th:first-child {
 		width: 45%;
 	}
@@ -1522,6 +1529,37 @@ body { background: var(--bg); color: var(--fg); }
 	.basinnChart th {
 		width: auto;
 		min-width: 70px;
+		white-space: nowrap;
+	}
+
+	/* Hide hint button wings on mobile for simplicity */
+	.hintbtn::before,
+	.hintbtn::after,
+	.hintbtnDummyBackground {
+		display: none;
+	}
+
+	/* Scale down hint buttons for mobile - preserve existing transforms */
+	.hintbtn.hintUp {
+		transform: scale(0.85);
+	}
+
+	.hintbtn.hintDown {
+		transform: scale(0.85) scaleY(-1);
+	}
+
+	.hintDown {
+		margin-left: -32px;
+		margin-right: 6px;
+	}
+
+	.hintUp {
+		margin-left: 6px;
+	}
+
+	/* Align table cells */
+	.basinnChart td {
+		vertical-align: middle;
 	}
 
 	/* Results table adjustments */
@@ -1574,11 +1612,7 @@ body { background: var(--bg); color: var(--fg); }
 	.chartSkillName {
 		font-size: 0.9em;
 	}
-
-	.chartSkillName > img {
-		height: 1.3em;
-	}
-
+	
 	/* Hint buttons - slightly smaller */
 	.hintbtn {
 		width: 22px;
@@ -1826,7 +1860,7 @@ body { background: var(--bg); color: var(--fg); }
 
 	.weatherSelect img {
 		width: 36px;
-		height: 36px;
+		height: 36px !important;
 	}
 
 	/* Stack track/course selects */
@@ -1851,9 +1885,102 @@ body { background: var(--bg); color: var(--fg); }
 }
 
 /* ============================================
+   LANDSCAPE-SPECIFIC OVERRIDES
+   ============================================ */
+@media (max-height: 600px) and (orientation: landscape) {
+	/* Reduce chart wrapper height for landscape */
+	.basinnChartWrapper {
+		height: 300px;
+	}
+
+	/* Shrink skill name column, expand SP Cost for hint buttons */
+	.basinnChart th:first-child {
+		width: 30%;
+	}
+
+	/* Ensure chart headings stay inline and aligned */
+	.basinnChart th {
+		padding: 4px 6px;
+		font-size: 0.8em;
+		vertical-align: middle;
+	}
+
+	/* SP Cost column needs more width for hint buttons */
+	.basinnChart th:nth-last-child(2) {
+		min-width: 110px;
+	}
+
+	.basinnChart .columnHeader {
+		padding-right: 20px;
+	}
+
+	/* Fix sort caret alignment */
+	.basinnChartSortedAsc span::after,
+	.basinnChartSortedDesc span::after {
+		top: calc(50% - 3px);
+	}
+
+	/* Align radio buttons in header */
+	.basinnChart th input[type="radio"],
+	.basinnChart th label {
+		vertical-align: middle;
+	}
+
+	/* Smaller hint buttons in landscape - mathematically scaled to 65% */
+	/* Original: 26x18px -> 17x12px */
+	.hintbtn {
+		width: 17px;
+		height: 12px;
+		border-radius: 3px;
+	}
+
+	.hintbtn.hintDown,
+	.hintbtn.hintUp {
+		outline-width: 1px;
+	}
+
+	/* Original: font-size:18px, top:-3px -> 12px, -2px */
+	.hintbtnText {
+		font-size: 12px;
+		top: -2px;
+	}
+
+	/* Original margins: -36px -> -23px, 10px -> 6px */
+	.hintDown {
+		margin-left: -23px;
+		margin-right: 6px;
+		vertical-align: middle;
+	}
+
+	.hintUp {
+		margin-left: 6px;
+		vertical-align: middle;
+	}
+
+	.hintedCost {
+		vertical-align: middle;
+	}
+
+	/* Compact table rows */
+	.basinnChart tbody tr {
+		height: 28px;
+	}
+
+	/* Align hint buttons with cost text, prevent wrapping */
+	.basinnChart td {
+		vertical-align: middle;
+	}
+
+	/* SP Cost column - keep hint buttons on one line */
+	.basinnChart td:nth-last-child(2) {
+		white-space: nowrap;
+	}
+}
+
+/* ============================================
    MOBILE DARK MODE OVERRIDES
    ============================================ */
-@media (max-width: 1024px) {
+@media (max-width: 1024px), (max-height: 600px) and (orientation: landscape) {
 	html.dark #runPane {
 		background: var(--bg-subtle) !important;
 		border-color: var(--border) !important;
