@@ -69,15 +69,27 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
-					<h2>2026-01-08 (Cing's Fork)</h2>
+					<h2>2026-01-11 (Cing's Fork)</h2>
 					<p><em>This fork adds quality-of-life features for sharing and importing uma builds.</em></p>
 					<ul>
 						<li><strong>Uma Cards:</strong> Share your uma builds as PNG images with the build data embedded inside. The image shows your uma's portrait and can be loaded directly back into the simulator. Find it in the Save/Load dropdowns.</li>
 						<li><strong>Screenshot OCR:</strong> Import uma builds directly from in-game screenshots using AI. Just paste or upload a screenshot, review the extracted stats and skills, and load it into the simulator. Powered by Google Gemini.</li>
-						<li><strong>CM 8 - Sagittarius Cup preset:</strong> Nakayama 2500m (Inner), Firm, Sunny, Day, Winter (January 22, 2026).</li>
+						<li><strong>CM 9 - Capricorn Cup preset:</strong> Chukyo 1200m Turf, Soft, Snowy, Winter (February 14, 2026).</li>
+						<li><strong>CM 10 - Aquarius Cup preset:</strong> Tokyo 1600m Dirt, Firm, Sunny, Winter (March 7, 2026).</li>
 						<li><strong>Beta Mobile View:</strong> Responsive layout for phones and tablets. Track scales to fit screen, controls stack vertically, and Uma Config overlay is now mobile-friendly.</li>
 						<li><strong>Beta Dark Mode:</strong> Toggle in the run pane. VS Code-inspired dark theme with comprehensive styling across all components.</li>
 						<li><em>Fork: <a href="https://github.com/TheCing/uma-tools">TheCing/uma-tools</a> | Live: <a href="https://uma-tools.pages.dev/umalator-global/">uma-tools.pages.dev</a></em></li>
+					</ul>
+				</section>
+				<section>
+					<h2>2026-01-11 (Synced with upstream)</h2>
+					<p><em>The following changes from <a href="https://github.com/alpha123/uma-tools">alpha123/uma-tools</a> are now included (credit: Kachi):</em></p>
+					<ul>
+						<li><strong>2025-12-10:</strong> Fix a bug with wit checks, improve page loading times, update game data</li>
+						<li><strong>2025-12-07:</strong> Fixed shared skills activating at different positions, implement wit checks for skill activation</li>
+						<li><strong>2025-12-05:</strong> Implement downhill speed-up mode, fix URL save/load issue</li>
+						<li><strong>2025-12-03:</strong> Enable Runaway style, fix skill preconditions, improve skill group tracking (white/gold, ○/◎), discount costs by owned skills, show indicator when skill table is out of date, show stat thresholds</li>
+						<li><strong>2025-12-01:</strong> Update race mechanics for 1st anniversary patch, add skill point cost and mean length gain per SP columns</li>
 					</ul>
 				</section>
 				<section>
