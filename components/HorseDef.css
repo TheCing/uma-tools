@@ -887,7 +887,7 @@
 
 	/* Stat value input */
 	.horseParam > input {
-		font-size: max(1.4em, 16px); /* Prevent mobile browser zoom on focus */
+		font-size: 16px; /* Prevent mobile browser zoom on focus */
 		width: 100%;
 		max-width: 50px;
 		min-width: 30px;
@@ -896,6 +896,9 @@
 		text-align: center;
 		box-sizing: border-box;
 		touch-action: manipulation; /* Prevent double-tap zoom */
+		-webkit-text-size-adjust: 100%; /* Prevent text size adjustment */
+		-moz-text-size-adjust: 100%;
+		text-size-adjust: 100%;
 	}
 
 	.horseAptitudes {
