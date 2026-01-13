@@ -136,7 +136,7 @@ export function SkillProcDataDialog(props: SkillProcDataDialogProps) {
 						/>
 					</div>
 					<div style="position: absolute; bottom: 0; right: 0; font-size: 9px; font-style: italic; padding: 4px; color: var(--text-secondary, #666);">
-						(yes these graphs are copied from utools)
+						Credit: U-tools（ウマ娘攻略ツール集）
 					</div>
 				</div>
 			</div>

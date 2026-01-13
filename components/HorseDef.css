@@ -1079,3 +1079,22 @@
 	position: relative;
 	color: var(--text-primary, #333);
 }
+
+/* Dark mode for Skill Proc Data Dialog */
+.dark .skillProcDataOverlay {
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.dark .skillProcDataDialog {
+	background: var(--bg-subtle);
+	border-color: var(--green-border-dark);
+}
+
+.dark .skillProcDataHeader {
+	background: linear-gradient(var(--green-400), var(--green-500));
+	border-bottom-color: var(--green-border-dark);
+}
+
+.dark .skillProcDataContent {
+	color: var(--text-primary);
+}
