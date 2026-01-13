@@ -895,7 +895,7 @@
 		padding: 2px 0;
 		text-align: center;
 		box-sizing: border-box;
-		touch-action: manipulation; /* Prevent double-tap zoom */
+		touch-action: none; /* Prevent all touch zoom gestures on this element */
 		-webkit-text-size-adjust: 100%; /* Prevent text size adjustment */
 		-moz-text-size-adjust: 100%;
 		text-size-adjust: 100%;
