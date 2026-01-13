@@ -48,7 +48,22 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		standard.rushedKakari(false);
 		compare.rushedKakari(false);
 	}
-	
+
+	if (options.competeFight !== undefined) {
+		standard.competeFight(options.competeFight);
+		compare.competeFight(options.competeFight);
+	}
+
+	if (options.duelingRates) {
+		standard.duelingRates(options.duelingRates);
+		compare.duelingRates(options.duelingRates);
+	}
+
+	if (options.leadCompetition !== undefined) {
+		standard.leadCompetition(options.leadCompetition);
+		compare.leadCompetition(options.leadCompetition);
+	}
+
 	// ensure skills common to the two umas are added in the same order regardless of what additional skills they have
 	// this is important to make sure the rng for their activations is synced
 	// sort first by groupId so that white and gold versions of a skill get added in the same order
@@ -169,7 +184,12 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		uma1: { lengths: [], count: 0 },
 		uma2: { lengths: [], count: 0 }
 	};
-	
+
+	const competeFightStats = {
+		uma1: { lengths: [], count: 0 },
+		uma2: { lengths: [], count: 0 }
+	};
+
 	// Track stamina survival and full spurt statistics
 	const staminaStats = {
 		uma1: { 
@@ -430,6 +450,15 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 				leadCompStat.lengths.push(length);
 				leadCompStat.count++;
 			}
+
+			if (solver.competeFightStart != null) {
+				const start = solver.competeFightStart;
+				const end = solver.competeFightEnd != null ? solver.competeFightEnd : course.distance;
+				const length = end - start;
+				const competeFightStat = isUma1 ? competeFightStats.uma1 : competeFightStats.uma2;
+				competeFightStat.lengths.push(length);
+				competeFightStat.count++;
+			}
 		};
 		
 		trackSolverStats(s1, true);
@@ -494,7 +523,12 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		uma1: calculateStats(leadCompetitionStats.uma1),
 		uma2: calculateStats(leadCompetitionStats.uma2)
 	};
-	
+
+	const competeFightStatsSummary = {
+		uma1: calculateStats(competeFightStats.uma1),
+		uma2: calculateStats(competeFightStats.uma2)
+	};
+
 	const calculateHpDiedPositionStats = (positions: number[]) => {
 		if (positions.length === 0) {
 			return { count: 0, min: null, max: null, mean: null, median: null };
@@ -560,6 +594,10 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		leadCompetition: [
 			leadCompetitionStatsSummary.uma1,
 			leadCompetitionStatsSummary.uma2
+		],
+		competeFight: [
+			competeFightStatsSummary.uma1,
+			competeFightStatsSummary.uma2
 		]
 	};
 	

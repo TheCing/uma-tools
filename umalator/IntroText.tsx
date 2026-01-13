@@ -82,9 +82,10 @@ export function IntroText(props) {
 					</ul>
 				</section>
 				<section>
-					<h2>2026-01-11 (Synced with upstream)</h2>
-					<p><em>The following changes from <a href="https://github.com/alpha123/uma-tools">alpha123/uma-tools</a> are now included (credit: Kachi):</em></p>
+					<h2>2026-01-13 (Synced with kachi-dev)</h2>
+					<p><em>The following changes from <a href="https://github.com/kachi-dev/uma-tools">kachi-dev/uma-tools</a> are now included (credit: Kachi):</em></p>
 					<ul>
+						<li><strong>2025-01-10:</strong> Added dueling simulation (approximates dueling frequency by strategy), skill proc graphs in compare mode (expand skill → 'View Proc Data')</li>
 						<li><strong>2025-12-10:</strong> Fix a bug with wit checks, improve page loading times, update game data</li>
 						<li><strong>2025-12-07:</strong> Fixed shared skills activating at different positions, implement wit checks for skill activation</li>
 						<li><strong>2025-12-05:</strong> Implement downhill speed-up mode, fix URL save/load issue</li>
