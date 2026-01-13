@@ -4,6 +4,7 @@ import { IntlProvider, Text, Localizer } from 'preact-i18n';
 import { Set as ImmSet } from 'immutable';
 
 import { SkillList, Skill, ExpandedSkillDetails } from '../components/SkillList';
+import { SkillProcDataDialog } from './SkillProcDataDialog';
 import { OCRModal } from './OCRModal';
 import { OCRHorseData, mapSkillNamesToIds, mapOutfitNameToId } from './GeminiOCR';
 import { createUmaCard, extractDataFromPng } from './UmaCard';
@@ -502,6 +503,7 @@ export function HorseDef(props) {
 	const [skillPickerOpen, setSkillPickerOpen] = useState(false);
 	const [expanded, setExpanded] = useState(() => ImmSet());
 	const [ocrModalOpen, setOcrModalOpen] = useState(false);
+	const [procDataSkillId, setProcDataSkillId] = useState(null as string | null);
 
 	const tabstart = props.tabstart();
 	let tabi = 0;
@@ -667,15 +669,19 @@ export function HorseDef(props) {
 
 	const skillList = useMemo(function () {
 		const u = uniqueSkillForUma(umaId);
+		const hasRunData = props.runData != null && props.umaIndex != null;
 		return Array.from(state.skills.values()).sort(skillOrder).map(id =>
 			expanded.has(id)
 				? <li key={id} class="horseExpandedSkill">
-					  <ExpandedSkillDetails 
-						  id={id} 
-						  distanceFactor={props.courseDistance} 
+					  <ExpandedSkillDetails
+						  id={id}
+						  distanceFactor={props.courseDistance}
 						  dismissable={id != u}
 						  forcedPosition={state.forcedSkillPositions.get(id) || ''}
 						  onPositionChange={(value: string) => handlePositionChange(id, value)}
+						  runData={hasRunData ? props.runData : null}
+						  umaIndex={hasRunData ? props.umaIndex : null}
+						  onViewProcData={hasRunData ? () => setProcDataSkillId(id) : null}
 					  />
 				  </li>
 				: <li key={id} style="">
@@ -687,7 +693,7 @@ export function HorseDef(props) {
 						  )}
 				  </li>
 		);
-	}, [state.skills, umaId, expanded, props.courseDistance, state.forcedSkillPositions]);
+	}, [state.skills, umaId, expanded, props.courseDistance, state.forcedSkillPositions, props.runData, props.umaIndex]);
 
 	return (
 		<div class="horseDef">
@@ -747,6 +753,15 @@ export function HorseDef(props) {
 				onClose={() => setOcrModalOpen(false)}
 				onConfirm={handleOCRConfirm}
 			/>
+			{procDataSkillId && props.runData != null && props.umaIndex != null && (
+				<SkillProcDataDialog
+					skillId={procDataSkillId}
+					compareRunData={props.runData}
+					courseDistance={props.courseDistance}
+					umaIndex={props.umaIndex}
+					onClose={() => setProcDataSkillId(null)}
+				/>
+			)}
 		</div>
 	);
 }

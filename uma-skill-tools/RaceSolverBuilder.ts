@@ -595,7 +595,10 @@ export class RaceSolverBuilder {
 			speedUpProbability: this._pacerSpeedUpRate,
 			posKeepMode: this._posKeepMode,
 			mode: this._mode,
-			isPacer: true
+			isPacer: true,
+			competeFight: this._competeFight,
+			leadCompetition: this._leadCompetition,
+			duelingRates: this._duelingRates
 		}) : null;
 	}
 

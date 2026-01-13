@@ -324,7 +324,7 @@ function BarChart(props) {
 	);
 }
 
-function LengthDifferenceChart(props) {
+export function LengthDifferenceChart(props) {
 	const {skillId, runData, courseDistance} = props;
 	const width = 300;
 	const height = 150;
@@ -520,7 +520,7 @@ function calculatePhaseBackgrounds(
 	return backgrounds;
 }
 
-function VelocityChart(props) {
+export function VelocityChart(props) {
 	const {skillId, runData, courseDistance, displaying} = props;
 	const width = 400;
 	const height = 200;
@@ -784,7 +784,7 @@ function VelocityChart(props) {
 	);
 }
 
-function ActivationFrequencyChart(props) {
+export function ActivationFrequencyChart(props) {
 	const {skillId, runData, courseDistance} = props;
 	const width = 300;
 	const height = 50;
@@ -1048,6 +1048,12 @@ async function serialize(courseId: number, nsamples: number, seed: number, posKe
 	syncRng: boolean,
 	skillWisdomCheck: boolean,
 	rushedKakari: boolean
+}, competeFight: boolean, leadCompetition: boolean, duelingRates: {
+	runaway: number,
+	frontRunner: number,
+	paceChaser: number,
+	lateSurger: number,
+	endCloser: number
 }) {
 	const json = JSON.stringify({
 		courseId,
@@ -1062,7 +1068,10 @@ async function serialize(courseId: number, nsamples: number, seed: number, posKe
 		showVirtualPacemakerOnGraph,
 		pacemakerCount,
 		selectedPacemakers,
-		showLanes
+		showLanes,
+		competeFight,
+		leadCompetition,
+		duelingRates
 	});
 	const enc = new TextEncoder();
 	const stringStream = new ReadableStream({
@@ -1125,7 +1134,16 @@ async function deserialize(hash) {
 					showVirtualPacemakerOnGraph: o.showVirtualPacemakerOnGraph != null ? o.showVirtualPacemakerOnGraph : false,
 					pacemakerCount: o.pacemakerCount != null ? o.pacemakerCount : 1,
 					selectedPacemakers: o.selectedPacemakers != null ? o.selectedPacemakers : [false, false, false],
-					showLanes: o.showLanes != null ? o.showLanes : false
+					showLanes: o.showLanes != null ? o.showLanes : false,
+					competeFight: o.competeFight != null ? o.competeFight : false,
+					leadCompetition: o.leadCompetition != null ? o.leadCompetition : true,
+					duelingRates: o.duelingRates || {
+						runaway: 10,
+						frontRunner: 20,
+						paceChaser: 30,
+						lateSurger: 35,
+						endCloser: 35
+					}
 				};
 			} catch (_) {
 				return {
@@ -1145,7 +1163,16 @@ async function deserialize(hash) {
 					showVirtualPacemakerOnGraph: false,
 					pacemakerCount: 1,
 					selectedPacemakers: [false, false, false],
-					showLanes: false
+					showLanes: false,
+					competeFight: false,
+					leadCompetition: true,
+					duelingRates: {
+						runaway: 10,
+						frontRunner: 20,
+						paceChaser: 30,
+						lateSurger: 35,
+						endCloser: 35
+					}
 				};
 			}
 		} else {
@@ -1158,9 +1185,15 @@ async function saveToLocalStorage(courseId: number, nsamples: number, seed: numb
 	syncRng: boolean,
 	skillWisdomCheck: boolean,
 	rushedKakari: boolean
+}, competeFight: boolean, leadCompetition: boolean, duelingRates: {
+	runaway: number,
+	frontRunner: number,
+	paceChaser: number,
+	lateSurger: number,
+	endCloser: number
 }) {
 	try {
-		const hash = await serialize(courseId, nsamples, seed, posKeepMode, racedef, uma1, uma2, pacer, showVirtualPacemakerOnGraph, pacemakerCount, selectedPacemakers, showLanes, witVarianceSettings);
+		const hash = await serialize(courseId, nsamples, seed, posKeepMode, racedef, uma1, uma2, pacer, showVirtualPacemakerOnGraph, pacemakerCount, selectedPacemakers, showLanes, witVarianceSettings, competeFight, leadCompetition, duelingRates);
 		localStorage.setItem('umalator-settings', hash);
 	} catch (error) {
 		console.warn('Failed to save settings to localStorage:', error);
@@ -1414,8 +1447,8 @@ function App(props) {
 		runaway: 10,
 		frontRunner: 20,
 		paceChaser: 30,
-		lateSurger: 40,
-		endCloser: 50
+		lateSurger: 35,
+		endCloser: 35
 	});
 	const [hpDeathPositionTab, setHpDeathPositionTab] = useState(0);
 	const [showVirtualPacemakerOnGraph, toggleShowVirtualPacemakerOnGraph] = useReducer((b,_) => !b, false);
@@ -1474,7 +1507,7 @@ function App(props) {
 			syncRng,
 			skillWisdomCheck,
 			rushedKakari
-		});
+		}, competeFight, leadCompetition, duelingRates);
 	}
 
 	function resetUmas() {
@@ -1620,6 +1653,16 @@ function App(props) {
 					if (settings.skillWisdomCheck !== undefined && settings.skillWisdomCheck !== skillWisdomCheck) toggleSkillWisdomCheck(null);
 					if (settings.rushedKakari !== undefined && settings.rushedKakari !== rushedKakari) toggleRushedKakari(null);
 				}
+
+				if (o.competeFight !== undefined) {
+					setCompeteFight(o.competeFight);
+				}
+				if (o.leadCompetition !== undefined) {
+					setLeadCompetition(o.leadCompetition);
+				}
+				if (o.duelingRates) {
+					setDuelingRates(o.duelingRates);
+				}
 			});
 		} else {
 			loadFromLocalStorage().then(o => {
@@ -1651,6 +1694,16 @@ function App(props) {
 						if (settings.skillWisdomCheck !== undefined && settings.skillWisdomCheck !== skillWisdomCheck) toggleSkillWisdomCheck(null);
 						if (settings.rushedKakari !== undefined && settings.rushedKakari !== rushedKakari) toggleRushedKakari(null);
 					}
+
+					if (o.competeFight !== undefined) {
+						setCompeteFight(o.competeFight);
+					}
+					if (o.leadCompetition !== undefined) {
+						setLeadCompetition(o.leadCompetition);
+					}
+					if (o.duelingRates) {
+						setDuelingRates(o.duelingRates);
+					}
 				}
 			});
 		}
@@ -1664,7 +1717,7 @@ function App(props) {
 	// Auto-save settings whenever they change
 	useEffect(() => {
 		autoSaveSettings();
-	}, [courseId, nsamples, seed, posKeepMode, racedef, uma1, uma2, pacer, syncRng, skillWisdomCheck, rushedKakari, showVirtualPacemakerOnGraph, pacemakerCount, selectedPacemakerIndices]);
+	}, [courseId, nsamples, seed, posKeepMode, racedef, uma1, uma2, pacer, syncRng, skillWisdomCheck, rushedKakari, showVirtualPacemakerOnGraph, pacemakerCount, selectedPacemakerIndices, competeFight, leadCompetition, duelingRates]);
 	
 	useEffect(() => {
 		const shouldShow = posKeepMode === PosKeepMode.Virtual && selectedPacemakerIndices.length > 0;
@@ -1683,7 +1736,7 @@ function App(props) {
 			syncRng,
 			skillWisdomCheck,
 			rushedKakari
-		}).then(hash => {
+		}, competeFight, leadCompetition, duelingRates).then(hash => {
 			const url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 			window.navigator.clipboard.writeText(url + '#' + hash);
 		});
@@ -2605,7 +2658,7 @@ function App(props) {
 				{expanded && <div id="umaPane" />}
 				<div id={expanded ? 'umaOverlay' : 'umaPane'}>
 					<div class={!expanded && currentIdx == 0 ? 'selected' : ''}>
-						<HorseDef key={uma1.outfitId} state={uma1} setState={setUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas}>
+						<HorseDef key={uma1.outfitId} state={uma1} setState={setUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas} runData={mode == Mode.Compare ? runData : null} umaIndex={mode == Mode.Compare ? 0 : null}>
 							{expanded ? 'Umamusume 1' : umaTabs}
 						</HorseDef>
 					</div>
@@ -2616,7 +2669,7 @@ function App(props) {
 							<div id="swapUmas" title="Swap umas" onClick={swapUmas}>⮂</div>
 						</div>}
 					{mode == Mode.Compare && <div class={!expanded && currentIdx == 1 ? 'selected' : ''}>
-						<HorseDef key={uma2.outfitId} state={uma2} setState={setUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas}>
+						<HorseDef key={uma2.outfitId} state={uma2} setState={setUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas} runData={runData} umaIndex={1}>
 							{expanded ? 'Umamusume 2' : umaTabs}
 						</HorseDef>
 					</div>}

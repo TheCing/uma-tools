@@ -395,6 +395,7 @@ export class RaceSolver {
 		this.posKeepRng = new Rule30CARng(this.rng.int32());
 		this.laneMovementRng = new Rule30CARng(this.rng.int32());
 		this.specialConditionRng = new Rule30CARng(this.rng.int32());
+		this.competeFightRng = new Rule30CARng(this.rng.int32());
 		this.timers = [];
 		this.conditionTimer = this.getNewTimer(-1.0);
 		this.accumulatetime = this.getNewTimer();
@@ -470,13 +471,12 @@ export class RaceSolver {
 		}
 
 		this.competeFightEnabled = params.competeFight !== false;
+		this.duelingRates = params.duelingRates || null;
 		this.canCompeteFight = null;
 		this.competeFight = false;
 		this.competeFightStart = null;
 		this.competeFightEnd = null;
 		this.competeFightTimer = this.getNewTimer();
-		this.competeFightRng = new Rule30CARng(this.rng.int32());
-		this.duelingRates = params.duelingRates || null;
 
 		this.leadCompetitionEnabled = params.leadCompetition !== false;
 		this.leadCompetition = false;
@@ -665,7 +665,7 @@ export class RaceSolver {
 		this.processSkillActivations();
 		this.applyPositionKeepStates();
 		this.updatePositionKeepCoefficient();
-		// this.updateCompeteFight();
+		this.updateCompeteFight();
 		this.updateLeadCompetition();
 		this.updateLastSpurtState();
 		this.updateTargetSpeed();
@@ -1039,6 +1039,11 @@ export class RaceSolver {
 			return;
 		}
 
+		// Front Runners use Spot Struggle, not Dueling
+		if (StrategyHelpers.strategyMatches(this.posKeepStrategy, Strategy.Nige)) {
+			return;
+		}
+
 		if (this.hp.hpRatioRemaining() < 0.15 || !this.isOnFinalStraight()) {
 			return;
 		}
@@ -1151,9 +1156,9 @@ export class RaceSolver {
 		selectedUma.firstUmaInLateRace = true;
 	}
 
-	updateLastSpurtState() {
+	updateLastSpurtState(force: boolean = false) {
 		if (this.isLastSpurt || this.phase < 2) return;
-		if (this.lastSpurtTransition == -1) {
+		if (this.lastSpurtTransition == -1 || force) {
 			const initialLastSpurtSpeed = this.lastSpurtSpeed;
 			const v = this.hp.getLastSpurtPair(this, this.lastSpurtSpeed, this.baseTargetSpeed[2]);
 			this.lastSpurtTransition = v[0];
@@ -1190,7 +1195,7 @@ export class RaceSolver {
 		}
 
 		if (this.competeFight) {
-			this.targetSpeed += Math.pow(200 * this.horse.guts, 0.709) * 0.0001;
+			this.targetSpeed += Math.pow(200 * this.horse.guts, 0.708) * 0.0001;
 		}
 
 		if (this.leadCompetition) {
@@ -1411,7 +1416,7 @@ export class RaceSolver {
 				if (s.perspective == Perspective.Self) ++this.activateCountHeal;
 				this.hp.recover(ef.modifier);
 				if (this.phase >= 2 && !this.isLastSpurt) {
-					this.updateLastSpurtState();
+					this.updateLastSpurtState(true);
 				}
 				break;
 			case SkillType.ActivateRandomGold:
