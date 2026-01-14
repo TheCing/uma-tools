@@ -15,6 +15,7 @@ import { ExpandedSkillDetails, STRINGS_en as SKILL_STRINGS_en } from '../compone
 import { RaceTrack, TrackSelect, RegionDisplayType } from '../components/RaceTrack';
 import { HorseState, SkillSet } from '../components/HorseDefTypes';
 import { HorseDef, horseDefTabs, isGeneralSkill } from '../components/HorseDef';
+import { RaceSummary } from '../components/RaceSummary';
 import { TRACKNAMES_ja, TRACKNAMES_en } from '../strings/common';
 import { RaceState } from '../uma-skill-tools/RaceSolver';
 
@@ -1451,6 +1452,7 @@ function App(props) {
 		endCloser: 35
 	});
 	const [hpDeathPositionTab, setHpDeathPositionTab] = useState(0);
+	const [resultsTab, setResultsTab] = useState<'results' | 'summary'>('results');
 	const [showVirtualPacemakerOnGraph, toggleShowVirtualPacemakerOnGraph] = useReducer((b,_) => !b, false);
 	const [pacemakerCount, setPacemakerCount] = useState(1);
 	const [selectedPacemakerIndices, setSelectedPacemakerIndices] = useState([]); // Array of selected pacemaker indices (0, 1, 2), empty means none selected
@@ -2298,7 +2300,17 @@ function App(props) {
 	if (mode == Mode.Compare && results.length > 0) {
 		resultsPane = (
 			<div id="resultsPaneWrapper">
-				<div id="resultsPane" class="mode-compare">
+				{CC_GLOBAL && (
+					<div class="resultsTabSelector">
+						<button class={resultsTab === 'results' ? 'active' : ''} onClick={() => setResultsTab('results')}>
+							Race Results
+						</button>
+						<button class={resultsTab === 'summary' ? 'active' : ''} onClick={() => setResultsTab('summary')}>
+							Race Summary
+						</button>
+					</div>
+				)}
+				{(!CC_GLOBAL || resultsTab === 'results') && <div id="resultsPane" class="mode-compare">
 					<table id="resultsSummary">
 						<tfoot>
 							<tr>
@@ -2424,11 +2436,21 @@ function App(props) {
 							)}
 						</div>
 					)}
-				</div>
-				<div id="infoTables">
-					<ResultsTable caption="Umamusume 1" color="#2a77c5" chartData={chartData} idx={0} runData={runData} />
-					<ResultsTable caption="Umamusume 2" color="#c52a2a" chartData={chartData} idx={1} runData={runData} />
-				</div>
+				</div>}
+				{(!CC_GLOBAL || resultsTab === 'results') && (
+					<div id="infoTables">
+						<ResultsTable caption="Umamusume 1" color="#2a77c5" chartData={chartData} idx={0} runData={runData} />
+						<ResultsTable caption="Umamusume 2" color="#c52a2a" chartData={chartData} idx={1} runData={runData} />
+					</div>
+				)}
+				{CC_GLOBAL && resultsTab === 'summary' && runData?.medianrun && (
+					<RaceSummary
+						medianrun={runData.medianrun}
+						courseDistance={course.distance}
+						skillnames={skillnames}
+						result={median}
+					/>
+				)}
 			</div>
 		);
 	} else if ((mode == Mode.Chart || mode == Mode.UniquesChart) && tableData.size > 0) {

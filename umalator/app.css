@@ -490,9 +490,65 @@ body {
 
 #resultsPaneWrapper {
 	display: flex;
+	flex-wrap: wrap;
 	/* might cause a fatass white space*/
 	clear: both;
 	max-width: 980px;
+}
+
+.resultsTabSelector {
+	display: flex;
+	gap: 0;
+	margin-bottom: 12px;
+	margin-left: 20px;
+	width: 100%;
+}
+
+.resultsTabSelector button {
+	padding: 10px 20px;
+	border: 1px solid rgb(224, 214, 204);
+	background: rgb(245, 240, 235);
+	cursor: pointer;
+	font-size: 0.9em;
+	font-weight: 500;
+	color: rgb(100, 80, 60);
+	transition: all 0.15s ease;
+}
+
+.resultsTabSelector button:first-child {
+	border-radius: 6px 0 0 6px;
+}
+
+.resultsTabSelector button:last-child {
+	border-radius: 0 6px 6px 0;
+	border-left: none;
+}
+
+.resultsTabSelector button:hover {
+	background: rgb(240, 235, 228);
+}
+
+.resultsTabSelector button.active {
+	background: rgb(121, 64, 22);
+	color: white;
+	border-color: rgb(121, 64, 22);
+}
+
+/* Dark mode tab selector */
+.dark .resultsTabSelector button {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+	color: var(--text-secondary);
+}
+
+.dark .resultsTabSelector button:hover {
+	background: var(--gray-300);
+}
+
+.dark .resultsTabSelector button.active {
+	background: var(--green-500);
+	color: white;
+	border-color: var(--green-500);
 }
 
 #resultsPane {
@@ -1640,6 +1696,16 @@ body { background: var(--bg); color: var(--fg); }
 	/* Ground select centered */
 	.groundSelect {
 		text-align: center;
+	}
+
+	/* Results tab selector - full width centered */
+	.resultsTabSelector {
+		margin-left: 0;
+		width: 100%;
+	}
+
+	.resultsTabSelector button {
+		flex: 1;
 	}
 
 	/* Responsive tables */

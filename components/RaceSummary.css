@@ -1,0 +1,294 @@
+/* RaceSummary.css - Race summary panel styling */
+
+.raceSummary {
+	margin: 0 0 0 20px;
+	width: 100%;
+	max-width: 940px;
+	padding: 16px;
+	background: rgb(250, 248, 245);
+	border: 1px solid rgb(224, 214, 204);
+	border-radius: 8px;
+	font-family: 'Inter', 'Noto Sans JP', sans-serif;
+	max-height: 600px;
+	overflow-y: auto;
+}
+
+/* Disclaimer */
+.raceSummary__disclaimer {
+	font-size: 0.8em;
+	color: rgb(120, 100, 80);
+	font-style: italic;
+	margin-bottom: 12px;
+}
+
+/* Result header */
+.raceSummary__result {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: baseline;
+	padding-bottom: 16px;
+	border-bottom: 1px solid rgb(224, 214, 204);
+	margin-bottom: 16px;
+}
+
+.raceSummary__resultValue {
+	font-size: 1.2em;
+	font-weight: 700;
+	color: rgb(90, 50, 15);
+}
+
+.raceSummary__resultStat {
+	font-size: 0.9em;
+	color: rgb(100, 80, 60);
+	background: rgb(240, 235, 228);
+	padding: 4px 10px;
+	border-radius: 12px;
+}
+
+/* Phase sections */
+.raceSummary__phases {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.raceSummaryPhase {
+	border: 1px solid rgb(230, 225, 218);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.raceSummaryPhase__header {
+	background: rgb(245, 240, 235);
+	padding: 8px 12px;
+	font-weight: 600;
+	font-size: 0.9em;
+	color: rgb(100, 80, 60);
+	border-bottom: 1px solid rgb(230, 225, 218);
+}
+
+.raceSummaryPhase__content {
+	padding: 8px 12px;
+}
+
+/* Event lines */
+.raceSummaryEvent {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 4px 0;
+	font-size: 0.9em;
+	color: rgb(60, 60, 60);
+}
+
+.raceSummaryEvent--empty {
+	color: rgb(150, 140, 130);
+	font-style: italic;
+}
+
+.raceSummaryEvent__position {
+	min-width: 50px;
+	font-weight: 600;
+	color: rgb(121, 64, 22);
+	font-size: 0.85em;
+}
+
+.raceSummaryEvent__icon {
+	flex-shrink: 0;
+}
+
+.raceSummaryEvent__text {
+	flex: 1;
+}
+
+/* Event type styling */
+.raceSummaryEvent--skill .raceSummaryEvent__text {
+	color: rgb(45, 100, 45);
+}
+
+.raceSummaryEvent--warning .raceSummaryEvent__text {
+	color: rgb(180, 80, 30);
+}
+
+.raceSummaryEvent--mechanic .raceSummaryEvent__text {
+	color: rgb(70, 100, 140);
+}
+
+.raceSummaryEvent--spurt .raceSummaryEvent__text {
+	color: rgb(150, 100, 30);
+	font-weight: 500;
+}
+
+.raceSummaryEvent--poskeep .raceSummaryEvent__text {
+	color: rgb(100, 70, 130);
+}
+
+.raceSummaryEvent--downhill .raceSummaryEvent__text {
+	color: rgb(80, 120, 100);
+}
+
+/* Tips section */
+.raceSummary__tips {
+	margin-top: 16px;
+	padding-top: 16px;
+	border-top: 1px solid rgb(224, 214, 204);
+}
+
+.raceSummary__tipsHeader {
+	font-weight: 600;
+	font-size: 0.9em;
+	color: rgb(100, 80, 60);
+	margin-bottom: 10px;
+}
+
+.raceSummaryTip {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 6px 10px;
+	margin-bottom: 6px;
+	border-radius: 4px;
+	font-size: 0.85em;
+}
+
+.raceSummaryTip--info {
+	background: rgb(235, 245, 255);
+	color: rgb(40, 80, 120);
+}
+
+.raceSummaryTip--success {
+	background: rgb(235, 250, 235);
+	color: rgb(35, 100, 35);
+}
+
+.raceSummaryTip--warning {
+	background: rgb(255, 245, 235);
+	color: rgb(150, 80, 30);
+}
+
+.raceSummaryTip__icon {
+	flex-shrink: 0;
+}
+
+.raceSummaryTip__text {
+	flex: 1;
+	line-height: 1.4;
+}
+
+/* Dark mode */
+.dark .raceSummary {
+	background: var(--bg-muted, #1e1e1e);
+	border-color: var(--border, #3c3c3c);
+}
+
+.dark .raceSummary__disclaimer {
+	color: #888888;
+}
+
+.dark .raceSummary__result {
+	border-color: var(--border, #3c3c3c);
+}
+
+.dark .raceSummary__resultValue {
+	color: var(--text-primary, #ddb892);
+}
+
+.dark .raceSummary__resultStat {
+	background: var(--bg-subtle, #252526);
+	color: var(--text-secondary, #cccccc);
+}
+
+.dark .raceSummaryPhase {
+	border-color: var(--border, #3c3c3c);
+}
+
+.dark .raceSummaryPhase__header {
+	background: var(--bg-subtle, #252526);
+	border-color: var(--border, #3c3c3c);
+	color: var(--text-secondary, #cccccc);
+}
+
+.dark .raceSummaryEvent {
+	color: var(--text-secondary, #cccccc);
+}
+
+.dark .raceSummaryEvent--empty {
+	color: #666666;
+}
+
+.dark .raceSummaryEvent__position {
+	color: var(--text-primary, #ddb892);
+}
+
+.dark .raceSummaryEvent--skill .raceSummaryEvent__text {
+	color: #7ec97e;
+}
+
+.dark .raceSummaryEvent--warning .raceSummaryEvent__text {
+	color: #e89050;
+}
+
+.dark .raceSummaryEvent--mechanic .raceSummaryEvent__text {
+	color: #7eaad0;
+}
+
+.dark .raceSummaryEvent--spurt .raceSummaryEvent__text {
+	color: #d4a84e;
+}
+
+.dark .raceSummaryEvent--poskeep .raceSummaryEvent__text {
+	color: #b89ed4;
+}
+
+.dark .raceSummaryEvent--downhill .raceSummaryEvent__text {
+	color: #8ec4a8;
+}
+
+.dark .raceSummary__tips {
+	border-color: var(--border, #3c3c3c);
+}
+
+.dark .raceSummary__tipsHeader {
+	color: var(--text-secondary, #cccccc);
+}
+
+.dark .raceSummaryTip--info {
+	background: rgba(60, 120, 180, 0.2);
+	color: #7eaad0;
+}
+
+.dark .raceSummaryTip--success {
+	background: rgba(60, 140, 60, 0.2);
+	color: #7ec97e;
+}
+
+.dark .raceSummaryTip--warning {
+	background: rgba(180, 100, 40, 0.2);
+	color: #e89050;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+	.raceSummary {
+		margin: 12px 8px;
+		margin-left: 0;
+		max-width: calc(100vw - 26px);
+		box-sizing: border-box;
+		/* Add padding at bottom for the fixed Uma Config button */
+		padding-bottom: 80px;
+	}
+
+	.raceSummary__result {
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.raceSummaryEvent {
+		flex-wrap: wrap;
+	}
+
+	.raceSummaryEvent__position {
+		min-width: 45px;
+	}
+}
