@@ -746,6 +746,7 @@ export function HorseDef(props) {
 			</div>
 			<div class={`horseSkillPickerOverlay ${skillPickerOpen ? "open" : ""}`} onClick={setSkillPickerOpen.bind(null, false)} />
 			<div class={`horseSkillPickerWrapper ${skillPickerOpen ? "open" : ""}`}>
+				<div class="skillPickerClose" onClick={setSkillPickerOpen.bind(null, false)} title="Close">✕</div>
 				<SkillList ids={selectableSkills} selected={state.skills} setSelected={setSkillsAndClose} isOpen={skillPickerOpen} />
 			</div>
 			<OCRModal
