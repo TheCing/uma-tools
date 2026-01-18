@@ -2680,7 +2680,7 @@ function App(props) {
 				{expanded && <div id="umaPane" />}
 				<div id={expanded ? 'umaOverlay' : 'umaPane'}>
 					<div class={!expanded && currentIdx == 0 ? 'selected' : ''}>
-						<HorseDef key={uma1.outfitId} state={uma1} setState={setUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas} runData={mode == Mode.Compare ? runData : null} umaIndex={mode == Mode.Compare ? 0 : null}>
+						<HorseDef key="uma1" state={uma1} setState={setUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas} runData={mode == Mode.Compare ? runData : null} umaIndex={mode == Mode.Compare ? 0 : null}>
 							{expanded ? 'Umamusume 1' : umaTabs}
 						</HorseDef>
 					</div>
@@ -2691,12 +2691,12 @@ function App(props) {
 							<div id="swapUmas" title="Swap umas" onClick={swapUmas}>⮂</div>
 						</div>}
 					{mode == Mode.Compare && <div class={!expanded && currentIdx == 1 ? 'selected' : ''}>
-						<HorseDef key={uma2.outfitId} state={uma2} setState={setUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas} runData={runData} umaIndex={1}>
+						<HorseDef key="uma2" state={uma2} setState={setUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas} runData={runData} umaIndex={1}>
 							{expanded ? 'Umamusume 2' : umaTabs}
 						</HorseDef>
 					</div>}
 					{posKeepMode == PosKeepMode.Virtual && mode == Mode.Compare && <div class={!expanded && currentIdx == 2 ? 'selected' : ''}>
-						<HorseDef key={pacer.outfitId} state={pacer} setState={setPacer} courseDistance={course.distance} tabstart={() => 4 + (mode == Mode.Compare ? 2 : 1) * horseDefTabs()} onResetAll={resetAllUmas}>
+						<HorseDef key="pacer" state={pacer} setState={setPacer} courseDistance={course.distance} tabstart={() => 4 + (mode == Mode.Compare ? 2 : 1) * horseDefTabs()} onResetAll={resetAllUmas}>
 							{expanded ? 'Virtual Pacemaker' : umaTabs}
 						</HorseDef>
 					</div>}

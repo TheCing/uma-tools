@@ -338,7 +338,19 @@ export function UmaSelector(props) {
 						</ul>
 					</div>
 				)}
-				{props.onReset && <button className="resetUmaButton" onClick={props.onReset} title="Reset this horse to default stats and skills">Reset</button>}
+				{props.onReset && (
+					<div className="resetButtonWrapper">
+						<button className="resetUmaButton" onClick={props.onReset} title="Reset this horse to default stats and skills">
+							Reset {props.onResetToImported && <span className="resetDropdownArrow" />}
+						</button>
+						{props.onResetToImported && (
+							<ul className="resetDropdownMenu">
+								<li onMouseDown={props.onReset}>Reset to Default</li>
+								<li onMouseDown={props.onResetToImported}>Reset to Imported</li>
+							</ul>
+						)}
+					</div>
+				)}
 				{props.onResetAll && <button className="resetUmaButton" onClick={props.onResetAll} title="Reset all horses to default stats and skills">Reset All</button>}
 			</div>
 			<div class="umaSelectWrapper">
@@ -504,6 +516,7 @@ export function HorseDef(props) {
 	const [expanded, setExpanded] = useState(() => ImmSet());
 	const [ocrModalOpen, setOcrModalOpen] = useState(false);
 	const [procDataSkillId, setProcDataSkillId] = useState(null as string | null);
+	const [importedState, setImportedState] = useState<HorseState | null>(null);
 
 	const tabstart = props.tabstart();
 	let tabi = 0;
@@ -543,6 +556,13 @@ export function HorseDef(props) {
 
 	function resetThisHorse() {
 		setState(new HorseState());
+		// Keep importedState so "Reset to Imported" remains available as an undo option
+	}
+
+	function resetToImportedState() {
+		if (importedState) {
+			setState(importedState);
+		}
 	}
 
 	function saveThisHorse() {
@@ -555,6 +575,7 @@ export function HorseDef(props) {
 
 	function loadThisHorse(horse: HorseState) {
 		setState(horse);
+		setImportedState(horse);
 	}
 
 	function handleOCRConfirm(data: OCRHorseData) {
@@ -590,6 +611,7 @@ export function HorseDef(props) {
 			skills: SkillSet(skillIds),
 		});
 		setState(horse);
+		setImportedState(horse);
 	}
 
 	function openOCRModal() {
@@ -698,7 +720,7 @@ export function HorseDef(props) {
 	return (
 		<div class="horseDef">
 			<div class="horseDefHeader">{props.children}</div>
-			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onSave={saveThisHorse} onSaveCard={saveCardThisHorse} onLoad={loadThisHorse} onOpenOCR={openOCRModal} onReset={resetThisHorse} onResetAll={props.onResetAll} />
+			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onSave={saveThisHorse} onSaveCard={saveCardThisHorse} onLoad={loadThisHorse} onOpenOCR={openOCRModal} onReset={resetThisHorse} onResetToImported={importedState ? resetToImportedState : null} onResetAll={props.onResetAll} />
 			<div class="horseParams">
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_00.png" /><span>Speed</span></div>
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_01.png" /><span>Stamina</span></div>

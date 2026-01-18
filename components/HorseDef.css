@@ -227,6 +227,72 @@
 	transition: all 0.05s;
 }
 
+.resetButtonWrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.resetButtonWrapper .resetUmaButton {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.resetDropdownArrow {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 4px solid white;
+	transition: transform 0.2s;
+}
+
+.resetButtonWrapper:hover .resetDropdownArrow {
+	transform: rotate(180deg);
+}
+
+.resetDropdownMenu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	margin: 0;
+	margin-top: 4px;
+	padding: 0;
+	list-style: none;
+	background: white;
+	border: 2px solid rgb(200, 200, 200);
+	border-radius: 8px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+	overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-5px);
+	transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+	z-index: 100;
+	min-width: 160px;
+}
+
+.resetButtonWrapper:hover .resetDropdownMenu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+.resetDropdownMenu li {
+	padding: 8px 12px;
+	font-size: 0.85em;
+	color: rgb(60, 60, 60);
+	cursor: pointer;
+	transition: background 0.1s;
+	white-space: nowrap;
+}
+
+.resetDropdownMenu li:hover {
+	background: linear-gradient(90deg, rgba(168, 227, 5, 0.2), rgba(97, 174, 22, 0.1));
+}
+
 .saveUmaButton {
 	background: linear-gradient(rgb(66, 165, 245), rgb(30, 136, 229)) padding-box, linear-gradient(rgb(100, 181, 246), rgb(25, 118, 210)) border-box;
 	border: 2px solid transparent;
@@ -733,6 +799,19 @@
 
 .dark .loadDropdownMenu li:hover {
 	background: linear-gradient(90deg, rgba(255, 167, 38, 0.3), rgba(255, 167, 38, 0.15));
+}
+
+.dark .resetDropdownMenu {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+}
+
+.dark .resetDropdownMenu li {
+	color: var(--fg);
+}
+
+.dark .resetDropdownMenu li:hover {
+	background: linear-gradient(90deg, rgba(168, 227, 5, 0.3), rgba(97, 174, 22, 0.15));
 }
 
 .dark .horseMoodSelect > ul {
