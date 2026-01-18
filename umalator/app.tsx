@@ -1525,7 +1525,7 @@ function App(props) {
 		setUma2(new HorseState());
 		setPacer(new HorseState({strategy: 'Nige'}));
 	}
-	
+
 	const [{courseId, results, runData, chartData, displaying, spurtInfo, staminaStats, firstUmaStats}, setSimState] = useReducer(updateResultsState, EMPTY_RESULTS_STATE);
 	const setCourseId = setSimState;
 	const setResults = setSimState;
@@ -1557,6 +1557,18 @@ function App(props) {
 	const [uma1, setUma1] = useState(() => new HorseState());
 	const [uma2, setUma2] = useState(() => new HorseState());
 	const [pacer, setPacer] = useState(() => new HorseState({strategy: 'Nige'}));
+
+	// Imported states for Reset to Imported functionality
+	const [importedUma1, setImportedUma1] = useState<HorseState | null>(null);
+	const [importedUma2, setImportedUma2] = useState<HorseState | null>(null);
+	const [importedPacer, setImportedPacer] = useState<HorseState | null>(null);
+	const hasAnyImportedState = importedUma1 || importedUma2 || importedPacer;
+
+	function resetAllToImported() {
+		if (importedUma1) setUma1(importedUma1);
+		if (importedUma2) setUma2(importedUma2);
+		if (importedPacer) setPacer(importedPacer);
+	}
 
 	const [lastRunChartUma, setLastRunChartUma] = useState(uma1);
 
@@ -1636,6 +1648,12 @@ function App(props) {
 				setUma1(o.uma1);
 				setUma2(o.uma2);
 				setPacer(o.pacer);
+				// Detect imported states by comparing to default
+				const defaultUma = new HorseState();
+				const defaultPacer = new HorseState({strategy: 'Nige'});
+				if (!o.uma1.equals(defaultUma)) setImportedUma1(o.uma1);
+				if (!o.uma2.equals(defaultUma)) setImportedUma2(o.uma2);
+				if (!o.pacer.equals(defaultPacer)) setImportedPacer(o.pacer);
 				setPacemakerCount(o.pacemakerCount);
 				setSelectedPacemakerIndices(o.selectedPacemakers ? 
 					o.selectedPacemakers.map((selected, index) => selected ? index : -1).filter(index => index !== -1) : 
@@ -1677,6 +1695,12 @@ function App(props) {
 					setUma1(o.uma1);
 					setUma2(o.uma2);
 					setPacer(o.pacer);
+					// Detect imported states by comparing to default
+					const defaultUma = new HorseState();
+					const defaultPacer = new HorseState({strategy: 'Nige'});
+					if (!o.uma1.equals(defaultUma)) setImportedUma1(o.uma1);
+					if (!o.uma2.equals(defaultUma)) setImportedUma2(o.uma2);
+					if (!o.pacer.equals(defaultPacer)) setImportedPacer(o.pacer);
 					setPacemakerCount(o.pacemakerCount);
 					setSelectedPacemakerIndices(o.selectedPacemakers ? 
 						o.selectedPacemakers.map((selected, index) => selected ? index : -1).filter(index => index !== -1) : 
@@ -2680,7 +2704,7 @@ function App(props) {
 				{expanded && <div id="umaPane" />}
 				<div id={expanded ? 'umaOverlay' : 'umaPane'}>
 					<div class={!expanded && currentIdx == 0 ? 'selected' : ''}>
-						<HorseDef key="uma1" state={uma1} setState={setUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas} runData={mode == Mode.Compare ? runData : null} umaIndex={mode == Mode.Compare ? 0 : null}>
+						<HorseDef key="uma1" state={uma1} setState={setUma1} importedState={importedUma1} setImportedState={setImportedUma1} courseDistance={course.distance} tabstart={() => 4} onResetAll={resetAllUmas} onResetAllToImported={hasAnyImportedState ? resetAllToImported : null} runData={mode == Mode.Compare ? runData : null} umaIndex={mode == Mode.Compare ? 0 : null}>
 							{expanded ? 'Umamusume 1' : umaTabs}
 						</HorseDef>
 					</div>
@@ -2691,12 +2715,12 @@ function App(props) {
 							<div id="swapUmas" title="Swap umas" onClick={swapUmas}>⮂</div>
 						</div>}
 					{mode == Mode.Compare && <div class={!expanded && currentIdx == 1 ? 'selected' : ''}>
-						<HorseDef key="uma2" state={uma2} setState={setUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas} runData={runData} umaIndex={1}>
+						<HorseDef key="uma2" state={uma2} setState={setUma2} importedState={importedUma2} setImportedState={setImportedUma2} courseDistance={course.distance} tabstart={() => 4 + horseDefTabs()} onResetAll={resetAllUmas} onResetAllToImported={hasAnyImportedState ? resetAllToImported : null} runData={runData} umaIndex={1}>
 							{expanded ? 'Umamusume 2' : umaTabs}
 						</HorseDef>
 					</div>}
 					{posKeepMode == PosKeepMode.Virtual && mode == Mode.Compare && <div class={!expanded && currentIdx == 2 ? 'selected' : ''}>
-						<HorseDef key="pacer" state={pacer} setState={setPacer} courseDistance={course.distance} tabstart={() => 4 + (mode == Mode.Compare ? 2 : 1) * horseDefTabs()} onResetAll={resetAllUmas}>
+						<HorseDef key="pacer" state={pacer} setState={setPacer} importedState={importedPacer} setImportedState={setImportedPacer} courseDistance={course.distance} tabstart={() => 4 + (mode == Mode.Compare ? 2 : 1) * horseDefTabs()} onResetAll={resetAllUmas} onResetAllToImported={hasAnyImportedState ? resetAllToImported : null}>
 							{expanded ? 'Virtual Pacemaker' : umaTabs}
 						</HorseDef>
 					</div>}

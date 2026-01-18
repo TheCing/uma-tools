@@ -45,6 +45,10 @@ The dev server:
 - Auto-rebuilds on source changes
 - Strips `/uma-tools/` prefix from asset requests (production path rewriting)
 
+### IDE Errors to Ignore
+
+**CC_GLOBAL errors**: The IDE may show errors like `Cannot find name 'CC_GLOBAL'` in `.tsx` files. These are **safe to ignore** - `CC_GLOBAL` is a build-time constant defined by esbuild (see `build.mjs`). The build will succeed despite these IDE warnings.
+
 ### Working with uma-skill-tools
 
 The core simulation library is in `uma-skill-tools/`. This uses TypeScript and is run via `ts-node`:

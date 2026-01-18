@@ -383,7 +383,7 @@
 	border: 2px solid rgb(200, 200, 200);
 	border-radius: 8px;
 	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-	overflow: hidden;
+	overflow: visible;
 	opacity: 0;
 	visibility: hidden;
 	transform: translateY(-5px);
@@ -417,6 +417,111 @@
 
 .loadDropdownMenu li:last-child {
 	border-radius: 0 0 6px 6px;
+}
+
+/* Slot submenu styles */
+.slotSubmenuItem {
+	position: relative;
+}
+
+.slotSubmenuArrow {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-top: 4px solid transparent;
+	border-bottom: 4px solid transparent;
+	border-left: 4px solid rgb(100, 100, 100);
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+.slotSubmenu {
+	position: absolute;
+	left: calc(100% - 8px);
+	top: -2px;
+	margin: 0;
+	padding: 0 0 0 8px;
+	list-style: none;
+	background: transparent;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateX(-5px);
+	transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+	z-index: 101;
+}
+
+.slotSubmenu > li {
+	background: white;
+	border: 2px solid rgb(200, 200, 200);
+	border-bottom: none;
+}
+
+.slotSubmenu > li:first-child {
+	border-radius: 8px 8px 0 0;
+}
+
+.slotSubmenu > li:last-child {
+	border-bottom: 2px solid rgb(200, 200, 200);
+	border-radius: 0 0 8px 8px;
+}
+
+.slotSubmenu > li:only-child {
+	border-radius: 8px;
+	border-bottom: 2px solid rgb(200, 200, 200);
+}
+
+.slotSubmenu.open,
+.slotSubmenuItem:hover .slotSubmenu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateX(0);
+}
+
+.slotItem {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 12px !important;
+}
+
+.slotItem:hover {
+	background: linear-gradient(90deg, rgba(255, 167, 38, 0.3), rgba(255, 167, 38, 0.15)), white !important;
+}
+
+.slotName {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.slotDelete {
+	color: rgb(180, 80, 80);
+	font-size: 0.9em;
+	margin-left: 8px;
+	opacity: 0.6;
+	transition: opacity 0.1s;
+}
+
+.slotDelete:hover {
+	opacity: 1;
+}
+
+.dark .slotSubmenu > li {
+	background: var(--bg-subtle);
+	border-color: var(--border);
+}
+
+.dark .slotItem:hover {
+	background: linear-gradient(90deg, rgba(255, 167, 38, 0.3), rgba(255, 167, 38, 0.15)), var(--bg-subtle) !important;
+}
+
+.dark .slotSubmenuArrow {
+	border-left-color: var(--text-secondary);
+}
+
+.dark .slotDelete {
+	color: var(--red-400);
 }
 
 .resetButtons {

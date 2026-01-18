@@ -1,0 +1,145 @@
+.slotDialogOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(25, 25, 25, 0.6);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.slotDialog {
+	background: white;
+	border: 2px solid rgb(170, 221, 154);
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	min-width: 300px;
+	max-width: 400px;
+	outline: none;
+}
+
+.slotDialogHeader {
+	background: linear-gradient(rgb(255, 167, 38), rgb(251, 140, 0));
+	border-bottom: 2px solid rgb(245, 124, 0);
+	border-radius: 10px 10px 0 0;
+	padding: 12px 16px;
+}
+
+.slotDialogHeader h3 {
+	margin: 0;
+	color: white;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.slotDialogContent {
+	padding: 16px;
+}
+
+.slotDialogContent p {
+	margin: 0 0 12px 0;
+	color: rgb(60, 60, 60);
+	font-size: 0.95em;
+}
+
+.slotDialogInput {
+	width: 100%;
+	padding: 10px 12px;
+	border: 2px solid rgb(200, 200, 200);
+	border-radius: 6px;
+	font-size: 1em;
+	box-sizing: border-box;
+	transition: border-color 0.2s;
+}
+
+.slotDialogInput:focus {
+	outline: none;
+	border-color: rgb(255, 167, 38);
+}
+
+.slotDialogButtons {
+	display: flex;
+	gap: 8px;
+	padding: 0 16px 16px 16px;
+	justify-content: flex-end;
+}
+
+.slotDialogCancel,
+.slotDialogConfirm {
+	padding: 8px 20px;
+	border: 2px solid transparent;
+	border-radius: 20px;
+	font-size: 0.9em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.slotDialogCancel {
+	background: linear-gradient(rgb(220, 220, 220), rgb(200, 200, 200)) padding-box,
+	            linear-gradient(rgb(210, 210, 210), rgb(180, 180, 180)) border-box;
+	color: rgb(80, 80, 80);
+}
+
+.slotDialogCancel:hover {
+	background: linear-gradient(rgb(230, 230, 230), rgb(210, 210, 210)) padding-box,
+	            linear-gradient(rgb(220, 220, 220), rgb(190, 190, 190)) border-box;
+}
+
+.slotDialogConfirm {
+	background: linear-gradient(rgb(255, 167, 38), rgb(251, 140, 0)) padding-box,
+	            linear-gradient(rgb(255, 183, 77), rgb(245, 124, 0)) border-box;
+	color: white;
+}
+
+.slotDialogConfirm:hover:not(:disabled) {
+	background: linear-gradient(rgb(255, 187, 58), rgb(255, 160, 20)) padding-box,
+	            linear-gradient(rgb(255, 203, 97), rgb(255, 144, 20)) border-box;
+}
+
+.slotDialogConfirm:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Dark mode */
+.dark .slotDialogOverlay {
+	background: rgba(0, 0, 0, 0.7);
+}
+
+.dark .slotDialog {
+	background: var(--bg-subtle);
+	border-color: var(--orange-border, rgb(200, 140, 50));
+}
+
+.dark .slotDialogHeader {
+	border-bottom-color: var(--orange-border, rgb(200, 140, 50));
+}
+
+.dark .slotDialogContent p {
+	color: var(--text-primary);
+}
+
+.dark .slotDialogInput {
+	background: var(--surface-input, rgb(50, 50, 55));
+	border-color: var(--border);
+	color: var(--text-primary);
+}
+
+.dark .slotDialogInput:focus {
+	border-color: rgb(255, 167, 38);
+}
+
+.dark .slotDialogCancel {
+	background: linear-gradient(var(--bg-muted), var(--bg-subtle)) padding-box,
+	            linear-gradient(var(--border), var(--border)) border-box;
+	color: var(--text-primary);
+}
+
+.dark .slotDialogCancel:hover {
+	background: linear-gradient(var(--bg-subtle), var(--bg-muted)) padding-box,
+	            linear-gradient(var(--border), var(--border)) border-box;
+}

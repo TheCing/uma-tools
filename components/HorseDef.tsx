@@ -8,6 +8,7 @@ import { SkillProcDataDialog } from './SkillProcDataDialog';
 import { OCRModal } from './OCRModal';
 import { OCRHorseData, mapSkillNamesToIds, mapOutfitNameToId } from './GeminiOCR';
 import { createUmaCard, extractDataFromPng } from './UmaCard';
+import { SlotDialog } from './SlotDialog';
 
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 
@@ -19,6 +20,53 @@ import umas from '../umas.json';
 import icons from '../icons.json';
 import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillmeta from '../skill_meta.json';
+
+// LocalStorage key for horse slots
+const HORSE_SLOTS_KEY = 'umalator_horse_slots';
+
+// Get all saved horse slots from localStorage
+function getHorseSlots(): Record<string, any> {
+	try {
+		const stored = localStorage.getItem(HORSE_SLOTS_KEY);
+		return stored ? JSON.parse(stored) : {};
+	} catch (e) {
+		console.error('Failed to load horse slots:', e);
+		return {};
+	}
+}
+
+// Save a horse to a named slot
+function saveHorseSlot(name: string, horse: HorseState): boolean {
+	try {
+		const slots = getHorseSlots();
+		slots[name] = horseStateToJson(horse);
+		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
+		return true;
+	} catch (e) {
+		console.error('Failed to save horse slot:', e);
+		return false;
+	}
+}
+
+// Delete a horse slot by name
+function deleteHorseSlot(name: string): boolean {
+	try {
+		const slots = getHorseSlots();
+		delete slots[name];
+		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
+		return true;
+	} catch (e) {
+		console.error('Failed to delete horse slot:', e);
+		return false;
+	}
+}
+
+// Load a horse from a named slot
+function loadHorseSlot(name: string): HorseState | null {
+	const slots = getHorseSlots();
+	if (!slots[name]) return null;
+	return validateAndParseHorseJson(slots[name]);
+}
 
 // Convert HorseState (Immutable Record) to plain JSON object
 function horseStateToJson(horse: HorseState) {
@@ -197,9 +245,38 @@ export function UmaSelector(props) {
 	const loadDropdownRef = useRef(null);
 	const [saveDropdownOpen, setSaveDropdownOpen] = useState(false);
 	const saveDropdownRef = useRef(null);
+	const [slotSubmenuOpen, setSlotSubmenuOpen] = useState(false);
+	const [savedSlots, setSavedSlots] = useState<string[]>(() => Object.keys(getHorseSlots()));
+
+	// Slot dialog state
+	const [slotDialog, setSlotDialog] = useState<{
+		open: boolean;
+		mode: 'prompt' | 'confirm';
+		title: string;
+		message?: string;
+		confirmText?: string;
+		onConfirm: (value?: string) => void;
+	}>({
+		open: false,
+		mode: 'prompt',
+		title: '',
+		onConfirm: () => {},
+	});
+
+	function closeSlotDialog() {
+		setSlotDialog(d => ({ ...d, open: false }));
+	}
+
+	// Refresh saved slots when dropdown opens
+	useEffect(() => {
+		if (loadDropdownOpen) {
+			setSavedSlots(Object.keys(getHorseSlots()));
+		}
+	}, [loadDropdownOpen]);
 
 	function handleLoadOptionClick(option: 'json' | 'ocr') {
 		setLoadDropdownOpen(false);
+		setSlotSubmenuOpen(false);
 		if (option === 'json') {
 			triggerFileInput();
 		} else if (option === 'ocr') {
@@ -207,12 +284,74 @@ export function UmaSelector(props) {
 		}
 	}
 
-	function handleSaveOptionClick(option: 'json' | 'card') {
+	function handleLoadFromSlot(slotName: string) {
+		setLoadDropdownOpen(false);
+		setSlotSubmenuOpen(false);
+		const horse = loadHorseSlot(slotName);
+		if (horse && props.onLoad) {
+			props.onLoad(horse);
+		} else {
+			alert('Failed to load horse from slot.');
+		}
+	}
+
+	function handleDeleteSlot(e: MouseEvent, slotName: string) {
+		e.stopPropagation();
+		setSlotDialog({
+			open: true,
+			mode: 'confirm',
+			title: 'Delete Slot',
+			message: `Delete slot "${slotName}"?`,
+			confirmText: 'Delete',
+			onConfirm: () => {
+				deleteHorseSlot(slotName);
+				setSavedSlots(Object.keys(getHorseSlots()));
+				closeSlotDialog();
+			},
+		});
+	}
+
+	function handleSaveOptionClick(option: 'json' | 'card' | 'slot') {
 		setSaveDropdownOpen(false);
 		if (option === 'json') {
 			props.onSave?.();
 		} else if (option === 'card') {
 			props.onSaveCard?.();
+		} else if (option === 'slot') {
+			setSlotDialog({
+				open: true,
+				mode: 'prompt',
+				title: 'Save to Slot',
+				message: 'Enter a name for this slot:',
+				confirmText: 'Save',
+				onConfirm: (slotName?: string) => {
+					if (!slotName) return;
+					const slots = getHorseSlots();
+					if (slots[slotName]) {
+						// Show overwrite confirmation
+						setSlotDialog({
+							open: true,
+							mode: 'confirm',
+							title: 'Overwrite Slot',
+							message: `Slot "${slotName}" already exists. Overwrite?`,
+							confirmText: 'Overwrite',
+							onConfirm: () => {
+								if (props.onSaveSlot) {
+									props.onSaveSlot(slotName);
+									setSavedSlots(Object.keys(getHorseSlots()));
+								}
+								closeSlotDialog();
+							},
+						});
+					} else {
+						if (props.onSaveSlot) {
+							props.onSaveSlot(slotName);
+							setSavedSlots(Object.keys(getHorseSlots()));
+						}
+						closeSlotDialog();
+					}
+				},
+			});
 		}
 	}
 
@@ -246,6 +385,13 @@ export function UmaSelector(props) {
 		return {input: q, suggestions: searchNames(q)};
 	}
 	const [query, search] = useReducer((_,q) => update(q), u && u.name[1], update);
+
+	// Sync query input when props.value changes (e.g., on load from localStorage)
+	useEffect(() => {
+		if (u && u.name[1] && query.input !== u.name[1]) {
+			search(u.name[1]);
+		}
+	}, [props.value]);
 
 	function confirm(oid) {
 		setOpen(false);
@@ -324,6 +470,7 @@ export function UmaSelector(props) {
 						<ul className={`loadDropdownMenu ${saveDropdownOpen ? 'open' : ''}`}>
 							<li onMouseDown={() => handleSaveOptionClick('json')}>JSON File</li>
 							<li onMouseDown={() => handleSaveOptionClick('card')}>Uma Card (PNG)</li>
+							<li onMouseDown={() => handleSaveOptionClick('slot')}>Save to Slot</li>
 						</ul>
 					</div>
 				)}
@@ -335,6 +482,19 @@ export function UmaSelector(props) {
 						<ul className={`loadDropdownMenu ${loadDropdownOpen ? 'open' : ''}`}>
 							<li onMouseDown={() => handleLoadOptionClick('json')}>JSON/PNG</li>
 							<li onMouseDown={() => handleLoadOptionClick('ocr')}>OCR Screenshot</li>
+							{savedSlots.length > 0 && (
+								<li className="slotSubmenuItem" onMouseEnter={() => setSlotSubmenuOpen(true)} onMouseLeave={() => setSlotSubmenuOpen(false)}>
+									Load from Slot <span className="slotSubmenuArrow" />
+									<ul className={`slotSubmenu ${slotSubmenuOpen ? 'open' : ''}`}>
+										{savedSlots.map(name => (
+											<li key={name} className="slotItem" onMouseDown={() => handleLoadFromSlot(name)}>
+												<span className="slotName">{name}</span>
+												<span className="slotDelete" onMouseDown={(e) => handleDeleteSlot(e, name)} title="Delete slot">✕</span>
+											</li>
+										))}
+									</ul>
+								</li>
+							)}
 						</ul>
 					</div>
 				)}
@@ -351,7 +511,19 @@ export function UmaSelector(props) {
 						)}
 					</div>
 				)}
-				{props.onResetAll && <button className="resetUmaButton" onClick={props.onResetAll} title="Reset all horses to default stats and skills">Reset All</button>}
+				{props.onResetAll && (
+					<div className="resetButtonWrapper">
+						<button className="resetUmaButton" onClick={props.onResetAll} title="Reset all horses to default stats and skills">
+							Reset All {props.onResetAllToImported && <span className="resetDropdownArrow" />}
+						</button>
+						{props.onResetAllToImported && (
+							<ul className="resetDropdownMenu">
+								<li onMouseDown={props.onResetAll}>Reset All to Default</li>
+								<li onMouseDown={props.onResetAllToImported}>Reset All to Imported</li>
+							</ul>
+						)}
+					</div>
+				)}
 			</div>
 			<div class="umaSelectWrapper">
 				<input type="text" class="umaSelectInput" value={query.input} tabindex={props.tabindex} onInput={handleInput} onKeyDown={handleKeyDown} onFocus={() => setOpen(true)} onBlur={handleBlur} ref={input} />
@@ -367,6 +539,15 @@ export function UmaSelector(props) {
 				</ul>
 			</div>
 			<input type="file" accept=".json,.png" ref={fileInput} style={{ display: 'none' }} onChange={handleFileSelect} />
+			<SlotDialog
+				open={slotDialog.open}
+				mode={slotDialog.mode}
+				title={slotDialog.title}
+				message={slotDialog.message}
+				confirmText={slotDialog.confirmText}
+				onConfirm={slotDialog.onConfirm}
+				onCancel={closeSlotDialog}
+			/>
 		</div>
 	);
 }
@@ -511,12 +692,11 @@ export function horseDefTabs() {
 }
 
 export function HorseDef(props) {
-	const {state, setState} = props;
+	const {state, setState, importedState, setImportedState} = props;
 	const [skillPickerOpen, setSkillPickerOpen] = useState(false);
 	const [expanded, setExpanded] = useState(() => ImmSet());
 	const [ocrModalOpen, setOcrModalOpen] = useState(false);
 	const [procDataSkillId, setProcDataSkillId] = useState(null as string | null);
-	const [importedState, setImportedState] = useState<HorseState | null>(null);
 
 	const tabstart = props.tabstart();
 	let tabi = 0;
@@ -571,6 +751,12 @@ export function HorseDef(props) {
 
 	function saveCardThisHorse() {
 		downloadUmaCard(state);
+	}
+
+	function saveSlotThisHorse(slotName: string) {
+		if (!saveHorseSlot(slotName, state)) {
+			window.alert('Failed to save to slot.');
+		}
 	}
 
 	function loadThisHorse(horse: HorseState) {
@@ -720,7 +906,7 @@ export function HorseDef(props) {
 	return (
 		<div class="horseDef">
 			<div class="horseDefHeader">{props.children}</div>
-			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onSave={saveThisHorse} onSaveCard={saveCardThisHorse} onLoad={loadThisHorse} onOpenOCR={openOCRModal} onReset={resetThisHorse} onResetToImported={importedState ? resetToImportedState : null} onResetAll={props.onResetAll} />
+			<UmaSelector value={umaId} select={setUma} tabindex={tabnext()} onSave={saveThisHorse} onSaveCard={saveCardThisHorse} onSaveSlot={saveSlotThisHorse} onLoad={loadThisHorse} onOpenOCR={openOCRModal} onReset={resetThisHorse} onResetToImported={importedState ? resetToImportedState : null} onResetAll={props.onResetAll} />
 			<div class="horseParams">
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_00.png" /><span>Speed</span></div>
 				<div class="horseParamHeader"><img src="/uma-tools/icons/status_01.png" /><span>Stamina</span></div>
