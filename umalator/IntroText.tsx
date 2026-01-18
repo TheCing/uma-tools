@@ -69,6 +69,14 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
+					<h2>2026-01-18</h2>
+					<ul>
+						<li><strong>Horse Slots:</strong> Save your uma builds to named slots for quick loading. Great for storing common opponents or test builds. Find it in the Save/Load dropdowns.</li>
+						<li><strong>Reset to Imported:</strong> Reset dropdown now offers "Reset to Imported" to restore a horse to its state when first loaded (via JSON, PNG, OCR, or slot).</li>
+						<li><strong>Beta Race Summary:</strong> New tab showing a timeline of race events (skills, phases, mechanics) with distances and durations. Toggle between Uma 1/Uma 2 in Compare mode.</li>
+					</ul>
+				</section>
+				<section>
 					<h2>2026-01-11 (Cing's Fork)</h2>
 					<p><em>This fork adds quality-of-life features for sharing and importing uma builds.</em></p>
 					<ul>
