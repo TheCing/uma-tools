@@ -25,6 +25,7 @@ export interface RaceEvent {
 		posKeepState?: number;  // PositionKeepState enum value
 		phaseNumber?: number;  // For phase transitions
 		hpRemaining?: number;
+		isEndEvent?: boolean;  // True if this marks the end of an event
 	};
 }
 
@@ -163,6 +164,15 @@ export function buildEventTimeline(
 				phase,
 				data: { duration }
 			});
+			// Add end event
+			if (endPos > startPos) {
+				events.push({
+					type: RaceEventType.Rushed,
+					position: endPos,
+					phase: getPhaseAtPosition(endPos, phaseDistances),
+					data: { duration, isEndEvent: true }
+				});
+			}
 		}
 	}
 
@@ -179,6 +189,15 @@ export function buildEventTimeline(
 				phase,
 				data: { posKeepState: state }
 			});
+			// Add end event
+			if (endPos > startPos) {
+				events.push({
+					type: RaceEventType.PosKeep,
+					position: endPos,
+					phase: getPhaseAtPosition(endPos, phaseDistances),
+					data: { posKeepState: state, isEndEvent: true }
+				});
+			}
 		}
 	}
 
@@ -195,6 +214,15 @@ export function buildEventTimeline(
 			phase,
 			data: { duration }
 		});
+		// Add end event
+		if (endPos > startPos) {
+			events.push({
+				type: RaceEventType.CompeteFight,
+				position: endPos,
+				phase: getPhaseAtPosition(endPos, phaseDistances),
+				data: { duration, isEndEvent: true }
+			});
+		}
 	}
 
 	// Add lead competition (spot struggle)
@@ -210,6 +238,15 @@ export function buildEventTimeline(
 			phase,
 			data: { duration }
 		});
+		// Add end event
+		if (endPos > startPos) {
+			events.push({
+				type: RaceEventType.LeadCompetition,
+				position: endPos,
+				phase: getPhaseAtPosition(endPos, phaseDistances),
+				data: { duration, isEndEvent: true }
+			});
+		}
 	}
 
 	// Add downhill mode events
@@ -224,6 +261,15 @@ export function buildEventTimeline(
 				phase,
 				data: {}
 			});
+			// Add end event
+			if (endPos > startPos) {
+				events.push({
+					type: RaceEventType.Downhill,
+					position: endPos,
+					phase: getPhaseAtPosition(endPos, phaseDistances),
+					data: { isEndEvent: true }
+				});
+			}
 		}
 	}
 

@@ -57,9 +57,9 @@ function EventLine({ event, courseDistance }: { event: RaceEvent; courseDistance
 			return (
 				<div class="raceSummaryEvent raceSummaryEvent--warning">
 					<span class="raceSummaryEvent__position">{positionStr}</span>
-					<span class="raceSummaryEvent__icon">🔥</span>
+					<span class="raceSummaryEvent__icon">{event.data.isEndEvent ? '✓' : '🔥'}</span>
 					<span class="raceSummaryEvent__text">
-						Rushed triggered{durationStr}
+						{event.data.isEndEvent ? 'Rushed ended' : `Rushed triggered${durationStr}`}
 					</span>
 				</div>
 			);
@@ -68,9 +68,9 @@ function EventLine({ event, courseDistance }: { event: RaceEvent; courseDistance
 			return (
 				<div class="raceSummaryEvent raceSummaryEvent--poskeep">
 					<span class="raceSummaryEvent__position">{positionStr}</span>
-					<span class="raceSummaryEvent__icon">🏃</span>
+					<span class="raceSummaryEvent__icon">{event.data.isEndEvent ? '✓' : '🏃'}</span>
 					<span class="raceSummaryEvent__text">
-						{getPosKeepStateName(event.data.posKeepState!)} active
+						{getPosKeepStateName(event.data.posKeepState!)} {event.data.isEndEvent ? 'ended' : 'active'}
 					</span>
 				</div>
 			);
@@ -79,9 +79,9 @@ function EventLine({ event, courseDistance }: { event: RaceEvent; courseDistance
 			return (
 				<div class="raceSummaryEvent raceSummaryEvent--mechanic">
 					<span class="raceSummaryEvent__position">{positionStr}</span>
-					<span class="raceSummaryEvent__icon">⚔️</span>
+					<span class="raceSummaryEvent__icon">{event.data.isEndEvent ? '✓' : '⚔️'}</span>
 					<span class="raceSummaryEvent__text">
-						Dueling engaged{durationStr}
+						{event.data.isEndEvent ? 'Dueling ended' : `Dueling engaged${durationStr}`}
 					</span>
 				</div>
 			);
@@ -90,9 +90,9 @@ function EventLine({ event, courseDistance }: { event: RaceEvent; courseDistance
 			return (
 				<div class="raceSummaryEvent raceSummaryEvent--mechanic">
 					<span class="raceSummaryEvent__position">{positionStr}</span>
-					<span class="raceSummaryEvent__icon">🏆</span>
+					<span class="raceSummaryEvent__icon">{event.data.isEndEvent ? '✓' : '🏆'}</span>
 					<span class="raceSummaryEvent__text">
-						Spot Struggle{durationStr}
+						{event.data.isEndEvent ? 'Spot Struggle ended' : `Spot Struggle${durationStr}`}
 					</span>
 				</div>
 			);
@@ -101,9 +101,9 @@ function EventLine({ event, courseDistance }: { event: RaceEvent; courseDistance
 			return (
 				<div class="raceSummaryEvent raceSummaryEvent--downhill">
 					<span class="raceSummaryEvent__position">{positionStr}</span>
-					<span class="raceSummaryEvent__icon">⛷️</span>
+					<span class="raceSummaryEvent__icon">{event.data.isEndEvent ? '✓' : '⛷️'}</span>
 					<span class="raceSummaryEvent__text">
-						Downhill mode activated
+						{event.data.isEndEvent ? 'Downhill mode ended' : 'Downhill mode activated'}
 					</span>
 				</div>
 			);
