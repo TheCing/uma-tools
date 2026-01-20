@@ -473,9 +473,9 @@ export function RaceTrack(props) {
 		}, {seen: new Set(), rungs: Array(10).fill(0).map(_ => []), elem: []}).elem;
 	}, [props.regions, course.distance, props.uma1, props.uma2, props.pacer]);
 
-	const statStrings = useText({1: 'ui.stats.1', 2: 'ui.stats.2', 3: 'ui.stats.3', 4: 'ui.stats.4', 5: 'ui.stats.5'});
+	const statStrings = useText({0: 'ui.stats.0', 1: 'ui.stats.1', 2: 'ui.stats.2', 3: 'ui.stats.3', 4: 'ui.stats.4', 5: 'ui.stats.5'});
 	const {joiner} = useText('ui.joiner');
-	const statThresholds = course.courseSetStatus.map(s => statStrings[s]).join(joiner);
+	const statThresholds = course.courseSetStatus.length == 0 ? statStrings[0] : course.courseSetStatus.map(s => statStrings[s]).join(joiner);
 
 	const totalWidth = props.width + xOffset + xExtra;
 	const totalHeight = props.height + yOffset + yExtra;
@@ -517,7 +517,7 @@ export function RaceTrack(props) {
 					{props.children}
 				</svg>
 				<RacetrackCow trackWidth={props.width} />
-				{course.courseSetStatus.length > 0 && <div class="racetrackStatThresholds"><Text id="racetrack.thresholds" />{statThresholds}</div>}
+				<div class="racetrackStatThresholds"><Text id="racetrack.thresholds" />{statThresholds}</div>
 			</div>
 		</IntlProvider>
 	);
