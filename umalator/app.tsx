@@ -10,13 +10,13 @@ import { RaceParameters, Mood, GroundCondition, Weather, Season, Time, Grade } f
 import { PosKeepMode } from '../uma-skill-tools/RaceSolver';
 import type { GameHpPolicy } from '../uma-skill-tools/HpPolicy';
 
-import { Language, LanguageSelect, useLanguageSelect } from '../components/Language';
-import { ExpandedSkillDetails, STRINGS_en as SKILL_STRINGS_en } from '../components/SkillList';
+import { Language, LanguageSelect, useLanguageSelect, useLanguage } from '../components/Language';
+import { ExpandedSkillDetails } from '../components/SkillList';
 import { RaceTrack, TrackSelect, RegionDisplayType } from '../components/RaceTrack';
 import { HorseState, SkillSet } from '../components/HorseDefTypes';
 import { HorseDef, horseDefTabs, isGeneralSkill } from '../components/HorseDef';
 import { RaceSummary } from '../components/RaceSummary';
-import { TRACKNAMES_ja, TRACKNAMES_en, COMMON_global } from '../strings/common';
+import { TRACKNAMES_ja, TRACKNAMES_en, COMMON_global, COMMON_STRINGS } from '../strings/common';
 import { RaceState } from '../uma-skill-tools/RaceSolver';
 
 import { getActivateableSkills, isPurpleSkill, getNullRow, BasinnChart } from './BasinnChart';
@@ -131,6 +131,7 @@ function binSearch(a: number[], x: number) {
 }
 
 function TimeOfDaySelect(props) {
+	const lang = useLanguage();
 	function click(e) {
 		e.stopPropagation();
 		if (!('timeofday' in e.target.dataset)) return;
@@ -140,7 +141,7 @@ function TimeOfDaySelect(props) {
 	return (
 		<div class="timeofdaySelect" onClick={click}>
 			{Array(3).fill(0).map((_,i) =>
-				<img src={`/uma-tools/icons/utx_ico_timezone_0${i}.png`} title={SKILL_STRINGS_en.skilldetails.time[i+2]}
+				<img src={`/uma-tools/icons/utx_ico_timezone_0${i}.png`} title={COMMON_STRINGS[lang].time[i+2]}
 					class={i+2 == props.value ? 'selected' : ''} data-timeofday={i+2} />)}
 		</div>
 	);
@@ -168,6 +169,7 @@ function GroundSelect(props) {
 }
 
 function WeatherSelect(props) {
+	const lang = useLanguage();
 	function click(e) {
 		e.stopPropagation();
 		if (!('weather' in e.target.dataset)) return;
@@ -176,13 +178,14 @@ function WeatherSelect(props) {
 	return (
 		<div class="weatherSelect" onClick={click}>
 			{Array(4).fill(0).map((_,i) =>
-				<img src={`/uma-tools/icons/utx_ico_weather_0${i}.png`} title={SKILL_STRINGS_en.skilldetails.weather[i+1]}
+				<img src={`/uma-tools/icons/utx_ico_weather_0${i}.png`} title={COMMON_STRINGS[lang].weather[i+1]}
 					class={i+1 == props.value ? 'selected' : ''} data-weather={i+1} />)}
 		</div>
 	);
 }
 
 function SeasonSelect(props) {
+	const lang = useLanguage();
 	function click(e) {
 		e.stopPropagation();
 		if (!('season' in e.target.dataset)) return;
@@ -191,7 +194,7 @@ function SeasonSelect(props) {
 	return (
 		<div class="seasonSelect" onClick={click}>
 			{Array(4 + +!CC_GLOBAL /* global doenst have late spring for some reason */).fill(0).map((_,i) =>
-				<img src={`/uma-tools/icons${CC_GLOBAL?'/global':''}/utx_txt_season_0${i}.png`} title={SKILL_STRINGS_en.skilldetails.season[i+1]}
+				<img src={`/uma-tools/icons${CC_GLOBAL?'/global':''}/utx_txt_season_0${i}.png`} title={COMMON_STRINGS[lang].season[i+1]}
 					class={i+1 == props.value ? 'selected' : ''} data-season={i+1} />)}
 		</div>
 	);

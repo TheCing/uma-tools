@@ -83,7 +83,7 @@ export const STRINGS_ja = Object.freeze({
 		'seconds': '{{n}}s',
 		'slope': Object.freeze(['平地', '上り坂', '下り坂']),
 		'speed': '{{n}}m/s',
-		'time': Object.freeze(['', '朝', '昼', '夕方', '夜']),
+		'time': COMMON_ja['time'],
 		'weather': COMMON_ja['weather']
 	})
 });
@@ -151,7 +151,7 @@ export const STRINGS_en = Object.freeze({
 		'seconds': '{{n}}s',
 		'slope': Object.freeze(['Flat', 'Uphill', 'Downhill']),
 		'speed': '{{n}}m/s',
-		'time': Object.freeze(['', 'Morning', 'Mid day', 'Evening', 'Night']),
+		'time': COMMON_en['time'],
 		'weather': COMMON_en['weather']
 	})
 });
@@ -161,6 +161,7 @@ export const STRINGS_global = extendStrings(STRINGS_en, {
 		'ground_condition': COMMON_global['ground'],
 		'running_style': COMMON_global['strategy'],
 		'season': COMMON_global['season'],
+		'time': COMMON_global['time'],
 		'weather': COMMON_global['weather']
 	})
 });
