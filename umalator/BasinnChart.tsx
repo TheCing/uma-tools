@@ -228,7 +228,12 @@ export function BasinnChart(props) {
 		accessorFn: (row) => row.mean / costForId(row.id, props.hints, props.hasSkills),
 		cell: (info) => {
 			const x = info.getValue();
-			return <span>{isNaN(x) || Math.abs(x) == Infinity ? '--' : x.toFixed(6)}</span>;
+			return <span>{Number.isFinite(x) ? x.toFixed(6) : '--'}</span>;
+		},
+		sortFn: (a, b) => {
+			const x = a.getValue('bsp'), y = b.getValue('bsp');
+			const xf = Number.isFinite(x), yf = Number.isFinite(y);
+			return xf && yf ? +(y < x) - +(x < y) : +xf - +yf;
 		},
 		sortDescFirst: true
 	}], [selectedType, props.showUmaIcons, props.hints, props.hasSkills]);
