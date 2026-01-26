@@ -326,7 +326,7 @@ function BarChart(props) {
 }
 
 export function LengthDifferenceChart(props) {
-	const {skillId, runData, courseDistance} = props;
+	const {skillId, runData, courseDistance, umaIndex = 1} = props;
 	const width = 300;
 	const height = 150;
 
@@ -368,20 +368,29 @@ export function LengthDifferenceChart(props) {
 	const maxDistance = Math.ceil(courseDistance / binSize) * binSize;
 	const bins = [];
 	for (let i = 0; i < maxDistance; i += binSize) {
-		bins.push({start: i, end: i + binSize, maxBasinn: 0});
+		bins.push({start: i, end: i + binSize, maxBasinn: umaIndex === 0 ? Infinity : 0});
 	}
 
 	allActivations.forEach(([activationPos, basinn]) => {
-		if (basinn > 0) {
+		const isBeneficial = umaIndex === 0 ? basinn < 0 : basinn > 0;
+		if (isBeneficial) {
 			const binIndex = Math.floor(activationPos / binSize);
 			if (binIndex >= 0 && binIndex < bins.length) {
-				bins[binIndex].maxBasinn = Math.max(bins[binIndex].maxBasinn, basinn);
+				if (umaIndex === 0) {
+					bins[binIndex].maxBasinn = Math.min(bins[binIndex].maxBasinn, basinn);
+				} else {
+					bins[binIndex].maxBasinn = Math.max(bins[binIndex].maxBasinn, basinn);
+				}
 			}
 		}
 	});
 
 	bins.forEach(bin => {
-		bin.value = bin.maxBasinn;
+		if (umaIndex === 0) {
+			bin.value = bin.maxBasinn === Infinity ? 0 : Math.abs(bin.maxBasinn);
+		} else {
+			bin.value = bin.maxBasinn;
+		}
 	});
 
 	const maxValue = Math.max(...bins.map(b => b.value), 0);
@@ -522,7 +531,7 @@ function calculatePhaseBackgrounds(
 }
 
 export function VelocityChart(props) {
-	const {skillId, runData, courseDistance, displaying} = props;
+	const {skillId, runData, courseDistance, displaying, umaIndex = 1} = props;
 	const width = 400;
 	const height = 200;
 	const margin = {top: 5, right: 5, bottom: 20, left: 40};
@@ -558,7 +567,7 @@ export function VelocityChart(props) {
 	const uma1Times = selectedRun.t[0];
 	const uma1Velocities = selectedRun.v[0];
 	const uma1Positions = selectedRun.p[0];
-	
+
 	const uma2Times = selectedRun.t[1];
 	const uma2Velocities = selectedRun.v[1];
 	const uma2Positions = selectedRun.p[1];
@@ -568,41 +577,50 @@ export function VelocityChart(props) {
 		return null;
 	}
 
+	const skillUmaIndex = skillData.umaIndex;
 	const {positions: skillPositions} = skillData;
 	const [startPos, endPos] = skillPositions[0];
-	const startTime = interpolateValue(startPos, uma2Positions, uma2Times);
-	const endTime = interpolateValue(endPos, uma2Positions, uma2Times);
+
+	const skillUmaTimes = skillUmaIndex === 0 ? uma1Times : uma2Times;
+	const skillUmaPositions = skillUmaIndex === 0 ? uma1Positions : uma2Positions;
+	const otherUmaTimes = skillUmaIndex === 0 ? uma2Times : uma1Times;
+	const otherUmaVelocities = skillUmaIndex === 0 ? uma2Velocities : uma1Velocities;
+	const otherUmaPositions = skillUmaIndex === 0 ? uma2Positions : uma1Positions;
+
+	const startTime = interpolateValue(startPos, skillUmaPositions, skillUmaTimes);
+	const endTime = interpolateValue(endPos, skillUmaPositions, skillUmaTimes);
 
 	const timeWindowStart = Math.max(0, startTime - TIME_WINDOW_PADDING);
 	const timeWindowEnd = endTime + TIME_WINDOW_PADDING;
 
-	const uma1VelocityData: Array<[number, number]> = [];
-	const uma2VelocityData: Array<[number, number]> = [];
+	const skillUmaVelocityData: Array<[number, number]> = [];
+	const otherUmaVelocityData: Array<[number, number]> = [];
 	const positionData: Array<[number, number]> = [];
-	
-	for (let i = 0; i < uma1Times.length; i++) {
-		const t = uma1Times[i];
+
+	for (let i = 0; i < skillUmaTimes.length; i++) {
+		const t = skillUmaTimes[i];
 		if (t >= timeWindowStart && t <= timeWindowEnd) {
-			uma1VelocityData.push([t, uma1Velocities[i]]);
-			positionData.push([t, uma1Positions[i]]);
+			const velocities = skillUmaIndex === 0 ? uma1Velocities : uma2Velocities;
+			skillUmaVelocityData.push([t, velocities[i]]);
+			positionData.push([t, skillUmaPositions[i]]);
 		}
 	}
 
-	for (let i = 0; i < uma2Times.length; i++) {
-		const t = uma2Times[i];
+	for (let i = 0; i < otherUmaTimes.length; i++) {
+		const t = otherUmaTimes[i];
 		if (t >= timeWindowStart && t <= timeWindowEnd) {
-			uma2VelocityData.push([t, uma2Velocities[i]]);
+			otherUmaVelocityData.push([t, otherUmaVelocities[i]]);
 		}
 	}
 
-	if (uma1VelocityData.length === 0 || uma2VelocityData.length === 0) {
+	if (skillUmaVelocityData.length === 0 || otherUmaVelocityData.length === 0) {
 		return null;
 	}
 
 	const minTime = timeWindowStart;
 	const maxTime = timeWindowEnd;
-	
-	const allVelocities = [...uma1VelocityData.map(d => d[1]), ...uma2VelocityData.map(d => d[1])];
+
+	const allVelocities = [...skillUmaVelocityData.map(d => d[1]), ...otherUmaVelocityData.map(d => d[1])];
 	const minVelocity = Math.min(...allVelocities);
 	const maxVelocity = Math.max(...allVelocities);
 
@@ -611,7 +629,7 @@ export function VelocityChart(props) {
 		Math.max(...uma2Velocities)
 	);
 	const maxVelocityRoundedUp = Math.ceil(maxVelocityEntireRace) + 1;
-	
+
 	const yMin = Math.min(Y_MIN_VELOCITY, minVelocity);
 	const yMax = Math.max(Y_MIN_VELOCITY, maxVelocityRoundedUp);
 
@@ -630,30 +648,30 @@ export function VelocityChart(props) {
 		.y(d => y(d[1]))
 		.curve(d3.curveMonotoneX);
 
-	const uma1PathData = line(uma1VelocityData);
+	const otherUmaPathData = line(otherUmaVelocityData);
 
 	let convergenceTime = maxTime;
-	for (let i = 0; i < uma2Times.length; i++) {
-		const t = uma2Times[i];
+	for (let i = 0; i < otherUmaTimes.length; i++) {
+		const t = otherUmaTimes[i];
 		if (t >= endTime) {
-			const uma2Vel = uma2Velocities[i];
-			const uma1Vel = uma1Velocities[i];
-			if (Math.abs(uma1Vel - uma2Vel) <= VELOCITY_CONVERGENCE_THRESHOLD) {
+			const otherVel = otherUmaVelocities[i];
+			const skillVel = (skillUmaIndex === 0 ? uma1Velocities : uma2Velocities)[i];
+			if (Math.abs(skillVel - otherVel) <= VELOCITY_CONVERGENCE_THRESHOLD) {
 				convergenceTime = t;
 				break;
 			}
 		}
 	}
 
-	const uma2VelocityDataFiltered: Array<[number, number]> = [];
-	for (let i = 0; i < uma2VelocityData.length; i++) {
-		const [t, v] = uma2VelocityData[i];
+	const skillUmaVelocityDataFiltered: Array<[number, number]> = [];
+	for (let i = 0; i < skillUmaVelocityData.length; i++) {
+		const [t, v] = skillUmaVelocityData[i];
 		if (t >= startTime && t <= Math.min(convergenceTime, timeWindowEnd)) {
-			uma2VelocityDataFiltered.push([t, v]);
+			skillUmaVelocityDataFiltered.push([t, v]);
 		}
 	}
 
-	const uma2PathData = uma2VelocityDataFiltered.length > 0 ? line(uma2VelocityDataFiltered) : null;
+	const skillUmaPathData = skillUmaVelocityDataFiltered.length > 0 ? line(skillUmaVelocityDataFiltered) : null;
 
 	useEffect(function() {
 		if (!canvasRef.current) return;
@@ -707,11 +725,11 @@ export function VelocityChart(props) {
 			ctx.stroke();
 		});
 		
-		if (uma1PathData && uma1VelocityData.length > 0) {
+		if (otherUmaPathData && otherUmaVelocityData.length > 0) {
 			ctx.strokeStyle = '#2a77c5';
 			ctx.lineWidth = 2;
 			ctx.beginPath();
-			uma1VelocityData.forEach((d, i) => {
+			otherUmaVelocityData.forEach((d, i) => {
 				const roundedTime = Number(d[0].toFixed(2));
 				const roundedVelocity = Number(d[1].toFixed(2));
 				if (i === 0) {
@@ -722,12 +740,12 @@ export function VelocityChart(props) {
 			});
 			ctx.stroke();
 		}
-		
-		if (uma2PathData && uma2VelocityDataFiltered.length > 0) {
+
+		if (skillUmaPathData && skillUmaVelocityDataFiltered.length > 0) {
 			ctx.strokeStyle = '#ff69b4';
 			ctx.lineWidth = 2;
 			ctx.beginPath();
-			uma2VelocityDataFiltered.forEach((d, i) => {
+			skillUmaVelocityDataFiltered.forEach((d, i) => {
 				const roundedTime = Number(d[0].toFixed(2));
 				const roundedVelocity = Number(d[1].toFixed(2));
 				if (i === 0) {
@@ -738,9 +756,9 @@ export function VelocityChart(props) {
 			});
 			ctx.stroke();
 		}
-		
+
 		ctx.restore();
-	}, [x, y, chartWidth, chartHeight, yMin, maxVelocityRoundedUp, phaseBackgrounds, uma1VelocityData, uma2VelocityDataFiltered, width, height, margin]);
+	}, [x, y, chartWidth, chartHeight, yMin, maxVelocityRoundedUp, phaseBackgrounds, skillUmaVelocityDataFiltered, otherUmaVelocityData, width, height, margin]);
 
 	useEffect(function() {
 		if (!axesRef.current) return;
@@ -1421,13 +1439,23 @@ function App(props) {
 	const [simulationProgress, setSimulationProgress] = useState<{round: number, total: number} | null>(null);
 	const chartWorkersCompletedRef = useRef(0);
 	const [posKeepMode, setPosKeepModeRaw] = useState(PosKeepMode.Approximate);
-	const [showHp, toggleShowHp] = useReducer((b,_) => !b, false);
+	const [showHp, toggleShowHp] = useReducer((b,_) => !b, () => {
+		if (typeof window !== 'undefined') {
+			const saved = localStorage.getItem('showHp');
+			return saved === 'true';
+		}
+		return false;
+	});
 	const [showLanes, toggleShowLanes] = useReducer((b,_) => !b, false);
-	
+
 	useEffect(() => {
 		document.documentElement.classList.toggle('dark', darkMode);
 		localStorage.setItem('darkMode', String(darkMode));
 	}, [darkMode]);
+
+	useEffect(() => {
+		localStorage.setItem('showHp', String(showHp));
+	}, [showHp]);
 	
 	// Wrapper to handle mode changes and reset tab if needed
 	function setPosKeepMode(mode: PosKeepMode) {
@@ -2245,6 +2273,7 @@ function App(props) {
 
 	const createExpandedContent = useCallback((skillId: string, runData: any, courseDistance: number) => {
 		const currentDisplaying = displaying || 'meanrun';
+		const umaIndexForChart = currentIdx < 2 ? currentIdx : 1;
 		let effectivenessRate = 0;
 		const totalCount = runData.allruns?.totalRuns || 0;
 		let skillProcs = 0;
@@ -2262,7 +2291,7 @@ function App(props) {
 				}
 				if (activations && Array.isArray(activations)) {
 					activations.forEach((activation: any) => {
-						if (Array.isArray(activation) && activation.length === 2 && 
+						if (Array.isArray(activation) && activation.length === 2 &&
 						    typeof activation[0] === 'number' && typeof activation[1] === 'number') {
 							allBasinnActivations.push([activation[0], activation[1]]);
 						}
@@ -2270,8 +2299,14 @@ function App(props) {
 				}
 			});
 			skillProcs = allBasinnActivations.length;
-			const positiveCount = allBasinnActivations.filter(([_, basinn]) => basinn > 0).length;
-			effectivenessRate = totalCount > 0 ? (positiveCount / totalCount) * 100 : 0;
+			const beneficialCount = allBasinnActivations.filter(([_, basinn]) => {
+				if (umaIndexForChart === 0) {
+					return basinn < 0;
+				} else {
+					return basinn > 0;
+				}
+			}).length;
+			effectivenessRate = totalCount > 0 ? (beneficialCount / totalCount) * 100 : 0;
 		}
 		
 		return (
@@ -2295,22 +2330,24 @@ function App(props) {
 				</div>
 				<div style={`display: flex; gap: 20px; align-items: flex-start;`}>
 					<div>
-						<LengthDifferenceChart 
-							skillId={skillId} 
-							runData={runData} 
+						<LengthDifferenceChart
+							skillId={skillId}
+							runData={runData}
 							courseDistance={courseDistance}
+							umaIndex={umaIndexForChart}
 						/>
-						<ActivationFrequencyChart 
-							skillId={skillId} 
-							runData={runData} 
+						<ActivationFrequencyChart
+							skillId={skillId}
+							runData={runData}
 							courseDistance={courseDistance}
 						/>
 					</div>
-					<VelocityChart 
-						skillId={skillId} 
+					<VelocityChart
+						skillId={skillId}
 						runData={runData}
 						courseDistance={courseDistance}
 						displaying={currentDisplaying}
+						umaIndex={umaIndexForChart}
 					/>
 				</div>
 				<div style="position: absolute; bottom: 0; right: 0; font-size: 9px; font-style: italic; padding: 4px;">
@@ -2318,7 +2355,7 @@ function App(props) {
 				</div>
 			</div>
 		);
-	}, [displaying, loadingAdditionalSamples, isSimulationRunning, runAdditionalSamplesForSkill]);
+	}, [displaying, loadingAdditionalSamples, isSimulationRunning, runAdditionalSamplesForSkill, currentIdx]);
 
 	let resultsPane;
 	if (mode == Mode.Compare && results.length > 0) {
