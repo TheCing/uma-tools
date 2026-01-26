@@ -69,6 +69,14 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
+					<h2>2026-01-26</h2>
+					<p><em>Synced with <a href="https://github.com/kachi-dev/uma-tools">kachi-dev/uma-tools</a>:</em></p>
+					<ul>
+						<li><strong>Skill Chart Fix:</strong> Fixed skill effectiveness charts showing incorrect values when viewing Uma 1's skills in Compare mode. Charts now properly calculate beneficial bashin for each horse's perspective.</li>
+						<li><strong>Skill Fix:</strong> Fixed SPARKLY☆STARDOM activation at phase boundaries.</li>
+					</ul>
+				</section>
+				<section>
 					<h2>2026-01-18</h2>
 					<ul>
 						<li><strong>Horse Slots:</strong> Save your uma builds to named slots for quick loading. Great for storing common opponents or test builds. Find it in the Save/Load dropdowns.</li>
