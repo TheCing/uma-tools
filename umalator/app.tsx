@@ -16,7 +16,7 @@ import { RaceTrack, TrackSelect, RegionDisplayType } from '../components/RaceTra
 import { HorseState, SkillSet } from '../components/HorseDefTypes';
 import { HorseDef, horseDefTabs, isGeneralSkill } from '../components/HorseDef';
 import { RaceSummary } from '../components/RaceSummary';
-import { TRACKNAMES_ja, TRACKNAMES_en } from '../strings/common';
+import { TRACKNAMES_ja, TRACKNAMES_en, COMMON_global } from '../strings/common';
 import { RaceState } from '../uma-skill-tools/RaceSolver';
 
 import { getActivateableSkills, isPurpleSkill, getNullRow, BasinnChart } from './BasinnChart';
@@ -2850,6 +2850,6 @@ function App(props) {
 }
 
 initTelemetry();
-render(<App lang="en-ja" />, document.getElementById('app'));
+render(<App lang={CC_GLOBAL ? "en-global" : "en-ja"} />, document.getElementById('app'));
 
 
