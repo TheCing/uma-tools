@@ -157,6 +157,9 @@ export const STRINGS_en = Object.freeze({
 });
 
 export const STRINGS_global = extendStrings(STRINGS_en, {
+	'skilleffecttypes': extendStrings(STRINGS_en['skilleffecttypes'], {
+		'5': 'Wit up'
+	}),
 	'skilldetails': extendStrings(STRINGS_en['skilldetails'], {
 		'ground_condition': COMMON_global['ground'],
 		'running_style': COMMON_global['strategy'],
