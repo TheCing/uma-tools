@@ -564,9 +564,27 @@
 	width: 20px;
 }
 
-/* one day i'll actually learn CSS */
+/* Aptitude dropdown items */
 .horseAptitudeSelect li {
 	margin-left: -22px;
+	padding: 2px 4px 2px 4px;
+	cursor: pointer;
+	position: relative;
+}
+
+.horseAptitudeSelect li::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -18px;
+	right: 0;
+	bottom: 0;
+	transition: background 0.15s ease;
+	z-index: -1;
+}
+
+.horseAptitudeSelect li:hover::before {
+	background: rgba(121, 64, 22, 0.12);
 }
 
 .horseAptitudeSelect img {
@@ -931,6 +949,10 @@
 .dark .horseAptitudeSelect > ul {
 	background: var(--bg-subtle);
 	border-color: var(--border);
+}
+
+.dark .horseAptitudeSelect li:hover::before {
+	background: rgba(200, 160, 100, 0.2);
 }
 
 .dark .forcedPositionInput {

@@ -170,8 +170,8 @@ export function RacetrackCow({ trackWidth }: RacetrackCowProps) {
 		return (
 			<div
 				className="racetrackCowHidden"
-				onDblClick={handleDoubleClick}
-				title="Double-click to bring back the cow"
+				onClick={handleDoubleClick}
+				title="Click to bring back the cow"
 			/>
 		);
 	}

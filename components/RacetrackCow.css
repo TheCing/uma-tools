@@ -4,7 +4,7 @@
 	image-rendering: pixelated;
 	image-rendering: crisp-edges;
 	cursor: pointer;
-	z-index: 50;
+	z-index: 5;
 	filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
 	transform: scale(3);
 	transform-origin: bottom left;
@@ -19,18 +19,18 @@
 	filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.3)) brightness(0.95);
 }
 
-/* Hidden state - just a tiny clickable area to restore cow */
+/* Hidden state - clickable area to restore cow */
 .racetrackCowHidden {
 	position: absolute;
 	top: 0;
 	right: 10px;
-	width: 20px;
-	height: 20px;
+	width: 32px;
+	height: 32px;
 	cursor: pointer;
-	opacity: 0.2;
-	font-size: 14px;
+	opacity: 0.3;
+	font-size: 24px;
 	text-align: center;
-	line-height: 20px;
+	line-height: 32px;
 }
 
 .racetrackCowHidden::after {
