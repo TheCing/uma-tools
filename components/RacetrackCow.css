@@ -1,0 +1,101 @@
+.racetrackCow {
+	position: absolute;
+	top: 100px;
+	image-rendering: pixelated;
+	image-rendering: crisp-edges;
+	cursor: pointer;
+	z-index: 50;
+	filter: drop-shadow(2px 4px 4px rgba(0, 0, 0, 0.3));
+	transform: scale(3);
+	transform-origin: bottom left;
+	transition: filter 0.1s ease;
+}
+
+.racetrackCow:hover {
+	filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4)) brightness(1.05);
+}
+
+.racetrackCow:active {
+	filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.3)) brightness(0.95);
+}
+
+/* Hidden state - just a tiny clickable area to restore cow */
+.racetrackCowHidden {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	opacity: 0.2;
+	font-size: 14px;
+	text-align: center;
+	line-height: 20px;
+}
+
+.racetrackCowHidden::after {
+	content: '🐄';
+}
+
+.racetrackCowHidden:hover {
+	opacity: 0.6;
+}
+
+/* Z's animation when sleeping */
+.racetrackCow.sleep::after {
+	content: 'z';
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	font-size: 8px;
+	color: rgba(100, 100, 200, 0.9);
+	animation: sleepZ 1.5s ease-in-out infinite;
+}
+
+@keyframes sleepZ {
+	0% {
+		opacity: 0;
+		transform: translateY(0) scale(0.8);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(-4px) scale(1);
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.8);
+	}
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+	.racetrackCow {
+		top: 80px;
+		transform: scale(2.5);
+	}
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+	.racetrackCow {
+		top: 60px;
+		transform: scale(2);
+	}
+
+	.racetrackCowHidden {
+		top: 60px;
+		right: 5px;
+	}
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+	.racetrackCow {
+		top: 35px;
+		transform: scale(1.5);
+	}
+
+	.racetrackCowHidden {
+		top: 35px;
+	}
+}

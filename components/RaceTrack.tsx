@@ -7,6 +7,7 @@ import { Region, RegionList } from '../uma-skill-tools/Region';
 
 import { useLanguage } from './Language';
 import { TRACKNAMES_ja, TRACKNAMES_en } from '../strings/common';
+import { RacetrackCow } from './RacetrackCow';
 
 import courses from '../uma-skill-tools/data/course_data.json';
 import tracknames from '../uma-skill-tools/data/tracknames.json';
@@ -515,6 +516,7 @@ export function RaceTrack(props) {
 					</svg>
 					{props.children}
 				</svg>
+				<RacetrackCow trackWidth={props.width} />
 				{course.courseSetStatus.length > 0 && <div class="racetrackStatThresholds"><Text id="racetrack.thresholds" />{statThresholds}</div>}
 			</div>
 		</IntlProvider>
