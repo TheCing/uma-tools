@@ -150,7 +150,7 @@ Important mappings:
 - Style "Late" or "Late Surger" = strategy "Sasi"
 - Style "End" or "End Closer" = strategy "Oikomi"
 
-Extract ALL visible skill names from the Skills tab. Only include the skill names, not levels or icons.`;
+Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including any circle symbols (○, ◎, ×) that appear after the skill name - these are NOT icons, they are part of the skill name indicating skill grade.`;
 
 export async function extractHorseDataFromImage(
 	imageBase64: string,
