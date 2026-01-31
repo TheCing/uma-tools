@@ -14,13 +14,13 @@
   "author": "pecan",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@preact/preset-vite": "^2.10.3",
     "commander": "^13.1.0",
-    "esbuild": "^0.19.5"
+    "esbuild": "^0.19.5",
+    "vite": "^7.3.1"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.2",
-    "@preact/preset-vite": "^2.10.3",
-    "vite": "^7.3.1",
     "d3": "^7.9.0",
     "fast-check": "^4.5.3",
     "immutable": "^5.0.3",
