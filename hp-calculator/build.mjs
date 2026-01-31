@@ -38,8 +38,8 @@ if (serve) {
   process.on('SIGINT', () => { cleanup(); process.exit(); });
   process.on('SIGTERM', () => { cleanup(); process.exit(); });
 
-  // Start Vite dev server
-  const vite = spawn('npx', ['vite'], { stdio: 'inherit', cwd: __dirname });
+  // Start Vite dev server (use local node_modules)
+  const vite = spawn('node', ['../node_modules/vite/bin/vite.js'], { stdio: 'inherit', cwd: __dirname });
   vite.on('close', cleanup);
 } else {
   // Production build
@@ -52,8 +52,8 @@ if (serve) {
   if (existsSync(prodIndexBackup)) rmSync(prodIndexBackup);
   if (existsSync(join(__dirname, 'assets'))) rmSync(join(__dirname, 'assets'), { recursive: true });
 
-  // Run Vite build
-  execSync('npx vite build', { stdio: 'inherit', cwd: __dirname });
+  // Run Vite build (use local node_modules)
+  execSync('node ../node_modules/vite/bin/vite.js build', { stdio: 'inherit', cwd: __dirname });
 
   // Copy dist contents to parent folder
   console.log('Copying build output...');
