@@ -6,7 +6,10 @@
   "scripts": {
     "build:global": "cd umalator-global && node build.mjs",
     "dev": "cd umalator-global && node build.mjs --serve 3000",
-    "serve": "npm run build:global && node serve.mjs"
+    "serve": "npm run build:global && node serve.mjs",
+    "dev:v2": "cd umalator-global/v2 && npx vite",
+    "build:v2": "cd umalator-global/v2 && npx vite build",
+    "preview:v2": "cd umalator-global/v2 && npx vite preview"
   },
   "author": "pecan",
   "license": "GPL-3.0-or-later",
@@ -16,12 +19,17 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.2",
+    "@preact/preset-vite": "^2.10.3",
+    "vite": "^7.3.1",
     "d3": "^7.9.0",
+    "fast-check": "^4.5.3",
     "immutable": "^5.0.3",
+    "lucide-react": "^0.563.0",
     "posthog-js": "^1.257.0",
     "prando": "^6.0.1",
     "preact": "^10.18.1",
     "preact-i18n": "^2.4.0-preactx",
+    "ts-node": "^10.9.2",
     "unassert-cli": "github:unassert-js/unassert-cli"
   }
 }
