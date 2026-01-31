@@ -37,12 +37,8 @@ rm -f bundle.2.js
 cd ..
 
 echo ""
-echo "Building hp-calculator..."
-cd hp-calculator
-node build.mjs
-cd ..
-
-echo ""
 echo "========================================="
 echo "Build complete! All applications ready."
 echo "========================================="
+# Note: hp-calculator uses Vite (requires Node 20+) and is built locally.
+# Pre-built files (bundle.js, bundle.css, index.html) are committed to git.
