@@ -27,7 +27,3 @@ A glossary of terms used in Uma Musume and this simulator.
 2. Choose a race course and conditions
 3. Click "Run" or "Compare" to simulate
 4. Check results for time, position gains, and survival rate
-
-## Technical Documentation
-
-For developers and those interested in the simulation mechanics, see the [.claude/](.claude/) directory for detailed technical documentation.
