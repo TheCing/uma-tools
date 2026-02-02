@@ -287,6 +287,35 @@
             <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
         </svg>`;
 
+        // Generate slug from heading text (matches marked.js default behavior)
+        function slugify(text) {
+            return text
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')  // Remove special chars except spaces and hyphens
+                .replace(/\s+/g, '-')       // Replace spaces with hyphens
+                .replace(/-+/g, '-');       // Collapse multiple hyphens
+        }
+
+        // Add IDs to headings that don't have them
+        function addHeadingIds() {
+            const headings = contentEl.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            const usedIds = new Set();
+            headings.forEach(heading => {
+                if (!heading.id) {
+                    let baseId = slugify(heading.textContent);
+                    let id = baseId;
+                    let counter = 1;
+                    // Ensure unique IDs
+                    while (usedIds.has(id)) {
+                        id = baseId + '-' + counter++;
+                    }
+                    heading.id = id;
+                }
+                usedIds.add(heading.id);
+            });
+        }
+
         function addHeadingAnchors() {
             const headings = contentEl.querySelectorAll('h1, h2, h3, h4');
             headings.forEach(heading => {
@@ -322,6 +351,9 @@
 
                 // Track current doc
                 currentDoc = filename;
+
+                // Add IDs to headings (marked.js doesn't do this by default)
+                addHeadingIds();
 
                 // Add anchor links to headings
                 addHeadingAnchors();
