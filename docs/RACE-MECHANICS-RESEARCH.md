@@ -467,7 +467,7 @@ else if (behind > this.posKeepExitDistance ||
 #### Strategic Implications
 
 1. **Stamina conservation**: The 0.6x HP modifier makes Pace Down valuable for preserving stamina for the spurt
-2. **Skill timing matters**: Speed skills prevent/exit Pace Down—activating a green skill early might cost you stamina savings
+2. **Skill timing matters**: Speed skills prevent/exit Pace Down—a speed skill triggering early might cost you stamina savings
 3. **Strategy choice**: End Closers and Late Surgers have larger thresholds, so they're more likely to hit Pace Down if they start fast
 4. **Course length**: Longer courses have larger thresholds (except Pace Chaser min), giving more room before Pace Down triggers
 
