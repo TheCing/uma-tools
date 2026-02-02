@@ -182,6 +182,62 @@
             color: var(--fg);
         }
 
+        /* Heading anchor links */
+        .content h1, .content h2, .content h3, .content h4 {
+            position: relative;
+        }
+
+        .heading-anchor {
+            position: absolute;
+            left: -1.5em;
+            opacity: 0;
+            padding-right: 0.5em;
+            color: var(--fg-muted);
+            text-decoration: none;
+            font-weight: normal;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .content h1:hover .heading-anchor,
+        .content h2:hover .heading-anchor,
+        .content h3:hover .heading-anchor,
+        .content h4:hover .heading-anchor,
+        .heading-anchor:hover {
+            opacity: 1;
+        }
+
+        .heading-anchor:hover {
+            color: var(--accent);
+        }
+
+        .heading-anchor svg {
+            width: 0.75em;
+            height: 0.75em;
+            vertical-align: middle;
+        }
+
+        /* Copied tooltip */
+        .heading-anchor.copied::after {
+            content: 'Copied!';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--fg);
+            color: var(--bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            white-space: nowrap;
+            animation: fadeOut 1.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            0%, 70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 position: static;
@@ -225,6 +281,38 @@
         const contentEl = document.getElementById('content');
         const navLinks = document.querySelectorAll('.sidebar nav a');
 
+        // Link icon SVG
+        const linkIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+            <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+        </svg>`;
+
+        function addHeadingAnchors() {
+            const headings = contentEl.querySelectorAll('h1, h2, h3, h4');
+            headings.forEach(heading => {
+                if (!heading.id) return;
+
+                const anchor = document.createElement('a');
+                anchor.className = 'heading-anchor';
+                anchor.innerHTML = linkIconSvg;
+                anchor.title = 'Copy link to this section';
+                anchor.setAttribute('aria-label', 'Copy link to section');
+
+                anchor.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const docBase = currentDoc.replace('.md', '');
+                    const url = window.location.href.split('#')[0] + '#' + docBase + ':' + heading.id;
+                    navigator.clipboard.writeText(url).then(() => {
+                        anchor.classList.add('copied');
+                        setTimeout(() => anchor.classList.remove('copied'), 1500);
+                    });
+                });
+
+                heading.insertBefore(anchor, heading.firstChild);
+            });
+        }
+
         async function loadDoc(filename) {
             try {
                 const response = await fetch(filename);
@@ -232,17 +320,34 @@
                 const markdown = await response.text();
                 contentEl.innerHTML = marked.parse(markdown);
 
+                // Track current doc
+                currentDoc = filename;
+
+                // Add anchor links to headings
+                addHeadingAnchors();
+
                 // Update active nav link
                 navLinks.forEach(link => {
                     link.classList.toggle('active', link.dataset.doc === filename);
                 });
 
-                // Update URL hash
-                window.location.hash = filename.replace('.md', '');
+                // Update URL hash (only update if not already set with section)
+                const currentHash = window.location.hash.slice(1);
+                const docBase = filename.replace('.md', '');
+                if (!currentHash.startsWith(docBase + ':')) {
+                    history.replaceState(null, '', '#' + docBase);
+                }
+
+                // Scroll to top
+                contentEl.scrollTop = 0;
+                window.scrollTo(0, 0);
             } catch (error) {
                 contentEl.innerHTML = '<p>Error loading documentation. Please try again.</p>';
             }
         }
+
+        // Track current document
+        let currentDoc = 'README.md';
 
         // Handle nav clicks
         navLinks.forEach(link => {
@@ -252,11 +357,51 @@
             });
         });
 
+        // Handle internal anchor link clicks (TOC links)
+        contentEl.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.slice(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    // Update URL without triggering hashchange reload
+                    history.pushState(null, '', `#${currentDoc.replace('.md', '')}:${targetId}`);
+                }
+            }
+        });
+
         // Handle initial load and hash changes
         function loadFromHash() {
             const hash = window.location.hash.slice(1);
-            const doc = hash ? hash + '.md' : 'README.md';
-            loadDoc(doc);
+            if (!hash) {
+                loadDoc('README.md');
+                return;
+            }
+
+            // Check if hash contains a section anchor (doc:section format)
+            const colonIndex = hash.indexOf(':');
+            if (colonIndex > 0) {
+                const docName = hash.slice(0, colonIndex) + '.md';
+                const sectionId = hash.slice(colonIndex + 1);
+                if (currentDoc !== docName) {
+                    loadDoc(docName).then(() => {
+                        const target = document.getElementById(sectionId);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    });
+                } else {
+                    const target = document.getElementById(sectionId);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+                return;
+            }
+
+            // Simple doc hash (no colon) - load the doc
+            loadDoc(hash + '.md');
         }
 
         window.addEventListener('hashchange', loadFromHash);
