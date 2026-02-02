@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:jp": "cd umalator && node build.mjs",
     "build:global": "cd umalator-global && node build.mjs",
+    "build:all": "npm run build:jp && npm run build:global",
     "dev": "cd umalator-global && node build.mjs --serve 3000",
+    "dev:jp": "cd umalator && node build.mjs --serve 3000",
     "serve": "npm run build:global && node serve.mjs",
     "dev:v2": "cd umalator-global/v2 && npx vite",
     "build:v2": "cd umalator-global/v2 && npx vite build",
