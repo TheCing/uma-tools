@@ -27,6 +27,7 @@ import { IntroText } from './IntroText';
 
 import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillnames from '../uma-skill-tools/data/skillnames.json';
+import globalSkillnames from '../umalator-global/skillnames.json';
 import skillmeta from '../skill_meta.json';
 
 import './app.css';
@@ -149,22 +150,14 @@ function TimeOfDaySelect(props) {
 }
 
 function GroundSelect(props) {
-	if (CC_GLOBAL) {
-		return (
-			<select class="groundSelect" value={props.value} onInput={(e) => props.set(+e.currentTarget.value)}>
-				<option value="1">Firm</option>
-				<option value="2">Good</option>
-				<option value="3">Soft</option>
-				<option value="4">Heavy</option>
-			</select>
-		);
-	}
+	const lang = useLanguage();
+	const labels = COMMON_STRINGS[lang].ground;
 	return (
 		<select class="groundSelect" value={props.value} onInput={(e) => props.set(+e.currentTarget.value)}>
-			<option value="1">良</option>
-			<option value="2">稍重</option>
-			<option value="3">重</option>
-			<option value="4">不良</option>
+			<option value="1">{labels[1]}</option>
+			<option value="2">{labels[2]}</option>
+			<option value="3">{labels[3]}</option>
+			<option value="4">{labels[4]}</option>
 		</select>
 	);
 }
@@ -344,7 +337,11 @@ export function LengthDifferenceChart(props) {
 
 	const allActivations: Array<[number, number]> = [];
 	
-	runData.allruns.skBasinn.forEach((skBasinnMap: any) => {
+	const skBasinnToProcess = runData.allruns.skBasinn.length > umaIndex 
+		? [runData.allruns.skBasinn[umaIndex]] 
+		: runData.allruns.skBasinn;
+	
+	skBasinnToProcess.forEach((skBasinnMap: any) => {
 		if (!skBasinnMap) return;
 		let activations = null;
 		if (skBasinnMap instanceof Map || (typeof skBasinnMap.has === 'function' && typeof skBasinnMap.get === 'function')) {
@@ -435,6 +432,10 @@ export function LengthDifferenceChart(props) {
 			yAxisTicks={5}
 			yTickValues={yTickValues}
 			yAxisFormat={(d, i, ticks) => {
+				const isMaxTick = ticks && i === ticks.length - 1;
+				if (isMaxTick || Math.abs(d - maxValue) < 0.001) {
+					return `${maxValue.toFixed(2)}L`;
+				}
 				return `${d.toFixed(1)}L`;
 			}}
 			barColor="#2a77c5"
@@ -808,7 +809,7 @@ export function VelocityChart(props) {
 }
 
 export function ActivationFrequencyChart(props) {
-	const {skillId, runData, courseDistance} = props;
+	const {skillId, runData, courseDistance, umaIndex = 1} = props;
 	const width = 300;
 	const height = 50;
 	const yW = 40;
@@ -824,7 +825,11 @@ export function ActivationFrequencyChart(props) {
 		return null;
 	}
 	
-	runData.allruns.sk.forEach((skMap: any) => {
+	const skToProcess = runData.allruns.sk.length > umaIndex 
+		? [runData.allruns.sk[umaIndex]] 
+		: runData.allruns.sk;
+	
+	skToProcess.forEach((skMap: any) => {
 		if (!skMap) return;
 		let positions = null;
 		if (skMap instanceof Map || (typeof skMap.has === 'function' && typeof skMap.get === 'function')) {
@@ -920,7 +925,7 @@ function BasinnChartPopover(props) {
 		popover.current.focus();
 	}, [popover.current, props.skillid]);
 	return (
-		<div class="basinnChartPopover" tabindex="1000" style="visibility:hidden" ref={popover}>
+		<div class="basinnChartPopover" tabIndex={1000} style="visibility:hidden" ref={popover}>
 			<ExpandedSkillDetails id={props.skillid} distanceFactor={props.courseDistance} dismissable={false} />
 			<Histogram width={500} height={333} data={props.results} />
 		</div>
@@ -1084,9 +1089,9 @@ async function serialize(courseId: number, nsamples: number, seed: number, posKe
 		seed,
 		posKeepMode,
 		racedef: racedef.toJS(),
-		uma1: uma1.set('skills', Array.from(uma1.skills.values())).toJS(),
-		uma2: uma2.set('skills', Array.from(uma2.skills.values())).toJS(),
-		pacer: pacer.set('skills', Array.from(pacer.skills.values())).toJS(),
+		uma1: uma1.set('skills', Array.from(uma1.skills.values()) as any).toJS(),
+		uma2: uma2.set('skills', Array.from(uma2.skills.values()) as any).toJS(),
+		pacer: pacer.set('skills', Array.from(pacer.skills.values()) as any).toJS(),
 		witVarianceSettings,
 		showVirtualPacemakerOnGraph,
 		pacemakerCount,
@@ -1345,7 +1350,11 @@ function RacePresets(props) {
 			<label for={id}>Preset:</label>
 			<select id={id} onChange={e => { const i = +e.currentTarget.value; i > -1 && props.set(presets[i].courseId, presets[i].racedef); }}>
 				<option value="-1"></option>
-				{presets.map((p,i) => <option value={i} selected={i == selectedIdx}>{'CM ' + p.id + ' - ' + p.name}</option>)}
+				{presets.map((p,i) => <option value={i} selected={i == selectedIdx}>{
+				p.name
+					? (p.type == EventType.CM ? 'CM ' : 'LOH ') + (p.id ? p.id + ' - ' : '') + p.name
+					: (p.type == EventType.CM ? 'CM' : 'LOH') + ' ' + p.date.toLocaleDateString('en-US', {year: 'numeric', month: 'short'})
+			}</option>)}
 			</select>
 		</Fragment>
 	);
@@ -1426,14 +1435,14 @@ function StatsTable({ caption, captionColor, rows }) {
 }
 
 function App(props) {
-	//const [language, setLanguage] = useLanguageSelect();
-	const [darkMode, toggleDarkMode] = useReducer(b=>!b, () => {
+	const [language, setLanguage] = useLanguageSelect();
+	const [darkMode, toggleDarkMode] = useReducer((b: boolean) => !b, (() => {
 		if (typeof window !== 'undefined') {
 			const saved = localStorage.getItem('darkMode');
 			return saved === 'true';
 		}
 		return false;
-	});
+	})());
 	const [skillsOpen, setSkillsOpen] = useState(false);
 	const [racedef, setRaceDef] = useState(() => DEFAULT_PRESET.racedef);
 	const [nsamples, setSamples] = useState(DEFAULT_SAMPLES);
@@ -1443,13 +1452,13 @@ function App(props) {
 	const [simulationProgress, setSimulationProgress] = useState<{round: number, total: number} | null>(null);
 	const chartWorkersCompletedRef = useRef(0);
 	const [posKeepMode, setPosKeepModeRaw] = useState(PosKeepMode.Approximate);
-	const [showHp, toggleShowHp] = useReducer((b,_) => !b, () => {
+	const [showHp, toggleShowHp] = useReducer((b: boolean, _?: unknown) => !b, (() => {
 		if (typeof window !== 'undefined') {
 			const saved = localStorage.getItem('showHp');
 			return saved === 'true';
 		}
 		return false;
-	});
+	})());
 	const [showLanes, toggleShowLanes] = useReducer((b,_) => !b, false);
 
 	useEffect(() => {
@@ -1563,7 +1572,7 @@ function App(props) {
 	const setResults = setSimState;
 	const setChartData = setSimState;
 
-	const [tableData, updateTableData] = useReducer((data,newData) => {
+	const [tableData, updateTableData] = useReducer((data: Map<string, any>, newData: Map<string, any> | 'reset') => {
 		const merged = new Map();
 		if (newData == 'reset') {
 			return merged;
@@ -1816,9 +1825,20 @@ function App(props) {
 		setUma2(uma1);
 	}
 
-	const strings = {skillnames: {}, tracknames: TRACKNAMES_en, ui: CC_GLOBAL ? UI_global : UI_en};
-	const langid = +(props.lang == 'en');
-	Object.keys(skillnames).forEach(id => strings.skillnames[id] = skillnames[id][langid]);
+	const strings = {skillnames: {}, tracknames: TRACKNAMES_en, ui: UI_global};
+	const useJapanese = language == 'ja' || language == 'en-ja';
+	Object.keys(skillnames).forEach(id => {
+		if (useJapanese) {
+			// Japanese mode or EN with JP skill names - use JP skill names
+			strings.skillnames[id] = skillnames[id][0];
+		} else if (globalSkillnames[id]) {
+			// English mode - use Global English names where available
+			strings.skillnames[id] = globalSkillnames[id][0];
+		} else {
+			// Fallback to JP data's English name, or Japanese if English is empty
+			strings.skillnames[id] = skillnames[id][1] || skillnames[id][0];
+		}
+	});
 
 	function doComparison() {
 		postEvent('doComparison', {});
@@ -1906,8 +1926,8 @@ function App(props) {
 			uma = umaWithoutUniques.toJS();
 		} else {
 			skills = getActivateableSkills(baseSkillsToTest.filter(id => {
-				return !(id[0] == '9' && uma1.skills.includes('1' + id.slice(1))  // reject inherited uniques if we already have the regular version
-					|| id == '92111091' && uma1.skills.includes('111091')  // reject rhein kraft pink inherited unique on her (not covered by the above check since the ID is different)
+				return !(id[0] == '9' && uma1.skills.includes(('1' + id.slice(1)) as any)  // reject inherited uniques if we already have the regular version
+					|| id == '92111091' && uma1.skills.includes('111091' as any)  // reject rhein kraft pink inherited unique on her (not covered by the above check since the ID is different)
 				);
 			}), uma1, course, params);
 
@@ -2092,9 +2112,9 @@ function App(props) {
 		{stroke: 'rgb(197, 42, 42)', fill: 'rgba(197, 42, 42, 0.7)'}
 	];
 	const skillActivations = chartData == null ? [] : chartData.sk.flatMap((a,i) => {
-		return Array.from(a.keys()).flatMap(id => {
+		return Array.from(a.keys()).flatMap((id: string) => {
 			if (NO_SHOW.indexOf(skillmeta[id].iconId) > -1) return [];
-			else return a.get(id).map(ar => ({
+			else return a.get(id).map((ar: number[]) => ({
 				type: RegionDisplayType.Textbox,
 				color: colors[i],
 				text: skillnames[id][0],
@@ -2277,13 +2297,16 @@ function App(props) {
 
 	const createExpandedContent = useCallback((skillId: string, runData: any, courseDistance: number) => {
 		const currentDisplaying = displaying || 'meanrun';
-		const umaIndexForChart = currentIdx < 2 ? currentIdx : 1;
+		const umaIndexForChart = (mode == Mode.Chart || mode == Mode.UniquesChart) ? 1 : (currentIdx < 2 ? currentIdx : 1);
 		let effectivenessRate = 0;
 		const totalCount = runData.allruns?.totalRuns || 0;
 		let skillProcs = 0;
 		if (runData.allruns && runData.allruns.skBasinn && Array.isArray(runData.allruns.skBasinn)) {
 			const allBasinnActivations: Array<[number, number]> = [];
-			runData.allruns.skBasinn.forEach((skBasinnMap: any) => {
+			const skBasinnToProcess = (mode == Mode.Chart || mode == Mode.UniquesChart) 
+				? [runData.allruns.skBasinn[umaIndexForChart]] 
+				: runData.allruns.skBasinn;
+			skBasinnToProcess.forEach((skBasinnMap: any) => {
 				if (!skBasinnMap) return;
 				let activations = null;
 				if (skBasinnMap instanceof Map || (typeof skBasinnMap.has === 'function' && typeof skBasinnMap.get === 'function')) {
@@ -2344,6 +2367,7 @@ function App(props) {
 							skillId={skillId}
 							runData={runData}
 							courseDistance={courseDistance}
+							umaIndex={umaIndexForChart}
 						/>
 					</div>
 					<VelocityChart
@@ -2359,7 +2383,7 @@ function App(props) {
 				</div>
 			</div>
 		);
-	}, [displaying, loadingAdditionalSamples, isSimulationRunning, runAdditionalSamplesForSkill, currentIdx]);
+	}, [displaying, loadingAdditionalSamples, isSimulationRunning, runAdditionalSamplesForSkill, currentIdx, mode]);
 
 	let resultsPane;
 	if (mode == Mode.Compare && results.length > 0) {
@@ -2391,10 +2415,10 @@ function App(props) {
 						</tfoot>
 						<tbody>
 							<tr>
-								<td onClick={() => setChartData('minrun')}>{results[0].toFixed(2)}<span class="unit-basinn">{CC_GLOBAL?'lengths':'バ身'}</span></td>
-								<td onClick={() => setChartData('maxrun')}>{results[results.length-1].toFixed(2)}<span class="unit-basinn">{CC_GLOBAL?'lengths':'バ身'}</span></td>
-								<td onClick={() => setChartData('meanrun')}>{mean.toFixed(2)}<span class="unit-basinn">{CC_GLOBAL?'lengths':'バ身'}</span></td>
-								<td onClick={() => setChartData('medianrun')}>{median.toFixed(2)}<span class="unit-basinn">{CC_GLOBAL?'lengths':'バ身'}</span></td>
+								<td onClick={() => setChartData('minrun')}>{results[0].toFixed(2)}<span class="unit-basinn">{language=='ja'?'バ身':'lengths'}</span></td>
+								<td onClick={() => setChartData('maxrun')}>{results[results.length-1].toFixed(2)}<span class="unit-basinn">{language=='ja'?'バ身':'lengths'}</span></td>
+								<td onClick={() => setChartData('meanrun')}>{mean.toFixed(2)}<span class="unit-basinn">{language=='ja'?'バ身':'lengths'}</span></td>
+								<td onClick={() => setChartData('medianrun')}>{median.toFixed(2)}<span class="unit-basinn">{language=='ja'?'バ身':'lengths'}</span></td>
 							</tr>
 						</tbody>
 					</table>
@@ -2527,7 +2551,7 @@ function App(props) {
 						<BasinnChart
 							data={Array.from(tableData.values())}
 							dirty={dirty}
-							hidden={mode == Mode.Chart ? uma1.skills : new Set()}
+							hidden={mode == Mode.Chart ? new Set([...uma1.skills, ...Array.from(tableData.keys()).filter(isPurpleSkill)]) : new Set()}
 							hasSkills={mode == Mode.Chart ? ImmMap(uma1.skills.map(id => [skillmeta[id].groupId, id])) : ImmMap()}
 							hints={hintLevels}
 							updateHint={updateHintLevel}
@@ -2558,7 +2582,7 @@ function App(props) {
 	}
 
 	return (
-		<Language.Provider value={props.lang}>
+		<Language.Provider value={language}>
 			<IntlProvider definition={strings}>
 				<div id="topPane" class={chartData ? 'hasResults' : ''}>
 					<RaceTrack courseid={courseId} width={960} height={240} xOffset={20} yOffset={15} yExtra={20} mouseMove={rtMouseMove} mouseLeave={rtMouseLeave} onSkillDrag={handleSkillDrag} regions={[...skillActivations, ...rushedIndicators]} posKeepLabels={posKeepLabels} uma1={uma1} uma2={uma2} pacer={pacer}>
@@ -2573,7 +2597,8 @@ function App(props) {
 						</g>
 					</RaceTrack>
 					<div id="runPane">
-						<fieldset>
+						<LanguageSelect language={language} setLanguage={setLanguage} />
+						<fieldset id="modeSelect">
 							<legend>Mode:</legend>
 							<div>
 								<input type="radio" id="mode-compare" name="mode" value="compare" checked={mode == Mode.Compare} onClick={() => updateUiState(UiStateMsg.SetModeCompare)} />
@@ -2854,6 +2879,6 @@ function App(props) {
 }
 
 initTelemetry();
-render(<App lang={CC_GLOBAL ? "en-global" : "en-ja"} />, document.getElementById('app'));
+render(<App />, document.getElementById('app'));
 
 

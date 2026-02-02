@@ -193,35 +193,34 @@ body {
 }
 
 #topPane {
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	grid-template-rows: 3fr 1fr;
-	gap: 10px 10px;
+	display: flex;
+	flex-direction: column;
+	align-self: start;  /* Don't stretch within parent #app grid */
+	gap: 10px;
 	width: fit-content;
-	/* FUCK OVERLAPPING */
 	height: auto;
-	min-height: 300px;
 	position: relative;
-	padding-bottom: 60px;
+	padding-bottom: 20px;
+	padding-right: 320px;  /* Reserve space for absolutely positioned runPane */
 }
 
+/* runPane is positioned absolutely so it doesn't affect racetrack/buttons stacking */
 #runPane {
-	grid-column-start: 2;
-	grid-row-start: span 2;
+	position: absolute;
+	top: 0;
+	right: 20px;
 	display: flex;
 	flex-direction: column;
 	font-size: 14px;
 	justify-content: flex-start;
-	align-self: start;
-	margin-left: 0px;
-	margin-right: 20px;
-	/* no ui bugs here */
 	max-width: 360px;
 	padding: 16px;
 	background: rgb(250, 250, 252);
 	border: 1px solid rgb(224, 214, 204);
 	border-radius: 8px;
 }
+
+/* Note: #resultsPaneWrapper is OUTSIDE #topPane grid, so no grid positioning needed here */
 
 /* Toggle switch styles for checkboxes */
 #runPane div:has(> input[type="checkbox"]) {
@@ -273,31 +272,33 @@ body {
 }
 
 /* Mode selection as vertical tabs */
-#runPane > fieldset:first-child {
+#modeSelect {
 	border: none;
 	padding: 0;
+	margin: 0;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	margin-bottom: 10px;
-	gap: 4px;
+	gap: 6px;
 }
 
-#runPane > fieldset:first-child legend {
+#modeSelect legend {
 	display: none;
 }
 
-#runPane > fieldset:first-child > div {
+#modeSelect > div {
 	display: flex;
+	width: 100%;
 }
 
-#runPane > fieldset:first-child input[type="radio"] {
+#modeSelect input[type="radio"] {
 	display: none;
 }
 
-#runPane > fieldset:first-child label {
-	display: block;
-	width: 100%;
+#modeSelect label {
+	flex: 1;
 	padding: 10px 12px;
 	background: #e0e0e0;
 	border: none;
@@ -309,11 +310,11 @@ body {
 	border-radius: 6px;
 }
 
-#runPane > fieldset:first-child label:hover {
+#modeSelect label:hover {
 	background: #d0d0d0;
 }
 
-#runPane > fieldset:first-child input[type="radio"]:checked + label {
+#modeSelect input[type="radio"]:checked + label {
 	background: #79d823;
 	color: white;
 }
@@ -1210,16 +1211,16 @@ body {
 }
 
 /* Dark mode Mode tabs */
-.dark #runPane > fieldset:first-child label {
+.dark #modeSelect label {
   background: var(--gray-300);
   color: var(--fg);
 }
 
-.dark #runPane > fieldset:first-child label:hover {
+.dark #modeSelect label:hover {
   background: var(--gray-400);
 }
 
-.dark #runPane > fieldset:first-child input[type="radio"]:checked + label {
+.dark #modeSelect input[type="radio"]:checked + label {
   background: var(--green-400);
   color: white;
 }
@@ -2236,16 +2237,16 @@ body { background: var(--bg); color: var(--fg); }
 	}
 
 	/* Dark mode Mode tabs */
-	.dark #runPane > fieldset:first-child label {
+	.dark #modeSelect label {
 		background: var(--gray-300);
 		color: var(--fg);
 	}
 
-	.dark #runPane > fieldset:first-child label:hover {
+	.dark #modeSelect label:hover {
 		background: var(--gray-400);
 	}
 
-	.dark #runPane > fieldset:first-child input[type="radio"]:checked + label {
+	.dark #modeSelect input[type="radio"]:checked + label {
 		background: var(--green-400);
 		color: white;
 	}
