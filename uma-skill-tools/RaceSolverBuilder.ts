@@ -8,7 +8,6 @@ import { getParser } from './ConditionParser';
 import { RaceSolver, RaceState, PendingSkill, DynamicCondition, SkillType, SkillRarity, SkillEffect, Perspective, PosKeepMode } from './RaceSolver';
 import { Mood, GroundCondition, Weather, Season, Time, Grade, RaceParameters } from './RaceParameters';
 import { GameHpPolicy, NoopHpPolicy } from './HpPolicy';
-import { EnhancedHpPolicy } from './EnhancedHpPolicy';
 
 import skills from './data/skill_data.json';
 
@@ -25,6 +24,7 @@ export interface HorseDesc {
 	surfaceAptitude: string | Aptitude
 	strategyAptitude: string | Aptitude
 	mood: Mood
+	skills?: string[]
 }
 
 const GroundSpeedModifier = Object.freeze([
@@ -545,7 +545,7 @@ export class RaceSolverBuilder {
 		let pacerSkillData: SkillData[] = [];
 		
 		if (pacerBaseHorse) {
-			this._pacerSkillIds = horse.skills;
+			this._pacerSkillIds = horse.skills || [];
 			const makePacerSkill = buildSkillData.bind(null, pacerBaseHorse, this._raceParams, this._course, wholeCourse, this._parser);
 			pacerSkillData = this._pacerSkillIds.flatMap(id => makePacerSkill(id, Perspective.Self));
 			this._pacerSkillData = pacerSkillData;
@@ -824,7 +824,10 @@ export class RaceSolverBuilder {
 		Object.freeze(wholeCourse);
 
 		const makeSkill = buildSkillData.bind(null, horse, this._raceParams, this._course, wholeCourse, this._parser);
-		const skilldata = this._skills.flatMap(({id,p}) => makeSkill(id, p));
+		// Track original _skills index alongside skill data since buildSkillData can return multiple triggers per skill
+		const skilldataWithIndex = this._skills.flatMap(({id,p}, idx) => makeSkill(id, p).map(sd => ({sd, skillIdx: idx})));
+		const skilldata = skilldataWithIndex.map(x => x.sd);
+		const skillIndices = skilldataWithIndex.map(x => x.skillIdx);
 		this._extraSkillHooks.forEach(h => h(skilldata, horse, this._course));
 		const triggers = skilldata.map(sd => {
 			const key = sd.perspective != null ? this.getSamplePolicyKey(sd.skillId, sd.perspective) : sd.skillId;
@@ -845,7 +848,7 @@ export class RaceSolverBuilder {
 				trigger: triggers[sdi][i % triggers[sdi].length],
 				extraCondition: sd.extraCondition,
 				effects: sd.effects,
-				originWisdom: this._skills[sdi].originWisdom
+				originWisdom: this._skills[skillIndices[sdi]]?.originWisdom
 			}));
 
 			const hpRng = new Rule30CARng(this._rng.int32());
