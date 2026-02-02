@@ -134,6 +134,8 @@ function runChart({skills, course, racedef, uma, pacer, options}) {
 }
 
 function runCompare({nsamples, course, racedef, uma1, uma2, pacer, options}) {
+	const startTime = performance.now();
+
 	const uma1_ = new HorseState(uma1)
 		.set('skills', fromJS(uma1.skills))
 		.set('forcedSkillPositions', ImmMap(uma1.forcedSkillPositions || {}));
@@ -152,6 +154,10 @@ function runCompare({nsamples, course, racedef, uma1, uma2, pacer, options}) {
 	results = runComparison(nsamples, course, racedef, uma1_, uma2_, pacer_, compareOptions);
 	postMessage({type: 'compare', results});
 	postMessage({type: 'compare-complete'});
+
+	const elapsed = performance.now() - startTime;
+	const runsPerSec = (nsamples / elapsed) * 1000;
+	console.log(`[RaceSimulator] Completed ${nsamples} simulation runs in ${elapsed.toFixed(2)}ms (${runsPerSec.toFixed(0)} runs/sec)`);
 }
 
 function runAdditionalSamples({skillId, nsamples, course, racedef, uma, pacer, options}) {
