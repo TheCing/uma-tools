@@ -1382,7 +1382,9 @@ body { background: var(--bg); color: var(--fg); }
 		height: auto;
 		min-height: auto;
 		padding-bottom: 20px;
+		padding-right: 0;  /* Remove space reserved for absolute runPane */
 		overflow: visible;
+		position: static;  /* Reset from relative */
 	}
 
 	/* Race track wrapper - scales to fit viewport */
@@ -1403,6 +1405,7 @@ body { background: var(--bg); color: var(--fg); }
 
 	/* Run controls panel - full width, below buttons */
 	#runPane {
+		position: static;  /* Remove absolute positioning on mobile */
 		order: 3;
 		grid-column: auto;
 		grid-row: auto;
@@ -1414,6 +1417,8 @@ body { background: var(--bg); color: var(--fg); }
 		border: 1px solid rgb(224, 214, 204);
 		border-radius: 8px;
 		box-sizing: border-box;
+		top: auto;
+		right: auto;
 	}
 
 	/* Results pane takes full width */
@@ -1858,7 +1863,8 @@ body { background: var(--bg); color: var(--fg); }
 	}
 
 	/* Reorder elements on mobile - Copy Link after Run Once */
-	#runPane > fieldset:first-child { order: 1; } /* Mode fieldset */
+	#runPane > .langSelect { order: 0; margin-bottom: 10px; } /* Language selector first */
+	#runPane > #modeSelect { order: 1; } /* Mode fieldset */
 	#runPane > #run { order: 2; }
 	#runPane > #runOnce { order: 3; }
 	#runPane > a[href="#"] { order: 4; margin: 10px 0; } /* Copy Link */
