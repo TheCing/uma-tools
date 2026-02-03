@@ -14,6 +14,17 @@ node build.mjs
 cd ..
 
 echo ""
+echo "Building umalator-global v2..."
+cd umalator-global/v2
+npx vite build
+cd ../..
+
+# Copy v2 dist to root /v2 for cleaner URLs
+echo "Copying v2 to /v2..."
+rm -rf v2
+cp -r umalator-global/v2/dist v2
+
+echo ""
 echo "Building umalator (JP)..."
 cd umalator
 node build.mjs
