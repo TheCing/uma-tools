@@ -45,7 +45,7 @@ import {
   Shuffle,
   Check,
 } from "./components";
-import { Users, HelpCircle } from "lucide-react";
+import { Users, HelpCircle, MessageSquare } from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
 import { presets, DEFAULT_PRESET } from "./presets";
@@ -55,6 +55,7 @@ import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
 import { VelocityOverlay } from "./velocity-overlay";
 import { TourProvider, TourOverlay } from "./tour";
 import { PasswordGate } from "./PasswordGate";
+import { FeedbackDrawer } from "./feedback-drawer";
 import {
   loadSession,
   saveSession,
@@ -65,6 +66,9 @@ import courseData from "../course_data.json";
 import skillnames from "../skillnames.json";
 import "./v2.css";
 import "./tour/tour.css";
+
+// Discord webhook for feedback submissions (configure in environment or replace with actual URL)
+const DISCORD_FEEDBACK_WEBHOOK = "https://discord.com/api/webhooks/1468463273316847687/poe7J751B6hJV3MAEzYtNMLK2VY3BIj1eedzPgpE2vKKTQOv_AUzc2B5a3cmztgE1aB6";
 
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
@@ -201,6 +205,7 @@ function App() {
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
   const [activeUmaTab, setActiveUmaTab] = useState<1 | 2 | 'trainees'>(1);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
+  const [feedbackDrawerOpen, setFeedbackDrawerOpen] = useState(false);
 
   // Velocity overlay toggles
   const [showVelocityOverlay, setShowVelocityOverlay] = useState(true);
@@ -964,6 +969,24 @@ function App() {
 
           {/* Tour overlay - renders via portal */}
           <TourOverlay />
+
+          {/* Feedback drawer */}
+          <FeedbackDrawer
+            isOpen={feedbackDrawerOpen}
+            onClose={() => setFeedbackDrawerOpen(false)}
+            webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
+          />
+          {!feedbackDrawerOpen && (
+            <button
+              type="button"
+              class="v2-feedback-toggle"
+              onClick={() => setFeedbackDrawerOpen(true)}
+              aria-label="Send feedback"
+            >
+              <MessageSquare size={18} />
+              <span>Feedback</span>
+            </button>
+          )}
         </div>
       </IntlProvider>
       </TourProvider>
