@@ -69,6 +69,12 @@ export function IntroText(props) {
 			<details open={true}>
 				<summary>Changelog</summary>
 				<section>
+					<h2>2026-02-07</h2>
+					<ul>
+						<li><strong>Skill Activation Chance Fix:</strong> Skill wisdom checks now correctly use base wisdom (mood-adjusted only) instead of adjusted wisdom (which included strategy proficiency). This matches the actual game mechanic where activation chance is NOT affected by strategy proficiency. See <a href="https://github.com/TheCing/uma-tools/blob/dev/docs/Uma%20Musume%20Race%20Mechanics.md#skill-activation-chance">Race Mechanics Doc</a> for details.</li>
+					</ul>
+				</section>
+				<section>
 					<h2>2026-01-26</h2>
 					<p><em>Synced with <a href="https://github.com/kachi-dev/uma-tools">kachi-dev/uma-tools</a>:</em></p>
 					<ul>
