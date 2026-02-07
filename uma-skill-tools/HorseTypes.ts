@@ -14,6 +14,7 @@ export interface HorseParameters {
 	readonly surfaceAptitude: Aptitude
 	readonly strategyAptitude: Aptitude
 	readonly rawStamina: number
+	readonly rawWisdom: number  // Base wisdom before strategy proficiency (used for skill activation chance)
 }
 
 export namespace StrategyHelpers {

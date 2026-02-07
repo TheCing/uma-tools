@@ -1334,9 +1334,11 @@ export class RaceSolver {
 
 	checkWisdomForSkill(skill: PendingSkill): boolean {
 		let rngRoll = this.wisdomRollRng.random();
-		const wisdom = skill.perspective === Perspective.Other && skill.originWisdom !== undefined 
-			? skill.originWisdom 
-			: this.horse.wisdom;
+		// Use rawWisdom (base wisdom before strategy proficiency) per game mechanics
+		// See: docs/Uma Musume Race Mechanics.md#skill-activation-chance (L574)
+		const wisdom = skill.perspective === Perspective.Other && skill.originWisdom !== undefined
+			? skill.originWisdom
+			: this.horse.rawWisdom;
 		let wisdomCheck = Math.max(100-9000/wisdom,20) * 0.01;
 		return rngRoll <= wisdomCheck;
 	}
