@@ -187,7 +187,6 @@ body {
 /* UI Scale: Scale text content only (not layout containers) */
 #app-v2 .v2-header-left,
 #app-v2 .v2-header-center,
-#app-v2 .v2-header-right,
 #app-v2 .v2-drawer-content,
 #app-v2 .v2-results,
 #app-v2 .v2-dropdown-menu,
@@ -199,7 +198,6 @@ body {
 @supports not (zoom: 1) {
   #app-v2 .v2-header-left,
   #app-v2 .v2-header-center,
-  #app-v2 .v2-header-right,
   #app-v2 .v2-drawer-content,
   #app-v2 .v2-results,
   #app-v2 .v2-dropdown-menu,
