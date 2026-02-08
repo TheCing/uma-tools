@@ -397,7 +397,7 @@ export function V2ResultsPane({ results, isRunning, progress, onRunSimulation, d
 					</div>
 				) : (
 					onRunSimulation && (
-						<button class="v2-run-btn" onClick={onRunSimulation}>
+						<button class="v2-button v2-button-primary v2-button-md" onClick={onRunSimulation}>
 							Run Simulation
 						</button>
 					)
