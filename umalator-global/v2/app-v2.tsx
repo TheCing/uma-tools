@@ -901,21 +901,23 @@ function App() {
               {/* Velocity toggle controls below track */}
               {results && (
                 <div class="v2-velocity-toggles">
-                  <label>
+                  <label class="v2-switch">
                     <input
                       type="checkbox"
                       checked={showVelocityOverlay}
                       onChange={(e) => setShowVelocityOverlay((e.target as HTMLInputElement).checked)}
                     />
-                    Velocity
+                    <span class="v2-switch-slider" />
+                    <span class="v2-switch-label">Velocity</span>
                   </label>
-                  <label>
+                  <label class="v2-switch">
                     <input
                       type="checkbox"
                       checked={showHpOverlay}
                       onChange={(e) => setShowHpOverlay((e.target as HTMLInputElement).checked)}
                     />
-                    HP
+                    <span class="v2-switch-slider" />
+                    <span class="v2-switch-label">HP</span>
                   </label>
                 </div>
               )}
