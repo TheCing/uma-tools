@@ -16,6 +16,8 @@ export interface DropdownItem {
 	disabled?: boolean;
 	danger?: boolean;
 	divider?: boolean;
+	custom?: ComponentChildren; // Custom content that replaces the entire item
+	keepOpen?: boolean; // Don't close dropdown when this item is clicked
 }
 
 interface DropdownProps {
@@ -58,6 +60,10 @@ export function Dropdown({
 					{items.map(item => (
 						item.divider ? (
 							<div key={item.id} class="v2-dropdown-divider" />
+						) : item.custom ? (
+							<div key={item.id} class="v2-dropdown-custom">
+								{item.custom}
+							</div>
 						) : (
 							<button
 								key={item.id}
@@ -66,7 +72,7 @@ export function Dropdown({
 								onClick={() => {
 									if (!item.disabled && item.onClick) {
 										item.onClick();
-										setIsOpen(false);
+										if (!item.keepOpen) setIsOpen(false);
 									}
 								}}
 								disabled={item.disabled}

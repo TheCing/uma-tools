@@ -84,13 +84,13 @@ export const TOUR_STEPS: TourStep[] = [
 			}
 		},
 	},
-	{
-		id: 'racetrack-cow',
-		targetSelector: '.racetrackCow',
-		title: 'Meet the Cow!',
-		content: 'This friendly cow wanders the track. Click to change direction, double-click to hide. Walk with the cow to earn MooCoins!',
-		position: 'top',
-		spotlightPadding: 12,
-		trackMovement: true,
-	},
+	// {
+	// 	id: 'racetrack-cow',
+	// 	targetSelector: '.racetrackCow',
+	// 	title: 'Meet the Cow!',
+	// 	content: 'This friendly cow wanders the track. Click to change direction, double-click to hide. Walk with the cow to earn MooCoins!',
+	// 	position: 'top',
+	// 	spotlightPadding: 12,
+	// 	trackMovement: true,
+	// },
 ];

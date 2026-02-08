@@ -32,20 +32,16 @@ import {
   Tooltip,
   Settings,
   Play,
-  BarChart3,
   GitCompare,
+  Zap,
   Sun,
   Moon,
-  Hash,
   X,
   Palette,
   ArrowLeftRight,
-  Dice5,
   Link,
-  Shuffle,
-  Check,
 } from "./components";
-import { Users, HelpCircle, MessageSquare } from "lucide-react";
+import { Users, HelpCircle, MessageSquare, Minus, Plus } from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
 import { presets, DEFAULT_PRESET } from "./presets";
@@ -54,8 +50,9 @@ import { TraineesTab } from "./trainees-tab";
 import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
 import { VelocityOverlay } from "./velocity-overlay";
 import { TourProvider, TourOverlay } from "./tour";
-import { PasswordGate } from "./PasswordGate";
+// import { PasswordGate } from "./PasswordGate";
 import { FeedbackDrawer } from "./feedback-drawer";
+import { SimulationSettings } from "./sim-settings";
 import {
   loadSession,
   saveSession,
@@ -188,10 +185,11 @@ function App() {
   // Preferences (persisted separately)
   const [darkMode, setDarkMode] = useState(savedPrefs.current.darkMode);
   const [classicGreen, setClassicGreen] = useState(savedPrefs.current.classicGreen);
+  const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
   // Simulation settings
   const [samples, setSamples] = useState(savedSession.current?.samples ?? 500);
-  const [mode, setMode] = useState<"compare" | "chart">(
+  const [mode, setMode] = useState<"compare" | "skill">(
     savedSession.current?.mode ?? "compare",
   );
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 0xFFFFFFFF));
@@ -286,8 +284,8 @@ function App() {
 
   // Save preferences immediately
   useEffect(() => {
-    savePreferences({ darkMode, classicGreen });
-  }, [darkMode, classicGreen]);
+    savePreferences({ darkMode, classicGreen, uiScale });
+  }, [darkMode, classicGreen, uiScale]);
 
   // Note: Timeline drawer no longer auto-opens - user can open manually
 
@@ -445,6 +443,117 @@ function App() {
     return regions;
   }, [currentSnapshot]);
 
+  // Build position keep labels from simulation results
+  const posKeepLabels = useMemo(() => {
+    if (!currentSnapshot) return [];
+
+    const course = (courseData as any)[courseId];
+    if (!course) return [];
+
+    const posKeepColors = [
+      { stroke: 'rgb(42, 119, 197)', fill: 'rgba(42, 119, 197, 0.6)' },  // Uma 1 - blue
+      { stroke: 'rgb(197, 42, 42)', fill: 'rgba(197, 42, 42, 0.6)' }     // Uma 2 - red
+    ];
+
+    // Process posKeep data
+    const posKeepData = (currentSnapshot.posKeep || [[], []]).flatMap((posKeepArray: any[], umaIndex: number) => {
+      if (!posKeepArray) return [];
+      return posKeepArray.map((ar: number[]) => {
+        const stateName = ar[2] === 1 ? 'PU' : ar[2] === 2 ? 'PDM' : ar[2] === 3 ? 'SU' : ar[2] === 4 ? 'O' : 'Unknown';
+        return {
+          umaIndex,
+          text: stateName,
+          color: posKeepColors[umaIndex],
+          start: ar[0],
+          end: ar[1],
+          duration: ar[1] - ar[0]
+        };
+      });
+    });
+
+    // Process duel (compete fight) data
+    const competeFightData: any[] = [];
+    const competeFight = currentSnapshot.competeFight || [null, null];
+    for (let umaIndex = 0; umaIndex < 2; umaIndex++) {
+      const cf = competeFight[umaIndex];
+      if (cf && Array.isArray(cf) && cf.length >= 2 && (cf[0] !== 0 || cf[1] !== 0)) {
+        competeFightData.push({
+          umaIndex,
+          text: 'Duel',
+          color: posKeepColors[umaIndex],
+          start: cf[0],
+          end: cf[1],
+          duration: cf[1] - cf[0]
+        });
+      }
+    }
+
+    // Process spot struggle (lead competition) data
+    const leadCompetitionData: any[] = [];
+    const leadComp = currentSnapshot.leadCompetition || [null, null];
+    for (let umaIndex = 0; umaIndex < 2; umaIndex++) {
+      const lc = leadComp[umaIndex];
+      if (lc && Array.isArray(lc) && lc.length >= 2 && (lc[0] !== 0 || lc[1] !== 0)) {
+        leadCompetitionData.push({
+          umaIndex,
+          text: 'SS',
+          color: posKeepColors[umaIndex],
+          start: lc[0],
+          end: lc[1],
+          duration: lc[1] - lc[0]
+        });
+      }
+    }
+
+    // Process downhill activations
+    const downhillData = (currentSnapshot.downhillActivations || [[], []]).flatMap((downhillArray: [number, number][], umaIndex: number) => {
+      if (!downhillArray) return [];
+      return downhillArray.map((ar: number[]) => ({
+        umaIndex,
+        text: 'DH',
+        color: posKeepColors[umaIndex],
+        start: ar[0],
+        end: ar[1],
+        duration: ar[1] - ar[0]
+      }));
+    });
+
+    // Combine all labels
+    const allLabels = [...posKeepData, ...competeFightData, ...leadCompetitionData, ...downhillData];
+
+    // Convert to positioned labels
+    const tempLabels = allLabels.map(label => ({
+      ...label,
+      x: label.start / course.distance * 960,
+      width: label.duration / course.distance * 960,
+      yOffset: 0
+    }));
+
+    // Sort by x position
+    tempLabels.sort((a, b) => a.x - b.x);
+
+    // Calculate vertical offsets to avoid overlaps
+    const posKeepLabelsFinal: any[] = [];
+    for (let i = 0; i < tempLabels.length; i++) {
+      const currentLabel = tempLabels[i];
+      let maxYOffset = 40;
+
+      for (let j = 0; j < i; j++) {
+        const prevLabel = tempLabels[j];
+        const overlap = !(currentLabel.x + currentLabel.width < prevLabel.x ||
+                         currentLabel.x > prevLabel.x + prevLabel.width);
+        if (overlap) {
+          maxYOffset = Math.max(maxYOffset, prevLabel.yOffset + 15);
+        }
+      }
+
+      currentLabel.yOffset = maxYOffset;
+      posKeepLabelsFinal.push(currentLabel);
+    }
+
+    return posKeepLabelsFinal;
+  }, [currentSnapshot, courseId]);
+
   // Binary search helper for finding index at position
   const binSearch = useCallback((arr: number[], target: number) => {
     let lo = 0, hi = arr.length - 1;
@@ -458,8 +567,8 @@ function App() {
 
   // Mouse move handler for velocity/HP readout
   const handleMouseMove = useCallback((pct: number) => {
-    const chartData = currentSnapshot;
-    if (!chartData) return;
+    const skillData = currentSnapshot;
+    if (!skillData) return;
 
     const course = (courseData as any)[courseId];
     if (!course) return;
@@ -468,19 +577,19 @@ function App() {
     if (box) box.style.display = 'block';
 
     const x = pct * course.distance;
-    const i0 = binSearch(chartData.p[0], x);
-    const i1 = binSearch(chartData.p[1], x);
+    const i0 = binSearch(skillData.p[0], x);
+    const i1 = binSearch(skillData.p[1], x);
 
-    const safeI0 = Math.max(0, Math.min(i0, chartData.v[0].length - 1));
-    const safeI1 = Math.max(0, Math.min(i1, chartData.v[1].length - 1));
+    const safeI0 = Math.max(0, Math.min(i0, skillData.v[0].length - 1));
+    const safeI1 = Math.max(0, Math.min(i1, skillData.v[1].length - 1));
 
-    const hp0 = chartData.hp?.[0]?.[safeI0]?.toFixed(0) ?? 'N/A';
-    const hp1 = chartData.hp?.[1]?.[safeI1]?.toFixed(0) ?? 'N/A';
+    const hp0 = skillData.hp?.[0]?.[safeI0]?.toFixed(0) ?? 'N/A';
+    const hp1 = skillData.hp?.[1]?.[safeI1]?.toFixed(0) ?? 'N/A';
 
     const v1El = document.getElementById('rtV1');
     const v2El = document.getElementById('rtV2');
-    if (v1El) v1El.textContent = `${chartData.v[0][safeI0].toFixed(2)} m/s  t=${chartData.t[0][safeI0].toFixed(2)}s  (${hp0} hp)`;
-    if (v2El) v2El.textContent = `${chartData.v[1][safeI1].toFixed(2)} m/s  t=${chartData.t[1][safeI1].toFixed(2)}s  (${hp1} hp)`;
+    if (v1El) v1El.textContent = `${skillData.v[0][safeI0].toFixed(2)} m/s  t=${skillData.t[0][safeI0].toFixed(2)}s  (${hp0} hp)`;
+    if (v2El) v2El.textContent = `${skillData.v[1][safeI1].toFixed(2)} m/s  t=${skillData.t[1][safeI1].toFixed(2)}s  (${hp1} hp)`;
   }, [currentSnapshot, courseId, binSearch]);
 
   const handleMouseLeave = useCallback(() => {
@@ -488,15 +597,44 @@ function App() {
     if (box) box.style.display = 'none';
   }, []);
 
+  // Handle skill drag on race track to set forced positions
+  const handleSkillDrag = useCallback((skillId: string, umaIndex: number, newStart: number, _newEnd: number) => {
+    const positionStr = newStart.toString();
+    if (umaIndex === 0) {
+      setUma1(prev => ({
+        ...prev,
+        forcedSkillPositions: { ...prev.forcedSkillPositions, [skillId]: positionStr }
+      }));
+    } else if (umaIndex === 1) {
+      setUma2(prev => ({
+        ...prev,
+        forcedSkillPositions: { ...prev.forcedSkillPositions, [skillId]: positionStr }
+      }));
+    }
+  }, []);
+
+  // Wrap UmaState for RaceTrack compatibility (expects Immutable.js-style API)
+  const wrapUmaForRaceTrack = useCallback((uma: UmaState) => ({
+    forcedSkillPositions: {
+      has: (skillId: string) => skillId in uma.forcedSkillPositions,
+      get: (skillId: string) => {
+        const pos = uma.forcedSkillPositions[skillId];
+        return pos ? parseInt(pos, 10) : undefined;
+      }
+    }
+  }), []);
+
+  const uma1ForTrack = useMemo(() => wrapUmaForRaceTrack(uma1), [uma1, wrapUmaForRaceTrack]);
+  const uma2ForTrack = useMemo(() => wrapUmaForRaceTrack(uma2), [uma2, wrapUmaForRaceTrack]);
+
   return (
-    // Hi if you found this by reading the source, congrats!
-    <PasswordGate password="rugpull">
     <Language.Provider value="en-global">
       <TourProvider autoStart={true}>
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
             class={`${darkMode ? "" : "light"} ${classicGreen ? "classic-green" : ""} ${showNotification ? "v2-has-notification" : ""}`}
+            style={{ '--ui-scale': uiScale / 100 } as any}
           >
           {/* NOTIFICATION BANNER */}
           {showNotification && (
@@ -524,7 +662,7 @@ function App() {
                 onChange={(val) => handlePresetSelect(val as number | null)}
                 options={[
                   { value: null, label: "Custom" },
-                  ...presets.map((p) => ({ value: p.id, label: p.name })),
+                  ...presets.map((p) => ({ value: p.id, label: `CM ${p.id} - ${p.name}` })),
                 ]}
                 className="v2-preset-select"
               />
@@ -574,11 +712,11 @@ function App() {
                 </button>
                 <button
                   type="button"
-                  class={mode === "chart" ? "active" : ""}
-                  onClick={() => setMode("chart")}
+                  class={mode === "skill" ? "active" : ""}
+                  onClick={() => setMode("skill")}
                 >
-                  <BarChart3 size={14} />
-                  Chart
+                  <Zap size={14} />
+                  Skill
                 </button>
               </div>
               <Button
@@ -599,68 +737,6 @@ function App() {
                 align="right"
                 items={[
                   {
-                    id: "samples",
-                    label: `Samples: ${samples}`,
-                    icon: <Hash size={16} />,
-                    onClick: () => {
-                      const val = prompt(
-                        "Enter number of samples:",
-                        String(samples),
-                      );
-                      if (val)
-                        setSamples(
-                          Math.max(1, Math.min(10000, parseInt(val) || 500)),
-                        );
-                    },
-                  },
-                  {
-                    id: "seed",
-                    label: `Seed: ${seed}`,
-                    icon: <Dice5 size={16} />,
-                    onClick: () => {
-                      const val = prompt("Enter seed:", String(seed));
-                      if (val) setSeed(parseInt(val) || 0);
-                    },
-                  },
-                  {
-                    id: "randomize-seed",
-                    label: "Randomize Seed",
-                    icon: <Shuffle size={16} />,
-                    onClick: () => setSeed(Math.floor(Math.random() * 0xFFFFFFFF)),
-                  },
-                  { id: "divider-sim", label: "", divider: true },
-                  {
-                    id: "syncRng",
-                    label: "Sync RNG",
-                    icon: syncRng ? <Check size={16} /> : null,
-                    onClick: () => setSyncRng(!syncRng),
-                  },
-                  {
-                    id: "skillWisdomCheck",
-                    label: "Skill Wit Check",
-                    icon: skillWisdomCheck ? <Check size={16} /> : null,
-                    onClick: () => setSkillWisdomCheck(!skillWisdomCheck),
-                  },
-                  {
-                    id: "rushedKakari",
-                    label: "Rushed / Kakari",
-                    icon: rushedKakari ? <Check size={16} /> : null,
-                    onClick: () => setRushedKakari(!rushedKakari),
-                  },
-                  {
-                    id: "leadCompetition",
-                    label: "Spot Struggle",
-                    icon: leadCompetition ? <Check size={16} /> : null,
-                    onClick: () => setLeadCompetition(!leadCompetition),
-                  },
-                  {
-                    id: "competeFight",
-                    label: "Dueling",
-                    icon: competeFight ? <Check size={16} /> : null,
-                    onClick: () => setCompeteFight(!competeFight),
-                  },
-                  { id: "divider-ui", label: "", divider: true },
-                  {
                     id: "theme",
                     label: darkMode ? "Light Mode" : "Dark Mode",
                     icon: darkMode ? <Sun size={16} /> : <Moon size={16} />,
@@ -671,6 +747,38 @@ function App() {
                     label: classicGreen ? "Bright Green" : "Classic Green",
                     icon: <Palette size={16} />,
                     onClick: () => setClassicGreen(!classicGreen),
+                  },
+                  { id: "divider-scale", label: "", divider: true },
+                  {
+                    id: "zoom-control",
+                    label: "",
+                    custom: (
+                      <div class="v2-zoom-control">
+                        <button
+                          type="button"
+                          class="v2-zoom-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUiScale(Math.max(80, uiScale - 5));
+                          }}
+                          disabled={uiScale <= 80}
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span class="v2-zoom-value">{uiScale}%</span>
+                        <button
+                          type="button"
+                          class="v2-zoom-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setUiScale(Math.min(120, uiScale + 5));
+                          }}
+                          disabled={uiScale >= 120}
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    ),
                   },
                   { id: "divider-link", label: "", divider: true },
                   {
@@ -696,8 +804,65 @@ function App() {
             </div>
           </header>
 
+          {/* SIMULATION SETTINGS BAR */}
+          <SimulationSettings
+            samples={samples}
+            setSamples={setSamples}
+            seed={seed}
+            setSeed={setSeed}
+            syncRng={syncRng}
+            setSyncRng={setSyncRng}
+            skillWisdomCheck={skillWisdomCheck}
+            setSkillWisdomCheck={setSkillWisdomCheck}
+            rushedKakari={rushedKakari}
+            setRushedKakari={setRushedKakari}
+            leadCompetition={leadCompetition}
+            setLeadCompetition={setLeadCompetition}
+            competeFight={competeFight}
+            setCompeteFight={setCompeteFight}
+          />
+
           {/* MAIN CONTENT - RaceTrack takes center stage */}
           <main class="v2-main">
+            {mode === "skill" ? (
+              <div class="v2-skill-placeholder">
+                <div class="v2-skill-placeholder-content">
+                  <Zap size={48} />
+                  <h2>Skill Mode</h2>
+                  <p>To Be Implemented</p>
+                </div>
+                {/* Ghost UI - faded preview of skill table layout */}
+                <div class="v2-skill-ghost">
+                  <div class="v2-skill-ghost-header">
+                    <div class="v2-skill-ghost-title"></div>
+                    <div class="v2-skill-ghost-controls">
+                      <div class="v2-skill-ghost-btn"></div>
+                      <div class="v2-skill-ghost-btn"></div>
+                    </div>
+                  </div>
+                  <table class="v2-skill-ghost-table">
+                    <thead>
+                      <tr>
+                        <th><div class="v2-skill-ghost-cell wide"></div></th>
+                        <th><div class="v2-skill-ghost-cell"></div></th>
+                        <th><div class="v2-skill-ghost-cell"></div></th>
+                        <th><div class="v2-skill-ghost-cell"></div></th>
+                        <th><div class="v2-skill-ghost-cell"></div></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+            <>
             <div class="v2-track-container">
               <RaceTrack
                 courseid={courseId}
@@ -708,7 +873,11 @@ function App() {
                 yExtra={15}
                 mouseMove={handleMouseMove}
                 mouseLeave={handleMouseLeave}
+                onSkillDrag={handleSkillDrag}
                 regions={skillRegions}
+                posKeepLabels={posKeepLabels}
+                uma1={uma1ForTrack}
+                uma2={uma2ForTrack}
               >
                 {/* Velocity overlay renders inside the track SVG */}
                 {showVelocityOverlay && currentSnapshot && (
@@ -761,6 +930,8 @@ function App() {
               displayRun={displayRun}
               onDisplayRunChange={setDisplayRun}
             />
+            </>
+            )}
           </main>
 
           {/* UMA DRAWER - Slides in from left */}
@@ -991,7 +1162,6 @@ function App() {
       </IntlProvider>
       </TourProvider>
     </Language.Provider>
-    </PasswordGate>
   );
 }
 

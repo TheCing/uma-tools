@@ -18,6 +18,9 @@
    ============================================ */
 
 :root {
+  /* UI Scale - set via inline style, default 1 */
+  --ui-scale: 1;
+
   /* Spacing */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -162,14 +165,14 @@ body {
   line-height: 1.5;
   background: var(--color-bg);
   color: var(--color-text);
-  overflow: hidden;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Subtle background texture */
 #app-v2 {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background:
@@ -179,6 +182,31 @@ body {
       transparent 50%
     ),
     var(--color-bg);
+}
+
+/* UI Scale: Scale text content only (not layout containers) */
+#app-v2 .v2-header-left,
+#app-v2 .v2-header-center,
+#app-v2 .v2-header-right,
+#app-v2 .v2-drawer-content,
+#app-v2 .v2-results,
+#app-v2 .v2-dropdown-menu,
+#app-v2 .v2-track-container {
+  zoom: var(--ui-scale, 1);
+}
+
+/* Firefox fallback for text scaling */
+@supports not (zoom: 1) {
+  #app-v2 .v2-header-left,
+  #app-v2 .v2-header-center,
+  #app-v2 .v2-header-right,
+  #app-v2 .v2-drawer-content,
+  #app-v2 .v2-results,
+  #app-v2 .v2-dropdown-menu,
+  #app-v2 .v2-track-container {
+    transform: scale(var(--ui-scale, 1));
+    transform-origin: top left;
+  }
 }
 
 /* Focus visible for accessibility */
@@ -243,7 +271,7 @@ body {
 
 /* Preset Select */
 .v2-preset-select {
-  width: 160px;  /* Fixed width to prevent layout shift */
+  width: 220px;  /* Fixed width to prevent layout shift */
   flex-shrink: 0;
 }
 
@@ -420,6 +448,198 @@ body {
 }
 
 /* ============================================
+   SIMULATION SETTINGS BAR
+   ============================================ */
+
+.v2-sim-settings {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 13px;
+}
+
+.v2-sim-settings-group {
+  display: flex;
+  align-items: center;
+}
+
+.v2-sim-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.v2-sim-input {
+  width: 70px;
+  padding: var(--space-xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  text-align: right;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.v2-sim-input:hover {
+  border-color: var(--color-border-strong);
+}
+
+.v2-sim-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  background: var(--color-surface-elevated);
+}
+
+/* Hide number input spinners */
+.v2-sim-input::-webkit-outer-spin-button,
+.v2-sim-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.v2-sim-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.v2-sim-seed-row {
+  display: flex;
+  gap: 4px;
+}
+
+.v2-sim-seed-input {
+  width: 100px;
+}
+
+.v2-sim-seed-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-sim-seed-btn:hover {
+  border-color: var(--color-primary);
+  background: var(--color-surface-elevated);
+  color: var(--color-primary);
+}
+
+.v2-sim-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border);
+}
+
+.v2-sim-toggles {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+/* Modern Toggle Switch */
+.v2-switch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.v2-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.v2-switch-slider {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  background: var(--color-surface-overlay);
+  border: 1px solid var(--color-border);
+  border-radius: 9px;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.v2-switch-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-text-muted);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+/* Checked state */
+.v2-switch input:checked + .v2-switch-slider {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary-glow);
+}
+
+.v2-switch input:checked + .v2-switch-slider::after {
+  left: 16px;
+  background: white;
+}
+
+/* Hover state */
+.v2-switch:hover .v2-switch-slider {
+  border-color: var(--color-border-strong);
+}
+
+.v2-switch:hover input:checked + .v2-switch-slider {
+  box-shadow: 0 0 12px var(--color-primary-glow);
+}
+
+/* Label */
+.v2-switch-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.v2-switch:hover .v2-switch-label {
+  color: var(--color-text);
+}
+
+.v2-switch input:checked ~ .v2-switch-label {
+  color: var(--color-text);
+}
+
+/* Responsive: stack on smaller screens */
+@media (max-width: 1100px) {
+  .v2-sim-settings {
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-md);
+  }
+
+  .v2-sim-divider {
+    display: none;
+  }
+}
+
+/* ============================================
    NOTIFICATION BANNER
    ============================================ */
 
@@ -483,7 +703,6 @@ body {
   display: flex;
   flex-direction: column;
   padding: var(--space-lg);
-  overflow: auto;
   gap: var(--space-md);
 }
 
@@ -605,7 +824,6 @@ body {
    ============================================ */
 
 .v2-results-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
@@ -613,7 +831,6 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md);
-  overflow-y: auto;
 }
 
 .v2-results-pane.v2-results-empty {
@@ -1784,6 +2001,63 @@ body {
   height: 1px;
   background: var(--color-border);
   margin: var(--space-xs) 0;
+}
+
+/* Custom dropdown item (for zoom controls etc.) */
+.v2-dropdown-custom {
+  padding: var(--space-sm) var(--space-md);
+}
+
+/* Zoom control inline */
+.v2-zoom-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--color-surface-overlay);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.v2-zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-surface-elevated);
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-zoom-btn:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.v2-zoom-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v2-zoom-btn:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.v2-zoom-btn:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.v2-zoom-value {
+  min-width: 50px;
+  padding: 0 var(--space-sm);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-align: center;
+  color: var(--color-text-secondary);
 }
 
 /* Delete button in load menu */
@@ -4277,4 +4551,257 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+
+/* ============================================
+   SKILL MODE PLACEHOLDER
+   ============================================ */
+
+.v2-skill-placeholder {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.v2-skill-placeholder-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.v2-skill-placeholder-content svg {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.v2-skill-placeholder-content h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.v2-skill-placeholder-content p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* Ghost UI - faded skill table preview */
+.v2-skill-ghost {
+  position: absolute;
+  inset: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.v2-skill-ghost-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.v2-skill-ghost-title {
+  width: 140px;
+  height: 20px;
+  background: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+}
+
+.v2-skill-ghost-controls {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.v2-skill-ghost-btn {
+  width: 70px;
+  height: 28px;
+  background: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+}
+
+/* Ghost table styling */
+.v2-skill-ghost-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--color-surface);
+  border: 2px solid var(--color-text-muted);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.v2-skill-ghost-table th,
+.v2-skill-ghost-table td {
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-text-muted);
+}
+
+.v2-skill-ghost-table thead tr {
+  background: var(--color-surface-elevated);
+}
+
+.v2-skill-ghost-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.v2-skill-ghost-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.v2-skill-ghost-cell {
+  height: 14px;
+  background: var(--color-text-muted);
+  border-radius: 3px;
+  width: 50px;
+}
+
+.v2-skill-ghost-cell.wide {
+  width: 120px;
+}
+
+/* ============================================
+   RACE SUMMARY V2 THEME OVERRIDES
+   Override shared RaceSummary component to match v2 theme
+   ============================================ */
+
+.raceSummary {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family);
+  /* Remove nested scrolling - drawer handles it */
+  max-height: none;
+  overflow-y: visible;
+  margin: 0;
+}
+
+.raceSummary__disclaimer {
+  color: var(--color-text-muted);
+}
+
+.raceSummary__result {
+  border-color: var(--color-border);
+}
+
+.raceSummary__resultValue {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.raceSummary__resultStat {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.raceSummaryPhase {
+  border-color: var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.raceSummaryPhase__header {
+  background: var(--color-surface-elevated);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.raceSummaryEvent {
+  color: var(--color-text-secondary);
+}
+
+.raceSummaryEvent--empty {
+  color: var(--color-text-muted);
+}
+
+.raceSummaryEvent__position {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}
+
+.raceSummaryEvent--skill .raceSummaryEvent__text {
+  color: var(--color-success);
+}
+
+.raceSummaryEvent--warning .raceSummaryEvent__text {
+  color: var(--color-warning);
+}
+
+.raceSummaryEvent--mechanic .raceSummaryEvent__text {
+  color: #7eaad0;
+}
+
+.raceSummaryEvent--spurt .raceSummaryEvent__text {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.raceSummaryEvent--poskeep .raceSummaryEvent__text {
+  color: #b89ed4;
+}
+
+.raceSummaryEvent--downhill .raceSummaryEvent__text {
+  color: #8ec4a8;
+}
+
+.raceSummary__tips {
+  border-color: var(--color-border);
+}
+
+.raceSummary__tipsHeader {
+  color: var(--color-text-secondary);
+}
+
+.raceSummaryTip {
+  border-radius: var(--radius-sm);
+}
+
+.raceSummaryTip--info {
+  background: rgba(126, 170, 208, 0.15);
+  color: #7eaad0;
+}
+
+.raceSummaryTip--success {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success);
+}
+
+.raceSummaryTip--warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-warning);
+}
+
+/* Light mode adjustments for Race Summary */
+.v2-light .raceSummaryEvent--mechanic .raceSummaryEvent__text {
+  color: #4a7a9e;
+}
+
+.v2-light .raceSummaryEvent--poskeep .raceSummaryEvent__text {
+  color: #8b6db0;
+}
+
+.v2-light .raceSummaryEvent--downhill .raceSummaryEvent__text {
+  color: #5a9a78;
+}
+
+.v2-light .raceSummaryTip--info {
+  background: rgba(74, 122, 158, 0.12);
+  color: #4a7a9e;
 }

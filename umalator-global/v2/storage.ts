@@ -310,7 +310,7 @@ export interface SessionState {
 	time: number;
 	// Simulation settings
 	samples: number;
-	mode: 'compare' | 'chart';
+	mode: 'compare' | 'skill';
 	// Uma states
 	uma1: UmaState;
 	uma2: UmaState;
@@ -348,7 +348,7 @@ export function loadSession(): SessionState | null {
 			season: typeof json.season === 'number' ? json.season : 4,
 			time: typeof json.time === 'number' ? json.time : 2,
 			samples: typeof json.samples === 'number' ? json.samples : 500,
-			mode: json.mode === 'chart' ? 'chart' : 'compare',
+			mode: json.mode === 'skill' ? 'skill' : 'compare',
 			uma1: validateAndParseUmaJson(json.uma1) || defaultUmaState,
 			uma2: validateAndParseUmaJson(json.uma2) || defaultUmaState,
 		};
@@ -381,6 +381,7 @@ export interface Preferences {
 	classicGreen: boolean;
 	notificationDismissed: boolean;
 	tourCompleted: boolean;
+	uiScale: number; // UI scale percentage (80-120, default 100)
 }
 
 const DEFAULT_PREFERENCES: Preferences = {
@@ -388,6 +389,7 @@ const DEFAULT_PREFERENCES: Preferences = {
 	classicGreen: false,
 	notificationDismissed: false,
 	tourCompleted: false,
+	uiScale: 100,
 };
 
 /**
@@ -419,6 +421,7 @@ export function loadPreferences(): Preferences {
 			classicGreen: typeof json.classicGreen === 'boolean' ? json.classicGreen : DEFAULT_PREFERENCES.classicGreen,
 			notificationDismissed: typeof json.notificationDismissed === 'boolean' ? json.notificationDismissed : DEFAULT_PREFERENCES.notificationDismissed,
 			tourCompleted: typeof json.tourCompleted === 'boolean' ? json.tourCompleted : DEFAULT_PREFERENCES.tourCompleted,
+			uiScale: typeof json.uiScale === 'number' && json.uiScale >= 80 && json.uiScale <= 120 ? json.uiScale : DEFAULT_PREFERENCES.uiScale,
 		};
 	} catch (e) {
 		console.error('Failed to load preferences:', e);
