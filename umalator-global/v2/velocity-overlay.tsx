@@ -17,10 +17,12 @@ interface VelocityOverlayProps {
 	height: number;
 	xOffset: number;
 	showHp?: boolean;
+	showPacerGap?: boolean;
 }
 
 const COLORS = ['#2a77c5', '#c52a2a'];
 const HP_COLORS = ['#688aab', '#ab6868'];
+const PACER_GAP_COLORS = COLORS; // Same as velocity colors, but dashed
 
 export function VelocityOverlay({
 	data,
@@ -29,6 +31,7 @@ export function VelocityOverlay({
 	height,
 	xOffset,
 	showHp = false,
+	showPacerGap = true,
 }: VelocityOverlayProps) {
 	const axesRef = useRef<SVGGElement>(null);
 
@@ -53,6 +56,17 @@ export function VelocityOverlay({
 		const maxHp = d3.max(data.hp, (hp) => d3.max(hp)) ?? 100;
 		return d3.scaleLinear().domain([0, maxHp]).range([height, 0]);
 	}, [data.hp, showHp, height]);
+
+	// Pacer gap Y scale - renders in bottom 40% of chart (same as v1)
+	const pacerGapY = useMemo(() => {
+		if (!showPacerGap || !data.pacerGap) return null;
+		const allValues = data.pacerGap.flatMap(gap => gap.filter((d): d is number => d !== undefined));
+		if (allValues.length === 0) return null;
+		const maxValue = d3.max(allValues) ?? 10;
+		const bottom60Percent = height * 0.6;
+		const domainMax = Math.max(maxValue, 10);
+		return d3.scaleLinear().domain([0, domainMax]).range([height, bottom60Percent]);
+	}, [data.pacerGap, showPacerGap, height]);
 
 	// Render axes (same as v1)
 	useEffect(() => {
@@ -97,6 +111,23 @@ export function VelocityOverlay({
 		});
 	}, [data, showHp, x, hpY]);
 
+	// Generate pacer gap paths - dashed lines at bottom of chart
+	const pacerGapPaths = useMemo(() => {
+		if (!showPacerGap || !pacerGapY || !data.pacerGap || !data.p) return [];
+		return data.pacerGap.map((gap, i) => {
+			// Filter to only valid points (gap defined and >= 0)
+			const validPoints = data.p[i]
+				.map((_, j) => ({ idx: j, gap: gap[j] }))
+				.filter((p): p is { idx: number; gap: number } => p.gap !== undefined && p.gap >= 0);
+			if (validPoints.length === 0) return '';
+			const pathData = d3
+				.line<{ idx: number; gap: number }>()
+				.x((p) => x(data.p[i][p.idx]))
+				.y((p) => pacerGapY(p.gap))(validPoints);
+			return pathData ?? '';
+		});
+	}, [data, showPacerGap, x, pacerGapY]);
+
 	return (
 		<Fragment>
 			<g transform={`translate(${xOffset},5)`}>
@@ -110,7 +141,7 @@ export function VelocityOverlay({
 						d={path}
 					/>
 				))}
-				{/* HP curves (if enabled) */}
+				{/* HP curves (if enabled) - solid lines */}
 				{showHp &&
 					hpPaths.map((path, i) => (
 						<path
@@ -120,6 +151,20 @@ export function VelocityOverlay({
 							stroke-width="2.5"
 							d={path}
 						/>
+					))}
+				{/* Pacer gap curves - dashed lines at bottom */}
+				{showPacerGap &&
+					pacerGapPaths.map((path, i) => (
+						path && (
+							<path
+								key={`pg-${i}`}
+								fill="none"
+								stroke={PACER_GAP_COLORS[i]}
+								stroke-width="2"
+								stroke-dasharray="5,5"
+								d={path}
+							/>
+						)
 					))}
 			</g>
 			<g ref={axesRef} />

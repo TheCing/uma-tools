@@ -53,6 +53,7 @@ import { TourProvider, TourOverlay } from "./tour";
 // import { PasswordGate } from "./PasswordGate";
 import { FeedbackDrawer } from "./feedback-drawer";
 import { SimulationSettings } from "./sim-settings";
+import { MobileNav, MobileView } from "./mobile-nav";
 import {
   loadSession,
   saveSession,
@@ -205,9 +206,13 @@ function App() {
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   const [feedbackDrawerOpen, setFeedbackDrawerOpen] = useState(false);
 
+  // Mobile navigation
+  const [mobileView, setMobileView] = useState<MobileView>('track');
+  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
+
   // Velocity overlay toggles
   const [showVelocityOverlay, setShowVelocityOverlay] = useState(true);
-  const [showHpOverlay, setShowHpOverlay] = useState(false);
+  const [showHpOverlay, setShowHpOverlay] = useState(true);
 
   // Which run to display (mean/median/min/max)
   const [displayRun, setDisplayRun] = useState<'mean' | 'median' | 'min' | 'max'>('median');
@@ -347,16 +352,40 @@ function App() {
     setUma2(uma1);
   }, [uma1, uma2]);
 
-  // Notification banner - persist dismissed state only in production
-  const isDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-  const [showNotification, setShowNotification] = useState(() => isDev ? true : !savedPrefs.current.notificationDismissed);
+  // Notification banner
+  const [showNotification, setShowNotification] = useState(() => !savedPrefs.current.notificationDismissed);
 
   const dismissNotification = useCallback(() => {
     setShowNotification(false);
-    if (!isDev) {
-      savePreferences({ notificationDismissed: true });
+    savePreferences({ notificationDismissed: true });
+  }, []);
+
+  // Mobile view change handler
+  const handleMobileViewChange = useCallback((view: MobileView) => {
+    setMobileView(view);
+    // Close all drawers first
+    setUmaDrawerOpen(false);
+    setSummaryDrawerOpen(false);
+    setFeedbackDrawerOpen(false);
+    setMobileSettingsOpen(false);
+
+    // Open the appropriate drawer/panel
+    switch (view) {
+      case 'uma':
+        setUmaDrawerOpen(true);
+        break;
+      case 'timeline':
+        setSummaryDrawerOpen(true);
+        break;
+      case 'settings':
+        setMobileSettingsOpen(true);
+        break;
+      case 'track':
+      default:
+        // Just close everything, show track
+        break;
     }
-  }, [isDev]);
+  }, []);
 
   // Run simulation via worker
   const handleRunSimulation = useCallback(() => {
@@ -948,7 +977,7 @@ function App() {
 
             <div class="v2-drawer-header">
               <h2>Configure Uma</h2>
-              <button onClick={() => setUmaDrawerOpen(false)}>
+              <button onClick={() => { setUmaDrawerOpen(false); setMobileView('track'); }}>
                 <X size={16} />
               </button>
             </div>
@@ -1039,7 +1068,7 @@ function App() {
 
             <div class="v2-drawer-header">
               <h2>Race Summary</h2>
-              <button onClick={() => setSummaryDrawerOpen(false)}>
+              <button onClick={() => { setSummaryDrawerOpen(false); setMobileView('track'); }}>
                 <X size={16} />
               </button>
             </div>
@@ -1132,7 +1161,7 @@ function App() {
 
           {/* Backdrop when drawer is open */}
           {umaDrawerOpen && (
-            <div class="v2-backdrop" onClick={() => setUmaDrawerOpen(false)} />
+            <div class="v2-backdrop" onClick={() => { setUmaDrawerOpen(false); setMobileView('track'); }} />
           )}
 
           {/* Intro video - plays once on first uma selection */}
@@ -1146,7 +1175,7 @@ function App() {
           {/* Feedback drawer */}
           <FeedbackDrawer
             isOpen={feedbackDrawerOpen}
-            onClose={() => setFeedbackDrawerOpen(false)}
+            onClose={() => { setFeedbackDrawerOpen(false); setMobileView('track'); }}
             webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
           />
           {!feedbackDrawerOpen && (
@@ -1159,6 +1188,141 @@ function App() {
               <MessageSquare size={18} />
               <span>Feedback</span>
             </button>
+          )}
+
+          {/* Mobile bottom navigation */}
+          <MobileNav
+            activeView={mobileView}
+            onViewChange={handleMobileViewChange}
+            onRun={handleRunSimulation}
+            isRunning={isRunning}
+            hasResults={!!results}
+          />
+
+          {/* Mobile settings panel */}
+          {mobileSettingsOpen && (
+            <>
+              <div class="v2-backdrop v2-mobile-backdrop" onClick={() => {
+                setMobileSettingsOpen(false);
+                setMobileView('track');
+              }} />
+              <div class="v2-mobile-settings open">
+                <div class="v2-mobile-settings-header">
+                  <h3>Settings</h3>
+                  <button type="button" onClick={() => {
+                    setMobileSettingsOpen(false);
+                    setMobileView('track');
+                  }}>
+                    <X size={16} />
+                  </button>
+                </div>
+                <div class="v2-mobile-settings-content">
+                  <div class="v2-mobile-settings-section">
+                    <h4>Track & Course</h4>
+                    <V2TrackSelect
+                      courseid={courseId}
+                      setCourseid={(id) => {
+                        setSelectedPresetId(null);
+                        setCourseId(id);
+                      }}
+                    />
+                  </div>
+                  <div class="v2-mobile-settings-section">
+                    <h4>Mode</h4>
+                    <div class="v2-mode-toggle" style={{ display: 'flex' }}>
+                      <button
+                        type="button"
+                        class={mode === "compare" ? "active" : ""}
+                        onClick={() => setMode("compare")}
+                      >
+                        <GitCompare size={14} />
+                        Compare
+                      </button>
+                      <button
+                        type="button"
+                        class={mode === "skill" ? "active" : ""}
+                        onClick={() => setMode("skill")}
+                      >
+                        <Zap size={14} />
+                        Skill
+                      </button>
+                    </div>
+                  </div>
+                  <div class="v2-mobile-settings-section">
+                    <h4>Race Conditions</h4>
+                    <CompactConditions
+                      ground={ground}
+                      setGround={(v) => {
+                        setSelectedPresetId(null);
+                        setGround(v);
+                      }}
+                      weather={weather}
+                      setWeather={(v) => {
+                        setSelectedPresetId(null);
+                        setWeather(v);
+                      }}
+                      season={season}
+                      setSeason={(v) => {
+                        setSelectedPresetId(null);
+                        setSeason(v);
+                      }}
+                      time={time}
+                      setTime={(v) => {
+                        setSelectedPresetId(null);
+                        setTime(v);
+                      }}
+                    />
+                  </div>
+                  <div class="v2-mobile-settings-section">
+                    <h4>Appearance</h4>
+                    <div class="v2-mobile-settings-row">
+                      <label>{darkMode ? "Dark Mode" : "Light Mode"}</label>
+                      <label class="v2-switch">
+                        <input
+                          type="checkbox"
+                          checked={darkMode}
+                          onChange={() => setDarkMode(!darkMode)}
+                        />
+                        <span class="v2-switch-slider" />
+                      </label>
+                    </div>
+                    <div class="v2-mobile-settings-row">
+                      <label>Classic Green</label>
+                      <label class="v2-switch">
+                        <input
+                          type="checkbox"
+                          checked={classicGreen}
+                          onChange={() => setClassicGreen(!classicGreen)}
+                        />
+                        <span class="v2-switch-slider" />
+                      </label>
+                    </div>
+                  </div>
+                  <div class="v2-mobile-settings-section">
+                    <h4>Actions</h4>
+                    <Button
+                      variant="secondary"
+                      className="v2-mobile-settings-btn"
+                      onClick={() => setFeedbackDrawerOpen(true)}
+                      icon={<MessageSquare size={14} />}
+                    >
+                      Send Feedback
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="v2-mobile-settings-btn"
+                      onClick={() => {
+                        savePreferences({ tourCompleted: false });
+                        window.location.reload();
+                      }}
+                      icon={<HelpCircle size={14} />}
+                    >
+                      Restart Tour
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </IntlProvider>

@@ -6,7 +6,7 @@
 import { h, Fragment } from 'preact';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'preact/hooks';
 
-import { CustomSelect, IconSelect, Dropdown, Tooltip } from './components';
+import { CustomSelect, IconSelect, Dropdown, Tooltip, Modal, Button } from './components';
 import { SkillsSection } from './skills';
 import {
 	getSavedSlotNames,
@@ -540,6 +540,10 @@ interface V2UmaPanelProps {
 export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title = 'Umamusume', courseDistance }: V2UmaPanelProps) {
 	const [savedSlots, setSavedSlots] = useState<string[]>([]);
 	const [isOCRModalOpen, setIsOCRModalOpen] = useState(false);
+	const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+	const [saveModalName, setSaveModalName] = useState('');
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [deleteSlotName, setDeleteSlotName] = useState('');
 
 	// Refresh saved slots list
 	const refreshSlots = useCallback(() => {
@@ -578,13 +582,19 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 	const handleSaveNew = useCallback(() => {
 		const uma = state.outfitId ? (umas as any)[state.outfitId.slice(0, 4)] : null;
 		const defaultName = uma?.name?.[1] || 'Horse';
-		const name = prompt('Enter a name for this build:', defaultName);
-		if (name && name.trim()) {
-			if (saveHorseSlot(name.trim(), state)) {
+		setSaveModalName(defaultName);
+		setIsSaveModalOpen(true);
+	}, [state.outfitId]);
+
+	const handleSaveConfirm = useCallback(() => {
+		if (saveModalName && saveModalName.trim()) {
+			if (saveHorseSlot(saveModalName.trim(), state)) {
 				refreshSlots();
+				setIsSaveModalOpen(false);
+				setSaveModalName('');
 			}
 		}
-	}, [state, refreshSlots]);
+	}, [saveModalName, state, refreshSlots]);
 
 	const handleSaveOverwrite = useCallback((slotName: string) => {
 		if (saveHorseSlot(slotName, state)) {
@@ -593,12 +603,17 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 	}, [state, refreshSlots]);
 
 	const handleDeleteSlot = useCallback((slotName: string) => {
-		if (confirm(`Delete "${slotName}"?`)) {
-			if (deleteHorseSlot(slotName)) {
-				refreshSlots();
-			}
+		setDeleteSlotName(slotName);
+		setIsDeleteModalOpen(true);
+	}, []);
+
+	const handleDeleteConfirm = useCallback(() => {
+		if (deleteSlotName && deleteHorseSlot(deleteSlotName)) {
+			refreshSlots();
 		}
-	}, [refreshSlots]);
+		setIsDeleteModalOpen(false);
+		setDeleteSlotName('');
+	}, [deleteSlotName, refreshSlots]);
 
 	const handleDownloadJson = useCallback(() => {
 		downloadHorseJson(state);
@@ -819,6 +834,63 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 				onClose={() => setIsOCRModalOpen(false)}
 				onConfirm={handleOCRConfirm}
 			/>
+
+			{/* Save Modal */}
+			<Modal
+				isOpen={isSaveModalOpen}
+				onClose={() => setIsSaveModalOpen(false)}
+				title="Save Build"
+				size="sm"
+				footer={
+					<div class="v2-modal-actions">
+						<Button variant="ghost" onClick={() => setIsSaveModalOpen(false)}>
+							Cancel
+						</Button>
+						<Button variant="primary" onClick={handleSaveConfirm} disabled={!saveModalName.trim()}>
+							Save
+						</Button>
+					</div>
+				}
+			>
+				<div class="v2-save-modal-content">
+					<label class="v2-input-label">Build Name</label>
+					<input
+						type="text"
+						class="v2-input"
+						value={saveModalName}
+						onInput={(e) => setSaveModalName((e.target as HTMLInputElement).value)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter' && saveModalName.trim()) {
+								handleSaveConfirm();
+							}
+						}}
+						placeholder="Enter a name for this build"
+						autoFocus
+					/>
+				</div>
+			</Modal>
+
+			{/* Delete Confirmation Modal */}
+			<Modal
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				title="Delete Build"
+				size="sm"
+				footer={
+					<div class="v2-modal-actions">
+						<Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+							Cancel
+						</Button>
+						<Button variant="danger" onClick={handleDeleteConfirm}>
+							Delete
+						</Button>
+					</div>
+				}
+			>
+				<p class="v2-delete-modal-text">
+					Are you sure you want to delete "<strong>{deleteSlotName}</strong>"?
+				</p>
+			</Modal>
 		</div>
 	);
 }

@@ -7,6 +7,7 @@
 import { h, Fragment } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { Clock, Zap, Heart, Swords, Flag, TrendingUp } from 'lucide-react';
+import skillnames from '../skillnames.json';
 
 // ============================================
 // TYPES
@@ -31,6 +32,7 @@ export interface RaceSnapshot {
 	competeFight: [[number, number], [number, number]]; // Dueling periods
 	leadCompetition: [[number, number], [number, number]]; // Spot struggle
 	downhillActivations: [[number, number][], [number, number][]];
+	pacerGap?: [(number | undefined)[], (number | undefined)[]]; // Gap to virtual pacemaker
 }
 
 // Aggregated stats across all runs
@@ -344,8 +346,10 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 						<div class="v2-skill-activations">
 							{Array.from(skillActivations.entries()).map(([skillId, activations]) => (
 								<div key={skillId} class="v2-skill-activation">
-									<span class="skill-id">{skillId}</span>
-									<span class="skill-pos">{activations[0]?.[0]?.toFixed(0)}m</span>
+									<span class="skill-id">{(skillnames as Record<string, string[]>)[skillId]?.[0] ?? skillId}</span>
+									<span class="skill-pos">
+										{activations[0]?.[0]?.toFixed(0)}m – {activations[0]?.[1]?.toFixed(0)}m
+									</span>
 								</div>
 							))}
 						</div>

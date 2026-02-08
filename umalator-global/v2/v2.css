@@ -153,6 +153,11 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   margin: 0;
   font-family:
@@ -166,6 +171,7 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   overflow-x: hidden;
+  max-width: 100vw;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -173,6 +179,8 @@ body {
 /* Subtle background texture */
 #app-v2 {
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   background:
@@ -185,25 +193,28 @@ body {
 }
 
 /* UI Scale: Scale text content only (not layout containers) */
-#app-v2 .v2-header-left,
-#app-v2 .v2-header-center,
-#app-v2 .v2-drawer-content,
-#app-v2 .v2-results,
-#app-v2 .v2-dropdown-menu,
-#app-v2 .v2-track-container {
-  zoom: var(--ui-scale, 1);
-}
-
-/* Firefox fallback for text scaling */
-@supports not (zoom: 1) {
+/* Disabled on mobile to prevent layout issues */
+@media (min-width: 769px) {
   #app-v2 .v2-header-left,
   #app-v2 .v2-header-center,
   #app-v2 .v2-drawer-content,
   #app-v2 .v2-results,
   #app-v2 .v2-dropdown-menu,
   #app-v2 .v2-track-container {
-    transform: scale(var(--ui-scale, 1));
-    transform-origin: top left;
+    zoom: var(--ui-scale, 1);
+  }
+
+  /* Firefox fallback for text scaling */
+  @supports not (zoom: 1) {
+    #app-v2 .v2-header-left,
+    #app-v2 .v2-header-center,
+    #app-v2 .v2-drawer-content,
+    #app-v2 .v2-results,
+    #app-v2 .v2-dropdown-menu,
+    #app-v2 .v2-track-container {
+      transform: scale(var(--ui-scale, 1));
+      transform-origin: top left;
+    }
   }
 }
 
@@ -226,15 +237,20 @@ body {
 .v2-header {
   height: var(--header-height);
   min-height: var(--header-height);
+  max-width: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-lg);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+  position: relative;
+  z-index: 200; /* Above track container so dropdowns appear on top */
   gap: var(--space-md);
-  z-index: 10;
   box-shadow: var(--shadow-sm);
+  overflow: visible; /* Allow dropdowns to extend beyond header */
+  box-sizing: border-box;
 }
 
 .v2-header-left,
@@ -243,6 +259,7 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  min-width: 0; /* Allow shrinking below content size */
 }
 
 .v2-header-center {
@@ -255,6 +272,7 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  min-width: 0; /* Allow shrinking */
 }
 
 .v2-track-select-track {
@@ -457,6 +475,8 @@ body {
   background: var(--color-bg-subtle);
   border-bottom: 1px solid var(--color-border-subtle);
   font-size: 13px;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .v2-sim-settings-group {
@@ -637,6 +657,13 @@ body {
   }
 }
 
+/* Mobile/Tablet: hide sim settings bar (too cramped) */
+@media (max-width: 900px) {
+  .v2-sim-settings {
+    display: none;
+  }
+}
+
 /* ============================================
    NOTIFICATION BANNER
    ============================================ */
@@ -702,6 +729,9 @@ body {
   flex-direction: column;
   padding: var(--space-lg);
   gap: var(--space-md);
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .v2-track-container {
@@ -1550,6 +1580,12 @@ body {
     gap: var(--space-sm);
   }
 
+  .v2-header-left {
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+  }
+
   .v2-header-center {
     order: 3;
     width: 100%;
@@ -1575,13 +1611,52 @@ body {
     --drawer-width: 100%;
   }
 
+  /* Header stacks on mobile */
+  .v2-header {
+    padding: var(--space-sm);
+  }
+
+  .v2-header-left {
+    order: 1;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    overflow: hidden;
+  }
+
+  .v2-header-right {
+    order: 2;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: var(--space-xs);
+  }
+
+  .v2-preset-select {
+    width: calc(50% - 4px);
+    min-width: 0;
+    max-width: none;
+    flex-shrink: 1;
+  }
+
+  .v2-track-select {
+    width: calc(50% - 4px);
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .v2-track-select-track {
+    display: none; /* Hide track select on mobile, show only course */
+  }
+
+  .v2-track-select-course {
+    width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
   .v2-mode-toggle button {
     padding: var(--space-xs) var(--space-sm);
     font-size: 12px;
-  }
-
-  .v2-run-btn {
-    padding: var(--space-sm) var(--space-md);
   }
 
   .v2-uma-drawer {
@@ -2160,6 +2235,59 @@ body {
   border-top: 1px solid var(--color-border);
   background: var(--color-surface-elevated);
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.v2-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Text input */
+.v2-input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.v2-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.v2-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.v2-input-label {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.v2-save-modal-content {
+  min-width: 280px;
+}
+
+.v2-delete-modal-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.v2-delete-modal-text strong {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 /* ============================================
@@ -4767,4 +4895,420 @@ body {
 .v2-light .raceSummaryTip--info {
   background: rgba(74, 122, 158, 0.12);
   color: #4a7a9e;
+}
+
+/* ============================================
+   MOBILE LAYOUT
+   Complete mobile-specific styles for < 768px
+   ============================================ */
+
+/* Mobile bottom navigation bar */
+.v2-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.v2-mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--space-sm);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.v2-mobile-nav-item:active {
+  background: var(--color-surface-hover);
+}
+
+.v2-mobile-nav-item.active {
+  color: var(--color-primary);
+}
+
+.v2-mobile-nav-item.active svg {
+  color: var(--color-primary);
+}
+
+.v2-mobile-nav-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v2-mobile-nav-item svg {
+  color: inherit;
+}
+
+/* Mobile nav RUN button - prominent center action */
+.v2-mobile-nav-run {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-primary-text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin: 0 var(--space-xs);
+  min-width: 60px;
+}
+
+.v2-mobile-nav-run:active {
+  transform: scale(0.95);
+}
+
+.v2-mobile-nav-run:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.v2-mobile-nav-run svg {
+  color: var(--color-primary-text);
+}
+
+/* Mobile settings panel (drawer from bottom) */
+.v2-mobile-settings {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-surface);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(100%);
+  transition: transform var(--transition-normal);
+  z-index: 1100;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+}
+
+.v2-mobile-settings.open {
+  transform: translateY(0);
+}
+
+.v2-mobile-settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+}
+
+.v2-mobile-settings-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.v2-mobile-settings-content {
+  padding: var(--space-md);
+}
+
+.v2-mobile-settings-section {
+  margin-bottom: var(--space-lg);
+}
+
+.v2-mobile-settings-section h4 {
+  margin: 0 0 var(--space-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.v2-mobile-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+}
+
+.v2-mobile-settings-row label {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+/* Mobile media query - switch to mobile layout */
+@media (max-width: 768px) {
+  /* Show mobile nav */
+  .v2-mobile-nav {
+    display: flex;
+  }
+
+  /* Hide desktop side tabs */
+  .v2-uma-toggle,
+  .v2-summary-toggle,
+  .v2-feedback-toggle {
+    display: none !important;
+  }
+
+  /* Add padding at bottom for mobile nav */
+  #app-v2 {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Full-width drawers on mobile */
+  .v2-uma-drawer,
+  .v2-summary-drawer {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .v2-uma-drawer {
+    left: -100%;
+  }
+
+  .v2-uma-drawer.open {
+    left: 0;
+  }
+
+  .v2-summary-drawer {
+    right: -100%;
+  }
+
+  .v2-summary-drawer.open {
+    right: 0;
+  }
+
+  /* Feedback drawer full width */
+  .v2-feedback-drawer {
+    width: 100%;
+  }
+
+  /* Compact header for mobile - stacked layout */
+  .v2-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-surface);
+    flex-direction: column;
+    height: auto;
+    padding: var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  /* Row 1: Preset dropdown (full width) */
+  .v2-header-left {
+    order: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .v2-preset-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Row 2: Track | Course (side by side) */
+  .v2-track-select {
+    width: 100%;
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .v2-track-select-track {
+    display: block; /* Show track on mobile */
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  .v2-track-select-course {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+
+  /* Hide conditions and header-right on mobile */
+  .v2-header-center {
+    display: none;
+  }
+
+  .v2-header-right {
+    display: none;
+  }
+
+  /* Remove min-width constraints on selects for mobile */
+  .v2-select {
+    min-width: 0;
+  }
+
+  /* Hide mode toggle on mobile - use settings instead */
+  .v2-mode-toggle {
+    display: none;
+  }
+
+  /* Footer adjustments */
+  .v2-footer {
+    padding-bottom: calc(var(--space-lg) + 64px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Main content scrollable area */
+  .v2-main {
+    min-height: calc(100vh - 120px);
+    overflow-x: hidden;
+  }
+
+  /* Track container full width */
+  .v2-track-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Results pane compact */
+  .v2-results-pane {
+    padding: var(--space-sm);
+  }
+
+  /* Mobile settings panel button styling */
+  .v2-mobile-settings-btn {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* Track select in mobile settings - show both dropdowns stacked */
+  .v2-mobile-settings .v2-track-select {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-sm);
+  }
+
+  .v2-mobile-settings .v2-track-select-track,
+  .v2-mobile-settings .v2-track-select-course {
+    display: block;
+    width: 100%;
+  }
+
+  /* Conditions in mobile settings - wrap to fit */
+  .v2-mobile-settings .v2-conditions {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: flex-start;
+  }
+
+  .v2-mobile-settings .v2-icon-group {
+    flex-shrink: 0;
+  }
+
+  /* Hide backdrop on mobile - drawers are full-screen */
+  .v2-backdrop {
+    display: none;
+  }
+
+  /* Exception: show backdrop for mobile settings panel */
+  .v2-mobile-backdrop {
+    display: block;
+    z-index: 1050;
+  }
+
+  /* Drawer content should account for bottom nav */
+  .v2-uma-drawer .v2-drawer-content,
+  .v2-summary-drawer .v2-drawer-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* MooCoins counter - bottom right on mobile */
+  .mooCoinCounterWrapper {
+    bottom: 2px;
+    right: 0;
+    top: unset;
+  }
+
+  /* Hide moo sound toggle on mobile */
+  .mooSoundToggle {
+    display: none;
+  }
+
+  /* Uma panel stats grid - 3 columns on mobile for readability */
+  .v2-stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .v2-stat-input {
+    padding: 6px;
+  }
+
+  .v2-stat-type-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .v2-stat-label {
+    font-size: 10px;
+  }
+
+  .v2-stat-value {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .v2-stat-value input {
+    width: 56px;
+    font-size: 13px;
+    padding: 4px 2px;
+  }
+
+  .v2-stat-rank-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Aptitudes grid - 2x2 on mobile */
+  .v2-aptitudes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .v2-aptitude-row {
+    padding: 6px;
+  }
+
+  .v2-aptitude-label {
+    font-size: 10px;
+  }
+
+  /* Skills list - single column on mobile */
+  .v2-skills-list {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .v2-skill-chip {
+    padding: 8px 10px;
+  }
+
+  .v2-skill-chip-name {
+    font-size: 13px;
+  }
 }
