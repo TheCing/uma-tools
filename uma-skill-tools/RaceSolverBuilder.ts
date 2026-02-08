@@ -3,7 +3,7 @@ import { CourseData, CourseHelpers, DistanceType } from './CourseData';
 import { Region, RegionList } from './Region';
 import { Rule30CARng, SeededRng } from './Random';
 import { Conditions, random, immediate, noopRandom } from './ActivationConditions';
-import { ActivationSamplePolicy, ImmediatePolicy } from './ActivationSamplePolicy';
+import { ActivationSamplePolicy, ImmediatePolicy, createFixedPositionPolicy } from './ActivationSamplePolicy';
 import { getParser } from './ConditionParser';
 import { RaceSolver, RaceState, PendingSkill, DynamicCondition, SkillType, SkillRarity, SkillEffect, Perspective, PosKeepMode } from './RaceSolver';
 import { Mood, GroundCondition, Weather, Season, Time, Grade, RaceParameters } from './RaceParameters';
@@ -727,7 +727,6 @@ export class RaceSolverBuilder {
 	 * @returns this builder for chaining
 	 */
 	addSkillAtPosition(skillId: string, position: number, perspective: Perspective = Perspective.Self, originWisdom?: number) {
-		const { createFixedPositionPolicy } = require('./ActivationSamplePolicy');
 		return this.addSkill(skillId, perspective, createFixedPositionPolicy(position), originWisdom);
 	}
 	
