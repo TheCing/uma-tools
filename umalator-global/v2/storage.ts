@@ -428,3 +428,109 @@ export function loadPreferences(): Preferences {
 		return DEFAULT_PREFERENCES;
 	}
 }
+
+// ============================================
+// URL STATE SERIALIZATION
+// ============================================
+
+/**
+ * State that can be shared via URL
+ */
+export interface ShareableState {
+	courseId: number;
+	ground: number;
+	weather: number;
+	season: number;
+	time: number;
+	samples: number;
+	uma1: UmaState;
+	uma2: UmaState;
+}
+
+/**
+ * Serialize state to a compressed URL hash
+ */
+export async function serializeStateToHash(state: ShareableState): Promise<string> {
+	const json = JSON.stringify(state);
+	const enc = new TextEncoder();
+	const stringStream = new ReadableStream({
+		start(controller) {
+			controller.enqueue(enc.encode(json));
+			controller.close();
+		}
+	});
+	const zipped = stringStream.pipeThrough(new CompressionStream('gzip'));
+	const reader = zipped.getReader();
+	let buf = new Uint8Array();
+	let result;
+	while ((result = await reader.read())) {
+		if (result.done) {
+			return encodeURIComponent(btoa(String.fromCharCode(...buf)));
+		} else {
+			buf = new Uint8Array([...buf, ...result.value]);
+		}
+	}
+	return '';
+}
+
+/**
+ * Deserialize state from a URL hash
+ */
+export async function deserializeStateFromHash(hash: string): Promise<ShareableState | null> {
+	try {
+		const zipped = atob(decodeURIComponent(hash));
+		const buf = new Uint8Array(zipped.split('').map(c => c.charCodeAt(0)));
+		const stringStream = new ReadableStream({
+			start(controller) {
+				controller.enqueue(buf);
+				controller.close();
+			}
+		});
+		const unzipped = stringStream.pipeThrough(new DecompressionStream('gzip'));
+		const reader = unzipped.getReader();
+		const dec = new TextDecoder();
+		let json = '';
+		let result;
+		while ((result = await reader.read())) {
+			if (result.done) break;
+			json += dec.decode(result.value, { stream: true });
+		}
+		json += dec.decode();
+
+		const parsed = JSON.parse(json);
+
+		// Validate and return
+		const uma1 = validateAndParseUmaJson(parsed.uma1);
+		const uma2 = validateAndParseUmaJson(parsed.uma2);
+		if (!uma1 || !uma2) return null;
+
+		return {
+			courseId: typeof parsed.courseId === 'number' ? parsed.courseId : 10506,
+			ground: typeof parsed.ground === 'number' ? parsed.ground : 1,
+			weather: typeof parsed.weather === 'number' ? parsed.weather : 1,
+			season: typeof parsed.season === 'number' ? parsed.season : 4,
+			time: typeof parsed.time === 'number' ? parsed.time : 2,
+			samples: typeof parsed.samples === 'number' ? parsed.samples : 500,
+			uma1,
+			uma2,
+		};
+	} catch (e) {
+		console.error('Failed to deserialize state from hash:', e);
+		return null;
+	}
+}
+
+/**
+ * Copy shareable URL to clipboard
+ */
+export async function copyShareableUrl(state: ShareableState): Promise<boolean> {
+	try {
+		const hash = await serializeStateToHash(state);
+		const url = window.location.protocol + '//' + window.location.host + window.location.pathname + '#' + hash;
+		await navigator.clipboard.writeText(url);
+		return true;
+	} catch (e) {
+		console.error('Failed to copy shareable URL:', e);
+		return false;
+	}
+}

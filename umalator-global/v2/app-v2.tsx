@@ -59,6 +59,8 @@ import {
   saveSession,
   loadPreferences,
   savePreferences,
+  copyShareableUrl,
+  deserializeStateFromHash,
 } from "./storage";
 import courseData from "../course_data.json";
 import skillnames from "../skillnames.json";
@@ -291,6 +293,33 @@ function App() {
   useEffect(() => {
     savePreferences({ darkMode, classicGreen, uiScale });
   }, [darkMode, classicGreen, uiScale]);
+
+  // Load state from URL hash on mount
+  useEffect(() => {
+    const loadFromHash = async () => {
+      if (window.location.hash) {
+        const state = await deserializeStateFromHash(window.location.hash.slice(1));
+        if (state) {
+          setCourseId(state.courseId);
+          setGround(state.ground);
+          setWeather(state.weather);
+          setSeason(state.season);
+          setTime(state.time);
+          setSamples(state.samples);
+          setUma1(state.uma1);
+          setUma2(state.uma2);
+          setSelectedPresetId(null); // Clear preset since we're loading custom state
+          console.log('[V2] Loaded state from URL hash');
+        }
+      }
+    };
+    loadFromHash();
+
+    // Also handle hash changes
+    const handleHashChange = () => loadFromHash();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Note: Timeline drawer no longer auto-opens - user can open manually
 
@@ -814,9 +843,20 @@ function App() {
                     id: "copy-link",
                     label: "Copy Link",
                     icon: <Link size={16} />,
-                    onClick: () => {
-                      // TODO: Implement URL state copying
-                      navigator.clipboard.writeText(window.location.href);
+                    onClick: async () => {
+                      const success = await copyShareableUrl({
+                        courseId,
+                        ground,
+                        weather,
+                        season,
+                        time,
+                        samples,
+                        uma1,
+                        uma2,
+                      });
+                      if (success) {
+                        console.log('[V2] Shareable URL copied to clipboard');
+                      }
                     },
                   },
                   {
