@@ -6,6 +6,34 @@ import fs from 'fs';
 const rootDir = path.resolve(__dirname, '..');
 const projectRoot = path.resolve(__dirname, '../..');
 
+// Custom plugin to redirect data file imports to Global versions
+// This matches esbuild's redirectData plugin behavior
+function redirectDataFiles(): Plugin {
+  const umaSkillToolsDataDir = path.join(projectRoot, 'uma-skill-tools/data');
+
+  return {
+    name: 'redirect-data-files',
+    enforce: 'pre',
+    resolveId(source, importer) {
+      if (!importer) return null;
+
+      // Check if this is a relative import that would resolve to uma-skill-tools/data/
+      if (source.startsWith('./') || source.startsWith('../')) {
+        const resolvedPath = path.resolve(path.dirname(importer), source);
+
+        // If the resolved path is within uma-skill-tools/data/, redirect to umalator-global/
+        if (resolvedPath.startsWith(umaSkillToolsDataDir)) {
+          const relativePath = resolvedPath.slice(umaSkillToolsDataDir.length + 1);
+          const redirectedPath = path.join(rootDir, relativePath);
+          return redirectedPath;
+        }
+      }
+
+      return null;
+    }
+  };
+}
+
 // Custom plugin to serve /uma-tools/* from project root
 function serveUmaToolsAssets(): Plugin {
   return {
@@ -43,7 +71,7 @@ function serveUmaToolsAssets(): Plugin {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [preact(), serveUmaToolsAssets()],
+  plugins: [redirectDataFiles(), preact(), serveUmaToolsAssets()],
 
   // Use relative paths for flexible deployment at /v2 or /umalator-global/v2
   // Can be overridden via VITE_BASE env var if needed
@@ -60,7 +88,8 @@ export default defineConfig(({ mode }) => ({
 
   resolve: {
     alias: {
-      // Data file redirects - Global version uses local JSON files
+      // Data file redirects for relative imports from umalator/
+      // The redirectDataFiles() plugin handles imports from within uma-skill-tools/
       '../uma-skill-tools/data': rootDir,
       '../../uma-skill-tools/data': rootDir,
       '../data': rootDir,
@@ -100,7 +129,8 @@ export default defineConfig(({ mode }) => ({
   // Worker configuration
   worker: {
     format: 'es',
-    // Apply same aliases and defines to workers
+    // Apply same plugins to workers
+    plugins: () => [redirectDataFiles()],
     rollupOptions: {
       output: {
         entryFileNames: '[name].js'
