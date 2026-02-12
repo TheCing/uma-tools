@@ -85,13 +85,27 @@ export function convertUmaStateForWorker(uma: UmaState) {
 }
 
 /**
+ * Order range by strategy - determines expected race position for each running style
+ * Used for filtering skills with order conditions (e.g., order<=2 only makes sense for Front runners)
+ */
+const ORDER_RANGE_FOR_STRATEGY: Record<string, [number, number]> = {
+	'Nige': [1, 1],      // Front runners expected in 1st
+	'Senkou': [2, 4],    // Stalkers expected in 2nd-4th
+	'Sasi': [5, 9],      // Betweeners expected in 5th-9th
+	'Oikomi': [5, 9],    // Stretch Runners expected in 5th-9th
+	'Oonige': [1, 1]     // Breakaway Front expected in 1st
+};
+
+/**
  * Build RaceParameters from V2 state values
+ * @param strategy - Optional strategy string to set orderRange for skill filtering
  */
 export function buildRaceParameters(
 	ground: number,
 	weather: number,
 	season: number,
-	time: number
+	time: number,
+	strategy?: string
 ) {
 	return {
 		mood: 2 as const, // Standard mood for race params
@@ -101,7 +115,9 @@ export function buildRaceParameters(
 		time: time as Time,
 		grade: Grade.G1,
 		popularity: 1,
-		skillId: ''
+		skillId: '',
+		orderRange: strategy ? ORDER_RANGE_FOR_STRATEGY[strategy] : null,
+		numUmas: 9
 	};
 }
 
@@ -134,7 +150,7 @@ export function buildSimulationOptions(options: Partial<SimulationOptions> = {})
 }
 
 /**
- * Default pacer state (minimal uma for pacemaker role)
+ * Default pacer state - must match v1's HorseState defaults
  */
 export function getDefaultPacer() {
 	return {
@@ -144,8 +160,8 @@ export function getDefaultPacer() {
 		power: 800,
 		guts: 400,
 		wisdom: 400,
-		strategy: 'Senkou',
-		distanceAptitude: 'A',
+		strategy: 'Nige',
+		distanceAptitude: 'S',
 		surfaceAptitude: 'A',
 		strategyAptitude: 'A',
 		mood: 2,

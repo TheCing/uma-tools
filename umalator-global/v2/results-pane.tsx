@@ -139,30 +139,25 @@ function getMaxVelocity(snapshot: RaceSnapshot, umaIndex: 0 | 1): number {
 interface ResultsSummaryProps {
 	stats: { min: number; max: number; mean: number; median: number };
 	samples: number;
+	displayRun: 'mean' | 'median' | 'min' | 'max';
 }
 
-function ResultsSummary({ stats, samples }: ResultsSummaryProps) {
-	const winRate = useMemo(() => {
-		// Assuming positive bashin means uma2 wins (they're ahead)
-		// This depends on convention - may need to flip
-		return 0; // Placeholder - would calculate from results array
-	}, []);
-
+function ResultsSummary({ stats, samples, displayRun }: ResultsSummaryProps) {
 	return (
 		<div class="v2-results-summary">
-			<div class="v2-results-stat">
+			<div class={`v2-results-stat${displayRun === 'min' ? ' highlight' : ''}`}>
 				<span class="v2-results-stat-label">Min</span>
 				<span class="v2-results-stat-value uma1">{formatBashin(stats.min)}</span>
 			</div>
-			<div class="v2-results-stat">
+			<div class={`v2-results-stat${displayRun === 'max' ? ' highlight' : ''}`}>
 				<span class="v2-results-stat-label">Max</span>
 				<span class="v2-results-stat-value uma2">{formatBashin(stats.max)}</span>
 			</div>
-			<div class="v2-results-stat highlight">
+			<div class={`v2-results-stat${displayRun === 'mean' ? ' highlight' : ''}`}>
 				<span class="v2-results-stat-label">Mean</span>
 				<span class="v2-results-stat-value">{formatBashin(stats.mean)}</span>
 			</div>
-			<div class="v2-results-stat">
+			<div class={`v2-results-stat${displayRun === 'median' ? ' highlight' : ''}`}>
 				<span class="v2-results-stat-label">Median</span>
 				<span class="v2-results-stat-value">{formatBashin(stats.median)}</span>
 			</div>
@@ -178,9 +173,10 @@ interface HistogramProps {
 	results: number[];
 	width?: number;
 	height?: number;
+	markerValue?: number;
 }
 
-function Histogram({ results, width = 400, height = 100 }: HistogramProps) {
+function Histogram({ results, width = 400, height = 100, markerValue }: HistogramProps) {
 	const { bins, maxCount } = useMemo(() => {
 		if (results.length === 0) return { bins: [], maxCount: 0 };
 
@@ -241,6 +237,25 @@ function Histogram({ results, width = 400, height = 100 }: HistogramProps) {
 					class="zero-line"
 				/>
 			)}
+			{/* Marker line for selected run */}
+			{markerValue !== undefined && bins.length > 0 && (() => {
+				const minVal = bins[0].start;
+				const maxVal = bins[bins.length - 1].end;
+				const range = maxVal - minVal;
+				if (range > 0 && markerValue >= minVal && markerValue <= maxVal) {
+					const x = ((markerValue - minVal) / range) * width;
+					return (
+						<line
+							x1={x}
+							y1={0}
+							x2={x}
+							y2={height - 20}
+							class="marker-line"
+						/>
+					);
+				}
+				return null;
+			})()}
 			{/* X axis labels */}
 			<text x={5} y={height - 5} class="axis-label">{bins[0].start.toFixed(1)}L</text>
 			<text x={width - 5} y={height - 5} class="axis-label" text-anchor="end">{bins[bins.length - 1].end.toFixed(1)}L</text>
@@ -413,12 +428,12 @@ export function V2ResultsPane({ results, isRunning, progress, onRunSimulation, d
 	return (
 		<div class="v2-results-pane">
 			{/* Summary stats */}
-			<ResultsSummary stats={stats!} samples={results.results.length} />
+			<ResultsSummary stats={stats!} samples={results.results.length} displayRun={displayRun} />
 
-			{/* Histogram - hidden for now, TBD for v2 */}
-			{/* <div class="v2-results-histogram">
-				<Histogram results={results.results} width={500} height={80} />
-			</div> */}
+			{/* Histogram */}
+			<div class="v2-results-histogram">
+				<Histogram results={results.results} width={500} height={80} markerValue={stats![displayRun]} />
+			</div>
 
 			{/* Run selector */}
 			<div class="v2-run-selector">

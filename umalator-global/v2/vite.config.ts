@@ -99,9 +99,6 @@ export default defineConfig(({ mode }) => ({
       'skill_meta.json': path.join(rootDir, 'skill_meta.json'),
       'umas.json': path.join(rootDir, 'umas.json'),
 
-      // Vendor redirects
-      '@tanstack/react-table': path.join(projectRoot, 'vendor/react-table/index.ts'),
-
       // Node assert mock - point to our local mock
       'node:assert': path.join(__dirname, 'mocks/assert.ts'),
     }

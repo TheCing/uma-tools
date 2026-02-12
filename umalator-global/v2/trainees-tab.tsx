@@ -232,7 +232,7 @@ function TraineeCard({ slot, onLoadToUma1, onLoadToUma2, onDelete, showUma2Butto
 interface TraineesTabProps {
 	onLoadToUma1: (state: UmaState) => void;
 	onLoadToUma2: (state: UmaState) => void;
-	currentMode: 'compare' | 'chart';
+	currentMode: 'compare' | 'skill';
 	currentUma1: UmaState;
 	currentUma2: UmaState;
 }
