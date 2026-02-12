@@ -22,6 +22,12 @@ import {
   getDefaultPacer,
 } from "./simulation-utils";
 
+// Skill chart utilities
+import {
+  getActivateableSkills,
+  getBaseSkillsToTest,
+} from "./skill-chart-utils";
+
 import { RaceTrack, RegionDisplayType } from "../../components/RaceTrack";
 import { RaceSummary } from "../../components/RaceSummary";
 import { Language } from "../../components/Language";
@@ -50,6 +56,8 @@ import { TraineesTab } from "./trainees-tab";
 import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
 import { VelocityOverlay } from "./velocity-overlay";
 import { TourProvider, TourOverlay } from "./tour";
+import { SkillChartPane } from "./skill-chart-pane";
+import { SkillChartDetail } from "./skill-chart-detail";
 // import { PasswordGate } from "./PasswordGate";
 import { FeedbackDrawer } from "./feedback-drawer";
 import { SimulationSettings } from "./sim-settings";
@@ -64,6 +72,7 @@ import {
 } from "./storage";
 import courseData from "../course_data.json";
 import skillnames from "../skillnames.json";
+import skillmeta from "../../skill_meta.json";
 import "./v2.css";
 import "./tour/tour.css";
 
@@ -227,7 +236,21 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<CompareResults | null>(null);
 
-  // Simulation worker
+  // Skill chart results
+  const [skillChartResults, setSkillChartResults] = useState<Map<string, any>>(new Map());
+  const [skillChartProgress, setSkillChartProgress] = useState<{ [workerId: number]: { round: number; total: number } }>({});
+  const [completedWorkers, setCompletedWorkers] = useState(0);
+
+  // Skill chart filters and state
+  const [hideOwned, setHideOwned] = useState(false);
+  const [hidePurple, setHidePurple] = useState(false);
+  const [showUmaIcons, setShowUmaIcons] = useState(false);
+  const [chartFastMode, setChartFastMode] = useState(false);  // 2x faster, lower accuracy
+  const [skillHints, setSkillHints] = useState<Map<string, number>>(new Map());
+  const [selectedSkillForChart, setSelectedSkillForChart] = useState('');
+  const [chartRunType, setChartRunType] = useState('medianrun');
+
+  // Simulation worker (for compare mode)
   const worker = useMemo(() => {
     const w = new Worker(new URL('./simulator.worker.ts', import.meta.url), { type: 'module' });
     w.addEventListener('message', (e: MessageEvent) => {
@@ -248,6 +271,60 @@ function App() {
     return w;
   }, []);
 
+  // Chart mode worker pool (4 workers for parallel skill testing)
+  const chartWorkers = useMemo(() => {
+    const workers: Array<Worker & { workerId?: number }> = [];
+    for (let i = 0; i < 4; i++) {
+      const w = new Worker(new URL('./simulator.worker.ts', import.meta.url), { type: 'module' }) as Worker & { workerId?: number };
+      w.workerId = i;
+      w.addEventListener('message', (e: MessageEvent) => {
+        const { type, workerId, results: workerResults, round, total } = e.data;
+
+        switch (type) {
+          case 'chart-progress':
+            setSkillChartProgress((prev) => ({
+              ...prev,
+              [workerId]: { round, total }
+            }));
+            break;
+
+          case 'chart-update':
+            setSkillChartResults((prev) => {
+              const merged = new Map(prev);
+              if (workerResults instanceof Map) {
+                workerResults.forEach((result: any, skillId: string) => {
+                  merged.set(skillId, result);
+                });
+              } else if (workerResults && typeof workerResults === 'object') {
+                Object.entries(workerResults).forEach(([skillId, result]: [string, any]) => {
+                  merged.set(skillId, result);
+                });
+              }
+              return merged;
+            });
+            break;
+
+          case 'chart-complete':
+            setCompletedWorkers((prev) => {
+              const newCount = prev + 1;
+              if (newCount === 4) {
+                // All workers finished
+                setIsRunning(false);
+              }
+              return newCount;
+            });
+            break;
+        }
+      });
+      w.addEventListener('error', (e) => {
+        console.error(`[V2] Chart Worker ${i} error:`, e);
+        setIsRunning(false);
+      });
+      workers.push(w);
+    }
+    return workers;
+  }, []);
+
   // Uma 1 state
   const [uma1, setUma1] = useState<UmaState>(
     savedSession.current?.uma1 ?? defaultUmaState,
@@ -257,6 +334,18 @@ function App() {
   const [uma2, setUma2] = useState<UmaState>(
     savedSession.current?.uma2 ?? defaultUmaState,
   );
+
+  // Map of groupId -> skillId for owned skills (for "Hide Owned" filter in skill chart)
+  const hasSkills = useMemo(() => {
+    const map = new Map<string, string>();
+    uma1.skills.forEach(skillId => {
+      const groupId = (skillmeta as any)[skillId]?.groupId;
+      if (groupId) {
+        map.set(groupId, skillId);
+      }
+    });
+    return map;
+  }, [uma1.skills]);
 
   // ============================================
   // AUTO-SAVE EFFECTS
@@ -308,8 +397,7 @@ function App() {
           setSamples(state.samples);
           setUma1(state.uma1);
           setUma2(state.uma2);
-          setSelectedPresetId(null); // Clear preset since we're loading custom state
-          console.log('[V2] Loaded state from URL hash');
+          setSelectedPresetId(null);
         }
       }
     };
@@ -381,6 +469,33 @@ function App() {
     setUma2(uma1);
   }, [uma1, uma2]);
 
+  // Skill info popover state
+  const [popoverSkillId, setPopoverSkillId] = useState<string | null>(null);
+
+  // Add skill from chart table (double-click)
+  const handleAddSkillFromChart = useCallback((skillId: string) => {
+    const groupId = skillmeta[skillId]?.groupId;
+    if (!groupId) return;
+
+    setUma1(prev => {
+      // Remove any existing skill in the same group, then add the new skill
+      const filteredSkills = prev.skills.filter(id => skillmeta[id]?.groupId !== groupId);
+      return { ...prev, skills: [...filteredSkills, skillId] };
+    });
+  }, []);
+
+  // Show skill info popover (click on skill icon)
+  const handleShowSkillInfo = useCallback((skillId: string) => {
+    setPopoverSkillId(skillId);
+  }, []);
+
+  // Close skill info popover on outside click
+  useEffect(() => {
+    const handleClick = () => setPopoverSkillId(null);
+    document.body.addEventListener('click', handleClick);
+    return () => document.body.removeEventListener('click', handleClick);
+  }, []);
+
   // Notification banner
   const [showNotification, setShowNotification] = useState(() => !savedPrefs.current.notificationDismissed);
 
@@ -418,8 +533,48 @@ function App() {
 
   // Run simulation via worker
   const handleRunSimulation = useCallback(() => {
+    if (mode === 'compare') {
+      setIsRunning(true);
+      setResults(null);
+
+      const course = courseData[courseId];
+      if (!course) {
+        console.error('[V2] Course not found:', courseId);
+        setIsRunning(false);
+        return;
+      }
+
+      // Send simulation request to worker
+      worker.postMessage({
+        msg: 'compare',
+        data: {
+          nsamples: samples,
+          course,
+          racedef: buildRaceParameters(ground, weather, season, time),
+          uma1: convertUmaStateForWorker(uma1),
+          uma2: convertUmaStateForWorker(uma2),
+          pacer: getDefaultPacer(),
+          options: buildSimulationOptions({
+            seed,
+            syncRng,
+            skillWisdomCheck,
+            rushedKakari,
+            leadCompetition,
+            competeFight,
+          })
+        }
+      });
+    } else {
+      // Skill chart mode
+      handleRunSkillChart();
+    }
+  }, [mode, courseId, samples, ground, weather, season, time, uma1, uma2, worker, seed, syncRng, skillWisdomCheck, rushedKakari, leadCompetition, competeFight]);
+
+  const handleRunSkillChart = useCallback(() => {
     setIsRunning(true);
-    setResults(null);
+    setCompletedWorkers(0);
+    setSkillChartResults(new Map());
+    setSkillChartProgress({});
 
     const course = courseData[courseId];
     if (!course) {
@@ -428,27 +583,60 @@ function App() {
       return;
     }
 
-    // Send simulation request to worker
-    worker.postMessage({
-      msg: 'compare',
-      data: {
-        nsamples: samples,
-        course,
-        racedef: buildRaceParameters(ground, weather, season, time),
-        uma1: convertUmaStateForWorker(uma1),
-        uma2: convertUmaStateForWorker(uma2),
-        pacer: getDefaultPacer(),
-        options: buildSimulationOptions({
-          seed,
-          syncRng,
-          skillWisdomCheck,
-          rushedKakari,
-          leadCompetition,
-          competeFight,
-        })
-      }
+    // Build race params with strategy for order-based skill filtering
+    const racedef = buildRaceParameters(ground, weather, season, time, uma1.strategy);
+
+    // Get list of skills to test (filter to activateable skills only)
+    const baseSkills = getBaseSkillsToTest(uma1);
+    const activateableSkills = getActivateableSkills(baseSkills, uma1, course, racedef);
+
+    if (activateableSkills.length === 0) {
+      console.warn('[V2] No activateable skills found for this course');
+      setIsRunning(false);
+      return;
+    }
+
+    // Load skillmeta for worker
+    import('../../skill_meta.json').then((skillmeta) => {
+      // Distribute skills across 4 workers
+      const quarter = Math.floor(activateableSkills.length / 4);
+      const skillBatches = [
+        activateableSkills.slice(0, quarter),
+        activateableSkills.slice(quarter, quarter * 2),
+        activateableSkills.slice(quarter * 2, quarter * 3),
+        activateableSkills.slice(quarter * 3)
+      ];
+
+      const chartOptions = buildSimulationOptions({
+        seed: seed || Math.floor(Math.random() * 2 ** 31),
+        syncRng: false,
+        skillWisdomCheck: false,
+        rushedKakari: false,
+        leadCompetition: false,
+        competeFight: false,
+      });
+
+      // Send tasks to all 4 workers
+      skillBatches.forEach((batch, i) => {
+        if (batch.length > 0) {
+          chartWorkers[i].postMessage({
+            msg: 'chart',
+            data: {
+              skills: batch,
+              course,
+              racedef,
+              uma: convertUmaStateForWorker(uma1),
+              pacer: getDefaultPacer(),
+              options: chartOptions,
+              skillmeta: skillmeta.default,
+              workerId: i,
+              fastMode: chartFastMode
+            }
+          });
+        }
+      });
     });
-  }, [courseId, samples, ground, weather, season, time, uma1, uma2, worker, seed, syncRng, skillWisdomCheck, rushedKakari, leadCompetition, competeFight]);
+  }, [courseId, ground, weather, season, time, uma1, seed, syncRng, chartWorkers, chartFastMode]);
 
   // Get current snapshot based on displayRun selection
   const currentSnapshot = useMemo(() => {
@@ -843,8 +1031,8 @@ function App() {
                     id: "copy-link",
                     label: "Copy Link",
                     icon: <Link size={16} />,
-                    onClick: async () => {
-                      const success = await copyShareableUrl({
+                    onClick: () => {
+                      copyShareableUrl({
                         courseId,
                         ground,
                         weather,
@@ -854,9 +1042,6 @@ function App() {
                         uma1,
                         uma2,
                       });
-                      if (success) {
-                        console.log('[V2] Shareable URL copied to clipboard');
-                      }
                     },
                   },
                   {
@@ -891,44 +1076,114 @@ function App() {
             setCompeteFight={setCompeteFight}
           />
 
+          {/* Content area wrapper for widescreen layout */}
+          <div class="v2-content-area">
+
           {/* MAIN CONTENT - RaceTrack takes center stage */}
           <main class="v2-main">
             {mode === "skill" ? (
-              <div class="v2-skill-placeholder">
-                <div class="v2-skill-placeholder-content">
-                  <Zap size={48} />
-                  <h2>Skill Mode</h2>
-                  <p>To Be Implemented</p>
-                </div>
-                {/* Ghost UI - faded preview of skill table layout */}
-                <div class="v2-skill-ghost">
-                  <div class="v2-skill-ghost-header">
-                    <div class="v2-skill-ghost-title"></div>
-                    <div class="v2-skill-ghost-controls">
-                      <div class="v2-skill-ghost-btn"></div>
-                      <div class="v2-skill-ghost-btn"></div>
-                    </div>
+              <div class="v2-skill-chart-container">
+                {/* Filter controls */}
+                <div class="v2-skill-chart-controls">
+                  <div class="v2-skill-chart-filters">
+                    <label class="v2-switch">
+                      <input
+                        type="checkbox"
+                        checked={hideOwned}
+                        onChange={(e) => setHideOwned((e.target as HTMLInputElement).checked)}
+                      />
+                      <span class="v2-switch-slider" />
+                      <span class="v2-switch-label">Hide Owned</span>
+                    </label>
+                    <label class="v2-switch">
+                      <input
+                        type="checkbox"
+                        checked={hidePurple}
+                        onChange={(e) => setHidePurple((e.target as HTMLInputElement).checked)}
+                      />
+                      <span class="v2-switch-slider" />
+                      <span class="v2-switch-label">Hide Purple</span>
+                    </label>
+                    <label class="v2-switch">
+                      <input
+                        type="checkbox"
+                        checked={showUmaIcons}
+                        onChange={(e) => setShowUmaIcons((e.target as HTMLInputElement).checked)}
+                      />
+                      <span class="v2-switch-slider" />
+                      <span class="v2-switch-label">Uma Icons</span>
+                    </label>
+                    <label class="v2-switch" title="2x faster simulation with lower accuracy (50 samples vs 200)">
+                      <input
+                        type="checkbox"
+                        checked={chartFastMode}
+                        onChange={(e) => setChartFastMode((e.target as HTMLInputElement).checked)}
+                      />
+                      <span class="v2-switch-slider" />
+                      <span class="v2-switch-label">Fast ⚡</span>
+                    </label>
                   </div>
-                  <table class="v2-skill-ghost-table">
-                    <thead>
-                      <tr>
-                        <th><div class="v2-skill-ghost-cell wide"></div></th>
-                        <th><div class="v2-skill-ghost-cell"></div></th>
-                        <th><div class="v2-skill-ghost-cell"></div></th>
-                        <th><div class="v2-skill-ghost-cell"></div></th>
-                        <th><div class="v2-skill-ghost-cell"></div></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                      <tr><td><div class="v2-skill-ghost-cell wide"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td><td><div class="v2-skill-ghost-cell"></div></td></tr>
-                    </tbody>
-                  </table>
+                  {/* Progress indicator */}
+                  {isRunning && Object.keys(skillChartProgress).length > 0 && (
+                    <div class="v2-skill-chart-progress">
+                      {Object.entries(skillChartProgress).map(([workerId, progress]) => (
+                        <div key={workerId} class="v2-worker-progress">
+                          Worker {workerId}: Round {progress.round}/{progress.total}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
+                {/* Skill chart table */}
+                {skillChartResults.size > 0 ? (
+                  <SkillChartPane
+                    data={Array.from(skillChartResults.values())}
+                    courseDistance={(courseData as any)[courseId]?.distance ?? 2000}
+                    hints={skillHints}
+                    hasSkills={hasSkills}
+                    updateHint={(id, hint) => {
+                      setSkillHints(prev => {
+                        const next = new Map(prev);
+                        next.set(id, hint);
+                        return next;
+                      });
+                    }}
+                    onRunTypeChange={setChartRunType}
+                    onSelectionChange={setSelectedSkillForChart}
+                    onInfoClick={handleShowSkillInfo}
+                    onDblClickRow={handleAddSkillFromChart}
+                    expandedContent={(skillId, runData, courseDistance, sampleCount) => (
+                      <SkillChartDetail
+                        skillId={skillId}
+                        runData={runData}
+                        courseDistance={courseDistance}
+                        umaIndex={1}
+                        sampleCount={sampleCount}
+                      />
+                    )}
+                    showUmaIcons={showUmaIcons}
+                    hideOwned={hideOwned}
+                    hidePurple={hidePurple}
+                    dirty={false}
+                  />
+                ) : (
+                  <div class="v2-skill-chart-empty">
+                    {isRunning ? (
+                      <div>
+                        <Zap size={48} />
+                        <h2>Running Skill Chart...</h2>
+                        <p>Testing skills across {Object.keys(skillChartProgress).length} workers</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <Zap size={48} />
+                        <h2>Skill Chart Mode</h2>
+                        <p>Click RUN to test all skills on the selected course</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
             <>
@@ -1096,6 +1351,8 @@ function App() {
             </div>
           </aside>
 
+          </div>{/* End v2-content-area */}
+
           {/* RACE SUMMARY DRAWER - Slides in from right */}
           <aside class={`v2-summary-drawer ${summaryDrawerOpen ? "open" : ""}`}>
             {/* Toggle tab attached to drawer edge */}
@@ -1211,6 +1468,47 @@ function App() {
 
           {/* Tour overlay - renders via portal */}
           <TourOverlay />
+
+          {/* Skill info popover */}
+          {popoverSkillId && skillChartResults.has(popoverSkillId) && (
+            <div
+              class="v2-skill-popover"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div class="v2-skill-popover-header">
+                <img
+                  src={`/uma-tools/icons/${skillmeta[popoverSkillId]?.iconId || popoverSkillId}.png`}
+                  alt=""
+                  class="v2-skill-popover-icon"
+                />
+                <span class="v2-skill-popover-name">
+                  {skillnames[popoverSkillId] || popoverSkillId}
+                </span>
+                <button
+                  type="button"
+                  class="v2-skill-popover-close"
+                  onClick={() => setPopoverSkillId(null)}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div class="v2-skill-popover-stats">
+                <span>Median: {skillChartResults.get(popoverSkillId)?.median.toFixed(2)}L</span>
+                <span>Mean: {skillChartResults.get(popoverSkillId)?.mean.toFixed(2)}L</span>
+                <span>Range: {skillChartResults.get(popoverSkillId)?.min.toFixed(2)} ~ {skillChartResults.get(popoverSkillId)?.max.toFixed(2)}L</span>
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  handleAddSkillFromChart(popoverSkillId);
+                  setPopoverSkillId(null);
+                }}
+              >
+                Add to Uma 1
+              </Button>
+            </div>
+          )}
 
           {/* Feedback drawer */}
           <FeedbackDrawer
