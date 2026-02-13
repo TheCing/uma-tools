@@ -92,9 +92,8 @@ import skillmeta from "../../skill_meta.json";
 import "./v2.css";
 import "./tour/tour.css";
 
-// Discord webhook for feedback submissions (configure in environment or replace with actual URL)
-const DISCORD_FEEDBACK_WEBHOOK =
-  "https://discord.com/api/webhooks/1468463273316847687/poe7J751B6hJV3MAEzYtNMLK2VY3BIj1eedzPgpE2vKKTQOv_AUzc2B5a3cmztgE1aB6";
+// Discord webhook for feedback submissions - configure via VITE_DISCORD_WEBHOOK environment variable
+const DISCORD_FEEDBACK_WEBHOOK = import.meta.env.VITE_DISCORD_WEBHOOK || '';
 
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.

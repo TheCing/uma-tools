@@ -1,6 +1,11 @@
 node_modules/
 .DS_Store
 
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.*.local
+
 # Build outputs
 **/dist/
 /v2/
