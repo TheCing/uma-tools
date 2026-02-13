@@ -8,11 +8,18 @@ import courses from '../umalator-global/course_data.json';
 export type Locale = 'jp' | 'gl';
 export type Strategy = 'nige' | 'senkou' | 'sashi' | 'oikomi' | 'oonige';
 
+export interface Slope {
+	start: number;
+	length: number;
+	slope: number;  // positive = uphill, negative = downhill
+}
+
 export interface CourseData {
 	raceTrackId: number;
 	distance: number;
 	surface: number;
 	distanceType: number;
+	slopes: Slope[];
 }
 
 export interface HpEstimate {
@@ -30,6 +37,15 @@ export interface HpEstimate {
 	canFullSpurt: boolean;
 	healNeeded: number;
 	minStaminaForFullSpurt: number;
+	// Downhill mode info
+	downhillDistance: number;
+	downhillPercent: number;
+	expectedDownhillModePercent: number;
+	downhillHpSavings: number;
+	adjustedTotalHpNeeded: number;
+	adjustedHpSurplus: number;
+	adjustedCanFullSpurt: boolean;
+	adjustedMinStamina: number;
 }
 
 // Strategy HP Coefficients (from HpPolicy.ts)
@@ -100,6 +116,62 @@ export function gutsModifier(guts: number): number {
 	return 1.0 + 200.0 / Math.sqrt(600.0 * guts);
 }
 
+/**
+ * Calculate total downhill distance for a course
+ * Downhill = negative slope value
+ */
+export function getDownhillDistance(course: CourseData): number {
+	if (!course.slopes) return 0;
+	return course.slopes
+		.filter(s => s.slope < 0)
+		.reduce((sum, s) => sum + s.length, 0);
+}
+
+/**
+ * Calculate expected percentage of time spent in Downhill Mode while on downhills
+ * Uses Markov steady-state: P(active) = p_activate / (p_activate + p_deactivate)
+ * - Activation chance per second: wisdom * 0.0004
+ * - Deactivation chance per second: 0.2 (20%)
+ */
+export function expectedDownhillModeRate(wisdom: number): number {
+	const pActivate = wisdom * 0.0004;
+	const pDeactivate = 0.2;
+	return pActivate / (pActivate + pDeactivate);
+}
+
+/**
+ * Calculate HP savings from downhill mode
+ * Downhill mode reduces HP consumption to 40% (60% savings)
+ */
+export function calculateDownhillSavings(
+	course: CourseData,
+	wisdom: number,
+	baseHpNeeded: number,
+	baseSpeed: number
+): { downhillDistance: number; downhillPercent: number; expectedModePercent: number; hpSavings: number } {
+	const downhillDist = getDownhillDistance(course);
+	const downhillPercent = downhillDist / course.distance;
+
+	if (downhillPercent === 0) {
+		return { downhillDistance: 0, downhillPercent: 0, expectedModePercent: 0, hpSavings: 0 };
+	}
+
+	// Expected time in downhill mode as fraction of total race
+	const modeRate = expectedDownhillModeRate(wisdom);
+	const expectedModePercent = downhillPercent * modeRate;
+
+	// HP savings: 60% reduction during downhill mode time
+	// This is an approximation - actual savings depend on velocity during downhill sections
+	const hpSavings = baseHpNeeded * expectedModePercent * 0.6;
+
+	return {
+		downhillDistance: downhillDist,
+		downhillPercent,
+		expectedModePercent,
+		hpSavings
+	};
+}
+
 export function calcMaxHp(stamina: number, distance: number, strategy: Strategy): number {
 	const coef = HpStrategyCoefficient[strategy];
 	return 0.8 * coef * stamina + distance;
@@ -157,9 +229,10 @@ export function findMinStaminaForFullSpurt(
 	strategy: Strategy,
 	guts: number,
 	speed: number = 1200,
-	healPercent: number = 0
+	healPercent: number = 0,
+	adjustedHpNeeded?: number
 ): number {
-	const hpNeeded = estimateHpNeeded(distance, strategy, guts, speed);
+	const hpNeeded = adjustedHpNeeded ?? estimateHpNeeded(distance, strategy, guts, speed).total;
 
 	// Binary search for minimum stamina
 	let low = 100;
@@ -170,7 +243,7 @@ export function findMinStaminaForFullSpurt(
 		const maxHp = calcMaxHp(mid, distance, strategy);
 		const effectiveHp = maxHp * (1 + healPercent / 100);
 
-		if (effectiveHp >= hpNeeded.total) {
+		if (effectiveHp >= hpNeeded) {
 			high = mid;
 		} else {
 			low = mid;
@@ -186,7 +259,8 @@ export function calculateEstimate(
 	guts: number,
 	strategy: Strategy,
 	speed: number = 1200,
-	healPercent: number = 0
+	healPercent: number = 0,
+	wisdom: number = 1200
 ): HpEstimate | null {
 	const course = getCourse(courseId);
 	if (!course) {
@@ -194,6 +268,7 @@ export function calculateEstimate(
 	}
 
 	const distance = course.distance;
+	const baseSpd = baseSpeed(distance);
 	const maxHp = calcMaxHp(stamina, distance, strategy);
 	const hpNeeded = estimateHpNeeded(distance, strategy, guts, speed);
 	const effectiveHp = maxHp * (1 + healPercent / 100);
@@ -205,6 +280,13 @@ export function calculateEstimate(
 
 	// Find minimum stamina for full spurt with current heal
 	const minStamina = findMinStaminaForFullSpurt(distance, strategy, guts, speed, healPercent);
+
+	// Calculate downhill savings
+	const downhillInfo = calculateDownhillSavings(course, wisdom, hpNeeded.total, baseSpd);
+	const adjustedTotalHpNeeded = hpNeeded.total - downhillInfo.hpSavings;
+	const adjustedHpSurplus = effectiveHp - adjustedTotalHpNeeded;
+	const adjustedCanFullSpurt = adjustedHpSurplus >= 0;
+	const adjustedMinStamina = findMinStaminaForFullSpurt(distance, strategy, guts, speed, healPercent, adjustedTotalHpNeeded);
 
 	return {
 		courseId,
@@ -221,10 +303,52 @@ export function calculateEstimate(
 		canFullSpurt,
 		healNeeded,
 		minStaminaForFullSpurt: minStamina,
+		// Downhill adjusted values
+		downhillDistance: Math.round(downhillInfo.downhillDistance),
+		downhillPercent: Math.round(downhillInfo.downhillPercent * 1000) / 10,
+		expectedDownhillModePercent: Math.round(downhillInfo.expectedModePercent * 1000) / 10,
+		downhillHpSavings: Math.round(downhillInfo.hpSavings),
+		adjustedTotalHpNeeded: Math.round(adjustedTotalHpNeeded),
+		adjustedHpSurplus: Math.round(adjustedHpSurplus),
+		adjustedCanFullSpurt,
+		adjustedMinStamina,
 	};
 }
 
-// Common courses for the dropdown
+// Distance type labels
+const distanceTypeLabels: Record<number, string> = {
+	1: 'Sprint',
+	2: 'Mile',
+	3: 'Medium',
+	4: 'Long',
+};
+
+// Generate all courses from course_data.json
+function generateAllCourses(): Array<{ id: string; name: string; tag: string }> {
+	const allCourses = Object.entries(courses as Record<string, CourseData>)
+		.map(([id, course]) => ({
+			id,
+			name: getCourseName(course),
+			tag: distanceTypeLabels[course.distanceType] || 'Unknown',
+			trackId: course.raceTrackId,
+			distance: course.distance,
+			surface: course.surface,
+		}))
+		// Sort by track, then surface (turf first), then distance
+		.sort((a, b) => {
+			if (a.trackId !== b.trackId) return a.trackId - b.trackId;
+			if (a.surface !== b.surface) return a.surface - b.surface;
+			return a.distance - b.distance;
+		})
+		.map(({ id, name, tag }) => ({ id, name, tag }));
+
+	return allCourses;
+}
+
+// All courses from course_data.json
+export const ALL_COURSES = generateAllCourses();
+
+// Common/popular courses for quick access
 export const COMMON_COURSES = [
 	{ id: '10503', name: 'Nakayama Turf 1200m', tag: 'Sprint' },
 	{ id: '10601', name: 'Tokyo Turf 1400m', tag: 'Sprint' },
