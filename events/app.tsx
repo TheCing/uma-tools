@@ -473,7 +473,7 @@ function App() {
 
               {/* Simulator link */}
               <a
-                href={`/umalator-global/v2/?preset=${nextEvent.id}`}
+                href={`/v2/?preset=${nextEvent.id}`}
                 class="simulator-link"
               >
                 <Calculator size={16} />
