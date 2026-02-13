@@ -89,25 +89,99 @@ const SUPPORT_TYPE_ICONS: Record<number, string> = {
   7: '/uma-tools/icons/utx_ico_group_01.png', // Group
 };
 
+// Normalize banner data from GameTora
+// GameTora structure: { id, start, end, lineup, pickups }
+// - start/end are Unix timestamps (seconds)
+// - pickups is array of [cardId, rarity, isNew] tuples
+function normalizeBanner(raw: any): Banner | null {
+  if (!raw || typeof raw !== 'object') return null;
+
+  const id = raw.id ?? 0;
+  const name = raw.name ?? '';
+
+  // Convert Unix timestamps (seconds) to ISO date strings
+  const startTs = raw.start ?? raw.startDate;
+  const endTs = raw.end ?? raw.endDate;
+
+  // Handle both Unix timestamps (numbers) and existing date strings
+  const startDate = typeof startTs === 'number'
+    ? new Date(startTs * 1000).toISOString()
+    : (startTs ?? '');
+  const endDate = typeof endTs === 'number'
+    ? new Date(endTs * 1000).toISOString()
+    : (endTs ?? '');
+
+  // Extract card IDs from pickup tuples [[cardId, rarity, isNew], ...]
+  const rawPickups = raw.pickups ?? raw.pickupIds ?? [];
+  const pickupIds: number[] = Array.isArray(rawPickups)
+    ? rawPickups.map((p: any) => Array.isArray(p) ? p[0] : p).filter((id: any) => typeof id === 'number')
+    : [];
+
+  // Skip banners without essential data
+  if (!id || !endDate) return null;
+
+  return { id, name, startDate, endDate, pickupIds };
+}
+
 // Fetch banners from GameTora (with CORS proxy fallback)
 async function fetchGlobalBanners(): Promise<BannerData | null> {
+  console.log('[Banners] Starting fetch...');
+
   // Check cache first
   try {
     const cached = localStorage.getItem(BANNERS_CACHE_KEY);
     if (cached) {
       const data = JSON.parse(cached) as BannerData;
-      if (Date.now() - data.fetchedAt < BANNERS_CACHE_TTL) {
-        return data;
+      const cacheAge = Date.now() - data.fetchedAt;
+      const now = Date.now();
+      console.log('[Banners] Found cache, age:', Math.round(cacheAge / 1000), 'seconds');
+
+      // Check if any cached banner has ended - if so, refetch to get new banners
+      const allBanners = [...data.characters, ...data.supports];
+      const anyBannerEnded = allBanners.some(b => {
+        if (!b.endDate) return false;
+        const endTime = new Date(b.endDate).getTime();
+        return !isNaN(endTime) && endTime < now;
+      });
+
+      if (anyBannerEnded) {
+        console.log('[Banners] A cached banner has ended, refetching for new data');
+        localStorage.removeItem(BANNERS_CACHE_KEY);
+      } else if (cacheAge < BANNERS_CACHE_TTL) {
+        // Validate cached data has valid banners
+        const hasValidBanners = data.characters.some(b => b.endDate && !isNaN(new Date(b.endDate).getTime())) ||
+                                data.supports.some(b => b.endDate && !isNaN(new Date(b.endDate).getTime()));
+        if (hasValidBanners) {
+          // Also check if cache has pickups that resolve
+          const hasPickups = data.characters.some(b => b.pickupIds?.some(id => data.charLookup[id])) ||
+                            data.supports.some(b => b.pickupIds?.some(id => data.supportLookup[id]));
+          if (hasPickups) {
+            console.log('[Banners] Using valid cache with pickups');
+            return data;
+          }
+          console.log('[Banners] Cache has no resolvable pickups, clearing');
+          localStorage.removeItem(BANNERS_CACHE_KEY);
+        }
+        // Cache has invalid data, clear it
+        console.log('[Banners] Cache invalid, clearing');
+        localStorage.removeItem(BANNERS_CACHE_KEY);
+      } else {
+        console.log('[Banners] Cache expired (TTL)');
       }
+    } else {
+      console.log('[Banners] No cache found');
     }
   } catch (e) {
-    console.warn('Failed to load banner cache:', e);
+    console.warn('[Banners] Failed to load cache:', e);
   }
 
   try {
+    console.log('[Banners] Fetching from GameTora...');
     // Try direct fetch first (might work if CORS is enabled)
     const res = await fetch('https://gametora.com/umamusume/gacha?server=en');
+    console.log('[Banners] Fetch response:', res.status, res.statusText);
     const html = await res.text();
+    console.log('[Banners] Got HTML, length:', html.length);
 
     const match = html.match(/<script id="__NEXT_DATA__"[^>]*>(.+?)<\/script>/);
     if (!match) {
@@ -118,6 +192,26 @@ async function fetchGlobalBanners(): Promise<BannerData | null> {
     const data = JSON.parse(match[1]);
     const props = data.props.pageProps;
 
+    // Debug: log the structure to understand it
+    const firstCharBanner = props.currentCharBanners?.en?.[0];
+    const firstSupportBanner = props.currentSupportBanners?.en?.[0];
+    console.log('GameTora banner data structure:', {
+      charBannerKeys: firstCharBanner ? Object.keys(firstCharBanner).join(', ') : 'none',
+      supportBannerKeys: firstSupportBanner ? Object.keys(firstSupportBanner).join(', ') : 'none',
+      firstCharBanner,
+      firstSupportBanner,
+    });
+
+    // Debug: log card data structure
+    const firstCharCard = props.charCardData?.en?.[0];
+    const firstSupportCard = props.supportCardData?.en?.[0];
+    console.log('GameTora card data structure:', {
+      charCardKeys: firstCharCard ? Object.keys(firstCharCard).join(', ') : 'none',
+      supportCardKeys: firstSupportCard ? Object.keys(firstSupportCard).join(', ') : 'none',
+      firstCharCard,
+      firstSupportCard,
+    });
+
     const charLookup = Object.fromEntries(
       (props.charCardData?.en || []).map((c: CharCard) => [c.id, c])
     );
@@ -125,9 +219,17 @@ async function fetchGlobalBanners(): Promise<BannerData | null> {
       (props.supportCardData?.en || []).map((s: SupportCard) => [s.id, s])
     );
 
+    // Normalize banners and filter out invalid ones
+    const characters = (props.currentCharBanners?.en || [])
+      .map(normalizeBanner)
+      .filter((b: Banner | null): b is Banner => b !== null);
+    const supports = (props.currentSupportBanners?.en || [])
+      .map(normalizeBanner)
+      .filter((b: Banner | null): b is Banner => b !== null);
+
     const bannerData: BannerData = {
-      characters: props.currentCharBanners?.en || [],
-      supports: props.currentSupportBanners?.en || [],
+      characters,
+      supports,
       charLookup,
       supportLookup,
       fetchedAt: Date.now(),
@@ -142,14 +244,18 @@ async function fetchGlobalBanners(): Promise<BannerData | null> {
 
     return bannerData;
   } catch (e) {
-    console.warn('Failed to fetch banners:', e);
+    console.warn('[Banners] Failed to fetch:', e);
     return null;
   }
 }
 
 // Format banner end date
 function formatBannerEndDate(dateStr: string): string {
+  if (!dateStr) return '';
+
   const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
+
   const now = new Date();
   const diff = date.getTime() - now.getTime();
 
@@ -402,12 +508,17 @@ function App() {
 
   // Fetch banners on mount
   useEffect(() => {
+    console.log('[App] Fetching banners on mount...');
     fetchGlobalBanners()
       .then(data => {
+        console.log('[App] Banner fetch complete, data:', data ? 'received' : 'null');
         setBanners(data);
         setBannersLoading(false);
       })
-      .catch(() => setBannersLoading(false));
+      .catch((e) => {
+        console.error('[App] Banner fetch error:', e);
+        setBannersLoading(false);
+      });
   }, []);
 
   // Get CM events only
@@ -613,91 +724,68 @@ function App() {
             </div>
 
             {/* Current Banners */}
-            {banners && (banners.characters.length > 0 || banners.supports.length > 0) && (
-              <section class="events-section banners-section">
-                <h2 class="section-title">Current Banners</h2>
-                <div class="banners-grid">
-                  {/* Character Banners */}
-                  {banners.characters.map(banner => (
-                    <div key={`char-${banner.id}`} class="banner-card">
-                      <div class="banner-header">
-                        <span class="banner-type char">Character</span>
-                        <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
-                      </div>
-                      <div class="banner-pickups">
-                        {(banner.pickupIds || []).map(id => {
-                          const card = banners.charLookup[id];
-                          if (!card) return null;
-                          return (
-                            <div key={id} class="pickup-card">
-                              <img
-                                src={`https://gametora.com/images/umamusume/characters/trained_chr_icon_${card.charaId}_${String(card.id).slice(-2)}_02.webp`}
-                                alt={card.name}
-                                class="pickup-icon"
-                                loading="lazy"
-                              />
-                              <span class="pickup-name">{card.name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <a
-                        href={`https://gametora.com/umamusume/gacha?server=en`}
-                        target="_blank"
-                        rel="noopener"
-                        class="banner-link"
-                      >
-                        View on GameTora
-                        <ExternalLink size={12} />
-                      </a>
-                    </div>
-                  ))}
+            {banners && (() => {
+              // Filter to banners that have at least one resolvable pickup
+              const validCharBanners = banners.characters.filter(b =>
+                b.pickupIds?.some(id => banners.charLookup[id])
+              );
+              const validSupportBanners = banners.supports.filter(b =>
+                b.pickupIds?.some(id => banners.supportLookup[id])
+              );
 
-                  {/* Support Banners */}
-                  {banners.supports.map(banner => (
-                    <div key={`supp-${banner.id}`} class="banner-card">
-                      <div class="banner-header">
-                        <span class="banner-type support">Support</span>
-                        <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
-                      </div>
-                      <div class="banner-pickups">
-                        {(banner.pickupIds || []).map(id => {
-                          const card = banners.supportLookup[id];
-                          if (!card) return null;
-                          return (
-                            <div key={id} class="pickup-card">
-                              <img
-                                src={`https://gametora.com/images/umamusume/support_cards/support_card_s_${card.id}.webp`}
-                                alt={card.name}
-                                class="pickup-icon support-icon"
-                                loading="lazy"
-                              />
-                              {card.type && SUPPORT_TYPE_ICONS[card.type] && (
-                                <img
-                                  src={SUPPORT_TYPE_ICONS[card.type]}
-                                  alt=""
-                                  class="support-type-badge"
-                                />
-                              )}
-                              <span class="pickup-name">{card.name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
+              if (validCharBanners.length === 0 && validSupportBanners.length === 0) return null;
+
+              return (
+                <section class="events-section banners-section">
+                  <h2 class="section-title">Current Banners</h2>
+                  <div class="banners-grid">
+                    {/* Character Banners */}
+                    {validCharBanners.map(banner => (
                       <a
-                        href={`https://gametora.com/umamusume/gacha?server=en`}
+                        key={`char-${banner.id}`}
+                        href="https://gametora.com/umamusume/gacha?server=en"
                         target="_blank"
                         rel="noopener"
-                        class="banner-link"
+                        class="banner-card banner-card-link"
                       >
-                        View on GameTora
-                        <ExternalLink size={12} />
+                        <img
+                          src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
+                          alt="Character Banner"
+                          class="banner-image"
+                          loading="lazy"
+                        />
+                        <div class="banner-footer">
+                          <span class="banner-type char">Character</span>
+                          <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                        </div>
                       </a>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    ))}
+
+                    {/* Support Banners */}
+                    {validSupportBanners.map(banner => (
+                      <a
+                        key={`supp-${banner.id}`}
+                        href="https://gametora.com/umamusume/gacha?server=en"
+                        target="_blank"
+                        rel="noopener"
+                        class="banner-card banner-card-link"
+                      >
+                        <img
+                          src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
+                          alt="Support Banner"
+                          class="banner-image"
+                          loading="lazy"
+                        />
+                        <div class="banner-footer">
+                          <span class="banner-type support">Support</span>
+                          <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </section>
+              );
+            })()}
 
             {/* Upcoming Events */}
             {upcomingEvents.length > 1 && (

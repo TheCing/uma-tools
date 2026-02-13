@@ -67,7 +67,7 @@ function serveUmaToolsAssets(): Plugin {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [preact(), serveDevIndex(), serveUmaToolsAssets()],
+  plugins: [serveDevIndex(), preact(), serveUmaToolsAssets()],
 
   base: mode === 'production' ? '/events/' : '/',
 

@@ -716,10 +716,33 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: var(--space-md);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+}
+
+.banner-card-link {
+  text-decoration: none;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.banner-card-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.banner-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-overlay);
 }
 
 .banner-header {
@@ -733,23 +756,31 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-overlay);
 }
 
 .banner-type.char {
-  background: rgba(255, 107, 107, 0.2);
-  color: #ff6b6b;
+  border-left: 3px solid #ff6b6b;
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.12) 0%, var(--color-surface-overlay) 60%);
+  color: var(--color-text);
 }
 
 .banner-type.support {
-  background: rgba(78, 205, 196, 0.2);
-  color: #4ecdc4;
+  border-left: 3px solid #4ecdc4;
+  background: linear-gradient(90deg, rgba(78, 205, 196, 0.12) 0%, var(--color-surface-overlay) 60%);
+  color: var(--color-text);
 }
 
 .banner-timer {
-  font-size: var(--font-xs);
-  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
 }
 
 .banner-pickups {
@@ -801,6 +832,18 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.support-card-text {
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface-overlay);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.support-card-text .pickup-name {
+  max-width: none;
+  white-space: normal;
 }
 
 .banner-link {
