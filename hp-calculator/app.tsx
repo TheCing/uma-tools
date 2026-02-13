@@ -585,65 +585,19 @@ function App() {
                       </span>
                     </div>
 
-                    {/* Downhill Mode Adjustment */}
+                    {/* Course Info - Downhill indicator (informational only) */}
                     {estimate.downhillDistance > 0 && (
-                      <>
-                        <div className="results-divider" />
-                        <div className="downhill-section">
-                          <div className="downhill-header">
-                            <span className="downhill-title">Downhill Mode Adjustment</span>
-                            <span className="downhill-info">
-                              {estimate.downhillDistance}m downhill ({estimate.downhillPercent}% of course)
-                            </span>
-                          </div>
-
-                          <div className="result-row">
-                            <span className="result-label">Expected Mode Time</span>
-                            <span className="result-value mono">
-                              {estimate.expectedDownhillModePercent}%
-                              <span className="result-note"> of race</span>
-                            </span>
-                          </div>
-
-                          <div className="result-row">
-                            <span className="result-label">HP Savings</span>
-                            <span className="result-value mono success">
-                              -{estimate.downhillHpSavings.toLocaleString()}
-                            </span>
-                          </div>
-
-                          <div className="result-row">
-                            <span className="result-label">Adjusted HP Needed</span>
-                            <span className="result-value mono">
-                              {estimate.adjustedTotalHpNeeded.toLocaleString()}
-                            </span>
-                          </div>
-
-                          <div className="result-highlight">
-                            <span className="result-highlight-label">Adjusted Surplus</span>
-                            <span
-                              className={`result-highlight-value ${estimate.adjustedCanFullSpurt ? "success" : "error"}`}
-                            >
-                              {estimate.adjustedHpSurplus >= 0 ? "+" : ""}
-                              {estimate.adjustedHpSurplus.toLocaleString()}
-                            </span>
-                          </div>
-
-                          <div className="min-stamina-row adjusted">
-                            <span className="min-stamina-label">
-                              Adjusted Min Stamina
-                            </span>
-                            <span className="min-stamina-value">
-                              {estimate.adjustedMinStamina.toLocaleString()}
-                              {estimate.adjustedMinStamina < estimate.minStaminaForFullSpurt && (
-                                <span className="stamina-savings">
-                                  ({estimate.minStaminaForFullSpurt - estimate.adjustedMinStamina} less)
-                                </span>
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                      </>
+                      <div className="course-info-note">
+                        <strong>📉 {estimate.downhillDistance}m downhill</strong> ({estimate.downhillPercent}% of course)
+                        <br />
+                        <span className="note-detail">
+                          Downhill mode can reduce HP consumption by up to 60%. Use the{" "}
+                          <a href="https://umalator.app/umalator-global/" target="_blank" rel="noopener">
+                            full simulator
+                          </a>{" "}
+                          to calculate accurate survival and spurt rates.
+                        </span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -764,11 +718,29 @@ function App() {
             <div className="sidebar-tip">
               <div className="sidebar-tip-title">
                 <Lightbulb size={14} />
-                Pro Tip
+                Limitations
               </div>
               <p>
-                This calculator gives optimistic estimates. For safety in real
-                races, add 5-10% buffer to the minimum stamina shown.
+                This calculator provides <strong>analytical estimates</strong>{" "}
+                assuming ideal conditions. It does not account for:
+              </p>
+              <ul className="sidebar-list">
+                <li>Downhill Mode HP savings</li>
+                <li>Position Keep variations</li>
+                <li>Kakari (rushed) state</li>
+                <li>Skill activation timing</li>
+              </ul>
+              <p style={{ marginTop: "var(--space-sm)" }}>
+                For accurate survival/spurt rates that include these factors,
+                use the{" "}
+                <a
+                  href="https://umalator.app/umalator-global/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Umalator simulator
+                </a>{" "}
+                which runs Monte Carlo simulations.
               </p>
             </div>
           </aside>

@@ -317,6 +317,26 @@ body {
   overflow-x: auto;
 }
 
+.sidebar-list {
+  margin: var(--space-sm) 0;
+  padding-left: var(--space-lg);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.sidebar-list li {
+  margin-bottom: var(--space-xs);
+}
+
+.sidebar-tip a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.sidebar-tip a:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 1080px) {
   .sidebar {
     display: none;
@@ -680,74 +700,40 @@ body {
 }
 
 /* ============================================
-   DOWNHILL SECTION
+   COURSE INFO NOTE
    ============================================ */
 
-.downhill-section {
+.course-info-note {
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md) var(--space-xl);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  text-align: center;
   padding: var(--space-md);
   background: var(--color-surface-overlay);
-  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+  line-height: 1.6;
 }
 
-@media (max-width: 500px) {
-  .downhill-section {
-    grid-template-columns: 1fr;
-  }
+.course-info-note strong {
+  color: var(--color-text);
 }
 
-.downhill-header {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-xs);
+.course-info-note .note-detail {
+  display: block;
+  margin-top: var(--space-xs);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
 }
 
-.downhill-title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.course-info-note a {
+  color: var(--color-primary);
+  text-decoration: none;
 }
 
-.downhill-info {
-  font-size: 0.8125rem;
-  color: var(--color-text-faint);
-}
-
-.downhill-section .result-row {
-  padding: var(--space-xs) 0;
-}
-
-.downhill-section .result-highlight {
-  background: transparent;
-  padding: var(--space-sm) 0;
-}
-
-.min-stamina-row.adjusted {
-  background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.2);
-}
-
-.min-stamina-row.adjusted .min-stamina-value {
-  color: var(--color-info, #3b82f6);
-}
-
-.stamina-savings {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--color-success, #22c55e);
-  margin-left: var(--space-sm);
-}
-
-.result-value.success {
-  color: var(--color-success, #22c55e);
+.course-info-note a:hover {
+  text-decoration: underline;
 }
 
 /* ============================================
