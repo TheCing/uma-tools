@@ -18,8 +18,6 @@ import {
   ChevronDown,
   Clock,
   MapPin,
-  Cloud,
-  Leaf,
   ExternalLink,
 } from 'lucide-react';
 
@@ -201,26 +199,20 @@ function getTimeName(time: Time): string {
   }
 }
 
-// Get weather icon
-function getWeatherIcon(weather: Weather): string {
-  switch (weather) {
-    case Weather.Sunny: return '☀️';
-    case Weather.Cloudy: return '☁️';
-    case Weather.Rainy: return '🌧️';
-    case Weather.Snowy: return '❄️';
-    default: return '🌤️';
-  }
+// Icon paths (matching conditions.tsx)
+function getWeatherIconSrc(weather: Weather): string {
+  return `/uma-tools/icons/utx_ico_weather_0${weather - 1}.png`;
 }
 
-// Get season icon
-function getSeasonIcon(season: Season): string {
-  switch (season) {
-    case Season.Spring: return '🌸';
-    case Season.Summer: return '☀️';
-    case Season.Autumn: return '🍂';
-    case Season.Winter: return '❄️';
-    default: return '🌿';
-  }
+function getSeasonIconSrc(season: Season): string {
+  return `/uma-tools/icons/global/utx_txt_season_0${season - 1}.png`;
+}
+
+function getTimeIconSrc(time: Time): string {
+  // Time enum: Morning=1, Midday=2, Evening=3, Night=4
+  // Icons only exist for Midday(0), Evening(1), Night(2)
+  const iconIndex = time === Time.Morning ? 0 : time - 2;
+  return `/uma-tools/icons/utx_ico_timezone_0${iconIndex}.png`;
 }
 
 function App() {
@@ -402,15 +394,18 @@ function App() {
 
                 <div class="event-conditions">
                   <span class="condition-tag">
-                    {getWeatherIcon(nextEvent.weather)} {getWeatherName(nextEvent.weather)}
+                    <img src={getWeatherIconSrc(nextEvent.weather)} alt="" class="condition-icon" />
+                    {getWeatherName(nextEvent.weather)}
                   </span>
                   <span class="condition-tag">
                     {getGroundName(nextEvent.ground)}
                   </span>
                   <span class="condition-tag">
-                    {getSeasonIcon(nextEvent.season)} {getSeasonName(nextEvent.season)}
+                    <img src={getSeasonIconSrc(nextEvent.season)} alt="" class="condition-icon condition-icon-season" />
+                    {getSeasonName(nextEvent.season)}
                   </span>
                   <span class="condition-tag">
+                    <img src={getTimeIconSrc(nextEvent.time)} alt="" class="condition-icon" />
                     {getTimeName(nextEvent.time)}
                   </span>
                 </div>
@@ -450,7 +445,8 @@ function App() {
                             </span>
                           )}
                           <span class="event-row-conditions">
-                            {getWeatherIcon(event.weather)} {getGroundName(event.ground)}
+                            <img src={getWeatherIconSrc(event.weather)} alt="" class="condition-icon-sm" />
+                            {getGroundName(event.ground)}
                           </span>
                         </div>
                       </div>

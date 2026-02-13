@@ -381,6 +381,23 @@ body {
   color: var(--color-text-secondary);
 }
 
+.condition-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.condition-icon-season {
+  width: 32px;
+  height: auto;
+}
+
+.condition-icon-sm {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
 /* ============================================
    SIMULATOR LINK
    ============================================ */
@@ -498,6 +515,9 @@ body {
 }
 
 .event-row-conditions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   color: var(--color-text-muted);
 }
 
