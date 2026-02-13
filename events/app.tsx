@@ -6,7 +6,7 @@
  */
 
 import { h, render, Fragment } from 'preact';
-import { useState, useEffect, useMemo } from 'preact/hooks';
+import { useState, useEffect, useMemo, useRef } from 'preact/hooks';
 import {
   Calendar,
   Sun,
@@ -215,6 +215,56 @@ function getTimeIconSrc(time: Time): string {
   return `/uma-tools/icons/utx_ico_timezone_0${iconIndex}.png`;
 }
 
+// Flip digit component with animation
+function FlipDigit({ digit, id }: { digit: string; id: string }) {
+  const [currentDigit, setCurrentDigit] = useState(digit);
+  const [previousDigit, setPreviousDigit] = useState(digit);
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  useEffect(() => {
+    if (digit !== currentDigit) {
+      setIsFlipping(true);
+      setPreviousDigit(currentDigit);
+
+      // After flip animation completes, update the digit
+      const timer = setTimeout(() => {
+        setCurrentDigit(digit);
+        setIsFlipping(false);
+      }, 600); // Match animation duration
+
+      return () => clearTimeout(timer);
+    }
+  }, [digit, currentDigit]);
+
+  return (
+    <div class={`flip-card ${isFlipping ? 'flipping' : ''}`} key={id}>
+      <div class="flip-card-inner">
+        {/* Static top - shows current (or new during flip) */}
+        <div class="flip-card-top">
+          <span>{isFlipping ? digit : currentDigit}</span>
+        </div>
+
+        {/* Static bottom - shows previous during flip, then current */}
+        <div class="flip-card-bottom">
+          <span>{currentDigit}</span>
+        </div>
+
+        {/* Animated flap - top half that flips down */}
+        {isFlipping && (
+          <>
+            <div class="flip-card-flap flip-card-flap-top">
+              <span>{previousDigit}</span>
+            </div>
+            <div class="flip-card-flap flip-card-flap-bottom">
+              <span>{digit}</span>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [prefs, setPrefs] = useState<Preferences>(loadPrefs);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
@@ -352,25 +402,41 @@ function App() {
               <div class="next-event-label">Next Champion's Meeting</div>
               <h1 class="next-event-name">{nextEvent.name}</h1>
 
-              {/* Countdown */}
+              {/* Countdown - Flip Clock Style */}
               <div class="countdown">
                 <div class="countdown-segment">
-                  <span class="countdown-value">{String(countdown.days).padStart(2, '0')}</span>
+                  <div class="countdown-cards">
+                    {String(countdown.days).padStart(2, '0').split('').map((digit, i) => (
+                      <FlipDigit key={`days-${i}`} digit={digit} id={`days-${i}`} />
+                    ))}
+                  </div>
                   <span class="countdown-label">Days</span>
                 </div>
                 <span class="countdown-separator">:</span>
                 <div class="countdown-segment">
-                  <span class="countdown-value">{String(countdown.hours).padStart(2, '0')}</span>
+                  <div class="countdown-cards">
+                    {String(countdown.hours).padStart(2, '0').split('').map((digit, i) => (
+                      <FlipDigit key={`hours-${i}`} digit={digit} id={`hours-${i}`} />
+                    ))}
+                  </div>
                   <span class="countdown-label">Hours</span>
                 </div>
                 <span class="countdown-separator">:</span>
                 <div class="countdown-segment">
-                  <span class="countdown-value">{String(countdown.minutes).padStart(2, '0')}</span>
+                  <div class="countdown-cards">
+                    {String(countdown.minutes).padStart(2, '0').split('').map((digit, i) => (
+                      <FlipDigit key={`min-${i}`} digit={digit} id={`min-${i}`} />
+                    ))}
+                  </div>
                   <span class="countdown-label">Min</span>
                 </div>
                 <span class="countdown-separator">:</span>
                 <div class="countdown-segment">
-                  <span class="countdown-value">{String(countdown.seconds).padStart(2, '0')}</span>
+                  <div class="countdown-cards">
+                    {String(countdown.seconds).padStart(2, '0').split('').map((digit, i) => (
+                      <FlipDigit key={`sec-${i}`} digit={digit} id={`sec-${i}`} />
+                    ))}
+                  </div>
                   <span class="countdown-label">Sec</span>
                 </div>
               </div>
