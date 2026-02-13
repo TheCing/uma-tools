@@ -357,9 +357,7 @@ function App() {
                 />
                 <div class="apps-dropdown-menu">
                   <a
-                    href="https://umalator.app/umalator-global/"
-                    target="_blank"
-                    rel="noopener"
+                    href="/umalator-global/"
                     class="apps-dropdown-item"
                     onClick={() => setAppsMenuOpen(false)}
                   >
@@ -367,9 +365,7 @@ function App() {
                     Umalator
                   </a>
                   <a
-                    href="https://umalator.app/hp-calculator/"
-                    target="_blank"
-                    rel="noopener"
+                    href="/hp-calculator/"
                     class="apps-dropdown-item"
                     onClick={() => setAppsMenuOpen(false)}
                   >
@@ -377,9 +373,7 @@ function App() {
                     HP Calculator
                   </a>
                   <a
-                    href="https://umalator.app/docs/"
-                    target="_blank"
-                    rel="noopener"
+                    href="/docs/"
                     class="apps-dropdown-item"
                     onClick={() => setAppsMenuOpen(false)}
                   >
@@ -479,7 +473,7 @@ function App() {
 
               {/* Simulator link */}
               <a
-                href={`https://umalator.app/umalator-global/?preset=${nextEvent.id}`}
+                href={`/umalator-global/?preset=${nextEvent.id}`}
                 target="_blank"
                 rel="noopener"
                 class="simulator-link"

@@ -1227,7 +1227,7 @@ function App() {
                       icon: <Calculator size={16} />,
                       onClick: () =>
                         window.open(
-                          "https://umalator.app/hp-calculator/",
+                          "/hp-calculator/",
                           "_blank",
                         ),
                     },
@@ -1236,14 +1236,14 @@ function App() {
                       label: "Events",
                       icon: <Calendar size={16} />,
                       onClick: () =>
-                        window.open("https://umalator.app/events/", "_blank"),
+                        window.open("/events/", "_blank"),
                     },
                     {
                       id: "docs",
                       label: "Docs",
                       icon: <Book size={16} />,
                       onClick: () =>
-                        window.open("https://umalator.app/docs/", "_blank"),
+                        window.open("/docs/", "_blank"),
                     },
                   ]}
                 />
@@ -1728,7 +1728,7 @@ function App() {
                 </a>
                 &nbsp;|&nbsp;
                 <a
-                  href="https://umalator.app/hp-calculator/"
+                  href="/hp-calculator/"
                   target="_blank"
                   rel="noopener"
                 >
@@ -1947,7 +1947,7 @@ function App() {
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"
-                        onClick={() => window.open("https://umalator.app/hp-calculator/", "_blank")}
+                        onClick={() => window.open("/hp-calculator/", "_blank")}
                         icon={<Calculator size={14} />}
                       >
                         HP Calculator
@@ -1955,7 +1955,7 @@ function App() {
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"
-                        onClick={() => window.open("https://umalator.app/events/", "_blank")}
+                        onClick={() => window.open("/events/", "_blank")}
                         icon={<Calendar size={14} />}
                       >
                         Events
@@ -1963,7 +1963,7 @@ function App() {
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"
-                        onClick={() => window.open("https://umalator.app/docs/", "_blank")}
+                        onClick={() => window.open("/docs/", "_blank")}
                         icon={<Book size={14} />}
                       >
                         Docs
