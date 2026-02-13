@@ -12,10 +12,18 @@ function serveDevIndex(): Plugin {
     name: 'serve-dev-index',
     enforce: 'pre',
     configureServer(server) {
-      server.middlewares.use((req, res, next) => {
-        // Redirect root and index.html to index.dev.html during development
+      server.middlewares.use(async (req, res, next) => {
+        // Serve index.dev.html for root and /index.html requests
         if (req.url === '/' || req.url === '/index.html') {
-          req.url = '/index.dev.html';
+          const indexPath = path.join(__dirname, 'index.dev.html');
+          if (fs.existsSync(indexPath)) {
+            let html = fs.readFileSync(indexPath, 'utf-8');
+            // Let Vite transform the HTML (inject HMR client, etc.)
+            html = await server.transformIndexHtml(req.url, html);
+            res.setHeader('Content-Type', 'text/html');
+            res.end(html);
+            return;
+          }
         }
         next();
       });
