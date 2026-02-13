@@ -429,8 +429,26 @@ function App() {
     savePreferences({ darkMode, classicGreen, uiScale });
   }, [darkMode, classicGreen, uiScale]);
 
-  // Load state from URL hash on mount
+  // Load state from URL on mount (supports ?preset=X and hash-based state)
   useEffect(() => {
+    // Check for preset query parameter first
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetParam = urlParams.get("preset");
+    if (presetParam) {
+      const presetId = parseInt(presetParam, 10);
+      const preset = presets.find((p) => p.id === presetId);
+      if (preset) {
+        setCourseId(preset.courseId);
+        setGround(preset.ground);
+        setWeather(preset.weather);
+        setSeason(preset.season);
+        setTime(preset.time);
+        setSelectedPresetId(presetId);
+        return; // Don't also load from hash
+      }
+    }
+
+    // Otherwise, check for hash-based state
     const loadFromHash = async () => {
       if (window.location.hash) {
         const state = await deserializeStateFromHash(
