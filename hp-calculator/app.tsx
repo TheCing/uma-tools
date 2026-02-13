@@ -20,6 +20,10 @@ import {
   Target,
   Lightbulb,
   BookOpen,
+  Menu,
+  Calculator,
+  Calendar,
+  Book,
 } from "lucide-react";
 
 import {
@@ -112,6 +116,7 @@ const STAT_ICONS: Record<string, string> = {
 function App() {
   const [state, setState] = useState<AppState>(loadState);
   const [prefs, setPrefs] = useState<Preferences>(loadPrefs);
+  const [appsMenuOpen, setAppsMenuOpen] = useState(false);
 
   // Save state to localStorage (debounced)
   useEffect(() => {
@@ -223,6 +228,51 @@ function App() {
           >
             {prefs.darkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+
+          {/* Apps dropdown */}
+          <div className="apps-dropdown">
+            <button
+              className="btn btn-icon btn-ghost"
+              onClick={() => setAppsMenuOpen(!appsMenuOpen)}
+              title="More apps"
+            >
+              <Menu size={18} />
+            </button>
+            {appsMenuOpen && (
+              <>
+                <div
+                  className="apps-dropdown-backdrop"
+                  onClick={() => setAppsMenuOpen(false)}
+                />
+                <div className="apps-dropdown-menu">
+                  <a
+                    href="/umalator-global/"
+                    className="apps-dropdown-item"
+                    onClick={() => setAppsMenuOpen(false)}
+                  >
+                    <Calculator size={16} />
+                    Umalator
+                  </a>
+                  <a
+                    href="/events/"
+                    className="apps-dropdown-item"
+                    onClick={() => setAppsMenuOpen(false)}
+                  >
+                    <Calendar size={16} />
+                    Events
+                  </a>
+                  <a
+                    href="/docs/"
+                    className="apps-dropdown-item"
+                    onClick={() => setAppsMenuOpen(false)}
+                  >
+                    <Book size={16} />
+                    Docs
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
@@ -592,7 +642,7 @@ function App() {
                         <br />
                         <span className="note-detail">
                           Downhill mode can reduce HP consumption by up to 60%. Use the{" "}
-                          <a href="https://umalator.app/umalator-global/" target="_blank" rel="noopener">
+                          <a href="/umalator-global/">
                             full simulator
                           </a>{" "}
                           to calculate accurate survival and spurt rates.
@@ -733,11 +783,7 @@ function App() {
               <p style={{ marginTop: "var(--space-sm)" }}>
                 For accurate survival/spurt rates that include these factors,
                 use the{" "}
-                <a
-                  href="https://umalator.app/umalator-global/"
-                  target="_blank"
-                  rel="noopener"
-                >
+                <a href="/umalator-global/">
                   Umalator simulator
                 </a>{" "}
                 which runs Monte Carlo simulations.
@@ -789,11 +835,7 @@ function App() {
           .
         </p>
         <div className="footer-links">
-          <a
-            href="https://umalator.app/umalator-global/"
-            target="_blank"
-            rel="noopener"
-          >
+          <a href="/umalator-global/">
             Umalator
           </a>
           &nbsp;|&nbsp;
