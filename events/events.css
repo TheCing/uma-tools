@@ -699,6 +699,127 @@ body {
 }
 
 /* ============================================
+   BANNERS SECTION
+   ============================================ */
+
+.banners-section {
+  margin-top: var(--space-xl);
+}
+
+.banners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.banner-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.banner-type {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.banner-type.char {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+.banner-type.support {
+  background: rgba(78, 205, 196, 0.2);
+  color: #4ecdc4;
+}
+
+.banner-timer {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.banner-pickups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+}
+
+.pickup-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+}
+
+.pickup-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-overlay);
+  object-fit: cover;
+}
+
+.pickup-icon.support-icon {
+  width: 48px;
+  height: 64px;
+  border-radius: var(--radius-xs);
+}
+
+.support-type-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.pickup-name {
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-xs);
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: auto;
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.banner-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
    FOOTER
    ============================================ */
 

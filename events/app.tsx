@@ -35,6 +35,8 @@ import './events.css';
 
 // Storage keys
 const PREFS_KEY = 'events-prefs';
+const BANNERS_CACHE_KEY = 'events-banners-cache';
+const BANNERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 interface Preferences {
   darkMode: boolean;
@@ -43,6 +45,122 @@ interface Preferences {
 const DEFAULT_PREFS: Preferences = {
   darkMode: true,
 };
+
+// Banner types
+interface CharCard {
+  id: number;
+  charaId: number;
+  name: string;
+  rarity: number;
+}
+
+interface SupportCard {
+  id: number;
+  charaId: number;
+  name: string;
+  rarity: number;
+  type: number; // 1=speed, 2=stamina, etc.
+}
+
+interface Banner {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  pickupIds: number[];
+}
+
+interface BannerData {
+  characters: Banner[];
+  supports: Banner[];
+  charLookup: Record<number, CharCard>;
+  supportLookup: Record<number, SupportCard>;
+  fetchedAt: number;
+}
+
+// Support card type icons
+const SUPPORT_TYPE_ICONS: Record<number, string> = {
+  1: '/uma-tools/icons/status_00.png', // Speed
+  2: '/uma-tools/icons/status_01.png', // Stamina
+  3: '/uma-tools/icons/status_02.png', // Power
+  4: '/uma-tools/icons/status_03.png', // Guts
+  5: '/uma-tools/icons/status_04.png', // Wisdom
+  6: '/uma-tools/icons/utx_ico_friend_01.png', // Friend
+  7: '/uma-tools/icons/utx_ico_group_01.png', // Group
+};
+
+// Fetch banners from GameTora (with CORS proxy fallback)
+async function fetchGlobalBanners(): Promise<BannerData | null> {
+  // Check cache first
+  try {
+    const cached = localStorage.getItem(BANNERS_CACHE_KEY);
+    if (cached) {
+      const data = JSON.parse(cached) as BannerData;
+      if (Date.now() - data.fetchedAt < BANNERS_CACHE_TTL) {
+        return data;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to load banner cache:', e);
+  }
+
+  try {
+    // Try direct fetch first (might work if CORS is enabled)
+    const res = await fetch('https://gametora.com/umamusume/gacha?server=en');
+    const html = await res.text();
+
+    const match = html.match(/<script id="__NEXT_DATA__"[^>]*>(.+?)<\/script>/);
+    if (!match) {
+      console.warn('Could not find banner data in response');
+      return null;
+    }
+
+    const data = JSON.parse(match[1]);
+    const props = data.props.pageProps;
+
+    const charLookup = Object.fromEntries(
+      (props.charCardData?.en || []).map((c: CharCard) => [c.id, c])
+    );
+    const supportLookup = Object.fromEntries(
+      (props.supportCardData?.en || []).map((s: SupportCard) => [s.id, s])
+    );
+
+    const bannerData: BannerData = {
+      characters: props.currentCharBanners?.en || [],
+      supports: props.currentSupportBanners?.en || [],
+      charLookup,
+      supportLookup,
+      fetchedAt: Date.now(),
+    };
+
+    // Cache the result
+    try {
+      localStorage.setItem(BANNERS_CACHE_KEY, JSON.stringify(bannerData));
+    } catch (e) {
+      console.warn('Failed to cache banner data:', e);
+    }
+
+    return bannerData;
+  } catch (e) {
+    console.warn('Failed to fetch banners:', e);
+    return null;
+  }
+}
+
+// Format banner end date
+function formatBannerEndDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = date.getTime() - now.getTime();
+
+  if (diff <= 0) return 'Ended';
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+  if (days > 0) return `${days}d ${hours}h left`;
+  return `${hours}h left`;
+}
 
 // Load preferences from localStorage
 function loadPrefs(): Preferences {
@@ -269,6 +387,8 @@ function App() {
   const [prefs, setPrefs] = useState<Preferences>(loadPrefs);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
   const [showPastEvents, setShowPastEvents] = useState(false);
+  const [banners, setBanners] = useState<BannerData | null>(null);
+  const [bannersLoading, setBannersLoading] = useState(true);
 
   // Save prefs
   useEffect(() => {
@@ -279,6 +399,16 @@ function App() {
   useEffect(() => {
     document.body.classList.toggle('light', !prefs.darkMode);
   }, [prefs.darkMode]);
+
+  // Fetch banners on mount
+  useEffect(() => {
+    fetchGlobalBanners()
+      .then(data => {
+        setBanners(data);
+        setBannersLoading(false);
+      })
+      .catch(() => setBannersLoading(false));
+  }, []);
 
   // Get CM events only
   const cmEvents = useMemo(() => {
@@ -481,6 +611,93 @@ function App() {
                 <ExternalLink size={14} />
               </a>
             </div>
+
+            {/* Current Banners */}
+            {banners && (banners.characters.length > 0 || banners.supports.length > 0) && (
+              <section class="events-section banners-section">
+                <h2 class="section-title">Current Banners</h2>
+                <div class="banners-grid">
+                  {/* Character Banners */}
+                  {banners.characters.map(banner => (
+                    <div key={`char-${banner.id}`} class="banner-card">
+                      <div class="banner-header">
+                        <span class="banner-type char">Character</span>
+                        <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                      </div>
+                      <div class="banner-pickups">
+                        {banner.pickupIds.map(id => {
+                          const card = banners.charLookup[id];
+                          if (!card) return null;
+                          return (
+                            <div key={id} class="pickup-card">
+                              <img
+                                src={`https://gametora.com/images/umamusume/characters/trained_chr_icon_${card.charaId}_${String(card.id).slice(-2)}_02.webp`}
+                                alt={card.name}
+                                class="pickup-icon"
+                                loading="lazy"
+                              />
+                              <span class="pickup-name">{card.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <a
+                        href={`https://gametora.com/umamusume/gacha?server=en`}
+                        target="_blank"
+                        rel="noopener"
+                        class="banner-link"
+                      >
+                        View on GameTora
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  ))}
+
+                  {/* Support Banners */}
+                  {banners.supports.map(banner => (
+                    <div key={`supp-${banner.id}`} class="banner-card">
+                      <div class="banner-header">
+                        <span class="banner-type support">Support</span>
+                        <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                      </div>
+                      <div class="banner-pickups">
+                        {banner.pickupIds.map(id => {
+                          const card = banners.supportLookup[id];
+                          if (!card) return null;
+                          return (
+                            <div key={id} class="pickup-card">
+                              <img
+                                src={`https://gametora.com/images/umamusume/support_cards/support_card_s_${card.id}.webp`}
+                                alt={card.name}
+                                class="pickup-icon support-icon"
+                                loading="lazy"
+                              />
+                              {card.type && SUPPORT_TYPE_ICONS[card.type] && (
+                                <img
+                                  src={SUPPORT_TYPE_ICONS[card.type]}
+                                  alt=""
+                                  class="support-type-badge"
+                                />
+                              )}
+                              <span class="pickup-name">{card.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <a
+                        href={`https://gametora.com/umamusume/gacha?server=en`}
+                        target="_blank"
+                        rel="noopener"
+                        class="banner-link"
+                      >
+                        View on GameTora
+                        <ExternalLink size={12} />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Upcoming Events */}
             {upcomingEvents.length > 1 && (
