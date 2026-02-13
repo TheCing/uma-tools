@@ -366,7 +366,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
 .condition-tag {
