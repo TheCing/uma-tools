@@ -370,27 +370,25 @@ body {
 }
 
 .condition-tag {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: var(--space-sm) var(--space-md);
+  gap: 6px;
+  padding: var(--space-xs) var(--space-sm);
   background: var(--color-surface-overlay);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: var(--font-xs);
-  color: var(--color-text-muted);
-  min-width: 56px;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
 }
 
 .condition-icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   object-fit: contain;
 }
 
 .condition-icon-season {
-  width: 40px;
+  width: 28px;
   height: auto;
 }
 
