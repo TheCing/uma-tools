@@ -11,7 +11,13 @@
  */
 
 import { h, render, Fragment } from "preact";
-import { useState, useCallback, useEffect, useRef, useMemo } from "preact/hooks";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+} from "preact/hooks";
 import { IntlProvider } from "preact-i18n";
 
 // Simulation utilities
@@ -47,7 +53,17 @@ import {
   ArrowLeftRight,
   Link,
 } from "./components";
-import { Users, HelpCircle, MessageSquare, Minus, Plus } from "lucide-react";
+import {
+  Users,
+  HelpCircle,
+  MessageSquare,
+  Minus,
+  Plus,
+  Menu,
+  Calculator,
+  Book,
+  Calendar,
+} from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
 import { presets, DEFAULT_PRESET } from "./presets";
@@ -77,23 +93,24 @@ import "./v2.css";
 import "./tour/tour.css";
 
 // Discord webhook for feedback submissions (configure in environment or replace with actual URL)
-const DISCORD_FEEDBACK_WEBHOOK = "https://discord.com/api/webhooks/1468463273316847687/poe7J751B6hJV3MAEzYtNMLK2VY3BIj1eedzPgpE2vKKTQOv_AUzc2B5a3cmztgE1aB6";
+const DISCORD_FEEDBACK_WEBHOOK =
+  "https://discord.com/api/webhooks/1468463273316847687/poe7J751B6hJV3MAEzYtNMLK2VY3BIj1eedzPgpE2vKKTQOv_AUzc2B5a3cmztgE1aB6";
 
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
  * Compares the rendered character against a known missing codepoint.
  */
 function hasGlyph(char: string): boolean {
-  if (typeof document === 'undefined') return true; // SSR fallback
+  if (typeof document === "undefined") return true; // SSR fallback
 
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
   if (!ctx) return true;
 
   canvas.width = 50;
   canvas.height = 50;
-  ctx.font = '32px sans-serif';
-  ctx.textBaseline = 'middle';
+  ctx.font = "32px sans-serif";
+  ctx.textBaseline = "middle";
 
   // Render the test character
   ctx.clearRect(0, 0, 50, 50);
@@ -102,7 +119,7 @@ function hasGlyph(char: string): boolean {
 
   // Render a known missing glyph (private use area character)
   ctx.clearRect(0, 0, 50, 50);
-  ctx.fillText('\uFFFF', 0, 25);
+  ctx.fillText("\uFFFF", 0, 25);
   const missingData = ctx.getImageData(0, 0, 50, 50).data;
 
   // Compare pixel data - if they match, the glyph is missing
@@ -111,21 +128,23 @@ function hasGlyph(char: string): boolean {
   for (let i = 0; i < testData.length; i += 4) {
     if (testData[i + 3] > 0 || missingData[i + 3] > 0) {
       totalPixels++;
-      if (Math.abs(testData[i] - missingData[i]) < 10 &&
-          Math.abs(testData[i + 1] - missingData[i + 1]) < 10 &&
-          Math.abs(testData[i + 2] - missingData[i + 2]) < 10 &&
-          Math.abs(testData[i + 3] - missingData[i + 3]) < 10) {
+      if (
+        Math.abs(testData[i] - missingData[i]) < 10 &&
+        Math.abs(testData[i + 1] - missingData[i + 1]) < 10 &&
+        Math.abs(testData[i + 2] - missingData[i + 2]) < 10 &&
+        Math.abs(testData[i + 3] - missingData[i + 3]) < 10
+      ) {
         matchCount++;
       }
     }
   }
 
   // If >90% similar to missing glyph, consider it unsupported
-  return totalPixels === 0 || (matchCount / totalPixels) < 0.9;
+  return totalPixels === 0 || matchCount / totalPixels < 0.9;
 }
 
 // Corner arrow with fallback: ⮌ (U+2B8C) -> ↩ (U+21A9)
-const CORNER_ARROW = hasGlyph('⮌') ? '⮌' : '↩';
+const CORNER_ARROW = hasGlyph("⮌") ? "⮌" : "↩";
 
 // Minimal strings for RaceTrack
 const STRINGS = {
@@ -159,8 +178,8 @@ const STRINGS = {
     many: "{{surface}} {{distance}}m{{inout}}",
   },
   ui: {
-    stats: ['None', 'Speed', 'Stamina', 'Power', 'Guts', 'Wit'],
-    joiner: ', ',
+    stats: ["None", "Speed", "Stamina", "Power", "Guts", "Wit"],
+    joiner: ", ",
   },
 };
 
@@ -196,7 +215,9 @@ function App() {
 
   // Preferences (persisted separately)
   const [darkMode, setDarkMode] = useState(savedPrefs.current.darkMode);
-  const [classicGreen, setClassicGreen] = useState(savedPrefs.current.classicGreen);
+  const [classicGreen, setClassicGreen] = useState(
+    savedPrefs.current.classicGreen,
+  );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
   // Simulation settings
@@ -204,7 +225,9 @@ function App() {
   const [mode, setMode] = useState<"compare" | "skill">(
     savedSession.current?.mode ?? "compare",
   );
-  const [seed, setSeed] = useState(() => Math.floor(Math.random() * 0xFFFFFFFF));
+  const [seed, setSeed] = useState(() =>
+    Math.floor(Math.random() * 0xffffffff),
+  );
   const [syncRng, setSyncRng] = useState(true);
   const [skillWisdomCheck, setSkillWisdomCheck] = useState(true);
   const [rushedKakari, setRushedKakari] = useState(true);
@@ -213,12 +236,12 @@ function App() {
 
   // Panel visibility
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
-  const [activeUmaTab, setActiveUmaTab] = useState<1 | 2 | 'trainees'>(1);
+  const [activeUmaTab, setActiveUmaTab] = useState<1 | 2 | "trainees">(1);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   const [feedbackDrawerOpen, setFeedbackDrawerOpen] = useState(false);
 
   // Mobile navigation
-  const [mobileView, setMobileView] = useState<MobileView>('track');
+  const [mobileView, setMobileView] = useState<MobileView>("track");
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
 
   // Velocity overlay toggles
@@ -226,7 +249,9 @@ function App() {
   const [showHpOverlay, setShowHpOverlay] = useState(true);
 
   // Which run to display (mean/median/min/max)
-  const [displayRun, setDisplayRun] = useState<'mean' | 'median' | 'min' | 'max'>('median');
+  const [displayRun, setDisplayRun] = useState<
+    "mean" | "median" | "min" | "max"
+  >("median");
 
   // Intro video - shows once when first uma is selected
   const [showIntroVideo, setShowIntroVideo] = useState(false);
@@ -237,35 +262,41 @@ function App() {
   const [results, setResults] = useState<CompareResults | null>(null);
 
   // Skill chart results
-  const [skillChartResults, setSkillChartResults] = useState<Map<string, any>>(new Map());
-  const [skillChartProgress, setSkillChartProgress] = useState<{ [workerId: number]: { round: number; total: number } }>({});
+  const [skillChartResults, setSkillChartResults] = useState<Map<string, any>>(
+    new Map(),
+  );
+  const [skillChartProgress, setSkillChartProgress] = useState<{
+    [workerId: number]: { round: number; total: number };
+  }>({});
   const [completedWorkers, setCompletedWorkers] = useState(0);
 
   // Skill chart filters and state
   const [hideOwned, setHideOwned] = useState(false);
   const [hidePurple, setHidePurple] = useState(false);
   const [showUmaIcons, setShowUmaIcons] = useState(false);
-  const [chartFastMode, setChartFastMode] = useState(false);  // 2x faster, lower accuracy
+  const [chartFastMode, setChartFastMode] = useState(false); // 2x faster, lower accuracy
   const [skillHints, setSkillHints] = useState<Map<string, number>>(new Map());
-  const [selectedSkillForChart, setSelectedSkillForChart] = useState('');
-  const [chartRunType, setChartRunType] = useState('medianrun');
+  const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
+  const [chartRunType, setChartRunType] = useState("medianrun");
 
   // Simulation worker (for compare mode)
   const worker = useMemo(() => {
-    const w = new Worker(new URL('./simulator.worker.ts', import.meta.url), { type: 'module' });
-    w.addEventListener('message', (e: MessageEvent) => {
+    const w = new Worker(new URL("./simulator.worker.ts", import.meta.url), {
+      type: "module",
+    });
+    w.addEventListener("message", (e: MessageEvent) => {
       const { type, results: workerResults } = e.data;
       switch (type) {
-        case 'compare':
+        case "compare":
           setResults(workerResults);
           break;
-        case 'compare-complete':
+        case "compare-complete":
           setIsRunning(false);
           break;
       }
     });
-    w.addEventListener('error', (e) => {
-      console.error('[V2] Worker error:', e);
+    w.addEventListener("error", (e) => {
+      console.error("[V2] Worker error:", e);
       setIsRunning(false);
     });
     return w;
@@ -275,36 +306,40 @@ function App() {
   const chartWorkers = useMemo(() => {
     const workers: Array<Worker & { workerId?: number }> = [];
     for (let i = 0; i < 4; i++) {
-      const w = new Worker(new URL('./simulator.worker.ts', import.meta.url), { type: 'module' }) as Worker & { workerId?: number };
+      const w = new Worker(new URL("./simulator.worker.ts", import.meta.url), {
+        type: "module",
+      }) as Worker & { workerId?: number };
       w.workerId = i;
-      w.addEventListener('message', (e: MessageEvent) => {
+      w.addEventListener("message", (e: MessageEvent) => {
         const { type, workerId, results: workerResults, round, total } = e.data;
 
         switch (type) {
-          case 'chart-progress':
+          case "chart-progress":
             setSkillChartProgress((prev) => ({
               ...prev,
-              [workerId]: { round, total }
+              [workerId]: { round, total },
             }));
             break;
 
-          case 'chart-update':
+          case "chart-update":
             setSkillChartResults((prev) => {
               const merged = new Map(prev);
               if (workerResults instanceof Map) {
                 workerResults.forEach((result: any, skillId: string) => {
                   merged.set(skillId, result);
                 });
-              } else if (workerResults && typeof workerResults === 'object') {
-                Object.entries(workerResults).forEach(([skillId, result]: [string, any]) => {
-                  merged.set(skillId, result);
-                });
+              } else if (workerResults && typeof workerResults === "object") {
+                Object.entries(workerResults).forEach(
+                  ([skillId, result]: [string, any]) => {
+                    merged.set(skillId, result);
+                  },
+                );
               }
               return merged;
             });
             break;
 
-          case 'chart-complete':
+          case "chart-complete":
             setCompletedWorkers((prev) => {
               const newCount = prev + 1;
               if (newCount === 4) {
@@ -316,7 +351,7 @@ function App() {
             break;
         }
       });
-      w.addEventListener('error', (e) => {
+      w.addEventListener("error", (e) => {
         console.error(`[V2] Chart Worker ${i} error:`, e);
         setIsRunning(false);
       });
@@ -338,7 +373,7 @@ function App() {
   // Map of groupId -> skillId for owned skills (for "Hide Owned" filter in skill chart)
   const hasSkills = useMemo(() => {
     const map = new Map<string, string>();
-    uma1.skills.forEach(skillId => {
+    uma1.skills.forEach((skillId) => {
       const groupId = (skillmeta as any)[skillId]?.groupId;
       if (groupId) {
         map.set(groupId, skillId);
@@ -376,7 +411,18 @@ function App() {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [courseId, selectedPresetId, ground, weather, season, time, samples, mode, uma1, uma2]);
+  }, [
+    courseId,
+    selectedPresetId,
+    ground,
+    weather,
+    season,
+    time,
+    samples,
+    mode,
+    uma1,
+    uma2,
+  ]);
 
   // Save preferences immediately
   useEffect(() => {
@@ -387,7 +433,9 @@ function App() {
   useEffect(() => {
     const loadFromHash = async () => {
       if (window.location.hash) {
-        const state = await deserializeStateFromHash(window.location.hash.slice(1));
+        const state = await deserializeStateFromHash(
+          window.location.hash.slice(1),
+        );
         if (state) {
           setCourseId(state.courseId);
           setGround(state.ground);
@@ -405,8 +453,8 @@ function App() {
 
     // Also handle hash changes
     const handleHashChange = () => loadFromHash();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
   // Note: Timeline drawer no longer auto-opens - user can open manually
@@ -477,9 +525,11 @@ function App() {
     const groupId = skillmeta[skillId]?.groupId;
     if (!groupId) return;
 
-    setUma1(prev => {
+    setUma1((prev) => {
       // Remove any existing skill in the same group, then add the new skill
-      const filteredSkills = prev.skills.filter(id => skillmeta[id]?.groupId !== groupId);
+      const filteredSkills = prev.skills.filter(
+        (id) => skillmeta[id]?.groupId !== groupId,
+      );
       return { ...prev, skills: [...filteredSkills, skillId] };
     });
   }, []);
@@ -492,12 +542,14 @@ function App() {
   // Close skill info popover on outside click
   useEffect(() => {
     const handleClick = () => setPopoverSkillId(null);
-    document.body.addEventListener('click', handleClick);
-    return () => document.body.removeEventListener('click', handleClick);
+    document.body.addEventListener("click", handleClick);
+    return () => document.body.removeEventListener("click", handleClick);
   }, []);
 
   // Notification banner
-  const [showNotification, setShowNotification] = useState(() => !savedPrefs.current.notificationDismissed);
+  const [showNotification, setShowNotification] = useState(
+    () => !savedPrefs.current.notificationDismissed,
+  );
 
   const dismissNotification = useCallback(() => {
     setShowNotification(false);
@@ -515,16 +567,16 @@ function App() {
 
     // Open the appropriate drawer/panel
     switch (view) {
-      case 'uma':
+      case "uma":
         setUmaDrawerOpen(true);
         break;
-      case 'timeline':
+      case "timeline":
         setSummaryDrawerOpen(true);
         break;
-      case 'settings':
+      case "settings":
         setMobileSettingsOpen(true);
         break;
-      case 'track':
+      case "track":
       default:
         // Just close everything, show track
         break;
@@ -533,20 +585,20 @@ function App() {
 
   // Run simulation via worker
   const handleRunSimulation = useCallback(() => {
-    if (mode === 'compare') {
+    if (mode === "compare") {
       setIsRunning(true);
       setResults(null);
 
       const course = courseData[courseId];
       if (!course) {
-        console.error('[V2] Course not found:', courseId);
+        console.error("[V2] Course not found:", courseId);
         setIsRunning(false);
         return;
       }
 
       // Send simulation request to worker
       worker.postMessage({
-        msg: 'compare',
+        msg: "compare",
         data: {
           nsamples: samples,
           course,
@@ -561,14 +613,31 @@ function App() {
             rushedKakari,
             leadCompetition,
             competeFight,
-          })
-        }
+          }),
+        },
       });
     } else {
       // Skill chart mode
       handleRunSkillChart();
     }
-  }, [mode, courseId, samples, ground, weather, season, time, uma1, uma2, worker, seed, syncRng, skillWisdomCheck, rushedKakari, leadCompetition, competeFight]);
+  }, [
+    mode,
+    courseId,
+    samples,
+    ground,
+    weather,
+    season,
+    time,
+    uma1,
+    uma2,
+    worker,
+    seed,
+    syncRng,
+    skillWisdomCheck,
+    rushedKakari,
+    leadCompetition,
+    competeFight,
+  ]);
 
   const handleRunSkillChart = useCallback(() => {
     setIsRunning(true);
@@ -578,33 +647,44 @@ function App() {
 
     const course = courseData[courseId];
     if (!course) {
-      console.error('[V2] Course not found:', courseId);
+      console.error("[V2] Course not found:", courseId);
       setIsRunning(false);
       return;
     }
 
     // Build race params with strategy for order-based skill filtering
-    const racedef = buildRaceParameters(ground, weather, season, time, uma1.strategy);
+    const racedef = buildRaceParameters(
+      ground,
+      weather,
+      season,
+      time,
+      uma1.strategy,
+    );
 
     // Get list of skills to test (filter to activateable skills only)
     const baseSkills = getBaseSkillsToTest(uma1);
-    const activateableSkills = getActivateableSkills(baseSkills, uma1, course, racedef);
+    const activateableSkills = getActivateableSkills(
+      baseSkills,
+      uma1,
+      course,
+      racedef,
+    );
 
     if (activateableSkills.length === 0) {
-      console.warn('[V2] No activateable skills found for this course');
+      console.warn("[V2] No activateable skills found for this course");
       setIsRunning(false);
       return;
     }
 
     // Load skillmeta for worker
-    import('../../skill_meta.json').then((skillmeta) => {
+    import("../../skill_meta.json").then((skillmeta) => {
       // Distribute skills across 4 workers
       const quarter = Math.floor(activateableSkills.length / 4);
       const skillBatches = [
         activateableSkills.slice(0, quarter),
         activateableSkills.slice(quarter, quarter * 2),
         activateableSkills.slice(quarter * 2, quarter * 3),
-        activateableSkills.slice(quarter * 3)
+        activateableSkills.slice(quarter * 3),
       ];
 
       const chartOptions = buildSimulationOptions({
@@ -620,7 +700,7 @@ function App() {
       skillBatches.forEach((batch, i) => {
         if (batch.length > 0) {
           chartWorkers[i].postMessage({
-            msg: 'chart',
+            msg: "chart",
             data: {
               skills: batch,
               course,
@@ -630,22 +710,37 @@ function App() {
               options: chartOptions,
               skillmeta: skillmeta.default,
               workerId: i,
-              fastMode: chartFastMode
-            }
+              fastMode: chartFastMode,
+            },
           });
         }
       });
     });
-  }, [courseId, ground, weather, season, time, uma1, seed, syncRng, chartWorkers, chartFastMode]);
+  }, [
+    courseId,
+    ground,
+    weather,
+    season,
+    time,
+    uma1,
+    seed,
+    syncRng,
+    chartWorkers,
+    chartFastMode,
+  ]);
 
   // Get current snapshot based on displayRun selection
   const currentSnapshot = useMemo(() => {
     if (!results?.runData) return null;
     switch (displayRun) {
-      case 'min': return results.runData.minrun;
-      case 'max': return results.runData.maxrun;
-      case 'mean': return results.runData.meanrun;
-      case 'median': return results.runData.medianrun;
+      case "min":
+        return results.runData.minrun;
+      case "max":
+        return results.runData.maxrun;
+      case "mean":
+        return results.runData.meanrun;
+      case "median":
+        return results.runData.medianrun;
     }
   }, [results, displayRun]);
 
@@ -654,8 +749,8 @@ function App() {
     if (!currentSnapshot) return [];
 
     const colors = [
-      { stroke: '#2a77c5', fill: 'rgba(42, 119, 197, 0.3)' },  // Uma 1 - blue
-      { stroke: '#c52a2a', fill: 'rgba(197, 42, 42, 0.3)' }    // Uma 2 - red
+      { stroke: "#2a77c5", fill: "rgba(42, 119, 197, 0.3)" }, // Uma 1 - blue
+      { stroke: "#c52a2a", fill: "rgba(197, 42, 42, 0.3)" }, // Uma 2 - red
     ];
 
     const regions: any[] = [];
@@ -680,7 +775,9 @@ function App() {
             text: name,
             skillId,
             umaIndex,
-            regions: [{ start: ar[0], end: ar[1] !== -1 ? ar[1] : ar[0] + 100 }]
+            regions: [
+              { start: ar[0], end: ar[1] !== -1 ? ar[1] : ar[0] + 100 },
+            ],
           });
         });
       });
@@ -697,39 +794,55 @@ function App() {
     if (!course) return [];
 
     const posKeepColors = [
-      { stroke: 'rgb(42, 119, 197)', fill: 'rgba(42, 119, 197, 0.6)' },  // Uma 1 - blue
-      { stroke: 'rgb(197, 42, 42)', fill: 'rgba(197, 42, 42, 0.6)' }     // Uma 2 - red
+      { stroke: "rgb(42, 119, 197)", fill: "rgba(42, 119, 197, 0.6)" }, // Uma 1 - blue
+      { stroke: "rgb(197, 42, 42)", fill: "rgba(197, 42, 42, 0.6)" }, // Uma 2 - red
     ];
 
     // Process posKeep data
-    const posKeepData = (currentSnapshot.posKeep || [[], []]).flatMap((posKeepArray: any[], umaIndex: number) => {
-      if (!posKeepArray) return [];
-      return posKeepArray.map((ar: number[]) => {
-        const stateName = ar[2] === 1 ? 'PU' : ar[2] === 2 ? 'PDM' : ar[2] === 3 ? 'SU' : ar[2] === 4 ? 'O' : 'Unknown';
-        return {
-          umaIndex,
-          text: stateName,
-          color: posKeepColors[umaIndex],
-          start: ar[0],
-          end: ar[1],
-          duration: ar[1] - ar[0]
-        };
-      });
-    });
+    const posKeepData = (currentSnapshot.posKeep || [[], []]).flatMap(
+      (posKeepArray: any[], umaIndex: number) => {
+        if (!posKeepArray) return [];
+        return posKeepArray.map((ar: number[]) => {
+          const stateName =
+            ar[2] === 1
+              ? "PU"
+              : ar[2] === 2
+                ? "PDM"
+                : ar[2] === 3
+                  ? "SU"
+                  : ar[2] === 4
+                    ? "O"
+                    : "Unknown";
+          return {
+            umaIndex,
+            text: stateName,
+            color: posKeepColors[umaIndex],
+            start: ar[0],
+            end: ar[1],
+            duration: ar[1] - ar[0],
+          };
+        });
+      },
+    );
 
     // Process duel (compete fight) data
     const competeFightData: any[] = [];
     const competeFight = currentSnapshot.competeFight || [null, null];
     for (let umaIndex = 0; umaIndex < 2; umaIndex++) {
       const cf = competeFight[umaIndex];
-      if (cf && Array.isArray(cf) && cf.length >= 2 && (cf[0] !== 0 || cf[1] !== 0)) {
+      if (
+        cf &&
+        Array.isArray(cf) &&
+        cf.length >= 2 &&
+        (cf[0] !== 0 || cf[1] !== 0)
+      ) {
         competeFightData.push({
           umaIndex,
-          text: 'Duel',
+          text: "Duel",
           color: posKeepColors[umaIndex],
           start: cf[0],
           end: cf[1],
-          duration: cf[1] - cf[0]
+          duration: cf[1] - cf[0],
         });
       }
     }
@@ -739,40 +852,52 @@ function App() {
     const leadComp = currentSnapshot.leadCompetition || [null, null];
     for (let umaIndex = 0; umaIndex < 2; umaIndex++) {
       const lc = leadComp[umaIndex];
-      if (lc && Array.isArray(lc) && lc.length >= 2 && (lc[0] !== 0 || lc[1] !== 0)) {
+      if (
+        lc &&
+        Array.isArray(lc) &&
+        lc.length >= 2 &&
+        (lc[0] !== 0 || lc[1] !== 0)
+      ) {
         leadCompetitionData.push({
           umaIndex,
-          text: 'SS',
+          text: "SS",
           color: posKeepColors[umaIndex],
           start: lc[0],
           end: lc[1],
-          duration: lc[1] - lc[0]
+          duration: lc[1] - lc[0],
         });
       }
     }
 
     // Process downhill activations
-    const downhillData = (currentSnapshot.downhillActivations || [[], []]).flatMap((downhillArray: [number, number][], umaIndex: number) => {
+    const downhillData = (
+      currentSnapshot.downhillActivations || [[], []]
+    ).flatMap((downhillArray: [number, number][], umaIndex: number) => {
       if (!downhillArray) return [];
       return downhillArray.map((ar: number[]) => ({
         umaIndex,
-        text: 'DH',
+        text: "DH",
         color: posKeepColors[umaIndex],
         start: ar[0],
         end: ar[1],
-        duration: ar[1] - ar[0]
+        duration: ar[1] - ar[0],
       }));
     });
 
     // Combine all labels
-    const allLabels = [...posKeepData, ...competeFightData, ...leadCompetitionData, ...downhillData];
+    const allLabels = [
+      ...posKeepData,
+      ...competeFightData,
+      ...leadCompetitionData,
+      ...downhillData,
+    ];
 
     // Convert to positioned labels
-    const tempLabels = allLabels.map(label => ({
+    const tempLabels = allLabels.map((label) => ({
       ...label,
-      x: label.start / course.distance * 960,
-      width: label.duration / course.distance * 960,
-      yOffset: 0
+      x: (label.start / course.distance) * 960,
+      width: (label.duration / course.distance) * 960,
+      yOffset: 0,
     }));
 
     // Sort by x position
@@ -786,8 +911,10 @@ function App() {
 
       for (let j = 0; j < i; j++) {
         const prevLabel = tempLabels[j];
-        const overlap = !(currentLabel.x + currentLabel.width < prevLabel.x ||
-                         currentLabel.x > prevLabel.x + prevLabel.width);
+        const overlap = !(
+          currentLabel.x + currentLabel.width < prevLabel.x ||
+          currentLabel.x > prevLabel.x + prevLabel.width
+        );
         if (overlap) {
           maxYOffset = Math.max(maxYOffset, prevLabel.yOffset + 15);
         }
@@ -802,7 +929,8 @@ function App() {
 
   // Binary search helper for finding index at position
   const binSearch = useCallback((arr: number[], target: number) => {
-    let lo = 0, hi = arr.length - 1;
+    let lo = 0,
+      hi = arr.length - 1;
     while (lo < hi) {
       const mid = (lo + hi) >> 1;
       if (arr[mid] < target) lo = mid + 1;
@@ -812,66 +940,89 @@ function App() {
   }, []);
 
   // Mouse move handler for velocity/HP readout
-  const handleMouseMove = useCallback((pct: number) => {
-    const skillData = currentSnapshot;
-    if (!skillData) return;
+  const handleMouseMove = useCallback(
+    (pct: number) => {
+      const skillData = currentSnapshot;
+      if (!skillData) return;
 
-    const course = (courseData as any)[courseId];
-    if (!course) return;
+      const course = (courseData as any)[courseId];
+      if (!course) return;
 
-    const box = document.getElementById('rtMouseOverBox');
-    if (box) box.style.display = 'block';
+      const box = document.getElementById("rtMouseOverBox");
+      if (box) box.style.display = "block";
 
-    const x = pct * course.distance;
-    const i0 = binSearch(skillData.p[0], x);
-    const i1 = binSearch(skillData.p[1], x);
+      const x = pct * course.distance;
+      const i0 = binSearch(skillData.p[0], x);
+      const i1 = binSearch(skillData.p[1], x);
 
-    const safeI0 = Math.max(0, Math.min(i0, skillData.v[0].length - 1));
-    const safeI1 = Math.max(0, Math.min(i1, skillData.v[1].length - 1));
+      const safeI0 = Math.max(0, Math.min(i0, skillData.v[0].length - 1));
+      const safeI1 = Math.max(0, Math.min(i1, skillData.v[1].length - 1));
 
-    const hp0 = skillData.hp?.[0]?.[safeI0]?.toFixed(0) ?? 'N/A';
-    const hp1 = skillData.hp?.[1]?.[safeI1]?.toFixed(0) ?? 'N/A';
+      const hp0 = skillData.hp?.[0]?.[safeI0]?.toFixed(0) ?? "N/A";
+      const hp1 = skillData.hp?.[1]?.[safeI1]?.toFixed(0) ?? "N/A";
 
-    const v1El = document.getElementById('rtV1');
-    const v2El = document.getElementById('rtV2');
-    if (v1El) v1El.textContent = `${skillData.v[0][safeI0].toFixed(2)} m/s  t=${skillData.t[0][safeI0].toFixed(2)}s  (${hp0} hp)`;
-    if (v2El) v2El.textContent = `${skillData.v[1][safeI1].toFixed(2)} m/s  t=${skillData.t[1][safeI1].toFixed(2)}s  (${hp1} hp)`;
-  }, [currentSnapshot, courseId, binSearch]);
+      const v1El = document.getElementById("rtV1");
+      const v2El = document.getElementById("rtV2");
+      if (v1El)
+        v1El.textContent = `${skillData.v[0][safeI0].toFixed(2)} m/s  t=${skillData.t[0][safeI0].toFixed(2)}s  (${hp0} hp)`;
+      if (v2El)
+        v2El.textContent = `${skillData.v[1][safeI1].toFixed(2)} m/s  t=${skillData.t[1][safeI1].toFixed(2)}s  (${hp1} hp)`;
+    },
+    [currentSnapshot, courseId, binSearch],
+  );
 
   const handleMouseLeave = useCallback(() => {
-    const box = document.getElementById('rtMouseOverBox');
-    if (box) box.style.display = 'none';
+    const box = document.getElementById("rtMouseOverBox");
+    if (box) box.style.display = "none";
   }, []);
 
   // Handle skill drag on race track to set forced positions
-  const handleSkillDrag = useCallback((skillId: string, umaIndex: number, newStart: number, _newEnd: number) => {
-    const positionStr = newStart.toString();
-    if (umaIndex === 0) {
-      setUma1(prev => ({
-        ...prev,
-        forcedSkillPositions: { ...prev.forcedSkillPositions, [skillId]: positionStr }
-      }));
-    } else if (umaIndex === 1) {
-      setUma2(prev => ({
-        ...prev,
-        forcedSkillPositions: { ...prev.forcedSkillPositions, [skillId]: positionStr }
-      }));
-    }
-  }, []);
+  const handleSkillDrag = useCallback(
+    (skillId: string, umaIndex: number, newStart: number, _newEnd: number) => {
+      const positionStr = newStart.toString();
+      if (umaIndex === 0) {
+        setUma1((prev) => ({
+          ...prev,
+          forcedSkillPositions: {
+            ...prev.forcedSkillPositions,
+            [skillId]: positionStr,
+          },
+        }));
+      } else if (umaIndex === 1) {
+        setUma2((prev) => ({
+          ...prev,
+          forcedSkillPositions: {
+            ...prev.forcedSkillPositions,
+            [skillId]: positionStr,
+          },
+        }));
+      }
+    },
+    [],
+  );
 
   // Wrap UmaState for RaceTrack compatibility (expects Immutable.js-style API)
-  const wrapUmaForRaceTrack = useCallback((uma: UmaState) => ({
-    forcedSkillPositions: {
-      has: (skillId: string) => skillId in uma.forcedSkillPositions,
-      get: (skillId: string) => {
-        const pos = uma.forcedSkillPositions[skillId];
-        return pos ? parseInt(pos, 10) : undefined;
-      }
-    }
-  }), []);
+  const wrapUmaForRaceTrack = useCallback(
+    (uma: UmaState) => ({
+      forcedSkillPositions: {
+        has: (skillId: string) => skillId in uma.forcedSkillPositions,
+        get: (skillId: string) => {
+          const pos = uma.forcedSkillPositions[skillId];
+          return pos ? parseInt(pos, 10) : undefined;
+        },
+      },
+    }),
+    [],
+  );
 
-  const uma1ForTrack = useMemo(() => wrapUmaForRaceTrack(uma1), [uma1, wrapUmaForRaceTrack]);
-  const uma2ForTrack = useMemo(() => wrapUmaForRaceTrack(uma2), [uma2, wrapUmaForRaceTrack]);
+  const uma1ForTrack = useMemo(
+    () => wrapUmaForRaceTrack(uma1),
+    [uma1, wrapUmaForRaceTrack],
+  );
+  const uma2ForTrack = useMemo(
+    () => wrapUmaForRaceTrack(uma2),
+    [uma2, wrapUmaForRaceTrack],
+  );
 
   return (
     <Language.Provider value="en-global">
@@ -880,790 +1031,972 @@ function App() {
           <div
             id="app-v2"
             class={`${darkMode ? "" : "light"} ${classicGreen ? "classic-green" : ""} ${showNotification ? "v2-has-notification" : ""}`}
-            style={{ '--ui-scale': uiScale / 100 } as any}
+            style={{ "--ui-scale": uiScale / 100 } as any}
           >
-          {/* NOTIFICATION BANNER */}
-          {showNotification && (
-            <div class="v2-notification">
-              <p>
-                Notice: This fork of the Umalator is brought to you by
-                MooMooCord. Includes the best of both the original Umalator and
-                VFCord's VFalator, in addition to a suite of new features. Also,
-                cow.
-              </p>
-              <button
-                class="v2-notification-close"
-                onClick={dismissNotification}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-
-          {/* HEADER BAR - Track selection + conditions + run */}
-          <header class="v2-header">
-            <div class="v2-header-left">
-              <CustomSelect
-                value={selectedPresetId}
-                onChange={(val) => handlePresetSelect(val as number | null)}
-                options={[
-                  { value: null, label: "Custom" },
-                  ...presets.map((p) => ({ value: p.id, label: `CM ${p.id} - ${p.name}` })),
-                ]}
-                className="v2-preset-select"
-              />
-              <V2TrackSelect
-                courseid={courseId}
-                setCourseid={(id) => {
-                  setSelectedPresetId(null);
-                  setCourseId(id);
-                }}
-              />
-            </div>
-
-            <div class="v2-header-center">
-              <CompactConditions
-                ground={ground}
-                setGround={(v) => {
-                  setSelectedPresetId(null);
-                  setGround(v);
-                }}
-                weather={weather}
-                setWeather={(v) => {
-                  setSelectedPresetId(null);
-                  setWeather(v);
-                }}
-                season={season}
-                setSeason={(v) => {
-                  setSelectedPresetId(null);
-                  setSeason(v);
-                }}
-                time={time}
-                setTime={(v) => {
-                  setSelectedPresetId(null);
-                  setTime(v);
-                }}
-              />
-            </div>
-
-            <div class="v2-header-right">
-              <div class="v2-mode-toggle">
+            {/* NOTIFICATION BANNER */}
+            {showNotification && (
+              <div class="v2-notification">
+                <p>
+                  Notice: This fork of the Umalator is brought to you by
+                  MooMooCord. Includes the best of both the original Umalator
+                  and VFCord's VFalator, in addition to a suite of new features.
+                  Also, cow.
+                </p>
                 <button
-                  type="button"
-                  class={mode === "compare" ? "active" : ""}
-                  onClick={() => setMode("compare")}
+                  class="v2-notification-close"
+                  onClick={dismissNotification}
                 >
-                  <GitCompare size={14} />
-                  Compare
-                </button>
-                <button
-                  type="button"
-                  class={mode === "skill" ? "active" : ""}
-                  onClick={() => setMode("skill")}
-                >
-                  <Zap size={14} />
-                  Skill
+                  ✕
                 </button>
               </div>
-              <Button
-                variant="primary"
-                className="v2-run-btn"
-                icon={<Play size={14} />}
-                onClick={handleRunSimulation}
-                disabled={isRunning}
-              >
-                {isRunning ? 'Running...' : 'RUN'}
-              </Button>
-              <Dropdown
-                trigger={
-                  <Button variant="secondary" className="v2-settings-btn">
-                    <Settings size={16} />
-                  </Button>
-                }
-                align="right"
-                items={[
-                  {
-                    id: "theme",
-                    label: darkMode ? "Light Mode" : "Dark Mode",
-                    icon: darkMode ? <Sun size={16} /> : <Moon size={16} />,
-                    onClick: () => setDarkMode(!darkMode),
-                  },
-                  {
-                    id: "accent",
-                    label: classicGreen ? "Bright Green" : "Classic Green",
-                    icon: <Palette size={16} />,
-                    onClick: () => setClassicGreen(!classicGreen),
-                  },
-                  { id: "divider-scale", label: "", divider: true },
-                  {
-                    id: "zoom-control",
-                    label: "",
-                    custom: (
-                      <div class="v2-zoom-control">
-                        <button
-                          type="button"
-                          class="v2-zoom-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setUiScale(Math.max(80, uiScale - 5));
-                          }}
-                          disabled={uiScale <= 80}
-                        >
-                          <Minus size={14} />
-                        </button>
-                        <span class="v2-zoom-value">{uiScale}%</span>
-                        <button
-                          type="button"
-                          class="v2-zoom-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setUiScale(Math.min(120, uiScale + 5));
-                          }}
-                          disabled={uiScale >= 120}
-                        >
-                          <Plus size={14} />
-                        </button>
-                      </div>
-                    ),
-                  },
-                  { id: "divider-link", label: "", divider: true },
-                  {
-                    id: "copy-link",
-                    label: "Copy Link",
-                    icon: <Link size={16} />,
-                    onClick: () => {
-                      copyShareableUrl({
-                        courseId,
-                        ground,
-                        weather,
-                        season,
-                        time,
-                        samples,
-                        uma1,
-                        uma2,
-                      });
-                    },
-                  },
-                  {
-                    id: "restart-tour",
-                    label: "Restart Tour",
-                    icon: <HelpCircle size={16} />,
-                    onClick: () => {
-                      savePreferences({ tourCompleted: false });
-                      window.location.reload();
-                    },
-                  },
-                ]}
-              />
-            </div>
-          </header>
-
-          {/* SIMULATION SETTINGS BAR */}
-          <SimulationSettings
-            samples={samples}
-            setSamples={setSamples}
-            seed={seed}
-            setSeed={setSeed}
-            syncRng={syncRng}
-            setSyncRng={setSyncRng}
-            skillWisdomCheck={skillWisdomCheck}
-            setSkillWisdomCheck={setSkillWisdomCheck}
-            rushedKakari={rushedKakari}
-            setRushedKakari={setRushedKakari}
-            leadCompetition={leadCompetition}
-            setLeadCompetition={setLeadCompetition}
-            competeFight={competeFight}
-            setCompeteFight={setCompeteFight}
-          />
-
-          {/* Content area wrapper for widescreen layout */}
-          <div class="v2-content-area">
-
-          {/* MAIN CONTENT - RaceTrack takes center stage */}
-          <main class="v2-main">
-            {mode === "skill" ? (
-              <div class="v2-skill-chart-container">
-                {/* Filter controls */}
-                <div class="v2-skill-chart-controls">
-                  <div class="v2-skill-chart-filters">
-                    <label class="v2-switch">
-                      <input
-                        type="checkbox"
-                        checked={hideOwned}
-                        onChange={(e) => setHideOwned((e.target as HTMLInputElement).checked)}
-                      />
-                      <span class="v2-switch-slider" />
-                      <span class="v2-switch-label">Hide Owned</span>
-                    </label>
-                    <label class="v2-switch">
-                      <input
-                        type="checkbox"
-                        checked={hidePurple}
-                        onChange={(e) => setHidePurple((e.target as HTMLInputElement).checked)}
-                      />
-                      <span class="v2-switch-slider" />
-                      <span class="v2-switch-label">Hide Purple</span>
-                    </label>
-                    <label class="v2-switch">
-                      <input
-                        type="checkbox"
-                        checked={showUmaIcons}
-                        onChange={(e) => setShowUmaIcons((e.target as HTMLInputElement).checked)}
-                      />
-                      <span class="v2-switch-slider" />
-                      <span class="v2-switch-label">Uma Icons</span>
-                    </label>
-                    <label class="v2-switch" title="2x faster simulation with lower accuracy (50 samples vs 200)">
-                      <input
-                        type="checkbox"
-                        checked={chartFastMode}
-                        onChange={(e) => setChartFastMode((e.target as HTMLInputElement).checked)}
-                      />
-                      <span class="v2-switch-slider" />
-                      <span class="v2-switch-label">Fast ⚡</span>
-                    </label>
-                  </div>
-                  {/* Progress indicator */}
-                  {isRunning && Object.keys(skillChartProgress).length > 0 && (
-                    <div class="v2-skill-chart-progress">
-                      {Object.entries(skillChartProgress).map(([workerId, progress]) => (
-                        <div key={workerId} class="v2-worker-progress">
-                          Worker {workerId}: Round {progress.round}/{progress.total}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Skill chart table */}
-                {skillChartResults.size > 0 ? (
-                  <SkillChartPane
-                    data={Array.from(skillChartResults.values())}
-                    courseDistance={(courseData as any)[courseId]?.distance ?? 2000}
-                    hints={skillHints}
-                    hasSkills={hasSkills}
-                    updateHint={(id, hint) => {
-                      setSkillHints(prev => {
-                        const next = new Map(prev);
-                        next.set(id, hint);
-                        return next;
-                      });
-                    }}
-                    onRunTypeChange={setChartRunType}
-                    onSelectionChange={setSelectedSkillForChart}
-                    onInfoClick={handleShowSkillInfo}
-                    onDblClickRow={handleAddSkillFromChart}
-                    expandedContent={(skillId, runData, courseDistance, sampleCount) => (
-                      <SkillChartDetail
-                        skillId={skillId}
-                        runData={runData}
-                        courseDistance={courseDistance}
-                        umaIndex={1}
-                        sampleCount={sampleCount}
-                      />
-                    )}
-                    showUmaIcons={showUmaIcons}
-                    hideOwned={hideOwned}
-                    hidePurple={hidePurple}
-                    dirty={false}
-                  />
-                ) : (
-                  <div class="v2-skill-chart-empty">
-                    {isRunning ? (
-                      <div>
-                        <Zap size={48} />
-                        <h2>Running Skill Chart...</h2>
-                        <p>Testing skills across {Object.keys(skillChartProgress).length} workers</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <Zap size={48} />
-                        <h2>Skill Chart Mode</h2>
-                        <p>Click RUN to test all skills on the selected course</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ) : (
-            <>
-            <div class="v2-track-container">
-              <RaceTrack
-                courseid={courseId}
-                width={960}
-                height={250}
-                xOffset={20}
-                yOffset={10}
-                yExtra={15}
-                mouseMove={handleMouseMove}
-                mouseLeave={handleMouseLeave}
-                onSkillDrag={handleSkillDrag}
-                regions={skillRegions}
-                posKeepLabels={posKeepLabels}
-                uma1={uma1ForTrack}
-                uma2={uma2ForTrack}
-              >
-                {/* Velocity overlay renders inside the track SVG */}
-                {showVelocityOverlay && currentSnapshot && (
-                  <VelocityOverlay
-                    data={currentSnapshot}
-                    courseDistance={(courseData as any)[courseId]?.distance ?? 2000}
-                    width={960}
-                    height={250}
-                    xOffset={20}
-                    showHp={showHpOverlay}
-                  />
-                )}
-
-                {/* Mouse-over readout box (same as v1) */}
-                <g id="rtMouseOverBox" style="display:none">
-                  <text id="rtV1" x="25" y="10" fill="#2a77c5" font-size="10px"></text>
-                  <text id="rtV2" x="25" y="20" fill="#c52a2a" font-size="10px"></text>
-                </g>
-              </RaceTrack>
-
-              {/* Velocity toggle controls below track */}
-              {results && (
-                <div class="v2-velocity-toggles">
-                  <label class="v2-switch">
-                    <input
-                      type="checkbox"
-                      checked={showVelocityOverlay}
-                      onChange={(e) => setShowVelocityOverlay((e.target as HTMLInputElement).checked)}
-                    />
-                    <span class="v2-switch-slider" />
-                    <span class="v2-switch-label">Velocity</span>
-                  </label>
-                  <label class="v2-switch">
-                    <input
-                      type="checkbox"
-                      checked={showHpOverlay}
-                      onChange={(e) => setShowHpOverlay((e.target as HTMLInputElement).checked)}
-                    />
-                    <span class="v2-switch-slider" />
-                    <span class="v2-switch-label">HP</span>
-                  </label>
-                </div>
-              )}
-            </div>
-
-            {/* RESULTS - Inline below track */}
-            <V2ResultsPane
-              results={results}
-              isRunning={isRunning}
-              courseId={courseId}
-              onRunSimulation={handleRunSimulation}
-              displayRun={displayRun}
-              onDisplayRunChange={setDisplayRun}
-            />
-            </>
             )}
-          </main>
 
-          {/* UMA DRAWER - Slides in from left */}
-          <aside class={`v2-uma-drawer ${umaDrawerOpen ? "open" : ""}`}>
-            {/* Toggle tab attached to drawer edge */}
-            <button
-              class="v2-uma-toggle"
-              onClick={() => setUmaDrawerOpen(!umaDrawerOpen)}
-            >
-              ▶ Uma
-            </button>
+            {/* HEADER BAR - Track selection + conditions + run */}
+            <header class="v2-header">
+              <div class="v2-header-left">
+                <CustomSelect
+                  value={selectedPresetId}
+                  onChange={(val) => handlePresetSelect(val as number | null)}
+                  options={[
+                    { value: null, label: "Custom" },
+                    ...presets.map((p) => ({
+                      value: p.id,
+                      label: `CM ${p.id} - ${p.name}`,
+                    })),
+                  ]}
+                  className="v2-preset-select"
+                />
+                <V2TrackSelect
+                  courseid={courseId}
+                  setCourseid={(id) => {
+                    setSelectedPresetId(null);
+                    setCourseId(id);
+                  }}
+                />
+              </div>
 
-            <div class="v2-drawer-header">
-              <h2>Configure Uma</h2>
-              <button onClick={() => { setUmaDrawerOpen(false); setMobileView('track'); }}>
-                <X size={16} />
-              </button>
-            </div>
+              <div class="v2-header-center">
+                <CompactConditions
+                  ground={ground}
+                  setGround={(v) => {
+                    setSelectedPresetId(null);
+                    setGround(v);
+                  }}
+                  weather={weather}
+                  setWeather={(v) => {
+                    setSelectedPresetId(null);
+                    setWeather(v);
+                  }}
+                  season={season}
+                  setSeason={(v) => {
+                    setSelectedPresetId(null);
+                    setSeason(v);
+                  }}
+                  time={time}
+                  setTime={(v) => {
+                    setSelectedPresetId(null);
+                    setTime(v);
+                  }}
+                />
+              </div>
 
-            {/* Uma tabs */}
-            <div class="v2-uma-tabs">
-              <button
-                type="button"
-                class={activeUmaTab === 1 ? "active" : ""}
-                onClick={() => setActiveUmaTab(1)}
-              >
-                Uma 1
-              </button>
-              {mode === "compare" && (
-                <>
-                  <Tooltip content="Swap Uma 1 and Uma 2" position="bottom">
-                    <button
-                      type="button"
-                      class="v2-uma-swap"
-                      onClick={handleSwapUmas}
-                    >
-                      <ArrowLeftRight size={14} />
-                    </button>
-                  </Tooltip>
+              <div class="v2-header-right">
+                <div class="v2-mode-toggle">
                   <button
                     type="button"
-                    class={activeUmaTab === 2 ? "active" : ""}
-                    onClick={() => setActiveUmaTab(2)}
+                    class={mode === "compare" ? "active" : ""}
+                    onClick={() => setMode("compare")}
                   >
-                    Uma 2
+                    <GitCompare size={14} />
+                    Compare
                   </button>
-                </>
-              )}
-              <button
-                type="button"
-                class={`v2-uma-tab-trainees ${activeUmaTab === 'trainees' ? "active" : ""}`}
-                onClick={() => setActiveUmaTab('trainees')}
-              >
-                <Users size={14} />
-                Saved
-              </button>
-            </div>
-
-            <div class="v2-drawer-content">
-              {activeUmaTab === 1 && (
-                <V2UmaPanel
-                  state={uma1}
-                  onChange={handleUma1Change}
-                  onLoad={handleUma1Load}
-                  onReset={handleUma1Reset}
-                  onResetAll={handleResetAll}
-                  title={mode === "compare" ? "Umamusume 1" : "Umamusume"}
-                  courseDistance={(courseData as Record<string, { distance: number }>)[courseId]?.distance}
+                  <button
+                    type="button"
+                    class={mode === "skill" ? "active" : ""}
+                    onClick={() => setMode("skill")}
+                  >
+                    <Zap size={14} />
+                    Skill
+                  </button>
+                </div>
+                <Button
+                  variant="primary"
+                  className="v2-run-btn"
+                  icon={<Play size={14} />}
+                  onClick={handleRunSimulation}
+                  disabled={isRunning}
+                >
+                  {isRunning ? "Running..." : "RUN"}
+                </Button>
+                <Dropdown
+                  trigger={
+                    <Button variant="secondary" className="v2-settings-btn">
+                      <Settings size={16} />
+                    </Button>
+                  }
+                  align="right"
+                  items={[
+                    {
+                      id: "theme",
+                      label: darkMode ? "Light Mode" : "Dark Mode",
+                      icon: darkMode ? <Sun size={16} /> : <Moon size={16} />,
+                      onClick: () => setDarkMode(!darkMode),
+                    },
+                    {
+                      id: "accent",
+                      label: classicGreen ? "Bright Green" : "Classic Green",
+                      icon: <Palette size={16} />,
+                      onClick: () => setClassicGreen(!classicGreen),
+                    },
+                    { id: "divider-scale", label: "", divider: true },
+                    {
+                      id: "zoom-control",
+                      label: "",
+                      custom: (
+                        <div class="v2-zoom-control">
+                          <button
+                            type="button"
+                            class="v2-zoom-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setUiScale(Math.max(80, uiScale - 5));
+                            }}
+                            disabled={uiScale <= 80}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span class="v2-zoom-value">{uiScale}%</span>
+                          <button
+                            type="button"
+                            class="v2-zoom-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setUiScale(Math.min(120, uiScale + 5));
+                            }}
+                            disabled={uiScale >= 120}
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                      ),
+                    },
+                    { id: "divider-link", label: "", divider: true },
+                    {
+                      id: "copy-link",
+                      label: "Copy Link",
+                      icon: <Link size={16} />,
+                      onClick: () => {
+                        copyShareableUrl({
+                          courseId,
+                          ground,
+                          weather,
+                          season,
+                          time,
+                          samples,
+                          uma1,
+                          uma2,
+                        });
+                      },
+                    },
+                    {
+                      id: "restart-tour",
+                      label: "Restart Tour",
+                      icon: <HelpCircle size={16} />,
+                      onClick: () => {
+                        savePreferences({ tourCompleted: false });
+                        window.location.reload();
+                      },
+                    },
+                  ]}
                 />
-              )}
-              {mode === "compare" && activeUmaTab === 2 && (
-                <V2UmaPanel
-                  state={uma2}
-                  onChange={handleUma2Change}
-                  onLoad={handleUma2Load}
-                  onReset={handleUma2Reset}
-                  onResetAll={handleResetAll}
-                  title="Umamusume 2"
-                  courseDistance={(courseData as Record<string, { distance: number }>)[courseId]?.distance}
+                {/* Menu/apps dropdown: contains links to HP Calc, Docs, Events (to be added) */}
+                <Dropdown
+                  align="right"
+                  trigger={
+                    <Button
+                      variant="secondary"
+                      className="v2-settings-btn v2-apps-btn"
+                    >
+                      <Menu size={16} />
+                    </Button>
+                  }
+                  items={[
+                    {
+                      id: "hp-calc",
+                      label: "HP Calculator",
+                      icon: <Calculator size={16} />,
+                      onClick: () =>
+                        window.open(
+                          "https://umalator.app/hp-calculator/",
+                          "_blank",
+                        ),
+                    },
+                    {
+                      id: "events",
+                      label: "Events",
+                      icon: <Calendar size={16} />,
+                      onClick: () =>
+                        window.open("https://umalator.app/events/", "_blank"),
+                    },
+                    {
+                      id: "docs",
+                      label: "Docs",
+                      icon: <Book size={16} />,
+                      onClick: () =>
+                        window.open("https://umalator.app/docs/", "_blank"),
+                    },
+                  ]}
                 />
-              )}
-              {activeUmaTab === 'trainees' && (
-                <TraineesTab
-                  onLoadToUma1={handleUma1Load}
-                  onLoadToUma2={handleUma2Load}
-                  currentMode={mode}
-                  currentUma1={uma1}
-                  currentUma2={uma2}
-                />
-              )}
-            </div>
-          </aside>
+              </div>
+            </header>
 
-          </div>{/* End v2-content-area */}
+            {/* SIMULATION SETTINGS BAR */}
+            <SimulationSettings
+              samples={samples}
+              setSamples={setSamples}
+              seed={seed}
+              setSeed={setSeed}
+              syncRng={syncRng}
+              setSyncRng={setSyncRng}
+              skillWisdomCheck={skillWisdomCheck}
+              setSkillWisdomCheck={setSkillWisdomCheck}
+              rushedKakari={rushedKakari}
+              setRushedKakari={setRushedKakari}
+              leadCompetition={leadCompetition}
+              setLeadCompetition={setLeadCompetition}
+              competeFight={competeFight}
+              setCompeteFight={setCompeteFight}
+            />
 
-          {/* RACE SUMMARY DRAWER - Slides in from right */}
-          <aside class={`v2-summary-drawer ${summaryDrawerOpen ? "open" : ""}`}>
-            {/* Toggle tab attached to drawer edge */}
-            <button
-              class="v2-summary-toggle"
-              onClick={() => setSummaryDrawerOpen(!summaryDrawerOpen)}
-            >
-              Timeline ◀
-            </button>
+            {/* Content area wrapper for widescreen layout */}
+            <div class="v2-content-area">
+              {/* MAIN CONTENT - RaceTrack takes center stage */}
+              <main class="v2-main">
+                {mode === "skill" ? (
+                  <div class="v2-skill-chart-container">
+                    {/* Filter controls */}
+                    <div class="v2-skill-chart-controls">
+                      <div class="v2-skill-chart-filters">
+                        <label class="v2-switch">
+                          <input
+                            type="checkbox"
+                            checked={hideOwned}
+                            onChange={(e) =>
+                              setHideOwned(
+                                (e.target as HTMLInputElement).checked,
+                              )
+                            }
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">Hide Owned</span>
+                        </label>
+                        <label class="v2-switch">
+                          <input
+                            type="checkbox"
+                            checked={hidePurple}
+                            onChange={(e) =>
+                              setHidePurple(
+                                (e.target as HTMLInputElement).checked,
+                              )
+                            }
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">Hide Purple</span>
+                        </label>
+                        <label class="v2-switch">
+                          <input
+                            type="checkbox"
+                            checked={showUmaIcons}
+                            onChange={(e) =>
+                              setShowUmaIcons(
+                                (e.target as HTMLInputElement).checked,
+                              )
+                            }
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">Uma Icons</span>
+                        </label>
+                        <label
+                          class="v2-switch"
+                          title="2x faster simulation with lower accuracy (50 samples vs 200)"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={chartFastMode}
+                            onChange={(e) =>
+                              setChartFastMode(
+                                (e.target as HTMLInputElement).checked,
+                              )
+                            }
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">Fast ⚡</span>
+                        </label>
+                      </div>
+                      {/* Progress indicator */}
+                      {isRunning &&
+                        Object.keys(skillChartProgress).length > 0 && (
+                          <div class="v2-skill-chart-progress">
+                            {Object.entries(skillChartProgress).map(
+                              ([workerId, progress]) => (
+                                <div key={workerId} class="v2-worker-progress">
+                                  Worker {workerId}: Round {progress.round}/
+                                  {progress.total}
+                                </div>
+                              ),
+                            )}
+                          </div>
+                        )}
+                    </div>
 
-            <div class="v2-drawer-header">
-              <h2>Race Summary</h2>
-              <button onClick={() => { setSummaryDrawerOpen(false); setMobileView('track'); }}>
-                <X size={16} />
-              </button>
-            </div>
+                    {/* Skill chart table */}
+                    {skillChartResults.size > 0 ? (
+                      <SkillChartPane
+                        data={Array.from(skillChartResults.values())}
+                        courseDistance={
+                          (courseData as any)[courseId]?.distance ?? 2000
+                        }
+                        hints={skillHints}
+                        hasSkills={hasSkills}
+                        updateHint={(id, hint) => {
+                          setSkillHints((prev) => {
+                            const next = new Map(prev);
+                            next.set(id, hint);
+                            return next;
+                          });
+                        }}
+                        onRunTypeChange={setChartRunType}
+                        onSelectionChange={setSelectedSkillForChart}
+                        onInfoClick={handleShowSkillInfo}
+                        onDblClickRow={handleAddSkillFromChart}
+                        expandedContent={(
+                          skillId,
+                          runData,
+                          courseDistance,
+                          sampleCount,
+                        ) => (
+                          <SkillChartDetail
+                            skillId={skillId}
+                            runData={runData}
+                            courseDistance={courseDistance}
+                            umaIndex={1}
+                            sampleCount={sampleCount}
+                          />
+                        )}
+                        showUmaIcons={showUmaIcons}
+                        hideOwned={hideOwned}
+                        hidePurple={hidePurple}
+                        dirty={false}
+                      />
+                    ) : (
+                      <div class="v2-skill-chart-empty">
+                        {isRunning ? (
+                          <div>
+                            <Zap size={48} />
+                            <h2>Running Skill Chart...</h2>
+                            <p>
+                              Testing skills across{" "}
+                              {Object.keys(skillChartProgress).length} workers
+                            </p>
+                          </div>
+                        ) : (
+                          <div>
+                            <Zap size={48} />
+                            <h2>Skill Chart Mode</h2>
+                            <p>
+                              Click RUN to test all skills on the selected
+                              course
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div class="v2-track-container">
+                      <RaceTrack
+                        courseid={courseId}
+                        width={960}
+                        height={250}
+                        xOffset={20}
+                        yOffset={10}
+                        yExtra={15}
+                        mouseMove={handleMouseMove}
+                        mouseLeave={handleMouseLeave}
+                        onSkillDrag={handleSkillDrag}
+                        regions={skillRegions}
+                        posKeepLabels={posKeepLabels}
+                        uma1={uma1ForTrack}
+                        uma2={uma2ForTrack}
+                      >
+                        {/* Velocity overlay renders inside the track SVG */}
+                        {showVelocityOverlay && currentSnapshot && (
+                          <VelocityOverlay
+                            data={currentSnapshot}
+                            courseDistance={
+                              (courseData as any)[courseId]?.distance ?? 2000
+                            }
+                            width={960}
+                            height={250}
+                            xOffset={20}
+                            showHp={showHpOverlay}
+                          />
+                        )}
 
-            <div class="v2-drawer-content">
-              {results?.runData?.medianrun ? (
-                <RaceSummary
-                  medianrun={results.runData.medianrun}
-                  courseDistance={(courseData as any)[courseId]?.distance ?? 2000}
-                  skillnames={skillnames}
-                  result={results.results.length > 0
-                    ? results.results[Math.floor(results.results.length / 2)]
-                    : 0}
-                />
-              ) : (
-                <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', padding: 'var(--space-lg)' }}>
-                  Run a simulation to see the race timeline
-                </p>
-              )}
-            </div>
-          </aside>
+                        {/* Mouse-over readout box (same as v1) */}
+                        <g id="rtMouseOverBox" style="display:none">
+                          <text
+                            id="rtV1"
+                            x="25"
+                            y="10"
+                            fill="#2a77c5"
+                            font-size="10px"
+                          ></text>
+                          <text
+                            id="rtV2"
+                            x="25"
+                            y="20"
+                            fill="#c52a2a"
+                            font-size="10px"
+                          ></text>
+                        </g>
+                      </RaceTrack>
 
-          {/* FOOTER */}
-          <footer class="v2-footer">
-            <p>
-              Umalator is licensed under{" "}
-              <a
-                href="https://www.gnu.org/licenses/gpl-3.0.html"
-                target="_blank"
-                rel="noopener"
-              >
-                GPL-3.0
-              </a>
-              .&nbsp; Special thanks to the original authors of&nbsp;
-              <a href="#" target="_blank" rel="noopener">
-                JP Umalator
-              </a>
-              ,&nbsp;
-              <a
-                href="https://github.com/alpha123/uma-tools"
-                target="_blank"
-                rel="noopener"
-              >
-                pecan
-              </a>
-              ,&nbsp;
-              <a
-                href="https://github.com/kachi-dev/uma-tools"
-                target="_blank"
-                rel="noopener"
-              >
-                the VFalator team
-              </a>
-              ,&nbsp;and&nbsp;
-              <a
-                href="https://discord.gg/moomoocows"
-                target="_blank"
-                rel="noopener"
-              >
-                MooMooCord
-              </a>
-              .
-            </p>
-            <div class="v2-footer-links">
-              <a
-                href="https://github.com/TheCing/uma-tools"
-                target="_blank"
-                rel="noopener"
-              >
-                GitHub
-              </a>
-              &nbsp;|&nbsp;
-              <a
-                href="https://github.com/TheCing/uma-tools/issues"
-                target="_blank"
-                rel="noopener"
-              >
-                Feedback
-              </a>
-              &nbsp;|&nbsp;
-              <a
-                href="https://umalator.app/hp-calculator/"
-                target="_blank"
-                rel="noopener"
-              >
-                HP Calculator
-              </a>
-            </div>
-          </footer>
+                      {/* Velocity toggle controls below track */}
+                      {results && (
+                        <div class="v2-velocity-toggles">
+                          <label class="v2-switch">
+                            <input
+                              type="checkbox"
+                              checked={showVelocityOverlay}
+                              onChange={(e) =>
+                                setShowVelocityOverlay(
+                                  (e.target as HTMLInputElement).checked,
+                                )
+                              }
+                            />
+                            <span class="v2-switch-slider" />
+                            <span class="v2-switch-label">Velocity</span>
+                          </label>
+                          <label class="v2-switch">
+                            <input
+                              type="checkbox"
+                              checked={showHpOverlay}
+                              onChange={(e) =>
+                                setShowHpOverlay(
+                                  (e.target as HTMLInputElement).checked,
+                                )
+                              }
+                            />
+                            <span class="v2-switch-slider" />
+                            <span class="v2-switch-label">HP</span>
+                          </label>
+                        </div>
+                      )}
+                    </div>
 
-          {/* Backdrop when drawer is open */}
-          {umaDrawerOpen && (
-            <div class="v2-backdrop" onClick={() => { setUmaDrawerOpen(false); setMobileView('track'); }} />
-          )}
+                    {/* RESULTS - Inline below track */}
+                    <V2ResultsPane
+                      results={results}
+                      isRunning={isRunning}
+                      courseId={courseId}
+                      onRunSimulation={handleRunSimulation}
+                      displayRun={displayRun}
+                      onDisplayRunChange={setDisplayRun}
+                    />
+                  </>
+                )}
+              </main>
 
-          {/* Intro video - plays once on first uma selection */}
-          {showIntroVideo && umaDrawerOpen && (
-            <IntroVideo onClose={() => setShowIntroVideo(false)} />
-          )}
-
-          {/* Tour overlay - renders via portal */}
-          <TourOverlay />
-
-          {/* Skill info popover */}
-          {popoverSkillId && skillChartResults.has(popoverSkillId) && (
-            <div
-              class="v2-skill-popover"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div class="v2-skill-popover-header">
-                <img
-                  src={`/uma-tools/icons/${skillmeta[popoverSkillId]?.iconId || popoverSkillId}.png`}
-                  alt=""
-                  class="v2-skill-popover-icon"
-                />
-                <span class="v2-skill-popover-name">
-                  {skillnames[popoverSkillId] || popoverSkillId}
-                </span>
+              {/* UMA DRAWER - Slides in from left */}
+              <aside class={`v2-uma-drawer ${umaDrawerOpen ? "open" : ""}`}>
+                {/* Toggle tab attached to drawer edge */}
                 <button
-                  type="button"
-                  class="v2-skill-popover-close"
-                  onClick={() => setPopoverSkillId(null)}
+                  class="v2-uma-toggle"
+                  onClick={() => setUmaDrawerOpen(!umaDrawerOpen)}
+                >
+                  ▶ Uma
+                </button>
+
+                <div class="v2-drawer-header">
+                  <h2>Configure Uma</h2>
+                  <button
+                    onClick={() => {
+                      setUmaDrawerOpen(false);
+                      setMobileView("track");
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Uma tabs */}
+                <div class="v2-uma-tabs">
+                  <button
+                    type="button"
+                    class={activeUmaTab === 1 ? "active" : ""}
+                    onClick={() => setActiveUmaTab(1)}
+                  >
+                    Uma 1
+                  </button>
+                  {mode === "compare" && (
+                    <>
+                      <Tooltip content="Swap Uma 1 and Uma 2" position="bottom">
+                        <button
+                          type="button"
+                          class="v2-uma-swap"
+                          onClick={handleSwapUmas}
+                        >
+                          <ArrowLeftRight size={14} />
+                        </button>
+                      </Tooltip>
+                      <button
+                        type="button"
+                        class={activeUmaTab === 2 ? "active" : ""}
+                        onClick={() => setActiveUmaTab(2)}
+                      >
+                        Uma 2
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    class={`v2-uma-tab-trainees ${activeUmaTab === "trainees" ? "active" : ""}`}
+                    onClick={() => setActiveUmaTab("trainees")}
+                  >
+                    <Users size={14} />
+                    Saved
+                  </button>
+                </div>
+
+                <div class="v2-drawer-content">
+                  {activeUmaTab === 1 && (
+                    <V2UmaPanel
+                      state={uma1}
+                      onChange={handleUma1Change}
+                      onLoad={handleUma1Load}
+                      onReset={handleUma1Reset}
+                      onResetAll={handleResetAll}
+                      title={mode === "compare" ? "Umamusume 1" : "Umamusume"}
+                      courseDistance={
+                        (courseData as Record<string, { distance: number }>)[
+                          courseId
+                        ]?.distance
+                      }
+                    />
+                  )}
+                  {mode === "compare" && activeUmaTab === 2 && (
+                    <V2UmaPanel
+                      state={uma2}
+                      onChange={handleUma2Change}
+                      onLoad={handleUma2Load}
+                      onReset={handleUma2Reset}
+                      onResetAll={handleResetAll}
+                      title="Umamusume 2"
+                      courseDistance={
+                        (courseData as Record<string, { distance: number }>)[
+                          courseId
+                        ]?.distance
+                      }
+                    />
+                  )}
+                  {activeUmaTab === "trainees" && (
+                    <TraineesTab
+                      onLoadToUma1={handleUma1Load}
+                      onLoadToUma2={handleUma2Load}
+                      currentMode={mode}
+                      currentUma1={uma1}
+                      currentUma2={uma2}
+                    />
+                  )}
+                </div>
+              </aside>
+            </div>
+            {/* End v2-content-area */}
+
+            {/* RACE SUMMARY DRAWER - Slides in from right */}
+            <aside
+              class={`v2-summary-drawer ${summaryDrawerOpen ? "open" : ""}`}
+            >
+              {/* Toggle tab attached to drawer edge */}
+              <button
+                class="v2-summary-toggle"
+                onClick={() => setSummaryDrawerOpen(!summaryDrawerOpen)}
+              >
+                Timeline ◀
+              </button>
+
+              <div class="v2-drawer-header">
+                <h2>Race Summary</h2>
+                <button
+                  onClick={() => {
+                    setSummaryDrawerOpen(false);
+                    setMobileView("track");
+                  }}
                 >
                   <X size={16} />
                 </button>
               </div>
-              <div class="v2-skill-popover-stats">
-                <span>Median: {skillChartResults.get(popoverSkillId)?.median.toFixed(2)}L</span>
-                <span>Mean: {skillChartResults.get(popoverSkillId)?.mean.toFixed(2)}L</span>
-                <span>Range: {skillChartResults.get(popoverSkillId)?.min.toFixed(2)} ~ {skillChartResults.get(popoverSkillId)?.max.toFixed(2)}L</span>
+
+              <div class="v2-drawer-content">
+                {results?.runData?.medianrun ? (
+                  <RaceSummary
+                    medianrun={results.runData.medianrun}
+                    courseDistance={
+                      (courseData as any)[courseId]?.distance ?? 2000
+                    }
+                    skillnames={skillnames}
+                    result={
+                      results.results.length > 0
+                        ? results.results[
+                            Math.floor(results.results.length / 2)
+                          ]
+                        : 0
+                    }
+                  />
+                ) : (
+                  <p
+                    style={{
+                      color: "var(--color-text-muted)",
+                      textAlign: "center",
+                      padding: "var(--space-lg)",
+                    }}
+                  >
+                    Run a simulation to see the race timeline
+                  </p>
+                )}
               </div>
-              <Button
-                variant="primary"
-                size="sm"
+            </aside>
+
+            {/* FOOTER */}
+            <footer class="v2-footer">
+              <p>
+                Umalator is licensed under{" "}
+                <a
+                  href="https://www.gnu.org/licenses/gpl-3.0.html"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  GPL-3.0
+                </a>
+                .&nbsp; Special thanks to the original authors of&nbsp;
+                <a href="#" target="_blank" rel="noopener">
+                  JP Umalator
+                </a>
+                ,&nbsp;
+                <a
+                  href="https://github.com/alpha123/uma-tools"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  pecan
+                </a>
+                ,&nbsp;
+                <a
+                  href="https://github.com/kachi-dev/uma-tools"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  the VFalator team
+                </a>
+                ,&nbsp;and&nbsp;
+                <a
+                  href="https://discord.gg/moomoocows"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  MooMooCord
+                </a>
+                .
+              </p>
+              <div class="v2-footer-links">
+                <a
+                  href="https://github.com/TheCing/uma-tools"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  GitHub
+                </a>
+                &nbsp;|&nbsp;
+                <a
+                  href="https://github.com/TheCing/uma-tools/issues"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  Feedback
+                </a>
+                &nbsp;|&nbsp;
+                <a
+                  href="https://umalator.app/hp-calculator/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  HP Calculator
+                </a>
+              </div>
+            </footer>
+
+            {/* Backdrop when drawer is open */}
+            {umaDrawerOpen && (
+              <div
+                class="v2-backdrop"
                 onClick={() => {
-                  handleAddSkillFromChart(popoverSkillId);
-                  setPopoverSkillId(null);
+                  setUmaDrawerOpen(false);
+                  setMobileView("track");
                 }}
+              />
+            )}
+
+            {/* Intro video - plays once on first uma selection */}
+            {showIntroVideo && umaDrawerOpen && (
+              <IntroVideo onClose={() => setShowIntroVideo(false)} />
+            )}
+
+            {/* Tour overlay - renders via portal */}
+            <TourOverlay />
+
+            {/* Skill info popover */}
+            {popoverSkillId && skillChartResults.has(popoverSkillId) && (
+              <div
+                class="v2-skill-popover"
+                onClick={(e) => e.stopPropagation()}
               >
-                Add to Uma 1
-              </Button>
-            </div>
-          )}
-
-          {/* Feedback drawer */}
-          <FeedbackDrawer
-            isOpen={feedbackDrawerOpen}
-            onClose={() => { setFeedbackDrawerOpen(false); setMobileView('track'); }}
-            webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
-          />
-          {!feedbackDrawerOpen && (
-            <button
-              type="button"
-              class="v2-feedback-toggle"
-              onClick={() => setFeedbackDrawerOpen(true)}
-              aria-label="Send feedback"
-            >
-              <MessageSquare size={18} />
-              <span>Feedback</span>
-            </button>
-          )}
-
-          {/* Mobile bottom navigation */}
-          <MobileNav
-            activeView={mobileView}
-            onViewChange={handleMobileViewChange}
-            onRun={handleRunSimulation}
-            isRunning={isRunning}
-            hasResults={!!results}
-          />
-
-          {/* Mobile settings panel */}
-          {mobileSettingsOpen && (
-            <>
-              <div class="v2-backdrop v2-mobile-backdrop" onClick={() => {
-                setMobileSettingsOpen(false);
-                setMobileView('track');
-              }} />
-              <div class="v2-mobile-settings open">
-                <div class="v2-mobile-settings-header">
-                  <h3>Settings</h3>
-                  <button type="button" onClick={() => {
-                    setMobileSettingsOpen(false);
-                    setMobileView('track');
-                  }}>
+                <div class="v2-skill-popover-header">
+                  <img
+                    src={`/uma-tools/icons/${skillmeta[popoverSkillId]?.iconId || popoverSkillId}.png`}
+                    alt=""
+                    class="v2-skill-popover-icon"
+                  />
+                  <span class="v2-skill-popover-name">
+                    {skillnames[popoverSkillId] || popoverSkillId}
+                  </span>
+                  <button
+                    type="button"
+                    class="v2-skill-popover-close"
+                    onClick={() => setPopoverSkillId(null)}
+                  >
                     <X size={16} />
                   </button>
                 </div>
-                <div class="v2-mobile-settings-content">
-                  <div class="v2-mobile-settings-section">
-                    <h4>Track & Course</h4>
-                    <V2TrackSelect
-                      courseid={courseId}
-                      setCourseid={(id) => {
-                        setSelectedPresetId(null);
-                        setCourseId(id);
-                      }}
-                    />
-                  </div>
-                  <div class="v2-mobile-settings-section">
-                    <h4>Mode</h4>
-                    <div class="v2-mode-toggle" style={{ display: 'flex' }}>
-                      <button
-                        type="button"
-                        class={mode === "compare" ? "active" : ""}
-                        onClick={() => setMode("compare")}
-                      >
-                        <GitCompare size={14} />
-                        Compare
-                      </button>
-                      <button
-                        type="button"
-                        class={mode === "skill" ? "active" : ""}
-                        onClick={() => setMode("skill")}
-                      >
-                        <Zap size={14} />
-                        Skill
-                      </button>
-                    </div>
-                  </div>
-                  <div class="v2-mobile-settings-section">
-                    <h4>Race Conditions</h4>
-                    <CompactConditions
-                      ground={ground}
-                      setGround={(v) => {
-                        setSelectedPresetId(null);
-                        setGround(v);
-                      }}
-                      weather={weather}
-                      setWeather={(v) => {
-                        setSelectedPresetId(null);
-                        setWeather(v);
-                      }}
-                      season={season}
-                      setSeason={(v) => {
-                        setSelectedPresetId(null);
-                        setSeason(v);
-                      }}
-                      time={time}
-                      setTime={(v) => {
-                        setSelectedPresetId(null);
-                        setTime(v);
-                      }}
-                    />
-                  </div>
-                  <div class="v2-mobile-settings-section">
-                    <h4>Appearance</h4>
-                    <div class="v2-mobile-settings-row">
-                      <label>{darkMode ? "Dark Mode" : "Light Mode"}</label>
-                      <label class="v2-switch">
-                        <input
-                          type="checkbox"
-                          checked={darkMode}
-                          onChange={() => setDarkMode(!darkMode)}
-                        />
-                        <span class="v2-switch-slider" />
-                      </label>
-                    </div>
-                    <div class="v2-mobile-settings-row">
-                      <label>Classic Green</label>
-                      <label class="v2-switch">
-                        <input
-                          type="checkbox"
-                          checked={classicGreen}
-                          onChange={() => setClassicGreen(!classicGreen)}
-                        />
-                        <span class="v2-switch-slider" />
-                      </label>
-                    </div>
-                  </div>
-                  <div class="v2-mobile-settings-section">
-                    <h4>Actions</h4>
-                    <Button
-                      variant="secondary"
-                      className="v2-mobile-settings-btn"
-                      onClick={() => setFeedbackDrawerOpen(true)}
-                      icon={<MessageSquare size={14} />}
-                    >
-                      Send Feedback
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      className="v2-mobile-settings-btn"
+                <div class="v2-skill-popover-stats">
+                  <span>
+                    Median:{" "}
+                    {skillChartResults.get(popoverSkillId)?.median.toFixed(2)}L
+                  </span>
+                  <span>
+                    Mean:{" "}
+                    {skillChartResults.get(popoverSkillId)?.mean.toFixed(2)}L
+                  </span>
+                  <span>
+                    Range:{" "}
+                    {skillChartResults.get(popoverSkillId)?.min.toFixed(2)} ~{" "}
+                    {skillChartResults.get(popoverSkillId)?.max.toFixed(2)}L
+                  </span>
+                </div>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    handleAddSkillFromChart(popoverSkillId);
+                    setPopoverSkillId(null);
+                  }}
+                >
+                  Add to Uma 1
+                </Button>
+              </div>
+            )}
+
+            {/* Feedback drawer */}
+            <FeedbackDrawer
+              isOpen={feedbackDrawerOpen}
+              onClose={() => {
+                setFeedbackDrawerOpen(false);
+                setMobileView("track");
+              }}
+              webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
+            />
+            {!feedbackDrawerOpen && (
+              <button
+                type="button"
+                class="v2-feedback-toggle"
+                onClick={() => setFeedbackDrawerOpen(true)}
+                aria-label="Send feedback"
+              >
+                <MessageSquare size={18} />
+                <span>Feedback</span>
+              </button>
+            )}
+
+            {/* Mobile bottom navigation */}
+            <MobileNav
+              activeView={mobileView}
+              onViewChange={handleMobileViewChange}
+              onRun={handleRunSimulation}
+              isRunning={isRunning}
+              hasResults={!!results}
+            />
+
+            {/* Mobile settings panel */}
+            {mobileSettingsOpen && (
+              <>
+                <div
+                  class="v2-backdrop v2-mobile-backdrop"
+                  onClick={() => {
+                    setMobileSettingsOpen(false);
+                    setMobileView("track");
+                  }}
+                />
+                <div class="v2-mobile-settings open">
+                  <div class="v2-mobile-settings-header">
+                    <h3>Settings</h3>
+                    <button
+                      type="button"
                       onClick={() => {
-                        savePreferences({ tourCompleted: false });
-                        window.location.reload();
+                        setMobileSettingsOpen(false);
+                        setMobileView("track");
                       }}
-                      icon={<HelpCircle size={14} />}
                     >
-                      Restart Tour
-                    </Button>
+                      <X size={16} />
+                    </button>
+                  </div>
+                  <div class="v2-mobile-settings-content">
+                    <div class="v2-mobile-settings-section">
+                      <h4>Track & Course</h4>
+                      <V2TrackSelect
+                        courseid={courseId}
+                        setCourseid={(id) => {
+                          setSelectedPresetId(null);
+                          setCourseId(id);
+                        }}
+                      />
+                    </div>
+                    <div class="v2-mobile-settings-section">
+                      <h4>Mode</h4>
+                      <div class="v2-mode-toggle" style={{ display: "flex" }}>
+                        <button
+                          type="button"
+                          class={mode === "compare" ? "active" : ""}
+                          onClick={() => setMode("compare")}
+                        >
+                          <GitCompare size={14} />
+                          Compare
+                        </button>
+                        <button
+                          type="button"
+                          class={mode === "skill" ? "active" : ""}
+                          onClick={() => setMode("skill")}
+                        >
+                          <Zap size={14} />
+                          Skill
+                        </button>
+                      </div>
+                    </div>
+                    <div class="v2-mobile-settings-section">
+                      <h4>Race Conditions</h4>
+                      <CompactConditions
+                        ground={ground}
+                        setGround={(v) => {
+                          setSelectedPresetId(null);
+                          setGround(v);
+                        }}
+                        weather={weather}
+                        setWeather={(v) => {
+                          setSelectedPresetId(null);
+                          setWeather(v);
+                        }}
+                        season={season}
+                        setSeason={(v) => {
+                          setSelectedPresetId(null);
+                          setSeason(v);
+                        }}
+                        time={time}
+                        setTime={(v) => {
+                          setSelectedPresetId(null);
+                          setTime(v);
+                        }}
+                      />
+                    </div>
+                    <div class="v2-mobile-settings-section">
+                      <h4>Appearance</h4>
+                      <div class="v2-mobile-settings-row">
+                        <label>{darkMode ? "Dark Mode" : "Light Mode"}</label>
+                        <label class="v2-switch">
+                          <input
+                            type="checkbox"
+                            checked={darkMode}
+                            onChange={() => setDarkMode(!darkMode)}
+                          />
+                          <span class="v2-switch-slider" />
+                        </label>
+                      </div>
+                      <div class="v2-mobile-settings-row">
+                        <label>Classic Green</label>
+                        <label class="v2-switch">
+                          <input
+                            type="checkbox"
+                            checked={classicGreen}
+                            onChange={() => setClassicGreen(!classicGreen)}
+                          />
+                          <span class="v2-switch-slider" />
+                        </label>
+                      </div>
+                    </div>
+                    <div class="v2-mobile-settings-section">
+                      <h4>Tools</h4>
+                      <Button
+                        variant="ghost"
+                        className="v2-mobile-settings-btn"
+                        onClick={() => window.open("https://umalator.app/hp-calculator/", "_blank")}
+                        icon={<Calculator size={14} />}
+                      >
+                        HP Calculator
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="v2-mobile-settings-btn"
+                        onClick={() => window.open("https://umalator.app/events/", "_blank")}
+                        icon={<Calendar size={14} />}
+                      >
+                        Events
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="v2-mobile-settings-btn"
+                        onClick={() => window.open("https://umalator.app/docs/", "_blank")}
+                        icon={<Book size={14} />}
+                      >
+                        Docs
+                      </Button>
+                    </div>
+                    <div class="v2-mobile-settings-section">
+                      <h4>Actions</h4>
+                      <Button
+                        variant="secondary"
+                        className="v2-mobile-settings-btn"
+                        onClick={() => setFeedbackDrawerOpen(true)}
+                        icon={<MessageSquare size={14} />}
+                      >
+                        Send Feedback
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="v2-mobile-settings-btn"
+                        onClick={() => {
+                          savePreferences({ tourCompleted: false });
+                          window.location.reload();
+                        }}
+                        icon={<HelpCircle size={14} />}
+                      >
+                        Restart Tour
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
-        </div>
-      </IntlProvider>
+              </>
+            )}
+          </div>
+        </IntlProvider>
       </TourProvider>
     </Language.Provider>
   );
