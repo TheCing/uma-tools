@@ -401,7 +401,7 @@ function App() {
                     {getGroundName(nextEvent.ground)}
                   </span>
                   <span class="condition-tag">
-                    <img src={getSeasonIconSrc(nextEvent.season)} alt="" class="condition-icon condition-icon-season" />
+                    <img src={getSeasonIconSrc(nextEvent.season)} alt="" class="condition-icon" />
                     {getSeasonName(nextEvent.season)}
                   </span>
                   <span class="condition-tag">

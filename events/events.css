@@ -382,14 +382,9 @@ body {
 }
 
 .condition-icon {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-}
-
-.condition-icon-season {
   width: 28px;
-  height: auto;
+  height: 28px;
+  object-fit: contain;
 }
 
 .condition-icon-sm {
