@@ -56,7 +56,7 @@ export const presets: Preset[] = [
 		id: 9,
 		type: EventType.CM,
 		name: 'Capricorn Cup',
-		date: '2026-02-14',
+		date: '2026-02-13',
 		courseId: 10701,
 		season: Season.Winter,
 		ground: GroundCondition.Soft,
