@@ -729,6 +729,7 @@ body {
 
   .next-event-card {
     padding: var(--space-lg);
+    overflow-x: hidden;
   }
 
   .next-event-name {
@@ -736,27 +737,72 @@ body {
   }
 
   .countdown {
-    gap: var(--space-sm);
+    gap: var(--space-xs);
+    max-width: 100%;
+  }
+
+  .countdown-cards {
+    gap: 2px;
   }
 
   .flip-card {
-    width: 32px;
-    height: 48px;
+    width: 28px;
+    height: 42px;
   }
 
   .flip-card-inner,
   .flip-card-flap {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .flip-card-top span,
   .flip-card-bottom span,
   .flip-card-flap span {
-    height: 48px;
+    height: 42px;
   }
 
   .countdown-separator {
-    font-size: 1.5rem;
-    line-height: 48px;
+    font-size: 1.25rem;
+    line-height: 42px;
+  }
+
+  .countdown-label {
+    font-size: 0.6rem;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .countdown {
+    gap: 4px;
+  }
+
+  .countdown-cards {
+    gap: 1px;
+  }
+
+  .flip-card {
+    width: 22px;
+    height: 34px;
+  }
+
+  .flip-card-inner,
+  .flip-card-flap {
+    font-size: 1.2rem;
+  }
+
+  .flip-card-top span,
+  .flip-card-bottom span,
+  .flip-card-flap span {
+    height: 34px;
+  }
+
+  .countdown-separator {
+    font-size: 1rem;
+    line-height: 34px;
+  }
+
+  .countdown-label {
+    font-size: 0.55rem;
   }
 }
