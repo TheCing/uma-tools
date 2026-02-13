@@ -625,7 +625,7 @@ function App() {
                         <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
                       </div>
                       <div class="banner-pickups">
-                        {banner.pickupIds.map(id => {
+                        {(banner.pickupIds || []).map(id => {
                           const card = banners.charLookup[id];
                           if (!card) return null;
                           return (
@@ -661,7 +661,7 @@ function App() {
                         <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
                       </div>
                       <div class="banner-pickups">
-                        {banner.pickupIds.map(id => {
+                        {(banner.pickupIds || []).map(id => {
                           const card = banners.supportLookup[id];
                           if (!card) return null;
                           return (
