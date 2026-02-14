@@ -16,6 +16,7 @@ interface VelocityOverlayProps {
 	width: number;
 	height: number;
 	xOffset: number;
+	showVelocity?: boolean;
 	showHp?: boolean;
 	showPacerGap?: boolean;
 }
@@ -30,7 +31,8 @@ export function VelocityOverlay({
 	width,
 	height,
 	xOffset,
-	showHp = false,
+	showVelocity = true,
+	showHp = true,
 	showPacerGap = true,
 }: VelocityOverlayProps) {
 	const axesRef = useRef<SVGGElement>(null);
@@ -131,16 +133,17 @@ export function VelocityOverlay({
 	return (
 		<Fragment>
 			<g transform={`translate(${xOffset},5)`}>
-				{/* Velocity curves */}
-				{velocityPaths.map((path, i) => (
-					<path
-						key={`v-${i}`}
-						fill="none"
-						stroke={COLORS[i]}
-						stroke-width="2.5"
-						d={path}
-					/>
-				))}
+				{/* Velocity curves (if enabled) */}
+				{showVelocity &&
+					velocityPaths.map((path, i) => (
+						<path
+							key={`v-${i}`}
+							fill="none"
+							stroke={COLORS[i]}
+							stroke-width="2.5"
+							d={path}
+						/>
+					))}
 				{/* HP curves (if enabled) - solid lines */}
 				{showHp &&
 					hpPaths.map((path, i) => (

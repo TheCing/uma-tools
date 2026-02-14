@@ -1448,7 +1448,7 @@ function App() {
                         uma2={uma2ForTrack}
                       >
                         {/* Velocity overlay renders inside the track SVG */}
-                        {showVelocityOverlay && currentSnapshot && (
+                        {currentSnapshot && (
                           <VelocityOverlay
                             data={currentSnapshot}
                             courseDistance={
@@ -1457,6 +1457,7 @@ function App() {
                             width={960}
                             height={250}
                             xOffset={20}
+                            showVelocity={showVelocityOverlay}
                             showHp={showHpOverlay}
                           />
                         )}
