@@ -778,8 +778,8 @@ From [`HpPolicy.ts:63-87`](../uma-skill-tools/HpPolicy.ts):
 | Rushed (Kakari/Overexertion) | 1.6 | +60% consumption |
 | Spot Struggle (Lead Competition) | 1.4 | +40% consumption |
 | Spot Struggle + Rushed | 3.6 | +260% consumption |
-| Breakaway Spot Struggle | 3.5 | +250% consumption |
-| Breakaway Spot Struggle + Rushed | 7.7 | +670% consumption |
+| Runaway Spot Struggle | 3.5 | +250% consumption |
+| Runaway Spot Struggle + Rushed | 7.7 | +670% consumption |
 
 #### Lead Competition (Spot Struggle)
 
@@ -788,7 +788,7 @@ From [`HpPolicy.ts:63-87`](../uma-skill-tools/HpPolicy.ts):
 **Why it matters:** Lead Competition is a **stamina trap** for Front Runners:
 - HP consumption × 1.4 (40% extra drain)
 - Combined with Overexertion → × 3.6 (260% extra drain!)
-- For Breakaway strategy → × 3.5 (250% extra drain)
+- For Runaway strategy → × 3.5 (250% extra drain)
 
 **Trigger conditions (Front Runners):**
 - Distance gap < 3.75m
@@ -1130,7 +1130,7 @@ This document uses internal code terminology. Here's how it maps to Global Engli
 | Senkou | Pace Chaser | 先行 | 2 |
 | Sashi | Late Surger | 差し | 3 |
 | Oikomi | End Closer | 追込 | 4 |
-| Oonige | Breakaway | 大逃げ | 5 |
+| Oonige | Runaway | 大逃げ | 5 |
 
 ### Race Mechanics
 

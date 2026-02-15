@@ -107,6 +107,19 @@ const buildOptions = {
 	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin]
 };
 
+// v2 experimental build options
+// Note: v2 uses npm @tanstack/react-table directly (v8 API), not the vendor files (v9 alpha API)
+const buildOptionsV2 = {
+	entryPoints: [{in: './v2/app-v2.tsx', out: 'v2/bundle-v2'}],
+	bundle: true,
+	minify: !debug,
+	outdir: '.',
+	write: !serve,
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true'},
+	external: ['*.ttf'],
+	plugins: [redirectData, mockAssert, seedrandomPlugin]  // No redirectTable - use npm packages
+};
+
 const MIME_TYPES = {
 	'.html': 'text/html; charset=UTF-8',
 	'.css': 'text/css',
@@ -120,7 +133,7 @@ const MIME_TYPES = {
 	'.woff': 'font/woff'
 };
 
-const ARTIFACTS = ['bundle.js', 'bundle.css', 'simulator.worker.js'];
+const ARTIFACTS = ['bundle.js', 'bundle.css', 'simulator.worker.js', 'bundle-v2.js', 'bundle-v2.css'];
 
 function runServer(ctx, port) {
 	const requestCount = new Map(ARTIFACTS.map(f => [f, 0]));
@@ -134,10 +147,16 @@ function runServer(ctx, port) {
 		if (url.startsWith('/')) url = url.slice(1);
 		// Strip /uma-tools/ prefix if present (for local dev - assets are at root)
 		if (url.startsWith('uma-tools/')) url = url.slice('uma-tools/'.length);
+		// Strip umalator-global/ prefix for artifact matching
+		let artifactKey = url;
+		if (artifactKey.startsWith('umalator-global/')) artifactKey = artifactKey.slice('umalator-global/'.length);
 		const filename = path.basename(url);
-		if (ARTIFACTS.indexOf(filename) > -1) {
-			const requestN = requestCount.get(filename) + (filename == 'simulator.worker.js' ? (workerState = +!workerState) : 1);
-			requestCount.set(filename, requestN);
+		// Check if this is a v2 artifact or main artifact
+		const isV2Artifact = artifactKey.startsWith('v2/') && ARTIFACTS.some(a => artifactKey.endsWith(a.replace('bundle-v2', 'bundle-v2')));
+		const artifactName = isV2Artifact ? path.basename(artifactKey) : filename;
+		if (ARTIFACTS.indexOf(artifactName) > -1) {
+			const requestN = requestCount.get(artifactName) + (artifactName == 'simulator.worker.js' ? (workerState = +!workerState) : 1);
+			requestCount.set(artifactName, requestN);
 			if (requestN != buildCount) {
 				buildCount += 1;
 				console.log(`rebuilding ... => ${buildCount}`);
@@ -151,7 +170,7 @@ function runServer(ctx, port) {
 				});
 			}
 			console.log(`GET ${req.url} 200 OK => ${requestN}`);
-			const artifact = (await output).get(filename);
+			const artifact = (await output).get(artifactName);
 			res.writeHead(200, {
 				'Content-type': MIME_TYPES[path.extname(filename)],
 				'Content-length': artifact.length
@@ -172,9 +191,27 @@ function runServer(ctx, port) {
 }
 
 if (serve) {
+	// Build both main and v2 in serve mode
 	const ctx = await esbuild.context(buildOptions);
-	runServer(ctx, port);
+	const ctxV2 = await esbuild.context(buildOptionsV2);
+
+	// Combine contexts for rebuilding
+	const combinedCtx = {
+		async rebuild() {
+			const [result1, result2] = await Promise.all([ctx.rebuild(), ctxV2.rebuild()]);
+			return {
+				outputFiles: [...result1.outputFiles, ...result2.outputFiles]
+			};
+		}
+	};
+
+	runServer(combinedCtx, port);
 	console.log(`Serving on http://[::]:${port}/ ...`);
+	console.log(`  Main: http://localhost:${port}/umalator-global/`);
+	console.log(`  v2:   http://localhost:${port}/umalator-global/v2/`);
 } else {
-	await esbuild.build(buildOptions);
+	await Promise.all([
+		esbuild.build(buildOptions),
+		esbuild.build(buildOptionsV2)
+	]);
 }

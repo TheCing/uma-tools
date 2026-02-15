@@ -103,7 +103,7 @@ function hasGlyph(char: string): boolean {
   if (typeof document === "undefined") return true; // SSR fallback
 
   const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return true;
 
   canvas.width = 50;
@@ -661,6 +661,7 @@ function App() {
     setCompletedWorkers(0);
     setSkillChartResults(new Map());
     setSkillChartProgress({});
+    setSelectedSkillForChart(""); // Clear selection when starting new run
 
     const course = courseData[courseId];
     if (!course) {
@@ -761,25 +762,44 @@ function App() {
     }
   }, [results, displayRun]);
 
+  // Skill chart snapshot - selected skill's run data for visualization
+  const skillChartSnapshot = useMemo(() => {
+    if (mode !== "skill" || !selectedSkillForChart || !skillChartResults.has(selectedSkillForChart)) {
+      return null;
+    }
+    const result = skillChartResults.get(selectedSkillForChart);
+    if (!result?.runData) return null;
+
+    // Get the selected run type (medianrun, minrun, maxrun, meanrun)
+    return result.runData[chartRunType as keyof typeof result.runData] || result.runData.medianrun;
+  }, [mode, selectedSkillForChart, skillChartResults, chartRunType]);
+
   // Extract skill activation regions from results for track visualization
   const skillRegions = useMemo(() => {
-    if (!currentSnapshot) return [];
+    // In skill mode, only show regions when a skill is selected
+    // In compare mode, use current snapshot
+    const snapshot = mode === "skill" ? skillChartSnapshot : currentSnapshot;
+    if (!snapshot) return [];
 
     const colors = [
       { stroke: "#2a77c5", fill: "rgba(42, 119, 197, 0.3)" }, // Uma 1 - blue
       { stroke: "#c52a2a", fill: "rgba(197, 42, 42, 0.3)" }, // Uma 2 - red
     ];
 
+    const NO_SHOW = ["skill_empty", "skill_heal"]; // Icons to hide
     const regions: any[] = [];
-    const snapshot = currentSnapshot;
 
     // Process skill activations for both umas
     [0, 1].forEach((umaIndex) => {
-      const skillMap = snapshot.sk[umaIndex];
+      const skillMap = snapshot.sk?.[umaIndex];
       if (!skillMap || !(skillMap instanceof Map)) return;
 
       skillMap.forEach((activations: number[][], skillId: string) => {
         if (!activations || activations.length === 0) return;
+
+        // Skip unwanted skill icons
+        const iconId = skillmeta[skillId]?.iconId;
+        if (NO_SHOW.includes(iconId)) return;
 
         // Get skill name (fallback to ID if not found)
         const name = skillnames[skillId]?.[0] ?? skillId;
@@ -801,7 +821,7 @@ function App() {
     });
 
     return regions;
-  }, [currentSnapshot]);
+  }, [mode, skillChartSnapshot, currentSnapshot]);
 
   // Build position keep labels from simulation results
   const posKeepLabels = useMemo(() => {
@@ -1289,6 +1309,91 @@ function App() {
             <div class="v2-content-area">
               {/* MAIN CONTENT - RaceTrack takes center stage */}
               <main class="v2-main">
+                {/* RaceTrack - Always visible (like v1) */}
+                <div class="v2-track-container">
+                  <RaceTrack
+                    courseid={courseId}
+                    width={960}
+                    height={250}
+                    xOffset={20}
+                    yOffset={10}
+                    yExtra={15}
+                    mouseMove={handleMouseMove}
+                    mouseLeave={handleMouseLeave}
+                    onSkillDrag={handleSkillDrag}
+                    regions={skillRegions}
+                    posKeepLabels={posKeepLabels}
+                    uma1={uma1ForTrack}
+                    uma2={uma2ForTrack}
+                  >
+                    {/* Velocity overlay - use appropriate snapshot based on mode */}
+                    {((mode === "compare" && currentSnapshot) || (mode === "skill" && skillChartSnapshot)) && (
+                      <VelocityOverlay
+                        data={mode === "skill" ? skillChartSnapshot : currentSnapshot}
+                        courseDistance={
+                          (courseData as any)[courseId]?.distance ?? 2000
+                        }
+                        width={960}
+                        height={250}
+                        xOffset={20}
+                        showVelocity={showVelocityOverlay}
+                        showHp={showHpOverlay}
+                      />
+                    )}
+
+                    {/* Mouse-over readout box (same as v1) */}
+                    <g id="rtMouseOverBox" style="display:none">
+                      <text
+                        id="rtV1"
+                        x="25"
+                        y="10"
+                        fill="#2a77c5"
+                        font-size="10px"
+                      ></text>
+                      <text
+                        id="rtV2"
+                        x="25"
+                        y="20"
+                        fill="#c52a2a"
+                        font-size="10px"
+                      ></text>
+                    </g>
+                  </RaceTrack>
+
+                  {/* Velocity toggle controls below track - show when there's data to display */}
+                  {((mode === "compare" && results) || (mode === "skill" && skillChartSnapshot)) && (
+                    <div class="v2-velocity-toggles">
+                      <label class="v2-switch">
+                        <input
+                          type="checkbox"
+                          checked={showVelocityOverlay}
+                          onChange={(e) =>
+                            setShowVelocityOverlay(
+                              (e.target as HTMLInputElement).checked,
+                            )
+                          }
+                        />
+                        <span class="v2-switch-slider" />
+                        <span class="v2-switch-label">Velocity</span>
+                      </label>
+                      <label class="v2-switch">
+                        <input
+                          type="checkbox"
+                          checked={showHpOverlay}
+                          onChange={(e) =>
+                            setShowHpOverlay(
+                              (e.target as HTMLInputElement).checked,
+                            )
+                          }
+                        />
+                        <span class="v2-switch-slider" />
+                        <span class="v2-switch-label">HP</span>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
+                {/* Mode-specific content below track */}
                 {mode === "skill" ? (
                   <div class="v2-skill-chart-container">
                     {/* Filter controls */}
@@ -1430,100 +1535,15 @@ function App() {
                     )}
                   </div>
                 ) : (
-                  <>
-                    <div class="v2-track-container">
-                      <RaceTrack
-                        courseid={courseId}
-                        width={960}
-                        height={250}
-                        xOffset={20}
-                        yOffset={10}
-                        yExtra={15}
-                        mouseMove={handleMouseMove}
-                        mouseLeave={handleMouseLeave}
-                        onSkillDrag={handleSkillDrag}
-                        regions={skillRegions}
-                        posKeepLabels={posKeepLabels}
-                        uma1={uma1ForTrack}
-                        uma2={uma2ForTrack}
-                      >
-                        {/* Velocity overlay renders inside the track SVG */}
-                        {currentSnapshot && (
-                          <VelocityOverlay
-                            data={currentSnapshot}
-                            courseDistance={
-                              (courseData as any)[courseId]?.distance ?? 2000
-                            }
-                            width={960}
-                            height={250}
-                            xOffset={20}
-                            showVelocity={showVelocityOverlay}
-                            showHp={showHpOverlay}
-                          />
-                        )}
-
-                        {/* Mouse-over readout box (same as v1) */}
-                        <g id="rtMouseOverBox" style="display:none">
-                          <text
-                            id="rtV1"
-                            x="25"
-                            y="10"
-                            fill="#2a77c5"
-                            font-size="10px"
-                          ></text>
-                          <text
-                            id="rtV2"
-                            x="25"
-                            y="20"
-                            fill="#c52a2a"
-                            font-size="10px"
-                          ></text>
-                        </g>
-                      </RaceTrack>
-
-                      {/* Velocity toggle controls below track */}
-                      {results && (
-                        <div class="v2-velocity-toggles">
-                          <label class="v2-switch">
-                            <input
-                              type="checkbox"
-                              checked={showVelocityOverlay}
-                              onChange={(e) =>
-                                setShowVelocityOverlay(
-                                  (e.target as HTMLInputElement).checked,
-                                )
-                              }
-                            />
-                            <span class="v2-switch-slider" />
-                            <span class="v2-switch-label">Velocity</span>
-                          </label>
-                          <label class="v2-switch">
-                            <input
-                              type="checkbox"
-                              checked={showHpOverlay}
-                              onChange={(e) =>
-                                setShowHpOverlay(
-                                  (e.target as HTMLInputElement).checked,
-                                )
-                              }
-                            />
-                            <span class="v2-switch-slider" />
-                            <span class="v2-switch-label">HP</span>
-                          </label>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* RESULTS - Inline below track */}
-                    <V2ResultsPane
-                      results={results}
-                      isRunning={isRunning}
-                      courseId={courseId}
-                      onRunSimulation={handleRunSimulation}
-                      displayRun={displayRun}
-                      onDisplayRunChange={setDisplayRun}
-                    />
-                  </>
+                  /* RESULTS - Compare mode */
+                  <V2ResultsPane
+                    results={results}
+                    isRunning={isRunning}
+                    courseId={courseId}
+                    onRunSimulation={handleRunSimulation}
+                    displayRun={displayRun}
+                    onDisplayRunChange={setDisplayRun}
+                  />
                 )}
               </main>
 

@@ -149,24 +149,11 @@ function headerRenderer(
  */
 export function SkillChartPane(props: SkillChartPaneProps) {
 	const radioGroup = useId();
-	const [expanded, setExpanded] = useState('');
 	const [selectedType, setSelectedType] = useState('median');
-	const clickTimeoutRef = useRef<number | null>(null);
-	const lastClickRef = useRef({ id: '', time: 0 });
 
 	function headerClick(type: string) {
 		setSelectedType(type);
 		props.onRunTypeChange(type + 'run');
-	}
-
-	function toggleExpand(skillId: string) {
-		if (expanded === skillId) {
-			setExpanded('');
-			props.onSelectionChange('');
-		} else {
-			setExpanded(skillId);
-			props.onSelectionChange(skillId);
-		}
 	}
 
 	// Filter data based on hideOwned and hidePurple
@@ -277,32 +264,11 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 			return;
 		}
 
-		const now = Date.now();
-		const isDoubleClick = lastClickRef.current.id === id && (now - lastClickRef.current.time) < 300;
-
-		if (clickTimeoutRef.current) {
-			clearTimeout(clickTimeoutRef.current);
-			clickTimeoutRef.current = null;
-			if (!isDoubleClick) {
-				toggleExpand(id);
-			}
-			return;
-		}
-
-		lastClickRef.current = { id, time: now };
-		clickTimeoutRef.current = window.setTimeout(() => {
-			clickTimeoutRef.current = null;
-			if (lastClickRef.current.id === id && (Date.now() - lastClickRef.current.time) >= 300) {
-				toggleExpand(id);
-			}
-		}, 300);
+		// Single click: update track visualization
+		props.onSelectionChange(id);
 	}
 
 	function handleDblClick(e: MouseEvent) {
-		if (clickTimeoutRef.current) {
-			clearTimeout(clickTimeoutRef.current);
-			clickTimeoutRef.current = null;
-		}
 		const tr = (e.target as HTMLElement).closest('tr');
 		if (tr == null) return;
 		e.stopPropagation();
@@ -314,11 +280,8 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 		if ((e.target as HTMLElement).tagName === 'IMG') {
 			return;
 		}
-		if (expanded === id) {
-			return;
-		}
 
-		lastClickRef.current = { id: '', time: 0 };
+		// Double click: add skill to uma
 		props.onDblClickRow(id);
 	}
 
@@ -354,26 +317,15 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 				<tbody onClick={handleClick} onDblClick={handleDblClick}>
 					{table.getRowModel().rows.map(row => {
 						const id = row.getValue('id') as string;
-						const isExpanded = expanded === id;
-						const rowData = props.data.find(d => d.id === id);
 
 						return (
-							<Fragment key={row.id}>
-								<tr data-skillid={id} class={isExpanded ? 'expanded' : ''}>
-									{row.getAllCells().map(cell => (
-										<td key={cell.id}>
-											{flexRender(cell.column.columnDef.cell, cell.getContext())}
-										</td>
-									))}
-								</tr>
-								{isExpanded && rowData && props.expandedContent && (
-									<tr class="v2-expanded-content-row" data-skillid={id}>
-										<td colSpan={row.getAllCells().length}>
-											{props.expandedContent(id, rowData.runData, props.courseDistance, rowData.sampleCount)}
-										</td>
-									</tr>
-								)}
-							</Fragment>
+							<tr key={row.id} data-skillid={id}>
+								{row.getAllCells().map(cell => (
+									<td key={cell.id}>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</td>
+								))}
+							</tr>
 						);
 					})}
 				</tbody>

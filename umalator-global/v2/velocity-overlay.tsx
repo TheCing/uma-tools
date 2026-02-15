@@ -88,12 +88,24 @@ export function VelocityOverlay({
 	// Generate velocity paths using v1's exact approach
 	const velocityPaths = useMemo(() => {
 		if (!data.v || !data.p) return [];
+
 		return data.v.map((v, i) => {
+			// Defensive: ensure arrays exist and have same length
+			if (!v || !data.p[i] || v.length !== data.p[i].length) {
+				return '';
+			}
+
 			// Create array of indices
 			const indices = data.p[i].map((_, j) => j);
-			// Build path: x = position, y = velocity
+
+			// Build path with defensive checks: x = position, y = velocity
 			const pathData = d3
 				.line<number>()
+				.defined((j) => {
+					const px = data.p[i][j];
+					const vy = v[j];
+					return px != null && !isNaN(px) && vy != null && !isNaN(vy);
+				})
 				.x((j) => x(data.p[i][j]))
 				.y((j) => y(v[j]))(indices);
 			return pathData ?? '';
@@ -104,9 +116,19 @@ export function VelocityOverlay({
 	const hpPaths = useMemo(() => {
 		if (!showHp || !hpY || !data.hp || !data.p) return [];
 		return data.hp.map((hp, i) => {
+			// Defensive: ensure arrays exist and have same length
+			if (!hp || !data.p[i] || hp.length !== data.p[i].length) {
+				return '';
+			}
+
 			const indices = data.p[i].map((_, j) => j);
 			const pathData = d3
 				.line<number>()
+				.defined((j) => {
+					const px = data.p[i][j];
+					const hpVal = hp[j];
+					return px != null && !isNaN(px) && hpVal != null && !isNaN(hpVal);
+				})
 				.x((j) => x(data.p[i][j]))
 				.y((j) => hpY(hp[j]))(indices);
 			return pathData ?? '';
