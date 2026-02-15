@@ -37,10 +37,13 @@ function mergeResults(results1: any, results2: any) {
 	// Use the newer result's median as approximation (more samples = better estimate)
 	const newMedian = n2 > n1 ? results2.median : results1.median;
 
+	// Keep runData from the result with more samples (more accurate)
+	const runData = n2 > n1 ? (results2.runData || results1.runData) : (results1.runData || results2.runData);
+
 	return {
 		id: results1.id,
-		results: [], // Empty - detailed data fetched on-demand
-		runData: null,
+		results: [], // Empty - detailed data not needed
+		runData, // Keep runData for track visualization
 		min: Math.min(results1.min, results2.min),
 		max: Math.max(results1.max, results2.max),
 		mean: combinedMean,
@@ -141,18 +144,18 @@ function runChartRound(
 		const withSkill = uma.set('skills', skillsToUse.set(skillmeta[id].groupId, id));
 
 		// Run comparison
-		const { results } = runComparison(nsamples, course, racedef, uma, withSkill, pacer, options);
+		const { results, runData } = runComparison(nsamples, course, racedef, uma, withSkill, pacer, options);
 
 		// Calculate statistics
 		const mid = Math.floor(results.length / 2);
 		const median = results.length % 2 === 0 ? (results[mid - 1] + results[mid]) / 2 : results[mid];
 		const mean = results.reduce((a, b) => a + b, 0) / results.length;
 
-		// Only store stats, not full results/runData (saves memory)
+		// Store stats and runData (needed for track visualization)
 		data.set(id, {
 			id,
-			results: [], // Empty - detailed data fetched on-demand
-			runData: null,
+			results: [], // Empty - detailed data not needed
+			runData, // Keep runData for skill activation visualization
 			min: results[0],
 			max: results[results.length - 1],
 			mean,
@@ -200,15 +203,12 @@ function runChart({ skills, course, racedef, uma, pacer, options, skillmeta, wor
 
 	const chartOptions = { ...options, mode: 'chart' };
 
-	// Helper to convert Map to plain object for postMessage
-	const mapToObject = (map: Map<string, any>) => Object.fromEntries(map);
-
 	if (fastMode) {
 		// FAST MODE: Single round, 50 samples, no filtering
 		// 2x faster than kachi, best for mobile/low-end devices
 		self.postMessage({ type: 'chart-progress', workerId, round: 1, total: 1 });
 		const results = runChartRound(50, skills, course, racedef, uma_, pacer_, chartOptions, skillmeta);
-		self.postMessage({ type: 'chart-update', workerId, results: mapToObject(results) });
+		self.postMessage({ type: 'chart-update', workerId, results });
 		self.postMessage({ type: 'chart-complete', workerId });
 		return;
 	}
@@ -217,7 +217,7 @@ function runChart({ skills, course, racedef, uma, pacer, options, skillmeta, wor
 	// Round 1: 25 samples per skill (fast initial scan, same as kachi)
 	self.postMessage({ type: 'chart-progress', workerId, round: 1, total: 2 });
 	let results = runChartRound(25, skills, course, racedef, uma_, pacer_, chartOptions, skillmeta);
-	self.postMessage({ type: 'chart-update', workerId, results: mapToObject(results) });
+	self.postMessage({ type: 'chart-update', workerId, results });
 
 	// Combined filter (equivalent to kachi's two-stage filtering):
 	// - max > 0.1L: skill shows meaningful positive gain
@@ -232,7 +232,7 @@ function runChart({ skills, course, racedef, uma, pacer, options, skillmeta, wor
 	self.postMessage({ type: 'chart-progress', workerId, round: 2, total: 2 });
 	const update = runChartRound(175, skills, course, racedef, uma_, pacer_, chartOptions, skillmeta);
 	mergeResultSets(results, update);
-	self.postMessage({ type: 'chart-update', workerId, results: mapToObject(results) });
+	self.postMessage({ type: 'chart-update', workerId, results });
 
 	self.postMessage({ type: 'chart-complete', workerId });
 }
