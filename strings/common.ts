@@ -44,7 +44,7 @@ export const COMMON_global = Object.freeze({
 
 export const COMMON_STRINGS = Object.freeze({
 	'ja': COMMON_ja,
-	'en': COMMON_en,
-	'en-ja': COMMON_en,
+	'en': COMMON_global,
+	'en-ja': COMMON_global,
 	'en-global': COMMON_global
 });
