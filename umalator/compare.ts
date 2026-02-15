@@ -2,7 +2,6 @@ import { CourseData } from '../uma-skill-tools/CourseData';
 import { RaceParameters, GroundCondition } from '../uma-skill-tools/RaceParameters';
 import { RaceSolver, PosKeepMode } from '../uma-skill-tools/RaceSolver';
 import { RaceSolverBuilder, Perspective, parseStrategy, parseAptitude, buildBaseStats, buildAdjustedStats } from '../uma-skill-tools/RaceSolverBuilder';
-import { EnhancedHpPolicy } from '../uma-skill-tools/EnhancedHpPolicy';
 import { GameHpPolicy } from '../uma-skill-tools/HpPolicy';
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 

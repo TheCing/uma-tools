@@ -141,28 +141,75 @@ export function expectedDownhillModeRate(wisdom: number): number {
 
 /**
  * Calculate HP savings from downhill mode
+ * Properly accounts for which phases the downhills fall in
  * Downhill mode reduces HP consumption to 40% (60% savings)
  */
 export function calculateDownhillSavings(
 	course: CourseData,
 	wisdom: number,
-	baseHpNeeded: number,
-	baseSpeed: number
+	strategy: Strategy,
+	guts: number,
+	speed: number
 ): { downhillDistance: number; downhillPercent: number; expectedModePercent: number; hpSavings: number } {
-	const downhillDist = getDownhillDistance(course);
+	const downhillSlopes = (course.slopes || []).filter(s => s.slope < 0);
+	const downhillDist = downhillSlopes.reduce((sum, s) => sum + s.length, 0);
 	const downhillPercent = downhillDist / course.distance;
 
 	if (downhillPercent === 0) {
 		return { downhillDistance: 0, downhillPercent: 0, expectedModePercent: 0, hpSavings: 0 };
 	}
 
-	// Expected time in downhill mode as fraction of total race
+	const distance = course.distance;
+	const baseSpd = baseSpeed(distance);
+	const gutsMod = gutsModifier(guts);
 	const modeRate = expectedDownhillModeRate(wisdom);
-	const expectedModePercent = downhillPercent * modeRate;
 
-	// HP savings: 60% reduction during downhill mode time
-	// This is an approximation - actual savings depend on velocity during downhill sections
-	const hpSavings = baseHpNeeded * expectedModePercent * 0.6;
+	// Phase boundaries
+	const phase2Start = distance * (2 / 3);
+
+	// Calculate velocities for each phase section
+	const coefs = StrategyPhaseCoefficient[strategy];
+	const phase01Speed = baseSpd * ((coefs[0] + coefs[1]) / 2);
+	const baseTargetSpeed2 = baseSpd * coefs[2] + Math.sqrt(500.0 * speed) * 0.002;
+	const spurtSpeed = (baseTargetSpeed2 + 0.01 * baseSpd) * 1.05 + Math.sqrt(500.0 * speed) * 0.002;
+
+	// Calculate HP that would be consumed during downhill sections
+	let downhillHpPhase01 = 0;
+	let downhillHpPhase2 = 0;
+	let totalDownhillTime = 0;
+
+	for (const slope of downhillSlopes) {
+		const slopeEnd = slope.start + slope.length;
+
+		// Portion in phase 0+1 (before 2/3 distance)
+		if (slope.start < phase2Start) {
+			const phase01End = Math.min(slopeEnd, phase2Start);
+			const phase01Dist = phase01End - slope.start;
+			const phase01Time = phase01Dist / phase01Speed;
+			downhillHpPhase01 += hpPerSecond(phase01Speed, baseSpd, gutsMod, false) * phase01Time;
+			totalDownhillTime += phase01Time;
+		}
+
+		// Portion in phase 2+3 (after 2/3 distance)
+		if (slopeEnd > phase2Start) {
+			const phase2Begin = Math.max(slope.start, phase2Start);
+			const phase2Dist = slopeEnd - phase2Begin;
+			const phase2Time = phase2Dist / spurtSpeed;
+			downhillHpPhase2 += hpPerSecond(spurtSpeed, baseSpd, gutsMod, true) * phase2Time;
+			totalDownhillTime += phase2Time;
+		}
+	}
+
+	// Total HP consumed during downhill sections (without downhill mode)
+	const totalDownhillHp = downhillHpPhase01 + downhillHpPhase2;
+
+	// HP savings: 60% reduction, weighted by expected mode activation rate
+	const hpSavings = totalDownhillHp * modeRate * 0.6;
+
+	// Expected mode percent is based on time spent in downhill mode
+	// relative to total race time (approximated)
+	const totalRaceTime = (distance * 2/3) / phase01Speed + (distance * 1/3) / spurtSpeed;
+	const expectedModePercent = (totalDownhillTime * modeRate) / totalRaceTime;
 
 	return {
 		downhillDistance: downhillDist,
@@ -282,7 +329,7 @@ export function calculateEstimate(
 	const minStamina = findMinStaminaForFullSpurt(distance, strategy, guts, speed, healPercent);
 
 	// Calculate downhill savings
-	const downhillInfo = calculateDownhillSavings(course, wisdom, hpNeeded.total, baseSpd);
+	const downhillInfo = calculateDownhillSavings(course, wisdom, strategy, guts, speed);
 	const adjustedTotalHpNeeded = hpNeeded.total - downhillInfo.hpSavings;
 	const adjustedHpSurplus = effectiveHp - adjustedTotalHpNeeded;
 	const adjustedCanFullSpurt = adjustedHpSurplus >= 0;

@@ -9,6 +9,8 @@ import { OCRModal } from './OCRModal';
 import { OCRHorseData, mapSkillNamesToIds, mapOutfitNameToId } from './GeminiOCR';
 import { createUmaCard, extractDataFromPng } from './UmaCard';
 import { SlotDialog } from './SlotDialog';
+import { useLanguage } from './Language';
+import { COMMON_STRINGS } from '../strings/common';
 
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 
@@ -17,9 +19,21 @@ import { SkillSet, HorseState } from './HorseDefTypes';
 import './HorseDef.css';
 
 import umas from '../umas.json';
+import globalUmas from '../umalator-global/umas.json';
 import icons from '../icons.json';
 import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillmeta from '../skill_meta.json';
+
+// Helper to get outfit name in the appropriate language
+function getOutfitName(outfitId: string, lang: string): string {
+	const umaId = outfitId.slice(0, 4);
+	// Use Japanese for 'ja' language, English for others
+	if (lang === 'ja') {
+		return umas[umaId]?.outfits?.[outfitId] || '';
+	}
+	// Try global (English) first, fall back to JP
+	return globalUmas[umaId]?.outfits?.[outfitId] || umas[umaId]?.outfits?.[outfitId] || '';
+}
 
 // LocalStorage key for horse slots
 const HORSE_SLOTS_KEY = 'umalator_horse_slots';
@@ -186,6 +200,7 @@ function searchNames(query) {
 }
 
 export function UmaSelector(props) {
+	const lang = useLanguage();
 	const randomMob = useMemo(() => `/uma-tools/icons/mob/trained_mob_chr_icon_${8000 + Math.floor(Math.random() * 624)}_000001_01.png`, []);
 	const u = props.value && umas[props.value.slice(0,4)];
 
@@ -460,7 +475,7 @@ export function UmaSelector(props) {
 				<img src={props.value ? icons[props.value] : randomMob} />
 				<img src="/uma-tools/icons/utx_ico_umamusume_00.png" />
 			</div>
-			<div class="umaEpithet"><span>{props.value && u.outfits[props.value]}</span></div>
+			<div class="umaEpithet"><span>{props.value && getOutfitName(props.value, lang)}</span></div>
 			<div class="resetButtons">
 				{props.onSave && (
 					<div className="loadButtonWrapper" ref={saveDropdownRef} onBlur={handleSaveDropdownBlur}>
@@ -532,7 +547,7 @@ export function UmaSelector(props) {
 						const uid = oid.slice(0,4);
 						return (
 							<li key={oid} data-uma-id={oid} class={`umaSuggestion ${i == activeIdx ? 'selected' : ''}`}>
-								<img src={icons[oid]} loading="lazy" /><span>{umas[uid].outfits[oid]} {umas[uid].name[1]}</span>
+								<img src={icons[oid]} loading="lazy" /><span>{getOutfitName(oid, lang)} {umas[uid].name[1]}</span>
 							</li>
 						);
 					})}
@@ -641,25 +656,16 @@ export function MoodSelect(props){
 }
 
 export function StrategySelect(props) {
+	const lang = useLanguage();
+	const labels = COMMON_STRINGS[lang].strategy;
 	const disabled = props.disabled || false;
-	if (CC_GLOBAL) {
-		return (
-			<select class="horseStrategySelect" value={props.s} tabindex={props.tabindex} disabled={disabled} onInput={(e) => props.setS(e.currentTarget.value)}>
-				<option value="Oonige">Runaway</option>
-				<option value="Nige">Front Runner</option>
-				<option value="Senkou">Pace Chaser</option>
-				<option value="Sasi">Late Surger</option>
-				<option value="Oikomi">End Closer</option>
-			</select>
-		);
-	}
 	return (
 		<select class="horseStrategySelect" value={props.s} tabindex={props.tabindex} disabled={disabled} onInput={(e) => props.setS(e.currentTarget.value)}>
-			<option value="Nige">逃げ</option>
-			<option value="Senkou">先行</option>
-			<option value="Sasi">差し</option>
-			<option value="Oikomi">追込</option>
-			<option value="Oonige">大逃げ</option>
+			<option value="Nige">{labels[1]}</option>
+			<option value="Senkou">{labels[2]}</option>
+			<option value="Sasi">{labels[3]}</option>
+			<option value="Oikomi">{labels[4]}</option>
+			<option value="Oonige">{labels[5]}</option>
 		</select>
 	);
 }

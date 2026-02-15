@@ -103,6 +103,7 @@
 	position: relative;
 	width: var(--track-width, 981px);
 	max-width: 100%;
+	align-self: start;  /* Prevent grid from stretching height */
 }
 
 /* SVG scales to fill wrapper width, maintaining aspect ratio via viewBox */
