@@ -4,50 +4,90 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a collection of tools and web applications for ウマ娘 プリティーダービー (Uma Musume Pretty Derby), a Japanese horse racing game. The project includes:
+**Moomoolator** is a modern Uma Musume race simulator with bilingual JP/EN support, forked from alpha123/umalator and kachi-dev/umalator.
 
-- **uma-skill-tools**: Core TypeScript library for race simulation and skill analysis
-- **umalator**: Web-based race simulator with visualization (JP version)
-- **umalator-global**: Global/English version of the race simulator
-- **skill-visualizer**: Tool to visualize skill activation regions on racecourses
-- **build-planner**: Skill build planning interface
-- Additional utilities: umadle, rougelike, courseimages
+### Live Applications
+
+| Application | Description |
+|------------|-------------|
+| **[/umalator-global](https://umalator.app/umalator-global)** | Global simulator (English) |
+| **[/umalator-global/v2](https://umalator.app/umalator-global/v2)** | V2 experimental UI with modern features |
+| **[/umalator](https://umalator.app/umalator)** | Bilingual JP simulator |
+| **[/hp-calculator](https://umalator.app/hp-calculator)** | HP survival rate calculator |
+| **[/events](https://umalator.app/events)** | Upcoming race tracker with gacha banners |
+
+### Project Structure
+
+```
+├── umalator/                    # JP simulator source (v1)
+├── umalator-global/             # Global simulator (v1 + v2)
+│   ├── v2/                      # V2 modern UI (experimental)
+│   │   ├── app-v2.tsx          # Main v2 application
+│   │   ├── components/         # V2-specific components
+│   │   ├── tour/               # Onboarding tour system
+│   │   ├── velocity-overlay.tsx
+│   │   ├── results-pane.tsx
+│   │   └── vite.config.ts      # V2 uses Vite
+│   ├── build.mjs               # Builds both v1 and v2
+│   ├── skill_data.json         # English game data
+│   └── course_data.json
+├── hp-calculator/               # HP calculator tool
+├── events/                      # Events page
+├── uma-skill-tools/             # Core simulation library
+├── uma-tools-worker/            # Cloudflare Worker for webhooks
+├── components/                  # Shared UI components
+│   ├── HorseDef.tsx
+│   ├── RaceTrack.tsx
+│   ├── RacetrackCow.tsx         # Visual cow easter egg
+│   └── RacetrackCowMooCoins.tsx # MooCoins wrapper (dev only)
+└── skill-visualizer/            # Skill visualization tool
+```
 
 ## Development Commands
 
 ### Building Frontend Applications
 
-Each frontend application (umalator, skill-visualizer, build-planner, etc.) has its own build process:
-
-```bash
-# Build individual applications
-cd umalator && node build.mjs
-cd umalator-global && node build.mjs
-cd skill-visualizer && npm run build  # or use build.bat on Windows
-cd build-planner && npm run build     # or use build.bat on Windows
-```
-
-Note: Build scripts are often `.bat` files or `.mjs` scripts. Check the directory for `build.bat` or `build.mjs`.
-
-### umalator-global Development Server
-
+**Umalator (v1 + v2):**
 ```bash
 cd umalator-global
-node build.mjs --serve        # Dev server on http://localhost:8000
-node build.mjs --serve 3000   # Custom port
-node build.mjs --debug        # Debug build (unminified, with asserts)
+node build.mjs              # Build both v1 and v2 (production)
+node build.mjs --serve      # Dev server with hot reload
+node build.mjs --serve 3000 # Custom port
+node build.mjs --debug      # Unminified with assertions
 ```
 
-**Access URL**: `http://localhost:8000/umalator-global/` (not just `/`)
+**Access URLs:**
+- V1: `http://localhost:8000/umalator-global/`
+- V2: `http://localhost:8000/umalator-global/v2/`
 
 The dev server:
 - Serves files from project root (includes shared `icons/`, `fonts/`)
 - Auto-rebuilds on source changes
-- Strips `/uma-tools/` prefix from asset requests (production path rewriting)
+- Strips `/uma-tools/` prefix from asset requests
+
+**Other Applications:**
+```bash
+cd hp-calculator && node build.mjs
+cd events && node build.mjs
+cd skill-visualizer && npm run build  # or build.bat on Windows
+cd build-planner && npm run build
+```
+
+### V2 Development with Vite
+
+V2 can optionally use Vite for development (faster HMR):
+
+```bash
+cd umalator-global/v2
+npm run dev    # Vite dev server on http://localhost:5173
+npm run build  # Production build
+```
+
+**Note**: `build.mjs` is the primary build system. Vite is optional for v2-only development.
 
 ### IDE Errors to Ignore
 
-**CC_GLOBAL errors**: The IDE may show errors like `Cannot find name 'CC_GLOBAL'` in `.tsx` files. These are **safe to ignore** - `CC_GLOBAL` is a build-time constant defined by esbuild (see `build.mjs`). The build will succeed despite these IDE warnings.
+**CC_GLOBAL errors**: The IDE may show errors like `Cannot find name 'CC_GLOBAL'` in `.tsx` files. These are **safe to ignore** - `CC_GLOBAL` is a build-time constant defined by esbuild. The build will succeed despite these IDE warnings.
 
 ### Working with uma-skill-tools
 
@@ -56,7 +96,7 @@ The core simulation library is in `uma-skill-tools/`. This uses TypeScript and i
 ```bash
 cd uma-skill-tools
 
-# Run CLI tools (from tools/ directory)
+# Run CLI tools
 ts-node tools/skillgrep.ts [options]    # Search skills by name or condition
 ts-node tools/gain.ts [options]         # Calculate skill バ身 gain
 ts-node tools/dump.ts [options]         # Dump race simulation data
@@ -74,14 +114,14 @@ cd uma-skill-tools
 npm test  # Runs tape tests in test/ directory
 ```
 
-There's also a benchmark: `ts-node test/bench/bench.ts`
+Benchmark: `ts-node test/bench/bench.ts`
 
 ### Python Visualization Tools
 
 Some tools require Python 3 and matplotlib:
 
 ```bash
-# Visualize race data (pipe dump.ts output into this)
+# Visualize race data
 ts-node tools/dump.ts [options] | python tools/plot.py [options]
 
 # Show histogram of バ身 gain
@@ -96,64 +136,155 @@ ts-node tools/speedguts.ts [options] | python tools/speedguts_colormesh.py
 ### uma-skill-tools Core Components
 
 **Race Simulation Pipeline:**
-1. **RaceSolver.ts**: Numerically integrates position and velocity over the race course. The core physics simulation.
-2. **ConditionParser.ts & ActivationConditions.ts**: Parse skill conditions from game data into activation regions and dynamic conditions.
-3. **ActivationSamplePolicy.ts**: Samples activation regions to determine where skills actually trigger (handles randomness).
-4. **RaceSolverBuilder.ts**: Orchestrates building a configured race solver with skills and conditions.
+1. **RaceSolver.ts**: Numerically integrates position and velocity over the race course
+2. **ConditionParser.ts & ActivationConditions.ts**: Parse skill conditions into activation regions
+3. **ActivationSamplePolicy.ts**: Samples activation regions (handles randomness)
+4. **RaceSolverBuilder.ts**: Orchestrates building a configured race solver with skills
 
 **Key Concepts:**
-- **Static conditions/triggers**: Regions on the track where a skill *can* activate
-- **Dynamic conditions**: Boolean functions based on race state that determine if a skill *will* activate
-- **Sample policies**: Control how random/conditional skills are modeled (immediate, random, distribution-based)
+- **Static conditions/triggers**: Regions where a skill *can* activate
+- **Dynamic conditions**: Boolean functions that determine if a skill *will* activate
+- **Sample policies**: Control how random/conditional skills are modeled
 
 Skills are defined by:
 - Activation conditions (e.g., `phase==2&running_style==3`)
 - Sample policy (immediate, random, or distribution-based)
 - Effect duration and magnitude
 
-### Frontend Applications
+### Frontend Architecture
 
 All frontend apps use:
 - **Preact** (React alternative) with JSX via `jsxFactory: "h"`
 - **D3.js** for charts and visualizations
 - **Immutable.js** for state management
-- **esbuild** for bundling (configured in build scripts)
+- **esbuild** for bundling (v1)
+- **Vite** for v2 development (optional)
 
 TypeScript config uses `"moduleResolution": "bundler"` and targets ES2018.
 
-**Application Structure:**
-- `umalator/`: Main race simulator source code (shared by JP and Global builds)
-- `umalator-global/`: Global version build config and English data files
-- `skill-visualizer/`: Visualizes where skills activate on a course (using `RegionList` from uma-skill-tools)
-- `build-planner/`: UI for planning skill builds
-- `components/`: Shared UI components (HorseDef, SkillList, RaceTrack, etc.)
+### V1 vs V2
 
-**Key Shared Components:**
-- `HorseDef.tsx`: Horse configuration UI with save/load functionality (dropdowns for JSON/PNG/OCR)
-- `HorseDefTypes.ts`: HorseState Record class (Immutable.js) with regional default stats
-- `UmaCard.ts`: Uma Card feature - PNG export/import with embedded JSON metadata (similar to SillyTavern character cards)
-- `OCRModal.tsx` + `GeminiOCR.ts`: Screenshot import using Google Gemini AI for OCR
+**V1 (Classic):**
+- Original UI in `umalator/app.tsx`
+- Single-page layout with sidebars
+- Built with esbuild
+- Served at `/umalator-global/`
+
+**V2 (Experimental):**
+- Modern redesigned UI in `umalator-global/v2/`
+- Component-based architecture
+- Mobile-first responsive design
+- Guided onboarding tour
+- Modal dialogs, feedback drawer, mobile navigation
+- Built with esbuild (can use Vite for dev)
+- Served at `/umalator-global/v2/`
+
+Both versions:
+- Share the same simulation engine (`uma-skill-tools`)
+- Share data files (skill_data.json, course_data.json)
+- Share core components (`components/`)
+- Use `CC_GLOBAL` flag to toggle JP/Global variants
+
+### V2 Component Architecture
+
+**Core Application:**
+- `app-v2.tsx` - Main application with state management
+- `results-pane.tsx` - Results display and statistics
+- `velocity-overlay.tsx` - Track overlay for velocity/HP visualization
+- `velocity-chart.tsx` - Standalone velocity chart
+
+**UI Components:**
+```
+v2/components/
+├── Modal.tsx           # Native-feeling modal dialogs
+├── Button.tsx          # Styled button component
+├── CustomSelect.tsx    # Dropdown select with icons
+├── IconSelect.tsx      # Icon-based selector
+├── Dropdown.tsx        # Generic dropdown menu
+└── Tooltip.tsx         # Tooltip component
+```
+
+**Feature Modules:**
+```
+v2/
+├── tour/               # Onboarding tour system
+│   ├── TourContext.tsx   # Tour state management
+│   ├── TourOverlay.tsx   # Tour UI overlay
+│   ├── TourTooltip.tsx   # Tour step tooltips
+│   ├── steps.ts          # Tour step definitions
+│   └── types.ts          # Tour types
+├── feedback-drawer.tsx   # Discord feedback integration
+├── mobile-nav.tsx        # Mobile navigation drawer
+├── track-select.tsx      # Track/course selector
+├── conditions.tsx        # Race conditions panel
+├── sim-settings.tsx      # Simulation settings
+├── skills.tsx            # Skill selector
+├── skill-charts.tsx      # Skill comparison charts
+└── uma-panel.tsx         # Uma configuration panel
+```
+
+**V2 Features:**
+- **Guided Tour**: Multi-step onboarding for new users
+- **URL State**: Shareable URLs via Copy Link (hash-based state serialization)
+- **Preset URLs**: `?preset=X` parameter for quick race loading
+- **Feedback System**: Discord webhook integration for user feedback
+- **Mobile Navigation**: Responsive bottom nav for mobile devices
+- **Modal Dialogs**: OCR import, feedback, settings in native-feeling modals
+- **Velocity Toggles**: Independent velocity/HP line toggles
+
+### Key Shared Components
+
+**Horse Configuration:**
+- `HorseDef.tsx`: Horse configuration UI with save/load functionality
+- `HorseDefTypes.ts`: HorseState Record class (Immutable.js) with regional defaults
+- `UmaCard.ts`: PNG export/import with embedded JSON metadata
+- `OCRModal.tsx` + `GeminiOCR.ts`: Screenshot import using Google Gemini AI
 - `Dropdown.tsx`: Reusable dropdown menu component
+
+**Race Visualization:**
+- `RaceTrack.tsx`: Interactive track visualization with corners, slopes, skill regions
+- `RacetrackCow.tsx`: Visual cow easter egg (walks, idles, sleeps)
+- `RacetrackCowMooCoins.tsx`: MooCoins investment wrapper (dev branch only)
+- `VelocityOverlay.tsx` (v2): SVG overlay for velocity/HP curves
+
+**Skill Management:**
+- `SkillList.tsx`: Skill selector with filtering and search
+- `SkillIcon.tsx`: Skill icon display
+- `SkillBox.tsx`: Skill card component
 
 ### Horse Data Save/Load
 
 **JSON Export/Import:**
-- Uses `horseStateToJson()` to serialize HorseState to plain object
-- Skills exported as array of skill IDs (not key-value pairs from Immutable Map)
-- Includes all stats, aptitudes, strategy, mood, skills, and forced skill positions
+- Uses `horseStateToJson()` to serialize HorseState
+- Skills exported as array of skill IDs
+- Includes all stats, aptitudes, strategy, mood, skills, and forced positions
 
 **Uma Card (PNG Export/Import):**
 - Embeds JSON data in PNG tEXt metadata chunks with keyword "UmaCard"
 - Fetches character portrait from `/icons/chara/trained_chr_icon_{uid}_{outfitId}_02.png`
-- PNG remains viewable in any image viewer while carrying build data
-- Compatible with sharing platforms - users can share horse builds as images
-- Extraction reads PNG chunks, parses JSON, validates and loads into HorseState
+- PNG remains viewable while carrying build data
+- Compatible with sharing platforms
+- Extraction reads PNG chunks, parses JSON, validates and loads
 
 **OCR Screenshot Import:**
 - Uses Google Gemini AI to extract horse data from screenshots
 - Supports drag & drop, paste, or file upload
-- Review screen allows editing extracted data before loading (aptitudes, strategy as dropdowns)
+- Review screen allows editing before loading
 - API key stored in localStorage (optional)
+
+### URL State Features (V2)
+
+**Hash-based State Serialization:**
+- Copy Link button generates shareable URLs
+- Serializes: course, conditions, samples, uma1, uma2 configurations
+- Compressed using LZ-string for shorter URLs
+- Example: `https://umalator.app/umalator-global/v2/#H4sIAAAA...`
+
+**Preset Parameter:**
+- `?preset=X` parameter for quick race loading
+- Example: `https://umalator.app/umalator-global/v2/?preset=8`
+- Loads Champions Meeting/LoH event settings
+- Takes priority over hash-based state
 
 ### umalator vs umalator-global
 
@@ -168,26 +299,44 @@ The `CC_GLOBAL` flag controls UI strings (e.g., "Firm/Good/Soft/Heavy" vs "良/�
 
 ### Data Files
 
-- `uma-skill-tools/data/skill_data.json`: Game skill definitions
-- `uma-skill-tools/data/skillnames.json`: Skill name translations
-- `uma-skill-tools/data/course_data.json`: Race course definitions
+**Game Data:**
+- `uma-skill-tools/data/skill_data.json`: JP game skill definitions
+- `uma-skill-tools/data/skillnames.json`: JP skill name translations
+- `uma-skill-tools/data/course_data.json`: JP race course definitions
+- `umalator-global/skill_data.json`: Global/English skill definitions
+- `umalator-global/skillnames.json`: Global/English skill names
+- `umalator-global/course_data.json`: Global/English course data
+
+**Metadata:**
 - `skill_meta.json`: Metadata about skills (root directory)
 - `umas.json`: Uma character data (root directory)
 - `icons.json`: Icon mappings (root directory)
 
-Uma definition files (e.g., `uma-skill-tools/tools/nige.json`, `senkou.json`, `sasi.json`, `oikomi.json`) define horse parameters for different racing strategies.
+**Uma Presets:**
+- `uma-skill-tools/tools/nige.json`, `senkou.json`, `sasi.json`, `oikomi.json`: Default horse parameters for different racing strategies
 
 ### Data Generation Scripts
 
-Perl scripts for extracting game data:
+**JP Version (Perl scripts):**
 - `make_skill_data.pl`: Generates skill_data.json from master.mdb
 - `make_skillnames.pl`: Generates skillnames.json
 - `make_course_data.pl`: Generates course_data.json
-- Root directory scripts: `make_skill_meta.pl`, `make_uma_info.pl`, `extract_resource.pl`
+- Root directory: `make_skill_meta.pl`, `make_uma_info.pl`, `extract_resource.pl`
 
-For Global version, use scripts in `umalator-global/`:
-- `make_global_skill_data.pl`, `make_global_skillnames.pl`, etc.
-- Windows: Run `update.bat [path-to-master.mdb]`
+**Global Version:**
+```bash
+cd umalator-global
+
+# Windows
+update.bat [path-to-master.mdb]
+
+# Linux/Mac
+perl make_global_skill_data.pl /path/to/master.mdb > skill_data.json
+perl make_global_skillnames.pl /path/to/master.mdb > skillnames.json
+perl make_global_course_data.pl /path/to/master.mdb courseeventparams > course_data.json
+```
+
+Requires Perl with `DBI` and `DBD::SQLite` modules.
 
 ## Adding Race Event Presets
 
@@ -209,13 +358,23 @@ Edit the `CC_GLOBAL ? [...]` array in `umalator/app.tsx`:
 
 ```typescript
 // Example: CM 8 - Sagittarius Cup (added January 2026)
-{id: 8, type: EventType.CM, name: 'Sagittarius Cup', date: '2026-01-22', courseId: 10506, season: Season.Winter, ground: GroundCondition.Good, weather: Weather.Sunny, time: Time.Midday}
+{
+  id: 8,
+  type: EventType.CM,
+  name: 'Sagittarius Cup',
+  date: '2026-01-22',
+  courseId: 10506,
+  season: Season.Winter,
+  ground: GroundCondition.Good,
+  weather: Weather.Sunny,
+  time: Time.Midday
+}
 ```
 
-Parameters:
-- **id**: Unique numeric identifier for the preset (optional but recommended)
+**Parameters:**
+- **id**: Unique numeric identifier (optional but recommended)
 - **type**: `EventType.CM` or `EventType.LOH`
-- **name**: Display name for the preset (required for Global with id)
+- **name**: Display name (required for Global with id)
 - **date**: `'YYYY-MM'` or `'YYYY-MM-DD'`
 - **courseId**: From `course_data.json` (e.g., 10506 = Nakayama 2500m inner)
 - **season**: `Season.Spring|Summer|Autumn|Winter`
@@ -224,6 +383,145 @@ Parameters:
 - **time**: `Time.Morning|Midday|Evening|Night`
 
 **Note**: LOH events ignore ground/weather (always Firm/Sunny). Presets auto-sort by date.
+
+## Security and Environment Variables
+
+### Environment Variables
+
+**V2 uses environment variables for sensitive data:**
+
+```bash
+# .env.local (gitignored)
+VITE_DISCORD_WEBHOOK=https://uma-tools-webhook-proxy.YOUR-SUBDOMAIN.workers.dev
+```
+
+**Setup:**
+1. Copy `umalator-global/v2/.env.example` to `.env.local`
+2. Fill in actual values
+3. Never commit `.env.local` (already in `.gitignore`)
+
+### Discord Webhook Proxy
+
+**Architecture:**
+- Client → Cloudflare Worker → Discord Webhook
+- Real Discord URL hidden from client-side code
+- Worker adds metadata (IP, location, browser) to feedback
+
+**Files:**
+```
+uma-tools-worker/
+├── webhook-proxy.js    # Worker script
+├── wrangler.toml       # Cloudflare config
+├── .gitignore          # Ignore secrets
+└── README.md           # Deployment instructions
+```
+
+**Deployment:**
+```bash
+cd uma-tools-worker
+npx wrangler login
+npx wrangler deploy
+npx wrangler secret put DISCORD_WEBHOOK  # Set real webhook URL
+```
+
+**Security Best Practices:**
+- ✅ Real Discord webhook URL never exposed to clients
+- ✅ CORS restricted (can be tightened to specific domains)
+- ✅ Only POST requests allowed
+- ✅ Payload validation prevents malformed requests
+- ✅ Encrypted secrets via Cloudflare
+
+## Modern Features
+
+### Guided Onboarding Tour
+
+**Location:** `umalator-global/v2/tour/`
+
+**Components:**
+- `TourContext.tsx`: State management (current step, completed tours)
+- `TourOverlay.tsx`: Dark overlay with spotlight effect
+- `TourTooltip.tsx`: Step tooltip with controls
+- `steps.ts`: Tour step definitions
+- `types.ts`: TypeScript interfaces
+
+**Usage:**
+```tsx
+import { TourProvider, useTour } from './tour/TourContext';
+
+// Wrap app in TourProvider
+<TourProvider>
+  <App />
+</TourProvider>
+
+// Access tour state
+const { startTour, currentStep } = useTour();
+```
+
+**Tour Steps:**
+1. Welcome (header)
+2. Track & Course Selection
+3. Race Conditions
+4. Run Button
+5. Uma Configuration
+6. Skills Panel
+7. Results Panel
+
+### Mobile Navigation
+
+**Component:** `v2/mobile-nav.tsx`
+
+**Features:**
+- Bottom navigation bar on mobile (<768px)
+- Tabs: Track, Uma, Skills, Results
+- Smooth tab switching
+- Persistent across page reloads
+
+### Velocity/HP Overlay
+
+**Component:** `v2/velocity-overlay.tsx`
+
+**Features:**
+- Independent velocity/HP line toggles
+- Pacer gap visualization (dashed lines)
+- D3.js-based rendering inside RaceTrack SVG
+- Responsive to simulation data updates
+
+**Props:**
+```tsx
+interface VelocityOverlayProps {
+  data: RaceSnapshot | null;
+  courseDistance: number;
+  width: number;
+  height: number;
+  xOffset: number;
+  showVelocity?: boolean;  // Toggle velocity lines
+  showHp?: boolean;        // Toggle HP lines
+  showPacerGap?: boolean;  // Toggle pacer gap lines
+}
+```
+
+**Bug Fix (Feb 2026):**
+- Fixed velocity/HP toggles being coupled together
+- Now independently controlled via checkboxes
+
+### Easter Eggs
+
+**RacetrackCow:**
+- Visual cow that walks, idles, and sleeps on the track
+- Click to change direction or wake up
+- Double-click to hide/show
+- Component: `components/RacetrackCow.tsx` (pure visual)
+- CSS: `components/RacetrackCow.css`
+
+**MooCoins System (Dev Only):**
+- Investment game wrapper around RacetrackCow
+- Earn MooCoins by walking
+- Trade ShnailCoin, RamenCoin, AderynCoin in MooMarket
+- Wallet copy/paste for sharing balances
+- Component: `components/RacetrackCowMooCoins.tsx` (dev branch only)
+- CSS: `components/RacetrackCowMooCoins.css`
+
+**Note**: On master branch, only the visual cow exists. MooCoins wrapper is dev-only.
 
 ## Simulation Limitations
 
@@ -241,6 +539,7 @@ The simulator intentionally only simulates one uma (not a full race with competi
 - The project uses "バ身" (bashin/horse lengths, 1 = 2.5m) as the unit for measuring distance gain
 - Frontend apps use `CC_GLOBAL` flag (esbuild define) to toggle JP/Global variants
 - Shared assets (`icons/`, `fonts/`) are at project root, referenced as `/uma-tools/` in production
+- V2 is experimental and may have breaking changes
 
 ## Japanese-to-English Terminology
 
@@ -255,3 +554,51 @@ The simulator intentionally only simulates one uma (not a full race with competi
 - Global vs JP file organization (`umalator-global/` vs `uma-skill-tools/data/`)
 
 Essential for working with skill conditions, race parameters, and understanding the codebase terminology.
+
+## Deployment
+
+### Production Build
+
+```bash
+# Build all applications
+node umalator/build.mjs
+node umalator-global/build.mjs  # Builds both v1 and v2
+node hp-calculator/build.mjs
+node events/build.mjs
+```
+
+### Cloudflare Pages
+
+**Project**: `uma-tools`
+
+**Build Configuration:**
+- Build command: `./build-all.sh` (builds all apps)
+- Build output directory: `/`
+- Root directory: `/`
+
+**Environment Variables:**
+- `VITE_DISCORD_WEBHOOK`: Cloudflare Worker URL for feedback
+
+**Custom Domains:**
+- `umalator.app` (primary)
+- `dev.umalator.app` (dev branch)
+
+### Branch Deployment
+
+- **master**: Production (`umalator.app`)
+- **dev**: Development preview (`dev.umalator.app`)
+
+**Note**: Dev branch includes MooCoins easter egg. Master has only the visual cow.
+
+## Credits
+
+Built on the work of:
+- **alpha123/umalator** - Original Global simulator by alpha123 & pecan
+- **kachi-dev/umalator (VFalator)** - VFcord version by kachi & Jecht
+- **Skill Data** - [GameTora](https://gametora.com/umamusume)
+- **Game** - Uma Musume: Pretty Derby © Cygames
+- **Community** - [Moomoo Discord](https://discord.gg/moomoocows)
+
+## License
+
+GPL-3.0-or-later - See [LICENSE](uma-skill-tools/LICENSE)
