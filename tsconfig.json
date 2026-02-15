@@ -5,6 +5,7 @@
 		"resolveJsonModule": true,
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
+		"noEmit": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"preserveConstEnums": true,
