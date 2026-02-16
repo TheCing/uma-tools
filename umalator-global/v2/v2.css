@@ -1628,9 +1628,11 @@ body {
   .v2-main {
     flex: 1;
     min-width: 0;
-    max-height: calc(100vh - var(--header-height));
+    height: calc(100vh - var(--header-height));
     overflow-y: auto;
     order: 2; /* Appear second (right side) */
+    display: flex;
+    flex-direction: column;
   }
 
   /* Header stays at top */
@@ -1660,6 +1662,23 @@ body {
   /* Footer at bottom */
   .v2-footer {
     order: 10;
+  }
+
+  /* Skill chart: track keeps natural height, table scrolls */
+  .v2-track-container {
+    flex: 0 0 auto; /* Fixed at natural height */
+    min-height: 350px; /* Ensure minimum height for track */
+  }
+
+  .v2-skill-chart-container {
+    flex: 1 1 auto; /* Take remaining space */
+    min-height: 0; /* Critical: allows flex child to shrink */
+    overflow: hidden; /* Container doesn't scroll */
+  }
+
+  .v2-skill-chart-wrapper {
+    height: 100%; /* Fill container */
+    overflow: auto; /* Scroll when content exceeds */
   }
 }
 
