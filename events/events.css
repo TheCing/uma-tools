@@ -256,14 +256,56 @@ body {
 
 .events-main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr minmax(auto, 500px) 1fr;
+  align-items: start;
+  justify-items: center;
   padding: var(--space-xl) var(--space-lg);
   gap: var(--space-xl);
-  max-width: 600px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+}
+
+.events-main > .events-section {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 1000px) {
+  .events-main {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Move countdown to span full width on top */
+  .events-main > .next-event-card {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .events-main > .events-section {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-main {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  /* Mobile order: Countdown (1), Current Banners (2), Upcoming Banners (3) */
+  .events-main > .next-event-card {
+    order: 1;
+  }
+
+  .events-main > .current-banners {
+    order: 2;
+  }
+
+  .events-main > .upcoming-banners {
+    order: 3;
+  }
 }
 
 /* ============================================
@@ -702,14 +744,34 @@ body {
    BANNERS SECTION
    ============================================ */
 
-.banners-section {
-  margin-top: var(--space-xl);
+/* Card wrapper for banner sections */
+.banners-section-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.banners-section-card .section-title {
+  margin-bottom: var(--space-md);
 }
 
 .banners-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--space-md);
+}
+
+.no-banners {
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.no-banners-placeholder {
+  /* Empty placeholder to maintain grid structure */
 }
 
 .banner-card {
@@ -863,6 +925,145 @@ body {
 }
 
 /* ============================================
+   UPCOMING BANNERS
+   ============================================ */
+
+.upcoming-banners-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Individual upcoming banner items (inside the section card) */
+.upcoming-banner-item {
+  padding: var(--space-md) 0;
+}
+
+.upcoming-banner-item:first-child {
+  padding-top: 0;
+}
+
+.upcoming-banner-item:last-child {
+  padding-bottom: 0;
+}
+
+.upcoming-banner-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.upcoming-banner-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.upcoming-banner-dates-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.upcoming-banner-date-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.upcoming-banner-date-label {
+  font-size: var(--font-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.upcoming-banner-date-value {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.upcoming-banner-countdown {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-surface-overlay);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.upcoming-banner-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.upcoming-banner-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.upcoming-banner-type {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.upcoming-banner-type.char {
+  border-left: 3px solid #ff6b6b;
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.12) 0%, transparent 60%);
+  color: var(--color-text);
+}
+
+.upcoming-banner-type.support {
+  border-left: 3px solid #4ecdc4;
+  background: linear-gradient(90deg, rgba(78, 205, 196, 0.12) 0%, transparent 60%);
+  color: var(--color-text);
+}
+
+.upcoming-banner-names {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.upcoming-banner-names li {
+  font-size: var(--font-sm);
+  color: var(--color-text);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-border);
+}
+
+@media (max-width: 600px) {
+  .upcoming-banner-header {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .upcoming-banner-countdown {
+    justify-self: start;
+  }
+
+  .upcoming-banner-content {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+}
+
+/* ============================================
    FOOTER
    ============================================ */
 
@@ -968,5 +1169,317 @@ body {
 
   .countdown-label {
     font-size: 0.55rem;
+  }
+}
+
+/* ============================================
+   EVENT IN PROGRESS / PHASE TRACKING
+   ============================================ */
+
+.next-event-card.event-live {
+  border-color: var(--color-primary);
+  box-shadow:
+    0 0 0 1px var(--color-primary),
+    0 0 30px rgba(147, 51, 234, 0.2),
+    0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.event-live-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--color-primary), #ec4899);
+  color: white;
+  font-size: var(--font-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: var(--space-md);
+  animation: pulseBadge 2s ease-in-out infinite;
+}
+
+@keyframes pulseBadge {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(147, 51, 234, 0);
+  }
+}
+
+.phase-display {
+  margin: var(--space-lg) 0;
+}
+
+.phase-current {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.phase-label {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.phase-name {
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  color: var(--color-text);
+  background: linear-gradient(135deg, var(--color-primary), #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Phase Progress Bar */
+.phase-progress {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto var(--space-lg);
+}
+
+.phase-progress-bar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  border-radius: 2px;
+  transform: translateY(-50%);
+  transition: width 1s linear;
+  z-index: 1;
+}
+
+.phase-progress-markers {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 8px;
+}
+
+.phase-progress-markers::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--color-border);
+  transform: translateY(-50%);
+  border-radius: 2px;
+}
+
+.phase-marker {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.phase-marker::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+.phase-marker.completed::before {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.phase-marker.active::before {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.3);
+  animation: pulseMarker 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseMarker {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(147, 51, 234, 0.1);
+  }
+}
+
+.phase-marker-label {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.phase-marker.completed .phase-marker-label,
+.phase-marker.active .phase-marker-label {
+  color: var(--color-text-secondary);
+}
+
+/* Phase Countdown (to next phase) */
+.phase-next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.phase-next-label {
+  font-size: var(--font-lg);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* Compact countdown variant for phase timer */
+.countdown.countdown-compact {
+  gap: var(--space-md);
+}
+
+.countdown.countdown-compact .flip-card {
+  width: 44px;
+  height: 58px;
+}
+
+.countdown.countdown-compact .flip-card-inner,
+.countdown.countdown-compact .flip-card-flap {
+  font-size: 1.8rem;
+}
+
+.countdown.countdown-compact .flip-card-top span,
+.countdown.countdown-compact .flip-card-bottom span,
+.countdown.countdown-compact .flip-card-flap span {
+  height: 58px;
+}
+
+.countdown.countdown-compact .countdown-separator {
+  font-size: 1.5rem;
+  line-height: 58px;
+}
+
+.countdown.countdown-compact .countdown-label {
+  font-size: var(--font-sm);
+}
+
+/* Mobile adjustments for phase display */
+@media (max-width: 480px) {
+  .phase-name {
+    font-size: var(--font-2xl);
+  }
+
+  .phase-marker-label {
+    font-size: 0.5rem;
+  }
+
+  .phase-progress {
+    max-width: 100%;
+  }
+
+  .countdown.countdown-compact .flip-card {
+    width: 36px;
+    height: 48px;
+  }
+
+  .countdown.countdown-compact .flip-card-inner,
+  .countdown.countdown-compact .flip-card-flap {
+    font-size: 1.4rem;
+  }
+
+  .countdown.countdown-compact .flip-card-top span,
+  .countdown.countdown-compact .flip-card-bottom span,
+  .countdown.countdown-compact .flip-card-flap span {
+    height: 48px;
+  }
+
+  .countdown.countdown-compact .countdown-separator {
+    font-size: 1.2rem;
+    line-height: 48px;
+  }
+}
+
+/* ============================================
+   NEXT UP CARD (when event in progress)
+   ============================================ */
+
+.next-up-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-lg);
+}
+
+.next-up-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.next-up-label {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.next-up-name {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.next-up-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.next-up-time {
+  font-family: 'DM Mono', monospace;
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.next-up-date {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+}
+
+.next-up-course {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-overlay);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 480px) {
+  .next-up-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .next-up-countdown {
+    align-items: flex-start;
   }
 }
