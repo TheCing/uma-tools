@@ -15,7 +15,6 @@ import {
   Calculator,
   Zap,
   Book,
-  ChevronDown,
   Clock,
   MapPin,
   ExternalLink,
@@ -37,6 +36,29 @@ import './events.css';
 const PREFS_KEY = 'events-prefs';
 const BANNERS_CACHE_KEY = 'events-banners-cache';
 const BANNERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+
+// Upcoming banners (manually maintained until they appear on GameTora)
+interface UpcomingBanner {
+  startDate: string;
+  endDate: string;
+  characters: string[];
+  supports: string[];
+}
+
+const UPCOMING_BANNERS: UpcomingBanner[] = [
+  {
+    startDate: '2026-02-18T22:00:00Z',
+    endDate: '2026-02-26T21:59:00Z',
+    characters: [
+      '[CODE: ICING] Mihono Bourbon',
+      '[Precise Chocolatier] Eishin Flash',
+    ],
+    supports: [
+      '[Little Cupcakes, Big Emotions] Nishino Flower',
+      '[Super! Sonic! Flower Power!] Sakura Bakushin O',
+    ],
+  },
+];
 
 interface Preferences {
   darkMode: boolean;
@@ -268,6 +290,42 @@ function formatBannerEndDate(dateStr: string): string {
   return `${hours}h left`;
 }
 
+// Format countdown to banner start
+function formatBannerStartCountdown(dateStr: string): string {
+  if (!dateStr) return '';
+
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
+
+  const now = new Date();
+  const diff = date.getTime() - now.getTime();
+
+  if (diff <= 0) return 'Starting now';
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+  if (days > 0) return `Starts in ${days}d ${hours}h`;
+  return `Starts in ${hours}h`;
+}
+
+// Format banner start time in user's timezone
+function formatBannerStartTime(dateStr: string): string {
+  if (!dateStr) return '';
+
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '';
+
+  return date.toLocaleString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+}
+
 // Load preferences from localStorage
 function loadPrefs(): Preferences {
   try {
@@ -326,6 +384,124 @@ function useCountdown(targetDate: Date | null) {
   return timeLeft;
 }
 
+// CM Event Phases
+type CMPhase = 'upcoming' | 'r1d1' | 'r1d2' | 'r2d1' | 'r2d2' | 'registration' | 'finals' | 'ended';
+
+interface CMPhaseInfo {
+  phase: CMPhase;
+  label: string;
+  shortLabel: string;
+  nextPhase: CMPhase | null;
+  nextPhaseLabel: string | null;
+  nextPhaseTime: Date | null;
+  progressPercent: number; // 0-100 within current phase
+}
+
+// Phase durations in hours from event start
+const CM_PHASE_HOURS: Record<CMPhase, { start: number; end: number }> = {
+  upcoming: { start: -Infinity, end: 0 },
+  r1d1: { start: 0, end: 24 },
+  r1d2: { start: 24, end: 48 },
+  r2d1: { start: 48, end: 72 },
+  r2d2: { start: 72, end: 96 },
+  registration: { start: 96, end: 120 },
+  finals: { start: 120, end: 144 },
+  ended: { start: 144, end: Infinity },
+};
+
+const CM_PHASE_LABELS: Record<CMPhase, { label: string; short: string }> = {
+  upcoming: { label: 'Starting Soon', short: 'Soon' },
+  r1d1: { label: 'Round 1 - Day 1', short: 'R1D1' },
+  r1d2: { label: 'Round 1 - Day 2', short: 'R1D2' },
+  r2d1: { label: 'Round 2 - Day 1', short: 'R2D1' },
+  r2d2: { label: 'Round 2 - Day 2', short: 'R2D2' },
+  registration: { label: 'Finals Registration', short: 'Finals Reg' },
+  finals: { label: 'Finals', short: 'Finals' },
+  ended: { label: 'Event Ended', short: 'Ended' },
+};
+
+const PHASE_ORDER: CMPhase[] = ['upcoming', 'r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals', 'ended'];
+
+function getCMPhaseInfo(eventStart: Date): CMPhaseInfo {
+  const now = Date.now();
+  const startTime = eventStart.getTime();
+  const hoursSinceStart = (now - startTime) / (1000 * 60 * 60);
+
+  // Find current phase
+  let currentPhase: CMPhase = 'upcoming';
+  for (const phase of PHASE_ORDER) {
+    const { start, end } = CM_PHASE_HOURS[phase];
+    if (hoursSinceStart >= start && hoursSinceStart < end) {
+      currentPhase = phase;
+      break;
+    }
+  }
+
+  // Calculate progress within current phase
+  const { start, end } = CM_PHASE_HOURS[currentPhase];
+  const phaseDuration = end - start;
+  const phaseElapsed = hoursSinceStart - start;
+  const phaseProgressPercent = Math.min(100, Math.max(0, (phaseElapsed / phaseDuration) * 100));
+
+  // Find next phase
+  const currentIndex = PHASE_ORDER.indexOf(currentPhase);
+
+  // Calculate overall progress across all visible phases (r1d1 through finals = 6 phases)
+  // The progress bar spans from r1d1 (index 1) to finals (index 6)
+  const visiblePhases = PHASE_ORDER.slice(1, -1); // ['r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals']
+  const numVisiblePhases = visiblePhases.length;
+  const visiblePhaseIndex = visiblePhases.indexOf(currentPhase);
+
+  let progressPercent = 0;
+  if (visiblePhaseIndex >= 0) {
+    // Progress = completed phases + progress within current phase
+    progressPercent = ((visiblePhaseIndex + phaseProgressPercent / 100) / numVisiblePhases) * 100;
+  } else if (currentPhase === 'ended') {
+    progressPercent = 100;
+  }
+  const nextPhase = currentIndex < PHASE_ORDER.length - 1 ? PHASE_ORDER[currentIndex + 1] : null;
+
+  // Calculate next phase start time
+  let nextPhaseTime: Date | null = null;
+  let nextPhaseLabel: string | null = null;
+  if (nextPhase && nextPhase !== 'ended') {
+    const nextPhaseHours = CM_PHASE_HOURS[nextPhase].start;
+    nextPhaseTime = new Date(startTime + nextPhaseHours * 60 * 60 * 1000);
+    nextPhaseLabel = CM_PHASE_LABELS[nextPhase].label;
+  }
+
+  return {
+    phase: currentPhase,
+    label: CM_PHASE_LABELS[currentPhase].label,
+    shortLabel: CM_PHASE_LABELS[currentPhase].short,
+    nextPhase,
+    nextPhaseLabel,
+    nextPhaseTime,
+    progressPercent,
+  };
+}
+
+// Custom hook for CM phase tracking
+function useCMPhase(eventStart: Date | null): CMPhaseInfo | null {
+  const [phaseInfo, setPhaseInfo] = useState<CMPhaseInfo | null>(
+    eventStart ? getCMPhaseInfo(eventStart) : null
+  );
+
+  useEffect(() => {
+    if (!eventStart) return;
+
+    setPhaseInfo(getCMPhaseInfo(eventStart));
+
+    const timer = setInterval(() => {
+      setPhaseInfo(getCMPhaseInfo(eventStart));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [eventStart?.getTime()]);
+
+  return phaseInfo;
+}
+
 // Get event start date (22:00 UTC on the event date)
 function getEventStartDate(preset: Preset): Date {
   // Handle both YYYY-MM-DD and YYYY-MM formats
@@ -355,15 +531,6 @@ function formatEventDate(date: Date): string {
     hour: 'numeric',
     minute: '2-digit',
     timeZoneName: 'short',
-  });
-}
-
-// Format short date
-function formatShortDate(date: Date): string {
-  return date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
   });
 }
 
@@ -492,7 +659,6 @@ function FlipDigit({ digit, id }: { digit: string; id: string }) {
 function App() {
   const [prefs, setPrefs] = useState<Preferences>(loadPrefs);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
-  const [showPastEvents, setShowPastEvents] = useState(false);
   const [banners, setBanners] = useState<BannerData | null>(null);
   const [bannersLoading, setBannersLoading] = useState(true);
 
@@ -526,38 +692,32 @@ function App() {
     return presets.filter(p => p.type === EventType.CM);
   }, []);
 
-  // Separate upcoming and past events
-  const { upcomingEvents, pastEvents, nextEvent } = useMemo(() => {
+  // Get next upcoming event
+  const nextEvent = useMemo(() => {
     const now = new Date();
-    const upcoming: Preset[] = [];
-    const past: Preset[] = [];
-
-    cmEvents.forEach(event => {
+    const upcoming = cmEvents.filter(event => {
       const eventDate = getEventStartDate(event);
       // Consider event "past" if it started more than 7 days ago (typical CM duration)
       const eventEndApprox = new Date(eventDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-      if (eventEndApprox < now) {
-        past.push(event);
-      } else {
-        upcoming.push(event);
-      }
+      return eventEndApprox >= now;
     });
 
     // Sort upcoming by date ascending (soonest first)
     upcoming.sort((a, b) => getEventStartDate(a).getTime() - getEventStartDate(b).getTime());
-    // Sort past by date descending (most recent first)
-    past.sort((a, b) => getEventStartDate(b).getTime() - getEventStartDate(a).getTime());
 
-    return {
-      upcomingEvents: upcoming,
-      pastEvents: past,
-      nextEvent: upcoming[0] || null,
-    };
+    return upcoming[0] || null;
   }, [cmEvents]);
 
   // Countdown to next event
   const nextEventDate = nextEvent ? getEventStartDate(nextEvent) : null;
   const countdown = useCountdown(nextEventDate);
+
+  // Track CM phase for currently running event
+  const cmPhase = useCMPhase(nextEventDate);
+  const isEventInProgress = cmPhase && cmPhase.phase !== 'upcoming' && cmPhase.phase !== 'ended';
+
+  // Countdown to next phase (when event is in progress)
+  const phaseCountdown = useCountdown(cmPhase?.nextPhaseTime ?? null);
 
   const toggleTheme = () => {
     setPrefs(prev => ({ ...prev, darkMode: !prev.darkMode }));
@@ -632,49 +792,188 @@ function App() {
       <main class="events-main">
         {nextEvent ? (
           <>
-            {/* Next Event Card */}
-            <div class="next-event-card">
-              <div class="next-event-label">Next Champion's Meeting</div>
-              <h1 class="next-event-name">{nextEvent.name}</h1>
+            {/* Column 1: Current Banners */}
+            {banners && (() => {
+              const now = Date.now();
+              const validCharBanners = banners.characters.filter(b =>
+                b.pickupIds?.some(id => banners.charLookup[id]) &&
+                b.endDate && new Date(b.endDate).getTime() > now
+              );
+              const validSupportBanners = banners.supports.filter(b =>
+                b.pickupIds?.some(id => banners.supportLookup[id]) &&
+                b.endDate && new Date(b.endDate).getTime() > now
+              );
 
-              {/* Countdown - Flip Clock Style */}
-              <div class="countdown">
-                <div class="countdown-segment">
-                  <div class="countdown-cards">
-                    {String(countdown.days).padStart(2, '0').split('').map((digit, i) => (
-                      <FlipDigit key={`days-${i}`} digit={digit} id={`days-${i}`} />
-                    ))}
+              return (
+                <section class="events-section current-banners">
+                  <div class="banners-section-card">
+                    <h2 class="section-title">Current Banners</h2>
+                    {validCharBanners.length === 0 && validSupportBanners.length === 0 ? (
+                      <p class="no-banners">No active banners</p>
+                    ) : (
+                      <div class="banners-grid">
+                        {validCharBanners.map(banner => (
+                          <a
+                            key={`char-${banner.id}`}
+                            href="https://gametora.com/umamusume/gacha?server=en"
+                            target="_blank"
+                            rel="noopener"
+                            class="banner-card banner-card-link"
+                          >
+                            <img
+                              src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
+                              alt="Character Banner"
+                              class="banner-image"
+                              loading="lazy"
+                            />
+                            <div class="banner-footer">
+                              <span class="banner-type char">Character</span>
+                              <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                            </div>
+                          </a>
+                        ))}
+                        {validSupportBanners.map(banner => (
+                          <a
+                            key={`supp-${banner.id}`}
+                            href="https://gametora.com/umamusume/gacha?server=en"
+                            target="_blank"
+                            rel="noopener"
+                            class="banner-card banner-card-link"
+                          >
+                            <img
+                              src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
+                              alt="Support Banner"
+                              class="banner-image"
+                              loading="lazy"
+                            />
+                            <div class="banner-footer">
+                              <span class="banner-type support">Support</span>
+                              <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <span class="countdown-label">Days</span>
-                </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-segment">
-                  <div class="countdown-cards">
-                    {String(countdown.hours).padStart(2, '0').split('').map((digit, i) => (
-                      <FlipDigit key={`hours-${i}`} digit={digit} id={`hours-${i}`} />
-                    ))}
+                </section>
+              );
+            })()}
+
+            {/* Column 2: PVP Countdown */}
+            <div class={`next-event-card ${isEventInProgress ? 'event-live' : ''}`}>
+              {isEventInProgress ? (
+                <>
+                  <div class="event-live-badge">EVENT IN PROGRESS</div>
+                  <h1 class="next-event-name">{nextEvent.name}</h1>
+
+                  {/* Current Phase */}
+                  <div class="phase-display">
+                    <div class="phase-current">
+                      <span class="phase-label">Current Phase</span>
+                      <span class="phase-name">{cmPhase?.label}</span>
+                    </div>
+
+                    {/* Phase Progress Bar */}
+                    <div class="phase-progress">
+                      <div class="phase-progress-bar" style={{ width: `${cmPhase?.progressPercent ?? 0}%` }} />
+                      <div class="phase-progress-markers">
+                        {PHASE_ORDER.slice(1, -1).map((phase) => {
+                          const currentPhaseIndex = PHASE_ORDER.indexOf(cmPhase?.phase ?? 'upcoming');
+                          const thisPhaseIndex = PHASE_ORDER.indexOf(phase);
+                          return (
+                            <div
+                              key={phase}
+                              class={`phase-marker ${currentPhaseIndex > thisPhaseIndex ? 'completed' : ''} ${cmPhase?.phase === phase ? 'active' : ''}`}
+                              title={CM_PHASE_LABELS[phase].label}
+                            >
+                              <span class="phase-marker-label">{CM_PHASE_LABELS[phase].short}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Countdown to next phase - Flip Clock Style */}
+                    {cmPhase?.nextPhaseTime && (
+                      <div class="phase-next">
+                        <span class="phase-next-label">{cmPhase.nextPhaseLabel} in</span>
+                        <div class="countdown countdown-compact">
+                          <div class="countdown-segment">
+                            <div class="countdown-cards">
+                              {String(phaseCountdown.hours).padStart(2, '0').split('').map((digit, i) => (
+                                <FlipDigit key={`phase-hours-${i}`} digit={digit} id={`phase-hours-${i}`} />
+                              ))}
+                            </div>
+                            <span class="countdown-label">Hours</span>
+                          </div>
+                          <span class="countdown-separator">:</span>
+                          <div class="countdown-segment">
+                            <div class="countdown-cards">
+                              {String(phaseCountdown.minutes).padStart(2, '0').split('').map((digit, i) => (
+                                <FlipDigit key={`phase-min-${i}`} digit={digit} id={`phase-min-${i}`} />
+                              ))}
+                            </div>
+                            <span class="countdown-label">Min</span>
+                          </div>
+                          <span class="countdown-separator">:</span>
+                          <div class="countdown-segment">
+                            <div class="countdown-cards">
+                              {String(phaseCountdown.seconds).padStart(2, '0').split('').map((digit, i) => (
+                                <FlipDigit key={`phase-sec-${i}`} digit={digit} id={`phase-sec-${i}`} />
+                              ))}
+                            </div>
+                            <span class="countdown-label">Sec</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <span class="countdown-label">Hours</span>
-                </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-segment">
-                  <div class="countdown-cards">
-                    {String(countdown.minutes).padStart(2, '0').split('').map((digit, i) => (
-                      <FlipDigit key={`min-${i}`} digit={digit} id={`min-${i}`} />
-                    ))}
+                </>
+              ) : (
+                <>
+                  <div class="next-event-label">Next Champion's Meeting</div>
+                  <h1 class="next-event-name">{nextEvent.name}</h1>
+
+                  {/* Countdown - Flip Clock Style */}
+                  <div class="countdown">
+                    <div class="countdown-segment">
+                      <div class="countdown-cards">
+                        {String(countdown.days).padStart(2, '0').split('').map((digit, i) => (
+                          <FlipDigit key={`days-${i}`} digit={digit} id={`days-${i}`} />
+                        ))}
+                      </div>
+                      <span class="countdown-label">Days</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-segment">
+                      <div class="countdown-cards">
+                        {String(countdown.hours).padStart(2, '0').split('').map((digit, i) => (
+                          <FlipDigit key={`hours-${i}`} digit={digit} id={`hours-${i}`} />
+                        ))}
+                      </div>
+                      <span class="countdown-label">Hours</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-segment">
+                      <div class="countdown-cards">
+                        {String(countdown.minutes).padStart(2, '0').split('').map((digit, i) => (
+                          <FlipDigit key={`min-${i}`} digit={digit} id={`min-${i}`} />
+                        ))}
+                      </div>
+                      <span class="countdown-label">Min</span>
+                    </div>
+                    <span class="countdown-separator">:</span>
+                    <div class="countdown-segment">
+                      <div class="countdown-cards">
+                        {String(countdown.seconds).padStart(2, '0').split('').map((digit, i) => (
+                          <FlipDigit key={`sec-${i}`} digit={digit} id={`sec-${i}`} />
+                        ))}
+                      </div>
+                      <span class="countdown-label">Sec</span>
+                    </div>
                   </div>
-                  <span class="countdown-label">Min</span>
-                </div>
-                <span class="countdown-separator">:</span>
-                <div class="countdown-segment">
-                  <div class="countdown-cards">
-                    {String(countdown.seconds).padStart(2, '0').split('').map((digit, i) => (
-                      <FlipDigit key={`sec-${i}`} digit={digit} id={`sec-${i}`} />
-                    ))}
-                  </div>
-                  <span class="countdown-label">Sec</span>
-                </div>
-              </div>
+                </>
+              )}
 
               {/* Event Details */}
               <div class="next-event-details">
@@ -723,146 +1022,75 @@ function App() {
               </a>
             </div>
 
-            {/* Current Banners */}
-            {banners && (() => {
-              // Filter to banners that have at least one resolvable pickup
-              const validCharBanners = banners.characters.filter(b =>
-                b.pickupIds?.some(id => banners.charLookup[id])
-              );
-              const validSupportBanners = banners.supports.filter(b =>
-                b.pickupIds?.some(id => banners.supportLookup[id])
+            {/* Column 3: Upcoming Banners */}
+            {(() => {
+              const now = Date.now();
+              // Filter to banners that haven't started yet
+              const upcomingBanners = UPCOMING_BANNERS.filter(b =>
+                new Date(b.startDate).getTime() > now
               );
 
-              if (validCharBanners.length === 0 && validSupportBanners.length === 0) return null;
+              if (upcomingBanners.length === 0) return null;
 
               return (
-                <section class="events-section banners-section">
-                  <h2 class="section-title">Current Banners</h2>
-                  <div class="banners-grid">
-                    {/* Character Banners */}
-                    {validCharBanners.map(banner => (
-                      <a
-                        key={`char-${banner.id}`}
-                        href="https://gametora.com/umamusume/gacha?server=en"
-                        target="_blank"
-                        rel="noopener"
-                        class="banner-card banner-card-link"
-                      >
-                        <img
-                          src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
-                          alt="Character Banner"
-                          class="banner-image"
-                          loading="lazy"
-                        />
-                        <div class="banner-footer">
-                          <span class="banner-type char">Character</span>
-                          <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
-                        </div>
-                      </a>
-                    ))}
-
-                    {/* Support Banners */}
-                    {validSupportBanners.map(banner => (
-                      <a
-                        key={`supp-${banner.id}`}
-                        href="https://gametora.com/umamusume/gacha?server=en"
-                        target="_blank"
-                        rel="noopener"
-                        class="banner-card banner-card-link"
-                      >
-                        <img
-                          src={`https://gametora.com/images/umamusume/en/gacha/img_bnr_gacha_${banner.id}.png`}
-                          alt="Support Banner"
-                          class="banner-image"
-                          loading="lazy"
-                        />
-                        <div class="banner-footer">
-                          <span class="banner-type support">Support</span>
-                          <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
-                        </div>
-                      </a>
-                    ))}
+                <section class="events-section upcoming-banners">
+                  <div class="banners-section-card">
+                    <h2 class="section-title">Upcoming Banners</h2>
+                    <div class="upcoming-banners-list">
+                      {upcomingBanners.map((banner, i) => {
+                        const end = new Date(banner.endDate);
+                        return (
+                          <div key={i} class="upcoming-banner-item">
+                            <div class="upcoming-banner-header">
+                              <div class="upcoming-banner-dates-col">
+                                <div class="upcoming-banner-date-col">
+                                  <span class="upcoming-banner-date-label">Starts</span>
+                                  <span class="upcoming-banner-date-value">{formatBannerStartTime(banner.startDate)}</span>
+                                </div>
+                                <div class="upcoming-banner-date-col">
+                                  <span class="upcoming-banner-date-label">Ends</span>
+                                  <span class="upcoming-banner-date-value">{end.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' })}</span>
+                                </div>
+                              </div>
+                              <span class="upcoming-banner-countdown">{formatBannerStartCountdown(banner.startDate)}</span>
+                            </div>
+                            <div class="upcoming-banner-content">
+                              <div class="upcoming-banner-group">
+                                <span class="upcoming-banner-type char">Characters</span>
+                                <ul class="upcoming-banner-names">
+                                  {banner.characters.map((name, j) => (
+                                    <li key={j}>{name}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div class="upcoming-banner-group">
+                                <span class="upcoming-banner-type support">Supports</span>
+                                <ul class="upcoming-banner-names">
+                                  {banner.supports.map((name, j) => (
+                                    <li key={j}>{name}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </section>
               );
             })()}
 
-            {/* Upcoming Events */}
-            {upcomingEvents.length > 1 && (
-              <section class="events-section">
-                <h2 class="section-title">Upcoming Events</h2>
-                <div class="events-list">
-                  {upcomingEvents.slice(1).map(event => {
-                    const eventDate = getEventStartDate(event);
-                    const courseInfo = getCourseInfo(event.courseId);
-                    return (
-                      <div key={event.id} class="event-row">
-                        <div class="event-row-main">
-                          <span class="event-row-name">{event.name}</span>
-                          <span class="event-row-date">{formatShortDate(eventDate)}</span>
-                        </div>
-                        <div class="event-row-details">
-                          {courseInfo && (
-                            <span class="event-row-course">
-                              {courseInfo.track} {courseInfo.distance}m
-                            </span>
-                          )}
-                          <span class="event-row-conditions">
-                            <img src={getWeatherIconSrc(event.weather)} alt="" class="condition-icon-sm" />
-                            {getGroundName(event.ground)}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
           </>
         ) : (
-          <div class="no-events">
-            <Calendar size={48} />
-            <p>No upcoming events</p>
-          </div>
-        )}
-
-        {/* Past Events */}
-        {pastEvents.length > 0 && (
-          <section class="events-section past-events">
-            <button
-              class="section-toggle"
-              onClick={() => setShowPastEvents(!showPastEvents)}
-            >
-              <h2 class="section-title">Past Events</h2>
-              <ChevronDown
-                size={18}
-                class={`toggle-chevron ${showPastEvents ? 'open' : ''}`}
-              />
-            </button>
-            {showPastEvents && (
-              <div class="events-list">
-                {pastEvents.map(event => {
-                  const eventDate = getEventStartDate(event);
-                  const courseInfo = getCourseInfo(event.courseId);
-                  return (
-                    <div key={event.id} class="event-row past">
-                      <div class="event-row-main">
-                        <span class="event-row-name">{event.name}</span>
-                        <span class="event-row-date">{formatShortDate(eventDate)}</span>
-                      </div>
-                      <div class="event-row-details">
-                        {courseInfo && (
-                          <span class="event-row-course">
-                            {courseInfo.track} {courseInfo.distance}m
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
+          <>
+            <div class="no-banners-placeholder" />
+            <div class="no-events">
+              <Calendar size={48} />
+              <p>No upcoming events</p>
+            </div>
+            <div class="no-banners-placeholder" />
+          </>
         )}
       </main>
 
