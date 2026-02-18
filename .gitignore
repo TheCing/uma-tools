@@ -9,3 +9,6 @@ node_modules/
 # Build outputs
 **/dist/
 /v2/
+
+# Large media files
+videos/
