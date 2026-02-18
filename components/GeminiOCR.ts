@@ -13,6 +13,13 @@ const skillNameToIdMap: Map<string, string> = new Map();
 
 function normalizeSkillName(name: string): string {
 	return name.toLowerCase()
+		// Remove all circle variants (○, ◯, ⭕, ◦, O, o, 0, etc.)
+		.replace(/[○◯⭕◦⃝Oo0]/g, '')
+		// Remove all double circle variants (◎, ⦿, ⊚, etc.)
+		.replace(/[◎⦿⊚]/g, '')
+		// Remove all cross/X variants (×, ✕, ✖, X, x, etc.)
+		.replace(/[×✕✖Xx]/g, '')
+		// Remove spaces, punctuation, and special chars
 		.replace(/[\s\-_・!！?？,、.。:：;；'"'"「」『』【】()（）\[\]☆★]/g, '')
 		.trim();
 }
