@@ -233,7 +233,7 @@ export async function extractHorseDataFromImage(
 				temperature: 0.1,
 				topK: 1,
 				topP: 0.8,
-				maxOutputTokens: 2048,
+				maxOutputTokens: 4096,  // Increased to prevent truncation
 			}
 		};
 
@@ -273,6 +273,12 @@ export async function extractHorseDataFromImage(
 			jsonStr = jsonStr.slice(0, -3);
 		}
 		jsonStr = jsonStr.trim();
+
+		// Check if JSON looks truncated (doesn't end with closing brace)
+		if (!jsonStr.endsWith('}')) {
+			console.error('Truncated JSON response:', jsonStr);
+			throw new Error(`AI response appears truncated (doesn't end with }). This may be due to token limits or API issues.\n\nReceived ${jsonStr.length} characters. Response ends with: "${jsonStr.slice(-50)}"`);
+		}
 
 		let horseData: OCRHorseData;
 		try {
