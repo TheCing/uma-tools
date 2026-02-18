@@ -13,6 +13,17 @@ const skillNameToIdMap: Map<string, string> = new Map();
 
 function normalizeSkillName(name: string): string {
 	return name.toLowerCase()
+		// Normalize Unicode circle variants to ○ (preserve grade indicators)
+		.replace(/[◯⭕◦⃝]/g, '○')
+		// Normalize all double circle variants to ◎ (preserve grade indicators)
+		.replace(/[⦿⊚]/g, '◎')
+		// Normalize Unicode cross variants to × (preserve grade indicators)
+		.replace(/[✕✖]/g, '×')
+		// Normalize trailing O/o/0 to ○ (OCR may see ○ as O/o/0, but only at end)
+		.replace(/\s+[Oo0]$/g, '○')
+		// Normalize trailing X/x to × (OCR may see × as X/x, but only at end)
+		.replace(/\s+[Xx]$/g, '×')
+		// Remove spaces, punctuation (but preserve ○◎× grade indicators)
 		.replace(/[\s\-_・!！?？,、.。:：;；'"'"「」『』【】()（）\[\]☆★]/g, '')
 		.trim();
 }
@@ -101,6 +112,52 @@ export function mapOutfitNameToId(outfit: string): string {
 	}
 
 	console.log('Could not find outfit ID for:', outfit);
+	return '';
+}
+
+// Build a map from normalized character names to their default outfit IDs
+const characterNameToOutfitMap: Map<string, string> = new Map();
+
+function normalizeCharacterName(name: string): string {
+	return name.toLowerCase()
+		.replace(/[\s\-_・.]/g, '') // Remove spaces, dots, and special chars
+		.trim();
+}
+
+// Initialize the character name map
+(function initCharacterNameMap() {
+	for (const [umaId, umaData] of Object.entries(umas)) {
+		const name = (umaData as any).name?.[1]; // English name
+		const outfits = (umaData as any).outfits;
+		if (!name || !outfits) continue;
+
+		// Get the first outfit ID as the default for this character
+		const firstOutfitId = Object.keys(outfits)[0];
+		if (firstOutfitId) {
+			characterNameToOutfitMap.set(normalizeCharacterName(name), firstOutfitId);
+		}
+	}
+})();
+
+// Map character name from OCR to outfit ID (fallback when outfit name fails)
+export function mapCharacterNameToOutfitId(characterName: string): string {
+	if (!characterName) return '';
+
+	const normalized = normalizeCharacterName(characterName);
+	const outfitId = characterNameToOutfitMap.get(normalized);
+
+	if (outfitId) {
+		return outfitId;
+	}
+
+	// Try partial matching
+	for (const [mapName, mapId] of characterNameToOutfitMap.entries()) {
+		if (mapName.includes(normalized) || normalized.includes(mapName)) {
+			return mapId;
+		}
+	}
+
+	console.log('Could not find outfit ID for character name:', characterName);
 	return '';
 }
 
@@ -217,7 +274,14 @@ export async function extractHorseDataFromImage(
 		}
 		jsonStr = jsonStr.trim();
 
-		const horseData: OCRHorseData = JSON.parse(jsonStr);
+		let horseData: OCRHorseData;
+		try {
+			horseData = JSON.parse(jsonStr);
+		} catch (parseError) {
+			// JSON parsing failed - show the raw response for debugging
+			console.error('Failed to parse JSON response:', jsonStr);
+			throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}\n\nRaw response (first 200 chars):\n${jsonStr.slice(0, 200)}...`);
+		}
 
 		// Validate required fields
 		if (typeof horseData.speed !== 'number' ||

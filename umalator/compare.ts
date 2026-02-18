@@ -599,14 +599,14 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 			competeFightStatsSummary.uma2
 		]
 	};
-	
+
 	return {
-		results: diff, 
+		results: diff,
 		runData: {
-			minrun, 
-			maxrun, 
-			meanrun, 
-			medianrun, 
+			minrun,
+			maxrun,
+			meanrun,
+			medianrun,
 			allruns: allRunsData
 		},
 		staminaStats: staminaStatsSummary,
