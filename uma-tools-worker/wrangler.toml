@@ -1,0 +1,11 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "uma-tools-webhook-proxy"
+main = "webhook-proxy.js"
+compatibility_date = "2024-01-01"
+
+# Cloudflare account info (set via wrangler login)
+# account_id will be auto-detected or set via CLI
+
+# Secrets (encrypted environment variables)
+# Set via: wrangler secret put DISCORD_WEBHOOK
+# The worker expects env.DISCORD_WEBHOOK to contain the Discord webhook URL

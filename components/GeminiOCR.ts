@@ -1,9 +1,11 @@
 // Gemini OCR Service for extracting horse data from screenshots
 // Uses Google's Gemini API for vision-based text extraction
 
-import skillnames from '../uma-skill-tools/data/skillnames.json';
-import skills from '../uma-skill-tools/data/skill_data.json';
-import umas from '../umas.json';
+// CRITICAL: ALWAYS import from umalator-global/ for English data, NEVER from root JP files
+// This is used by the Global v2 OCR feature and must use English outfit/skill names
+import skillnames from '../umalator-global/skillnames.json';
+import skills from '../umalator-global/skill_data.json';
+import umas from '../umalator-global/umas.json';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
@@ -89,10 +91,16 @@ function normalizeEpithet(epithet: string): string {
 
 		for (const [outfitId, epithet] of Object.entries(outfits)) {
 			if (typeof epithet === 'string') {
-				epithetToOutfitMap.set(normalizeEpithet(epithet), outfitId);
+				const normalized = normalizeEpithet(epithet);
+				epithetToOutfitMap.set(normalized, outfitId);
+				// Debug: Log Gold City outfits to verify English names
+				if (umaId === '1040') {
+					console.log(`[OCR Debug] Gold City outfit: "${epithet}" → normalized: "${normalized}" → ID: ${outfitId}`);
+				}
 			}
 		}
 	}
+	console.log(`[OCR Debug] Loaded ${epithetToOutfitMap.size} outfit epithets`);
 })();
 
 // Map outfit name from OCR to outfit ID
@@ -100,20 +108,25 @@ export function mapOutfitNameToId(outfit: string): string {
 	if (!outfit) return '';
 
 	const normalized = normalizeEpithet(outfit);
+	console.log(`[OCR Debug] Looking up outfit: "${outfit}" → normalized: "${normalized}"`);
+
 	const outfitId = epithetToOutfitMap.get(normalized);
 
 	if (outfitId) {
+		console.log(`[OCR Debug] Exact match found: ${outfitId}`);
 		return outfitId;
 	}
 
+	console.log(`[OCR Debug] No exact match, trying partial matching...`);
 	// Try partial matching
 	for (const [mapEpithet, mapId] of epithetToOutfitMap.entries()) {
 		if (mapEpithet.includes(normalized) || normalized.includes(mapEpithet)) {
+			console.log(`[OCR Debug] Partial match: "${mapEpithet}" → ${mapId}`);
 			return mapId;
 		}
 	}
 
-	console.log('Could not find outfit ID for:', outfit);
+	console.log('[OCR Debug] Could not find outfit ID for:', outfit);
 	return '';
 }
 
