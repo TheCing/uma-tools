@@ -16,6 +16,7 @@ import {
 	clearStoredApiKey,
 	mapSkillNamesToIds,
 	mapOutfitNameToId,
+	mapCharacterNameToOutfitId,
 	OCRHorseData
 } from '../../components/GeminiOCR';
 
@@ -46,8 +47,15 @@ const STRATEGY_OPTIONS = [
  * Convert OCRHorseData to UmaState
  */
 function ocrDataToUmaState(data: OCRHorseData): UmaState {
+	// Try to match outfit first, fall back to character name if that fails
+	let outfitId = mapOutfitNameToId(data.outfit);
+	if (!outfitId && data.name) {
+		console.log('Outfit match failed, trying character name fallback:', data.name);
+		outfitId = mapCharacterNameToOutfitId(data.name);
+	}
+
 	return {
-		outfitId: mapOutfitNameToId(data.outfit) || '',
+		outfitId: outfitId || '',
 		speed: data.speed || 1200,
 		stamina: data.stamina || 1200,
 		power: data.power || 800,

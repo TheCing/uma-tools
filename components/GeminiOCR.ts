@@ -104,6 +104,52 @@ export function mapOutfitNameToId(outfit: string): string {
 	return '';
 }
 
+// Build a map from normalized character names to their default outfit IDs
+const characterNameToOutfitMap: Map<string, string> = new Map();
+
+function normalizeCharacterName(name: string): string {
+	return name.toLowerCase()
+		.replace(/[\s\-_・.]/g, '') // Remove spaces, dots, and special chars
+		.trim();
+}
+
+// Initialize the character name map
+(function initCharacterNameMap() {
+	for (const [umaId, umaData] of Object.entries(umas)) {
+		const name = (umaData as any).name?.[1]; // English name
+		const outfits = (umaData as any).outfits;
+		if (!name || !outfits) continue;
+
+		// Get the first outfit ID as the default for this character
+		const firstOutfitId = Object.keys(outfits)[0];
+		if (firstOutfitId) {
+			characterNameToOutfitMap.set(normalizeCharacterName(name), firstOutfitId);
+		}
+	}
+})();
+
+// Map character name from OCR to outfit ID (fallback when outfit name fails)
+export function mapCharacterNameToOutfitId(characterName: string): string {
+	if (!characterName) return '';
+
+	const normalized = normalizeCharacterName(characterName);
+	const outfitId = characterNameToOutfitMap.get(normalized);
+
+	if (outfitId) {
+		return outfitId;
+	}
+
+	// Try partial matching
+	for (const [mapName, mapId] of characterNameToOutfitMap.entries()) {
+		if (mapName.includes(normalized) || normalized.includes(mapName)) {
+			return mapId;
+		}
+	}
+
+	console.log('Could not find outfit ID for character name:', characterName);
+	return '';
+}
+
 export interface OCRHorseData {
 	name: string;
 	outfit: string;
