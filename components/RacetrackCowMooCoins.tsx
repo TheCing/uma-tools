@@ -3,7 +3,7 @@
  * DEV-ONLY easter egg - wraps RacetrackCow with currency/market features
  */
 
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'preact/hooks';
 import { RacetrackCow } from './RacetrackCow';
 

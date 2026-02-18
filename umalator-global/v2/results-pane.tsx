@@ -283,6 +283,10 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 	// Get skill activations from the snapshot
 	const skillActivations = snapshot.sk[umaIndex];
 
+	// Apply 1.18x multiplier to convert actual time to displayed time
+	// Per game mechanics: DisplayedTime = ActualTime * 1.18
+	const displayedFinishTime = finishTime * 1.18;
+
 	return (
 		<div class={`v2-uma-stats-card ${colorClass}`}>
 			<div class="v2-uma-stats-header">
@@ -294,7 +298,7 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 				<div class="v2-stats-primary">
 					<div class="v2-stat-item">
 						<Clock size={14} />
-						<span class="value">{formatTime(finishTime)}</span>
+						<span class="value">{formatTime(displayedFinishTime)}</span>
 						<span class="label">Finish</span>
 					</div>
 					<div class="v2-stat-item">
