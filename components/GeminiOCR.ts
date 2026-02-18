@@ -13,6 +13,8 @@ const skillNameToIdMap: Map<string, string> = new Map();
 
 function normalizeSkillName(name: string): string {
 	return name.toLowerCase()
+		// Remove level indicators (Lvl 4, Level 4, etc.) - game UI decoration
+		.replace(/\s+(lvl|level)\s*\d+/gi, '')
 		// Normalize Unicode circle variants to ○ (preserve grade indicators)
 		.replace(/[◯⭕◦⃝]/g, '○')
 		// Normalize all double circle variants to ◎ (preserve grade indicators)
@@ -207,7 +209,9 @@ Important mappings:
 - Style "Late" or "Late Surger" = strategy "Sasi"
 - Style "End" or "End Closer" = strategy "Oikomi"
 
-Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including any circle symbols (○, ◎, ×) that appear after the skill name - these are NOT icons, they are part of the skill name indicating skill grade.`;
+Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including any circle symbols (○, ◎, ×) that appear after the skill name - these are NOT icons, they are part of the skill name indicating skill grade.
+
+IMPORTANT: Do NOT include "Lvl X" or "Level X" text in skill names. The level indicator is game UI decoration, not part of the skill name. For example, "Dancing in the Leaves Lvl 4" should be extracted as just "Dancing in the Leaves".`;
 
 export async function extractHorseDataFromImage(
 	imageBase64: string,
