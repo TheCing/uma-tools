@@ -263,7 +263,14 @@ export async function extractHorseDataFromImage(
 		}
 		jsonStr = jsonStr.trim();
 
-		const horseData: OCRHorseData = JSON.parse(jsonStr);
+		let horseData: OCRHorseData;
+		try {
+			horseData = JSON.parse(jsonStr);
+		} catch (parseError) {
+			// JSON parsing failed - show the raw response for debugging
+			console.error('Failed to parse JSON response:', jsonStr);
+			throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}\n\nRaw response (first 200 chars):\n${jsonStr.slice(0, 200)}...`);
+		}
 
 		// Validate required fields
 		if (typeof horseData.speed !== 'number' ||
