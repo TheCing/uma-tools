@@ -50,7 +50,6 @@ function ocrDataToUmaState(data: OCRHorseData): UmaState {
 	// Try to match outfit first, fall back to character name if that fails
 	let outfitId = mapOutfitNameToId(data.outfit);
 	if (!outfitId && data.name) {
-		console.log('Outfit match failed, trying character name fallback:', data.name);
 		outfitId = mapCharacterNameToOutfitId(data.name);
 	}
 
@@ -194,8 +193,6 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 				} else {
 					clearStoredApiKey();
 				}
-
-				console.log('OCR Extracted Data:', result.data);
 
 				setExtractedData(result.data);
 				setEditableData(result.data);

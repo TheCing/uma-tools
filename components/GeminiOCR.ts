@@ -9,13 +9,13 @@ import umas from '../umalator-global/umas.json';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
-// Build a map from normalized skill names to skill IDs
-// Includes both Japanese and English names
-const skillNameToIdMap: Map<string, string> = new Map();
+// Build a map from normalized skill names to arrays of skill IDs
+// Each skill may have multiple IDs (different grades, inherited vs base versions)
+const skillNameMap: Map<string, string[]> = new Map();
 
 function normalizeSkillName(name: string): string {
 	return name.toLowerCase()
-		// Remove level indicators (Lvl 4, Level 4, etc.) - game UI decoration
+		// Remove level indicators for normalization
 		.replace(/\s+(lvl|level)\s*\d+/gi, '')
 		// Normalize Unicode circle variants to ○ (preserve grade indicators)
 		.replace(/[◯⭕◦⃝]/g, '○')
@@ -32,19 +32,34 @@ function normalizeSkillName(name: string): string {
 		.trim();
 }
 
+// Check if skill name has level indicator
+function hasLevelIndicator(name: string): boolean {
+	return /\s+(lvl|level)\s*\d+/gi.test(name);
+}
+
 // Initialize the skill name map
-(function initSkillNameMap() {
+(function initSkillNameMaps() {
 	for (const [skillId, names] of Object.entries(skillnames)) {
 		// Only include skills that exist in skill_data.json
-		if (!skills[skillId.split('-')[0]]) continue;
+		const baseId = skillId.split('-')[0];
+		if (!skills[baseId]) continue;
 
 		const [japaneseName, englishName] = names as [string, string];
 
+		// Store all IDs for this skill name (normalized)
 		if (japaneseName) {
-			skillNameToIdMap.set(normalizeSkillName(japaneseName), skillId);
+			const normalized = normalizeSkillName(japaneseName);
+			if (!skillNameMap.has(normalized)) {
+				skillNameMap.set(normalized, []);
+			}
+			skillNameMap.get(normalized)!.push(skillId);
 		}
 		if (englishName) {
-			skillNameToIdMap.set(normalizeSkillName(englishName), skillId);
+			const normalized = normalizeSkillName(englishName);
+			if (!skillNameMap.has(normalized)) {
+				skillNameMap.set(normalized, []);
+			}
+			skillNameMap.get(normalized)!.push(skillId);
 		}
 	}
 })();
@@ -55,18 +70,49 @@ export function mapSkillNamesToIds(skillNames: string[]): string[] {
 
 	for (const name of skillNames) {
 		const normalized = normalizeSkillName(name);
-		const skillId = skillNameToIdMap.get(normalized);
+		const hasLevel = hasLevelIndicator(name);
 
-		if (skillId) {
-			mappedIds.push(skillId);
-		} else {
+		// Get all possible IDs for this skill name
+		let candidateIds = skillNameMap.get(normalized);
+
+		if (!candidateIds) {
 			// Try partial matching for skills that may have slight OCR variations
-			for (const [mapName, mapId] of skillNameToIdMap.entries()) {
+			for (const [mapName, ids] of skillNameMap.entries()) {
 				if (mapName.includes(normalized) || normalized.includes(mapName)) {
-					mappedIds.push(mapId);
+					candidateIds = ids;
 					break;
 				}
 			}
+		}
+
+		if (!candidateIds || candidateIds.length === 0) {
+			continue;
+		}
+
+		// Select skill ID based on level indicator:
+		// - Has level (e.g., "Dancing in the Leaves Lvl 4") → use ID starting with '1' (11xxxx unique or 10xxxx base)
+		// - No level → prefer ID starting with '9' (91xxxx or 90xxxx inherited), fallback to 200xxx (passive skills)
+		let skillId: string | undefined;
+
+		if (hasLevel) {
+			// Look for IDs starting with '1' (base/unique skills that show level)
+			const matchingIds = candidateIds.filter(id => id.split('-')[0][0] === '1');
+			if (matchingIds.length > 0) {
+				skillId = matchingIds[0];
+			}
+		} else {
+			// Look for IDs starting with '9' (inherited versions) first
+			const inheritedIds = candidateIds.filter(id => id.split('-')[0][0] === '9');
+			if (inheritedIds.length > 0) {
+				skillId = inheritedIds[0];
+			} else {
+				// Fallback to any available ID (likely 200xxx passive skills)
+				skillId = candidateIds[0];
+			}
+		}
+
+		if (skillId) {
+			mappedIds.push(skillId);
 		}
 	}
 
@@ -85,7 +131,7 @@ function normalizeEpithet(epithet: string): string {
 
 // Initialize the epithet map
 (function initEpithetMap() {
-	for (const [umaId, umaData] of Object.entries(umas)) {
+	for (const umaData of Object.values(umas)) {
 		const outfits = (umaData as any).outfits;
 		if (!outfits) continue;
 
@@ -93,14 +139,9 @@ function normalizeEpithet(epithet: string): string {
 			if (typeof epithet === 'string') {
 				const normalized = normalizeEpithet(epithet);
 				epithetToOutfitMap.set(normalized, outfitId);
-				// Debug: Log Gold City outfits to verify English names
-				if (umaId === '1040') {
-					console.log(`[OCR Debug] Gold City outfit: "${epithet}" → normalized: "${normalized}" → ID: ${outfitId}`);
-				}
 			}
 		}
 	}
-	console.log(`[OCR Debug] Loaded ${epithetToOutfitMap.size} outfit epithets`);
 })();
 
 // Map outfit name from OCR to outfit ID
@@ -108,25 +149,19 @@ export function mapOutfitNameToId(outfit: string): string {
 	if (!outfit) return '';
 
 	const normalized = normalizeEpithet(outfit);
-	console.log(`[OCR Debug] Looking up outfit: "${outfit}" → normalized: "${normalized}"`);
-
 	const outfitId = epithetToOutfitMap.get(normalized);
 
 	if (outfitId) {
-		console.log(`[OCR Debug] Exact match found: ${outfitId}`);
 		return outfitId;
 	}
 
-	console.log(`[OCR Debug] No exact match, trying partial matching...`);
 	// Try partial matching
 	for (const [mapEpithet, mapId] of epithetToOutfitMap.entries()) {
 		if (mapEpithet.includes(normalized) || normalized.includes(mapEpithet)) {
-			console.log(`[OCR Debug] Partial match: "${mapEpithet}" → ${mapId}`);
 			return mapId;
 		}
 	}
 
-	console.log('[OCR Debug] Could not find outfit ID for:', outfit);
 	return '';
 }
 
@@ -172,7 +207,6 @@ export function mapCharacterNameToOutfitId(characterName: string): string {
 		}
 	}
 
-	console.log('Could not find outfit ID for character name:', characterName);
 	return '';
 }
 
@@ -222,9 +256,15 @@ Important mappings:
 - Style "Late" or "Late Surger" = strategy "Sasi"
 - Style "End" or "End Closer" = strategy "Oikomi"
 
-Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including any circle symbols (○, ◎, ×) that appear after the skill name - these are NOT icons, they are part of the skill name indicating skill grade.
+Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including:
+- Any circle symbols (○, ◎, ×) that appear after the skill name - these are part of the skill name indicating skill grade
+- The level indicator (Lvl 1, Lvl 2, Lvl 3, Lvl 4) if present - this is CRITICAL for distinguishing unique skills (which SHOW level) from inherited skills (which do NOT show level)
 
-IMPORTANT: Do NOT include "Lvl X" or "Level X" text in skill names. The level indicator is game UI decoration, not part of the skill name. For example, "Dancing in the Leaves Lvl 4" should be extracted as just "Dancing in the Leaves".`;
+IMPORTANT: UNIQUE skills DISPLAY a level indicator (usually Lvl 4). INHERITED skills do NOT show "Lvl X" - just the skill name.
+
+Examples:
+- "Dancing in the Leaves Lvl 4" (HAS level) = unique skill
+- "Dancing in the Leaves" (NO level) = inherited skill`;
 
 export async function extractHorseDataFromImage(
 	imageBase64: string,
