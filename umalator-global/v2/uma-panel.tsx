@@ -62,40 +62,6 @@ function isGeneralSkill(id: string): boolean {
 	return skill.rarity < 3 || universallyAccessiblePinks.includes(baseId);
 }
 
-// ============================================
-// FIRST-TIME UMA SELECTION VIDEO
-// ============================================
-
-interface IntroVideoProps {
-	onClose: () => void;
-}
-
-export function IntroVideo({ onClose }: IntroVideoProps) {
-	const videoRef = useRef<HTMLVideoElement>(null);
-
-	// Play video on mount
-	useEffect(() => {
-		if (videoRef.current) {
-			videoRef.current.play().catch(() => {
-				// Autoplay blocked, that's fine
-			});
-		}
-	}, []);
-
-	return (
-		<div class="v2-intro-video-container">
-			<video
-				ref={videoRef}
-				class="v2-intro-video"
-				src="/uma-tools/videos/golshi_kick.webm"
-				onEnded={onClose}
-				muted
-				playsInline
-			/>
-		</div>
-	);
-}
-
 // Types
 type Aptitude = 'S' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G';
 type Strategy = 'Nige' | 'Senkou' | 'Sasi' | 'Oikomi' | 'Oonige';

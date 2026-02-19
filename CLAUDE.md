@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important Guidelines
+
+- **Do not add "Co-Authored-By" trailers to git commits** - Keep commit messages clean without attribution
+
 ## Project Overview
 
 **Moomoolator** is a modern Uma Musume race simulator with bilingual JP/EN support, forked from alpha123/umalator and kachi-dev/umalator.

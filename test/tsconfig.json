@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"lib": ["es2018", "dom"],
+		"module": "commonjs",
+		"target": "es2018",
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"preserveConstEnums": true,
+		"jsx": "react",
+		"jsxFactory": "h",
+		"jsxFragmentFactory": "Fragment",
+		"baseUrl": "..",
+		"paths": {
+			"*": ["*"]
+		}
+	},
+	"include": ["./**/*.ts"],
+	"exclude": ["node_modules"]
+}

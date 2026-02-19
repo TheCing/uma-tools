@@ -67,7 +67,7 @@ import {
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
 import { presets, DEFAULT_PRESET } from "./presets";
-import { V2UmaPanel, UmaState, defaultUmaState, IntroVideo } from "./uma-panel";
+import { V2UmaPanel, UmaState, defaultUmaState } from "./uma-panel";
 import { TraineesTab } from "./trainees-tab";
 import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
 import { VelocityOverlay } from "./velocity-overlay";
@@ -252,9 +252,6 @@ function App() {
     "mean" | "median" | "min" | "max"
   >("median");
 
-  // Intro video - shows once when first uma is selected
-  const [showIntroVideo, setShowIntroVideo] = useState(false);
-  const introVideoShownRef = useRef(false);
 
   // Simulation results
   const [isRunning, setIsRunning] = useState(false);
@@ -496,11 +493,6 @@ function App() {
   }, []);
 
   const handleUma1Change = useCallback((updates: Partial<UmaState>) => {
-    // Trigger intro video on first uma selection
-    if (updates.outfitId && !introVideoShownRef.current) {
-      introVideoShownRef.current = true;
-      setShowIntroVideo(true);
-    }
     setUma1((prev) => ({ ...prev, ...updates }));
   }, []);
 
@@ -1784,11 +1776,6 @@ function App() {
                   setMobileView("track");
                 }}
               />
-            )}
-
-            {/* Intro video - plays once on first uma selection */}
-            {showIntroVideo && umaDrawerOpen && (
-              <IntroVideo onClose={() => setShowIntroVideo(false)} />
             )}
 
             {/* Tour overlay - renders via portal */}
