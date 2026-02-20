@@ -238,6 +238,44 @@ const LOCATION_FILTERS = [
 	{ id: 'finalstraight', label: 'F. Straight' },
 ];
 
+// Icon type filter - maps icon types to their prefixes (some icons share prefixes)
+const ICON_ID_PREFIXES: Record<string, string[]> = {
+	'1001': ['1001'],           // Speed
+	'1002': ['1002', '2018'],   // Stamina
+	'1003': ['1003'],           // Power
+	'1004': ['1004'],           // Guts
+	'1005': ['1005'],           // Wisdom
+	'1006': ['1006'],           // Acceleration
+	'2002': ['2002', '2011', '2028'],  // Position
+	'2001': ['2001', '2010', '2014', '2015', '2016', '2019', '2021', '2022', '2024', '2026', '2029', '2031', '2032', '2033'],  // Vision
+	'2004': ['2004', '2012', '2017', '2020', '2025', '2027', '2030'],  // HP Recovery
+	'2005': ['2005', '2013'],   // Lane Change
+	'2006': ['2006'],           // Pace Down
+	'2009': ['2009'],           // Start
+	'3001': ['3001'],           // Debuff Speed
+	'3002': ['3002'],           // Debuff Stamina
+	'3004': ['3004'],           // Debuff Guts
+	'3005': ['3005'],           // Debuff Wisdom
+	'3007': ['3007'],           // Debuff Vision
+	'4001': ['4001'],           // Multi-stat
+};
+
+// Icon type filters - order matches v1 for consistency
+const ICON_TYPE_FILTERS = [
+	'1001', '1002', '1003', '1004', '1005', '1006', '4001',
+	'2002', '2001', '2004', '2005', '2006', '2009',
+	'3001', '3002', '3004', '3005', '3007',
+];
+
+// Check if skill matches an icon type filter
+function matchIconType(skillId: string, iconType: string): boolean {
+	const meta = (skillmeta as Record<string, { iconId: string }>)[skillId];
+	if (!meta?.iconId) return false;
+	const prefixes = ICON_ID_PREFIXES[iconType];
+	if (!prefixes) return false;
+	return prefixes.some(p => meta.iconId.startsWith(p));
+}
+
 // ============================================
 // SKILL DETAILS HELPERS
 // ============================================
@@ -509,6 +547,9 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 		location: null,
 	});
 
+	// Icon type filter - separate toggle-based state (all active = show all)
+	const [activeIconTypes, setActiveIconTypes] = useState<Set<string>>(new Set(ICON_TYPE_FILTERS));
+
 	// Focus input when opened
 	useEffect(() => {
 		if (isOpen && inputRef.current) {
@@ -522,6 +563,30 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 			...prev,
 			[group]: prev[group] === filterId ? null : filterId,
 		}));
+	}, []);
+
+	// Toggle icon type filter (v1 behavior: multi-select, all off = show all)
+	const toggleIconType = useCallback((iconType: string) => {
+		setActiveIconTypes(prev => {
+			const allActive = prev.size === ICON_TYPE_FILTERS.length;
+			if (allActive) {
+				// If all are active, clicking one deactivates all others
+				return new Set([iconType]);
+			} else {
+				// Toggle the clicked one
+				const next = new Set(prev);
+				if (next.has(iconType)) {
+					next.delete(iconType);
+				} else {
+					next.add(iconType);
+				}
+				// If none are active, reactivate all
+				if (next.size === 0) {
+					return new Set(ICON_TYPE_FILTERS);
+				}
+				return next;
+			}
+		});
 	}, []);
 
 	// Filter and sort skills
@@ -540,11 +605,17 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 			if (activeFilters.surface && !matchConditionFilter(id, activeFilters.surface)) return false;
 			if (activeFilters.location && !matchConditionFilter(id, activeFilters.location)) return false;
 
+			// Check icon type filter (if not all active, filter by active types)
+			if (activeIconTypes.size < ICON_TYPE_FILTERS.length) {
+				const matchesAny = Array.from(activeIconTypes).some(iconType => matchIconType(id, iconType));
+				if (!matchesAny) return false;
+			}
+
 			return true;
 		});
 		// Apply sorting
 		return filtered.sort(getSortComparator(sortOption));
-	}, [searchQuery, activeFilters, sortOption]);
+	}, [searchQuery, activeFilters, activeIconTypes, sortOption]);
 
 	const handleKeyDown = useCallback((e: KeyboardEvent) => {
 		const len = filteredSkills.length;
@@ -586,6 +657,7 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 				surface: null,
 				location: null,
 			});
+			setActiveIconTypes(new Set(ICON_TYPE_FILTERS));
 		}
 	}, [isOpen]);
 
@@ -713,6 +785,25 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 									>
 										{f.label}
 									</button>
+								))}
+							</div>
+						</div>
+					</div>
+
+					{/* Row 3: Icon Type (toggle multi-select) */}
+					<div class="v2-filter-row">
+						<div class="v2-filter-group icontype">
+							<span class="v2-filter-label">Effect</span>
+							<div class="v2-filter-chips icontype">
+								{ICON_TYPE_FILTERS.map(iconType => (
+									<button
+										key={iconType}
+										type="button"
+										class={`v2-icon-filter-btn ${activeIconTypes.has(iconType) ? 'active' : ''}`}
+										onClick={() => toggleIconType(iconType)}
+										style={{ backgroundImage: `url(/uma-tools/icons/${iconType}1.png)` }}
+										title={iconType}
+									/>
 								))}
 							</div>
 						</div>

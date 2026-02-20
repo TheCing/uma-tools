@@ -104,11 +104,12 @@ const buildOptions = {
 	write: !serve,
 	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true'},
 	external: ['*.ttf'],
-	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin]
+	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin],
 };
 
 // v2 experimental build options
 // Note: v2 uses npm @tanstack/react-table directly (v8 API), not the vendor files (v9 alpha API)
+// Note: v2 production uses Vite (see build-all.sh), this is for dev server only
 const buildOptionsV2 = {
 	entryPoints: [{in: './v2/app-v2.tsx', out: 'v2/bundle-v2'}],
 	bundle: true,
@@ -117,7 +118,7 @@ const buildOptionsV2 = {
 	write: !serve,
 	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true'},
 	external: ['*.ttf'],
-	plugins: [redirectData, mockAssert, seedrandomPlugin]  // No redirectTable - use npm packages
+	plugins: [redirectData, mockAssert, seedrandomPlugin],  // No redirectTable - use npm packages
 };
 
 const MIME_TYPES = {
