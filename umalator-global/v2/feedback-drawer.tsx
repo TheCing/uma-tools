@@ -37,6 +37,39 @@ const CATEGORY_OPTIONS: SelectOption[] = [
 const COOLDOWN_MS = 60_000; // 60 seconds between submissions
 const COOLDOWN_KEY = 'umalator_feedback_cooldown';
 
+// If you're reading this code, you've probably been filtered. Get rekt or something.
+const BLOCKED_PATTERNS: RegExp[] = [
+	/\bvibe\s*cod/i,
+	/\bslop\b/i,
+	/\bai\s*generated\b/i,
+	/\bgpt\s*slop\b/i,
+	/\bllm\s*garbage\b/i,
+	/\bn[i1]gg/i,
+	/\bch[i1]nk\b/i,
+	/\bsp[i1]c\b/i,
+	/\bk[i1]ke\b/i,
+	/\bgook\b/i,
+	/\bwetback/i,
+	/\bbeaner\b/i,
+	/\bcoon\b/i,
+	/\bdarkie/i,
+	/\bpajeet/i,
+	/\bsandni/i,
+	/\btowelhead/i,
+	/\bcamel\s*jockey/i,
+	/\bf[a4]gg?[o0]t/i,
+	/\btr[a4]nn/i,
+	/\bdyke\b/i,
+	/\bretard/i,
+	/\bsperg\b/i,
+	/\bautist\b/i,
+];
+
+function containsBlockedContent(text: string): boolean {
+	const normalized = text.toLowerCase();
+	return BLOCKED_PATTERNS.some(pattern => pattern.test(normalized));
+}
+
 function getCooldownRemaining(): number {
 	const lastSubmit = localStorage.getItem(COOLDOWN_KEY);
 	if (!lastSubmit) return 0;
@@ -89,6 +122,13 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 		// Honeypot check - bots fill hidden fields
 		if (honeypot) {
 			// Silently "succeed" to not tip off bots
+			setStatus('success');
+			setTimeout(handleClose, 2000);
+			return;
+		}
+
+		// Silent content filter - pretend to succeed so spammers don't know they're blocked
+		if (containsBlockedContent(message) || containsBlockedContent(contact)) {
 			setStatus('success');
 			setTimeout(handleClose, 2000);
 			return;
