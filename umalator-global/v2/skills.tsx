@@ -56,9 +56,12 @@ const filterOps: Record<string, any[]> = {
 const parsedConditions: Record<string, any[]> = {};
 Object.keys(skilldata).forEach(id => {
 	const skill = (skilldata as Record<string, any>)[id];
-	if (skill?.alternatives) {
-		parsedConditions[id] = skill.alternatives.map((ef: any) =>
-			Parser.parse(Parser.tokenize(ef.condition))
+	if (skill?.alternatives?.[0]) {
+		const condition = skill.alternatives[0].condition;
+		// Split by @ to get all triggers, parse each one
+		const triggers = condition.split('@');
+		parsedConditions[id] = triggers.map((trigger: string) =>
+			Parser.parse(Parser.tokenize(trigger))
 		);
 	}
 });
@@ -118,7 +121,7 @@ function matchConditionFilter(id: string, filterKey: string): boolean {
 	const ops = filterOps[filterKey];
 	const conditions = parsedConditions[id];
 	if (!ops || !conditions) return false;
-	return ops.some(op => conditions.some(alt => Matcher.treeMatch(op, alt)));
+	return ops.some(op => conditions.some(skillData => Matcher.treeMatch(op, skillData)));
 }
 
 // Build skill list (unsorted - sorting applied dynamically)
@@ -271,6 +274,30 @@ function formatEffectValue(type: number, modifier: number): string {
 	}
 }
 
+// Parse condition string into triggers and conditions
+// Condition format: "cond1&cond2&cond3@cond4&cond5" where @ separates triggers (OR) and & separates conditions (AND)
+function parseCondition(conditionStr: string): string[][] {
+	if (!conditionStr || conditionStr.trim() === '') return [[]];
+
+	// Split by @ to get triggers (OR)
+	const triggers = conditionStr.split('@');
+
+	// For each trigger, split by & to get individual conditions (AND)
+	return triggers.map(trigger => trigger.split('&').filter(c => c.trim() !== ''));
+}
+
+// Determine activation type based on condition
+function getActivationType(conditionStr: string): string {
+	// Check for random keywords (Wit Check skills)
+	const lower = conditionStr.toLowerCase();
+	if (lower.includes('_random') || lower.includes('random_')) {
+		return 'Wit Check';
+	}
+
+	// Default to Guaranteed (all other skills)
+	return 'Guaranteed';
+}
+
 // ============================================
 // SKILL CHIP - Expandable skill display
 // ============================================
@@ -285,6 +312,7 @@ interface SkillChipProps {
 
 export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, onPositionChange }: SkillChipProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const chipRef = useRef<HTMLDivElement>(null);
 	const name = getSkillName(skillId);
 	const icon = getSkillIcon(skillId);
 	const rarityClass = getSkillRarityClass(skillId);
@@ -294,8 +322,25 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 		setIsExpanded(prev => !prev);
 	}, []);
 
+	// Scroll expanded chip into view after animation
+	useEffect(() => {
+		if (isExpanded && chipRef.current) {
+			// Wait for animation to mostly complete before scrolling
+			const timer = setTimeout(() => {
+				chipRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+			}, 150);
+			return () => clearTimeout(timer);
+		}
+	}, [isExpanded]);
+
+	// Pre-compute alternatives data for animation (always render, CSS handles visibility)
+	const alternatives = skill?.alternatives;
+	const hasAlternatives = alternatives && alternatives.length > 0;
+	const hasMultipleAlternatives = alternatives && alternatives.length > 1;
+
 	return (
 		<div
+			ref={chipRef}
 			class={`v2-skill-chip ${rarityClass} ${isExpanded ? 'expanded' : ''}`}
 			onClick={handleClick}
 		>
@@ -315,63 +360,119 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 					</button>
 				)}
 			</div>
-			{isExpanded && skill && (
-				<div class="v2-skill-details" onClick={e => e.stopPropagation()}>
-					<div class="v2-skill-detail-row">
-						<span class="v2-skill-detail-label">ID:</span>
-						<span class="v2-skill-detail-value">{skillId}</span>
-					</div>
-					{skill.alternatives?.map((alt: any, idx: number) => (
-						<div key={idx} class="v2-skill-alternative">
-							{alt.precondition && (
-								<div class="v2-skill-detail-row">
-									<span class="v2-skill-detail-label">Precondition:</span>
-									<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
-								</div>
-							)}
-							<div class="v2-skill-detail-row">
-								<span class="v2-skill-detail-label">Condition:</span>
-								<span class="v2-skill-detail-value v2-skill-condition">{alt.condition}</span>
-							</div>
-							<div class="v2-skill-detail-row">
-								<span class="v2-skill-detail-label">Effects:</span>
-								<div class="v2-skill-effects">
-									{alt.effects?.map((ef: any, i: number) => (
-										<span key={i} class="v2-skill-effect">
-											<span class="v2-effect-type">{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`}</span>
-											<span class="v2-effect-value">{formatEffectValue(ef.type, ef.modifier)}</span>
-										</span>
+			{/* Always render wrapper for smooth animation, CSS controls visibility */}
+			<div class={`v2-skill-details-wrapper ${isExpanded ? 'expanded' : ''}`}>
+				{hasAlternatives && (
+					<div class="v2-skill-details" onClick={e => e.stopPropagation()}>
+						<div class="v2-skill-detail-row">
+							<span class="v2-skill-detail-label">ID:</span>
+							<span class="v2-skill-detail-value">{skillId}</span>
+						</div>
+
+						{/* Activation Type (check all alternatives) */}
+						<div class="v2-skill-detail-row">
+							<span class="v2-skill-detail-label">Activation:</span>
+							<span class="v2-skill-detail-value">
+								{getActivationType(alternatives.map((a: any) => a.condition).join('@'))}
+							</span>
+						</div>
+
+						{/* Alternatives */}
+						{alternatives.map((alt: any, altIdx: number) => {
+							const triggers = parseCondition(alt.condition);
+							const hasMultipleTriggers = triggers.length > 1;
+
+							return (
+								<div key={altIdx} class="v2-skill-alternative-block">
+									{/* Precondition */}
+									{alt.precondition && (
+										<div class="v2-skill-detail-row">
+											<span class="v2-skill-detail-label">Precondition:</span>
+											<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
+										</div>
+									)}
+
+									{/* Conditions - split by triggers (OR logic) */}
+									{triggers.map((conditions, triggerIdx) => (
+										<div key={triggerIdx} class="v2-skill-trigger-block">
+											{hasMultipleTriggers && (
+												<div class="v2-skill-trigger-header">Trigger {triggerIdx + 1}</div>
+											)}
+											<div class="v2-skill-conditions-block">
+												<div class="v2-skill-conditions-list">
+													{conditions.map((cond, condIdx) => (
+														<div key={condIdx} class="v2-skill-condition-line">{cond}</div>
+													))}
+												</div>
+											</div>
+
+											{/* OR separator between triggers */}
+											{hasMultipleTriggers && triggerIdx < triggers.length - 1 && (
+												<div class="v2-skill-trigger-or">OR</div>
+											)}
+										</div>
 									))}
+
+									{/* Duration */}
+									{alt.baseDuration > 0 && (
+										<div class="v2-skill-detail-row">
+											<span class="v2-skill-detail-label">Duration:</span>
+											<span class="v2-skill-detail-value">
+												{(alt.baseDuration / 10000).toFixed(1)} s
+												{courseDistance && ` (effective ${((alt.baseDuration / 10000) * (courseDistance / 1000)).toFixed(1)} s @ ${courseDistance}m)`}
+											</span>
+										</div>
+									)}
+
+									{/* Effects */}
+									<div class="v2-skill-effects-block">
+										{alt.effects?.map((ef: any, i: number) => (
+											<div key={i} class="v2-skill-effect-row">
+												<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
+												<span class="v2-skill-effect-text">
+													{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, ef.modifier)})
+												</span>
+											</div>
+										))}
+									</div>
+
+									{/* OR separator between alternatives */}
+									{hasMultipleAlternatives && altIdx < alternatives.length - 1 && (
+										<div class="v2-skill-alternative-or">OR</div>
+									)}
 								</div>
+							);
+						})}
+
+						{/* GameTora link (once at the end) */}
+						<a
+							href={`https://gametora.com/umamusume/skill-condition-viewer?skill=${skillId}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="v2-skill-condition-viewer-link"
+							onClick={e => e.stopPropagation()}
+						>
+							View conditions in GameTora
+						</a>
+
+						{onPositionChange && (
+							<div class="v2-skill-detail-row v2-skill-force-position">
+								<label class="v2-skill-detail-label">Force @ position (m):</label>
+								<input
+									type="number"
+									class="v2-force-position-input"
+									placeholder="Optional"
+									value={forcedPosition || ''}
+									onInput={(e) => onPositionChange((e.target as HTMLInputElement).value)}
+									onClick={(e) => e.stopPropagation()}
+									min="0"
+									step="10"
+								/>
 							</div>
-							{alt.baseDuration > 0 && (
-								<div class="v2-skill-detail-row">
-									<span class="v2-skill-detail-label">Duration:</span>
-									<span class="v2-skill-detail-value">
-										{(alt.baseDuration / 10000).toFixed(2)}s base
-										{courseDistance && ` → ${((alt.baseDuration / 10000) * (courseDistance / 1000)).toFixed(2)}s @ ${courseDistance}m`}
-									</span>
-								</div>
-							)}
-						</div>
-					))}
-					{onPositionChange && (
-						<div class="v2-skill-detail-row v2-skill-force-position">
-							<label class="v2-skill-detail-label">Force @ position (m):</label>
-							<input
-								type="number"
-								class="v2-force-position-input"
-								placeholder="Optional"
-								value={forcedPosition || ''}
-								onInput={(e) => onPositionChange((e.target as HTMLInputElement).value)}
-								onClick={(e) => e.stopPropagation()}
-								min="0"
-								step="10"
-							/>
-						</div>
-					)}
-				</div>
-			)}
+						)}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

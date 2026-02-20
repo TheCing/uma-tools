@@ -46,10 +46,7 @@ import {
   Play,
   GitCompare,
   Zap,
-  Sun,
-  Moon,
   X,
-  Palette,
   ArrowLeftRight,
   Link,
 } from "./components";
@@ -85,6 +82,8 @@ import {
   savePreferences,
   copyShareableUrl,
   deserializeStateFromHash,
+  COLOR_PALETTES,
+  type ColorPalette,
 } from "./storage";
 import courseData from "../course_data.json";
 import skillnames from "../skillnames.json";
@@ -214,10 +213,13 @@ function App() {
 
   // Preferences (persisted separately)
   const [darkMode, setDarkMode] = useState(savedPrefs.current.darkMode);
-  const [classicGreen, setClassicGreen] = useState(
-    savedPrefs.current.classicGreen,
+  const [colorPalette, setColorPalette] = useState<ColorPalette>(
+    savedPrefs.current.colorPalette,
   );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
+
+  // Easter egg: "STILL" triggers yandere mode
+  const [yandereMode, setYandereMode] = useState(false);
 
   // Simulation settings
   const [samples, setSamples] = useState(savedSession.current?.samples ?? 500);
@@ -422,8 +424,39 @@ function App() {
 
   // Save preferences immediately
   useEffect(() => {
-    savePreferences({ darkMode, classicGreen, uiScale });
-  }, [darkMode, classicGreen, uiScale]);
+    savePreferences({ darkMode, colorPalette, uiScale });
+  }, [darkMode, colorPalette, uiScale]);
+
+  // Easter egg: detect "STILL" typed outside input fields
+  useEffect(() => {
+    let buffer = '';
+    const TARGET = 'STILL';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
+      // Only track letter keys
+      if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+        buffer += e.key.toUpperCase();
+        // Keep only last N characters
+        if (buffer.length > TARGET.length) {
+          buffer = buffer.slice(-TARGET.length);
+        }
+        // Check for match
+        if (buffer === TARGET) {
+          setYandereMode(prev => !prev);
+          buffer = '';
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Load state from URL on mount (supports ?preset=X and hash-based state)
   useEffect(() => {
@@ -1059,7 +1092,7 @@ function App() {
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
-            class={`${darkMode ? "" : "light"} ${classicGreen ? "classic-green" : ""} ${showNotification ? "v2-has-notification" : ""}`}
+            class={`${darkMode ? "" : "light"} ${yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
             {/* NOTIFICATION BANNER */}
@@ -1167,15 +1200,51 @@ function App() {
                   items={[
                     {
                       id: "theme",
-                      label: darkMode ? "Light Mode" : "Dark Mode",
-                      icon: darkMode ? <Sun size={16} /> : <Moon size={16} />,
-                      onClick: () => setDarkMode(!darkMode),
+                      label: "",
+                      custom: (
+                        <div class="v2-theme-toggle">
+                          <button
+                            type="button"
+                            class={`v2-theme-btn ${darkMode ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDarkMode(true);
+                            }}
+                          >
+                            Dark
+                          </button>
+                          <button
+                            type="button"
+                            class={`v2-theme-btn ${!darkMode ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDarkMode(false);
+                            }}
+                          >
+                            Light
+                          </button>
+                        </div>
+                      ),
                     },
                     {
                       id: "accent",
-                      label: classicGreen ? "Bright Green" : "Classic Green",
-                      icon: <Palette size={16} />,
-                      onClick: () => setClassicGreen(!classicGreen),
+                      label: "",
+                      custom: (
+                        <div class="v2-color-toggle">
+                          {COLOR_PALETTES.map((palette) => (
+                            <button
+                              key={palette}
+                              type="button"
+                              class={`v2-color-swatch ${palette} ${colorPalette === palette ? 'active' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setColorPalette(palette);
+                              }}
+                              title={palette.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            />
+                          ))}
+                        </div>
+                      ),
                     },
                     { id: "divider-scale", label: "", divider: true },
                     {
@@ -1501,6 +1570,7 @@ function App() {
                         hideOwned={hideOwned}
                         hidePurple={hidePurple}
                         dirty={false}
+                        selectedSkillId={selectedSkillForChart}
                       />
                     ) : (
                       <div class="v2-skill-chart-empty">
@@ -1955,16 +2025,18 @@ function App() {
                           <span class="v2-switch-slider" />
                         </label>
                       </div>
-                      <div class="v2-mobile-settings-row">
-                        <label>Classic Green</label>
-                        <label class="v2-switch">
-                          <input
-                            type="checkbox"
-                            checked={classicGreen}
-                            onChange={() => setClassicGreen(!classicGreen)}
-                          />
-                          <span class="v2-switch-slider" />
-                        </label>
+                      <div class="v2-mobile-settings-row v2-mobile-color-row">
+                        <label>Color</label>
+                        <div class="v2-color-toggle">
+                          {COLOR_PALETTES.map((palette) => (
+                            <button
+                              key={palette}
+                              type="button"
+                              class={`v2-color-swatch ${palette} ${colorPalette === palette ? 'active' : ''}`}
+                              onClick={() => setColorPalette(palette)}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <div class="v2-mobile-settings-section">

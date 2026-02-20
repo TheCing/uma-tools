@@ -51,6 +51,7 @@
   --color-surface: #12151c;
   --color-surface-elevated: #181c26;
   --color-surface-overlay: #1e2330;
+  --color-surface-hover: rgba(255, 255, 255, 0.04);
 
   /* Borders - semi-transparent for softness */
   --color-border: rgba(255, 255, 255, 0.08);
@@ -63,7 +64,18 @@
   --color-text-muted: #6b7280;
   --color-text-faint: #4b5563;
 
-  /* Racing green - primary action color */
+  /*
+   * Color Palettes - credit: coolors.co
+   * ─────────────────────────────────────
+   * uma-green:      #6EE718 (Uma Green - default)
+   * sage-green:     #6A9955 (Sage Green)
+   * vibrant-coral:  #ED6A5A (Vibrant Coral)
+   * majorelle-blue: #623CEA (Majorelle Blue)
+   * alice-blue:     #5BA3D9 (Alice Blue - darker variant)
+   * vintage-grape:  #54426B (Vintage Grape)
+   */
+
+  /* Default: Uma Green - primary action color */
   --color-primary: #6ee718;
   --color-primary-hover: #7df229;
   --color-primary-muted: #5bc915;
@@ -104,6 +116,7 @@
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
   --color-surface-overlay: #ffffff;
+  --color-surface-hover: rgba(0, 0, 0, 0.04);
 
   --color-border: rgba(0, 0, 0, 0.08);
   --color-border-subtle: rgba(0, 0, 0, 0.04);
@@ -124,14 +137,14 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-/* Classic Green Theme - old dark green-400 accent */
-#app-v2.classic-green {
+/* Sage Green Theme */
+#app-v2.sage-green {
   --color-primary: #6a9955;
   --color-primary-hover: #7aab66;
   --color-primary-muted: #5a8a47;
   --color-primary-glow: rgba(106, 153, 85, 0.25);
   --color-primary-glow-strong: rgba(106, 153, 85, 0.4);
-  --color-primary-text: #fff; /* White text on classic green buttons */
+  --color-primary-text: #fff;
   background:
     radial-gradient(
       ellipse 80% 50% at 50% -20%,
@@ -141,7 +154,7 @@
     var(--color-bg);
 }
 
-#app-v2.classic-green.light {
+#app-v2.sage-green.light {
   --color-primary: #5a8947;
   --color-primary-hover: #4d7a3c;
   --color-primary-glow: rgba(90, 137, 71, 0.2);
@@ -153,6 +166,186 @@
       transparent 50%
     ),
     var(--color-bg);
+}
+
+/* Vibrant Coral Theme */
+#app-v2.vibrant-coral {
+  --color-primary: #ed6a5a;
+  --color-primary-hover: #f07d6f;
+  --color-primary-muted: #d45a4b;
+  --color-primary-glow: rgba(237, 106, 90, 0.25);
+  --color-primary-glow-strong: rgba(237, 106, 90, 0.4);
+  --color-primary-text: #fff;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(237, 106, 90, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.vibrant-coral.light {
+  --color-primary: #d95a4a;
+  --color-primary-hover: #c84a3a;
+  --color-primary-glow: rgba(217, 90, 74, 0.2);
+  --color-primary-glow-strong: rgba(217, 90, 74, 0.35);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(217, 90, 74, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+/* Majorelle Blue Theme */
+#app-v2.majorelle-blue {
+  --color-primary: #623cea;
+  --color-primary-hover: #7450ed;
+  --color-primary-muted: #5230d0;
+  --color-primary-glow: rgba(98, 60, 234, 0.25);
+  --color-primary-glow-strong: rgba(98, 60, 234, 0.4);
+  --color-primary-text: #fff;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(98, 60, 234, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.majorelle-blue.light {
+  --color-primary: #5530d8;
+  --color-primary-hover: #4825c5;
+  --color-primary-glow: rgba(85, 48, 216, 0.2);
+  --color-primary-glow-strong: rgba(85, 48, 216, 0.35);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(85, 48, 216, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+/* Alice Blue Theme */
+#app-v2.alice-blue {
+  --color-primary: #5ba3d9;
+  --color-primary-hover: #6eb1e2;
+  --color-primary-muted: #4a92c8;
+  --color-primary-glow: rgba(91, 163, 217, 0.25);
+  --color-primary-glow-strong: rgba(91, 163, 217, 0.4);
+  --color-primary-text: #fff;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(91, 163, 217, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.alice-blue.light {
+  --color-primary: #4a92c8;
+  --color-primary-hover: #3a82b8;
+  --color-primary-glow: rgba(74, 146, 200, 0.2);
+  --color-primary-glow-strong: rgba(74, 146, 200, 0.35);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(74, 146, 200, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+/* Vintage Grape Theme */
+#app-v2.vintage-grape {
+  --color-primary: #54426b;
+  --color-primary-hover: #655280;
+  --color-primary-muted: #453558;
+  --color-primary-glow: rgba(84, 66, 107, 0.25);
+  --color-primary-glow-strong: rgba(84, 66, 107, 0.4);
+  --color-primary-text: #fff;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(84, 66, 107, 0.05) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.vintage-grape.light {
+  --color-primary: #6a5585;
+  --color-primary-hover: #5a4572;
+  --color-primary-glow: rgba(106, 85, 133, 0.2);
+  --color-primary-glow-strong: rgba(106, 85, 133, 0.35);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(106, 85, 133, 0.04) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+/* Still In Love - Yandere Theme (Easter Egg) */
+@keyframes yandere-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+#app-v2.yandere {
+  --color-primary: #dc2626;
+  --color-primary-hover: #ef4444;
+  --color-primary-muted: #b91c1c;
+  --color-primary-glow: rgba(220, 38, 38, 0.3);
+  --color-primary-glow-strong: rgba(220, 38, 38, 0.5);
+  --color-primary-text: #fff;
+  --shadow-glow: 0 0 20px rgba(220, 38, 38, 0.3);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(220, 38, 38, 0.08) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.yandere::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 60px rgba(220, 38, 38, 0.25);
+  animation: yandere-pulse 3s ease-in-out infinite;
+  z-index: 9999;
+}
+
+#app-v2.yandere.light {
+  --color-primary: #b91c1c;
+  --color-primary-hover: #991b1b;
+  --color-primary-glow: rgba(185, 28, 28, 0.25);
+  --color-primary-glow-strong: rgba(185, 28, 28, 0.4);
+  --shadow-glow: 0 0 20px rgba(185, 28, 28, 0.25);
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(185, 28, 28, 0.06) 0%,
+      transparent 50%
+    ),
+    var(--color-bg);
+}
+
+#app-v2.yandere.light::before {
+  box-shadow: inset 0 0 60px rgba(185, 28, 28, 0.2);
 }
 
 /* ============================================
@@ -2209,7 +2402,8 @@ body {
 .v2-zoom-control {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 0;
   background: var(--color-surface-overlay);
   border-radius: var(--radius-md);
@@ -2255,6 +2449,118 @@ body {
   font-family: var(--font-mono);
   text-align: center;
   color: var(--color-text-secondary);
+}
+
+/* Color palette toggle */
+.v2-color-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+  background: var(--color-surface-overlay);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.v2-color-swatch {
+  flex: 1;
+  height: 28px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+/* Color palette swatches */
+.v2-color-swatch.uma-green {
+  background: #6ee718;
+}
+
+.v2-color-swatch.sage-green {
+  background: #6a9955;
+}
+
+.v2-color-swatch.vibrant-coral {
+  background: #ed6a5a;
+}
+
+.v2-color-swatch.majorelle-blue {
+  background: #623cea;
+}
+
+.v2-color-swatch.alice-blue {
+  background: #5ba3d9;
+}
+
+.v2-color-swatch.vintage-grape {
+  background: #54426b;
+}
+
+.v2-color-swatch:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.v2-color-swatch:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.v2-color-swatch:hover {
+  filter: brightness(1.15);
+  transform: scaleY(1.1);
+}
+
+.v2-color-swatch.active {
+  box-shadow: inset 0 0 0 2px var(--color-text);
+  transform: scaleY(1.15);
+}
+
+.v2-color-swatch:not(.active) {
+  opacity: 0.6;
+}
+
+.v2-color-swatch:not(.active):hover {
+  opacity: 0.9;
+}
+
+/* Theme toggle (Dark/Light) */
+.v2-theme-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0;
+  background: var(--color-surface-overlay);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.v2-theme-btn {
+  flex: 1;
+  height: 28px;
+  border: none;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-theme-btn:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.v2-theme-btn:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.v2-theme-btn:hover:not(.active) {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+.v2-theme-btn.active {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
 }
 
 /* Delete button in load menu */
@@ -3077,7 +3383,7 @@ body {
 .v2-skill-chip {
   display: flex;
   flex-direction: column;
-  padding: 4px 8px;
+  padding: 8px;
   background: var(--color-surface-overlay);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -3139,15 +3445,33 @@ body {
   color: #fff;
 }
 
+/* Skill Details Animation Wrapper */
+.v2-skill-details-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.v2-skill-details-wrapper.expanded {
+  grid-template-rows: 1fr;
+  /* Only animate when expanding - closing is instant to avoid grid reflow issues */
+  transition: grid-template-rows 0.25s ease-out;
+}
+
 /* Skill Details (expanded) */
 .v2-skill-details {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+  min-height: 0; /* Critical: allows 0fr to fully collapse */
   display: flex;
   flex-direction: column;
   gap: 6px;
   font-size: var(--font-sm);
+}
+
+/* Add spacing/border only when expanded */
+.v2-skill-details-wrapper.expanded .v2-skill-details {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
 }
 
 .v2-skill-detail-row {
@@ -3242,6 +3566,120 @@ body {
 .v2-force-position-input::placeholder {
   color: var(--color-text-muted);
   opacity: 0.6;
+}
+
+/* Enhanced skill condition display */
+.v2-skill-trigger-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.v2-skill-trigger-header {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: 8px;
+  margin-bottom: 2px;
+}
+
+.v2-skill-conditions-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.v2-skill-conditions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 8px;
+  margin: 4px 0;
+}
+
+.v2-skill-condition-line {
+  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  font-size: var(--font-xs);
+  color: var(--color-text);
+  padding: 3px 6px;
+  background: var(--color-surface);
+  border-radius: 3px;
+  border-left: 2px solid var(--color-border-strong);
+  line-height: 1.4;
+}
+
+.v2-skill-condition-viewer-link {
+  font-size: var(--font-xs);
+  color: var(--color-primary);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  transition: color var(--transition-fast);
+}
+
+.v2-skill-condition-viewer-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.v2-skill-trigger-or {
+  text-align: center;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+  padding: 8px 0;
+  margin: 4px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  border-radius: var(--radius-sm);
+}
+
+/* Alternative blocks (skills with multiple activation paths) */
+.v2-skill-alternative-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.v2-skill-alternative-header {
+  font-size: var(--font-sm);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-top: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.v2-skill-alternative-or {
+  text-align: center;
+  font-size: var(--font-sm);
+  font-weight: 700;
+  padding: 10px 0;
+  margin: 8px 0;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.v2-skill-effects-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.v2-skill-effect-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.v2-skill-effect-text {
+  color: var(--color-text);
+  flex: 1;
 }
 
 /* Skill rarity colors */
@@ -5230,6 +5668,17 @@ body {
   color: var(--color-text);
 }
 
+/* Mobile color palette row */
+.v2-mobile-color-row .v2-color-toggle {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.v2-mobile-color-row .v2-color-swatch {
+  width: 28px;
+  height: 24px;
+}
+
 /* Mobile media query - switch to mobile layout */
 @media (max-width: 768px) {
   /* Show mobile nav */
@@ -5609,6 +6058,14 @@ body {
   background: var(--color-surface-elevated);
 }
 
+.v2-skill-chart-table tbody tr.selected {
+  background: var(--color-primary-glow);
+}
+
+.v2-skill-chart-table tbody tr.selected:hover {
+  background: var(--color-primary-glow-strong);
+}
+
 .v2-skill-chart-table td {
   padding: var(--space-sm) var(--space-md);
   color: var(--color-text);
@@ -5623,11 +6080,19 @@ body {
 
 .v2-skill-chart-header input[type="radio"] {
   cursor: pointer;
+  margin: 0;
+  vertical-align: middle;
 }
 
 .v2-skill-chart-header span {
   cursor: pointer;
   user-select: none;
+}
+
+.v2-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 
 .v2-column-header.sorted-asc::after {

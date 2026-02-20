@@ -527,6 +527,14 @@ interface VelocityOverlayProps {
 
 **Note**: On master branch, only the visual cow exists. MooCoins wrapper is dev-only.
 
+**Still In Love (Dev Only):**
+- Type "STILL" anywhere (not in an input field) to trigger yandere mode
+- Theme becomes bright red with subtle pulsing border effect
+- Type "STILL" again to toggle off
+- Reference to the "Still In Love" skill
+- Files: `v2/app-v2.tsx` (keyboard listener), `v2/v2.css` (yandere theme)
+- Dev branch only - do not merge to master
+
 ## Simulation Limitations
 
 The simulator intentionally only simulates one uma (not a full race with competitors) to isolate skill effects in a controlled environment. This affects:

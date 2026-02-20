@@ -33,6 +33,7 @@ interface SkillChartPaneProps {
 	hideOwned: boolean;
 	hidePurple: boolean;
 	dirty?: boolean;
+	selectedSkillId?: string;
 }
 
 /**
@@ -319,7 +320,7 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 						const id = row.getValue('id') as string;
 
 						return (
-							<tr key={row.id} data-skillid={id}>
+							<tr key={row.id} data-skillid={id} class={props.selectedSkillId === id ? 'selected' : ''}>
 								{row.getAllCells().map(cell => (
 									<td key={cell.id}>
 										{flexRender(cell.column.columnDef.cell, cell.getContext())}
