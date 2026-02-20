@@ -1,16 +1,7 @@
 /**
- * v2 Condensed Layout Styles
- *
- * Goal: Everything fits in viewport without scrolling
- * - Header bar with controls
- * - RaceTrack as hero
- * - Uma config as slide-out drawer
- * - Results inline below track
- *
- * Theme: Premium Racing Dashboard
- * - Layered dark surfaces with subtle blue undertones
- * - Racing green primary with glow effects
- * - Refined elevation hierarchy
+ * v2 Styles
+ * TODO: Breakout into separate files for each component
+ * TODO: Cleanup comments
  */
 
 /* ============================================
@@ -21,17 +12,17 @@
   /* UI Scale - set via inline style, default 1 */
   --ui-scale: 1;
 
-  /* Font sizes - rem based for accessibility, bumped +1px from original */
-  --font-2xs: 0.625rem;   /* 10px - was 9px */
-  --font-xs: 0.6875rem;   /* 11px - was 10px */
-  --font-sm: 0.75rem;     /* 12px - was 11px */
-  --font-base: 0.8125rem; /* 13px - was 12px */
-  --font-md: 0.875rem;    /* 14px - was 13px */
-  --font-lg: 0.9375rem;   /* 15px - was 14px */
-  --font-xl: 1rem;        /* 16px - was 15px */
-  --font-2xl: 1.0625rem;  /* 17px - was 16px */
-  --font-3xl: 1.1875rem;  /* 19px - was 18px */
-  --font-4xl: 1.375rem;   /* 22px - was 20px+ */
+  /* Font sizes */
+  --font-2xs: 0.75rem;   /* 12px */
+  --font-xs: 0.8rem;     /* 13px */
+  --font-sm: 0.85rem;    /* 14px */
+  --font-base: 0.9rem;   /* 14px */
+  --font-md: 1rem;       /* 16px */
+  --font-lg: 1.1rem;     /* 18px */
+  --font-xl: 1.25rem;    /* 20px */
+  --font-2xl: 1.35rem;   /* 22px */
+  --font-3xl: 1.6rem;    /* 26px */
+  --font-4xl: 1.8rem;    /* 29px */
 
   /* Spacing */
   --space-xs: 4px;
@@ -45,7 +36,7 @@
   --radius-md: 10px;
   --radius-lg: 14px;
 
-  /* Colors - Dark (default) - Premium Racing Dashboard */
+  /* Colors - Dark (default)  */
   --color-bg: #08090c;
   --color-bg-subtle: #0d0f14;
   --color-surface: #12151c;
@@ -53,7 +44,7 @@
   --color-surface-overlay: #1e2330;
   --color-surface-hover: rgba(255, 255, 255, 0.04);
 
-  /* Borders - semi-transparent for softness */
+  /* Borders  */
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
   --color-border-strong: rgba(255, 255, 255, 0.12);
@@ -1358,10 +1349,6 @@ body {
 
 .v2-skill-activation .skill-id {
   color: var(--color-text-secondary);
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .v2-skill-activation .skill-pos {
@@ -3721,7 +3708,7 @@ body {
 
 .v2-skill-picker-modal {
   width: 90%;
-  max-width: 480px;
+  max-width: 1080px;
   max-height: 75vh;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
@@ -3837,6 +3824,7 @@ body {
     color-mix(in srgb, var(--color-surface-elevated) 85%, var(--color-bg)) 100%
   );
   border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-md);
 }
 
 .v2-filter-row {
@@ -3852,7 +3840,7 @@ body {
 }
 
 .v2-filter-label {
-  font-size: var(--font-2xs);
+  font-size: var(--font-sm);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -3891,7 +3879,7 @@ body {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-secondary);
-  font-size: var(--font-xs);
+  font-size: var(--font-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -3974,11 +3962,45 @@ body {
   color: #fdba74;
 }
 
+/* Icon type filter buttons */
+.v2-filter-chips.icontype {
+  gap: 4px;
+}
+
+.v2-icon-filter-btn {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background-color: var(--color-surface-overlay);
+  background-size: 22px 22px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  opacity: 0.6;
+}
+
+.v2-icon-filter-btn:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-border-strong);
+  opacity: 0.85;
+}
+
+.v2-icon-filter-btn.active {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary-glow);
+  opacity: 1;
+}
+
 /* Skill list */
 .v2-skill-picker-list {
-  flex: 1;
   overflow-y: auto;
   padding: var(--space-xs);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 .v2-skill-picker-item {

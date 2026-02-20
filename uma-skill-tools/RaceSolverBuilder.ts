@@ -545,9 +545,10 @@ export class RaceSolverBuilder {
 		Object.freeze(wholeCourse);
 
 		let pacerSkillData: SkillData[] = [];
-		
+
 		if (pacerBaseHorse) {
-			this._pacerSkillIds = horse.skills || [];
+			// Filter out invalid skill IDs (may happen with old saved builds after game updates)
+			this._pacerSkillIds = (horse.skills || []).filter(id => id in skills);
 			const makePacerSkill = buildSkillData.bind(null, pacerBaseHorse, this._raceParams, this._course, wholeCourse, this._parser);
 			pacerSkillData = this._pacerSkillIds.flatMap(id => makePacerSkill(id, Perspective.Self));
 			this._pacerSkillData = pacerSkillData;
@@ -826,7 +827,11 @@ export class RaceSolverBuilder {
 
 		const makeSkill = buildSkillData.bind(null, horse, this._raceParams, this._course, wholeCourse, this._parser);
 		// Track original _skills index alongside skill data since buildSkillData can return multiple triggers per skill
-		const skilldataWithIndex = this._skills.flatMap(({id,p}, idx) => makeSkill(id, p).map(sd => ({sd, skillIdx: idx})));
+		// Filter out invalid skill IDs (may happen with old saved builds after game updates), but preserve original indices
+		const validSkillsWithOrigIdx = this._skills
+			.map((skill, origIdx) => ({...skill, origIdx}))
+			.filter(({id}) => id in skills);
+		const skilldataWithIndex = validSkillsWithOrigIdx.flatMap(({id,p,origIdx}) => makeSkill(id, p).map(sd => ({sd, skillIdx: origIdx})));
 		const skilldata = skilldataWithIndex.map(x => x.sd);
 		const skillIndices = skilldataWithIndex.map(x => x.skillIdx);
 		this._extraSkillHooks.forEach(h => h(skilldata, horse, this._course));
