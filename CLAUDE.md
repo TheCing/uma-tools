@@ -579,6 +579,32 @@ node hp-calculator/build.mjs
 node events/build.mjs
 ```
 
+### Cache Busting
+
+V1 uses manual version query parameters for cache busting. When deploying significant changes (especially bug fixes), bump the version string to force browsers to fetch fresh bundles.
+
+**Files to update:**
+- `umalator-global/index.html`: Update `?v=YYYYMMDD[x]` on `bundle.css` and `bundle.js`
+- `umalator/app.tsx`: Update `?v=YYYYMMDD[x]` on `simulator.worker.js` (line ~1632)
+
+**Example:**
+```html
+<!-- Before -->
+<link rel="stylesheet" href="bundle.css?v=20260220">
+<script src="bundle.js?v=20260220"></script>
+
+<!-- After (bump with letter suffix for same-day changes) -->
+<link rel="stylesheet" href="bundle.css?v=20260220a">
+<script src="bundle.js?v=20260220a"></script>
+```
+
+**When to bump:**
+- Bug fixes that users with cached bundles would miss
+- Breaking changes to the worker protocol
+- After updating skill_data.json or other embedded data
+
+**Note:** V2 uses Vite for production builds, which handles cache busting automatically via content hashing.
+
 ### Cloudflare Pages
 
 **Project**: `uma-tools`
