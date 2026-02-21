@@ -89,7 +89,7 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 	const [errorMessage, setErrorMessage] = useState('');
 
 	// Spam prevention
-	const [honeypot, setHoneypot] = useState(''); // Hidden field - bots fill this
+	const [honeypot, setHoneypot] = useState('');
 	const [cooldownRemaining, setCooldownRemaining] = useState(getCooldownRemaining);
 
 	// Update cooldown timer
@@ -112,29 +112,28 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 
 	const handleClose = useCallback(() => {
 		onClose();
-		// Reset form after close animation
+	}, [onClose]);
+
+	const handleCloseAndReset = useCallback(() => {
+		onClose();
 		setTimeout(resetForm, 300);
 	}, [onClose, resetForm]);
 
 	const handleSubmit = useCallback(async (e: Event) => {
 		e.preventDefault();
 
-		// Honeypot check - bots fill hidden fields
 		if (honeypot) {
-			// Silently "succeed" to not tip off bots
 			setStatus('success');
-			setTimeout(handleClose, 2000);
+			setTimeout(handleCloseAndReset, 2000);
 			return;
 		}
 
-		// Silent content filter - pretend to succeed so spammers don't know they're blocked
 		if (containsBlockedContent(message) || containsBlockedContent(contact)) {
 			setStatus('success');
-			setTimeout(handleClose, 2000);
+			setTimeout(handleCloseAndReset, 2000);
 			return;
 		}
 
-		// Cooldown check
 		const remaining = getCooldownRemaining();
 		if (remaining > 0) {
 			setCooldownRemaining(remaining);
@@ -174,11 +173,10 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 
 			if (response.ok || response.status === 204) {
 				setStatus('success');
-				setCooldown(); // Start cooldown timer
+				setCooldown();
 				setCooldownRemaining(COOLDOWN_MS);
-				// Auto-close after success
 				setTimeout(() => {
-					handleClose();
+					handleCloseAndReset();
 				}, 2000);
 			} else {
 				throw new Error(`Failed to send: ${response.status}`);
@@ -187,7 +185,7 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 			setStatus('error');
 			setErrorMessage(err instanceof Error ? err.message : 'Failed to send feedback');
 		}
-	}, [message, contact, category, webhookUrl, honeypot, handleClose]);
+	}, [message, contact, category, webhookUrl, honeypot, handleCloseAndReset]);
 
 	return (
 		<>
