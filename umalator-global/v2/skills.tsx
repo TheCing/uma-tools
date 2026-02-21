@@ -415,13 +415,19 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 							</span>
 						</div>
 
-						{/* Alternatives */}
+						{/* Alternatives (true multi-trigger when alternatives.length > 1) */}
 						{alternatives.map((alt: any, altIdx: number) => {
-							const triggers = parseCondition(alt.condition);
-							const hasMultipleTriggers = triggers.length > 1;
+							// @ separates OR conditions within a single alternative (NOT separate triggers)
+							const orConditions = parseCondition(alt.condition);
+							const hasMultipleOrConditions = orConditions.length > 1;
 
 							return (
 								<div key={altIdx} class="v2-skill-alternative-block">
+									{/* Show "Trigger X" header only for true multi-trigger skills */}
+									{hasMultipleAlternatives && (
+										<div class="v2-skill-trigger-header">Trigger {altIdx + 1}</div>
+									)}
+
 									{/* Precondition */}
 									{alt.precondition && (
 										<div class="v2-skill-detail-row">
@@ -430,26 +436,16 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 										</div>
 									)}
 
-									{/* Conditions - split by triggers (OR logic) */}
-									{triggers.map((conditions, triggerIdx) => (
-										<div key={triggerIdx} class="v2-skill-trigger-block">
-											{hasMultipleTriggers && (
-												<div class="v2-skill-trigger-header">Trigger {triggerIdx + 1}</div>
-											)}
-											<div class="v2-skill-conditions-block">
-												<div class="v2-skill-conditions-list">
-													{conditions.map((cond, condIdx) => (
-														<div key={condIdx} class="v2-skill-condition-line">{cond}</div>
-													))}
-												</div>
-											</div>
-
-											{/* OR separator between triggers */}
-											{hasMultipleTriggers && triggerIdx < triggers.length - 1 && (
-												<div class="v2-skill-trigger-or">OR</div>
-											)}
-										</div>
-									))}
+									{/* Conditions - single code block with all conditions */}
+									<pre class="v2-skill-conditions-block">{
+										orConditions.map((conditions, orIdx) => {
+											const conditionLines = conditions.join('\n');
+											if (hasMultipleOrConditions && orIdx < orConditions.length - 1) {
+												return conditionLines + '\nOR\n';
+											}
+											return conditionLines;
+										}).join('')
+									}</pre>
 
 									{/* Duration */}
 									{alt.baseDuration > 0 && (
