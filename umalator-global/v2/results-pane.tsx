@@ -1,6 +1,9 @@
 /**
  * v2 Results Pane
  * Displays simulation results inline below the track
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  * Compare mode only (chart mode deferred)
  */
 

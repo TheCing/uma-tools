@@ -1,13 +1,8 @@
 /**
- * v2 Experimental Layout - CONDENSED
+ * Moomoolator v2 - Modern Uma Musume Race Simulator
  *
- * Goal: Fit essential UI in one viewport without scrolling
- *
- * Key changes from v1:
- * 1. Collapsible Uma panel (drawer instead of fixed sidebar)
- * 2. Compact inline controls (no tall runPane)
- * 3. Track + conditions in header area
- * 4. Results as overlay/modal, not inline
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, render, Fragment } from "preact";

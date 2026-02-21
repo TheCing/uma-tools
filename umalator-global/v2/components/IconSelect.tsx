@@ -1,6 +1,9 @@
 /**
  * Icon Select Component
  * For selecting from icon-based options (aptitudes, moods, etc.)
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';

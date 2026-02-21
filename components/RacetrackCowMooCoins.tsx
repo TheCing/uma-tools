@@ -1,6 +1,9 @@
 /**
  * RacetrackCow with MooCoins investment system
  * DEV-ONLY easter egg - wraps RacetrackCow with currency/market features
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';

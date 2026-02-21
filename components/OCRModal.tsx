@@ -1,3 +1,10 @@
+/**
+ * OCR Modal - Screenshot import dialog using Gemini AI
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ */
+
 import { h, Fragment } from 'preact';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import {

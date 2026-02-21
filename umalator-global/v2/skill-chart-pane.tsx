@@ -1,6 +1,9 @@
 /**
  * Skill Chart Pane Component
  *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ *
  * Main table for skill chart mode with TanStack table
  */
 

@@ -1,6 +1,9 @@
 /**
  * v2 OCR Modal
  * Import horse data from screenshots using Google Gemini AI
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';

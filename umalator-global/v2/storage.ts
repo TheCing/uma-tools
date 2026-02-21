@@ -1,6 +1,9 @@
 /**
  * V2 Storage Utilities
  * Save/load horse configurations to localStorage and JSON export/import
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { UmaState, defaultUmaState } from './uma-panel';

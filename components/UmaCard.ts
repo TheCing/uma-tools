@@ -1,5 +1,10 @@
-// Uma Card - PNG export/import with embedded JSON data
-// Similar to SillyTavern's character cards
+/**
+ * Uma Card - PNG export/import with embedded JSON data
+ * Similar to SillyTavern's character cards
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ */
 
 interface UmaCardData {
 	version: number;

@@ -2,6 +2,9 @@
  * V2 Velocity Overlay
  * Renders velocity/HP curves INSIDE the RaceTrack SVG as an overlay
  *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ *
  * Adapted from v1's VelocityLines component in umalator/app.tsx
  */
 

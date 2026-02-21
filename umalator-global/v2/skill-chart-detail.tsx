@@ -1,6 +1,9 @@
 /**
  * Skill Chart Detail Component
  *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ *
  * Expandable detail view showing charts for a selected skill
  */
 

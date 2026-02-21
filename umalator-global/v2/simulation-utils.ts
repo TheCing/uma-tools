@@ -1,6 +1,9 @@
 /**
  * Simulation Utilities for V2
  * Converts V2 UmaState and race parameters to worker-compatible format
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { Grade, GroundCondition, Weather, Season, Time } from '../../uma-skill-tools/RaceParameters';

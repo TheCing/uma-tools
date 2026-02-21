@@ -1,6 +1,9 @@
 /**
  * Feedback Drawer
  * Right-side drawer for submitting user feedback via Discord webhook
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h } from 'preact';

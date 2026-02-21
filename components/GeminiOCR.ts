@@ -1,5 +1,10 @@
-// Gemini OCR Service for extracting horse data from screenshots
-// Uses Google's Gemini API for vision-based text extraction
+/**
+ * Gemini OCR Service for extracting horse data from screenshots
+ * Uses Google's Gemini API for vision-based text extraction
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ */
 
 // CRITICAL: ALWAYS import from umalator-global/ for English data, NEVER from root JP files
 // This is used by the Global v2 OCR feature and must use English outfit/skill names
