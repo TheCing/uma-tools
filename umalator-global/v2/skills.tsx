@@ -877,8 +877,23 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
-		if (!skills.includes(skillId)) {
-			onChange([...skills, skillId]);
+		const newGroupId = (skillmeta as Record<string, { groupId: string }>)[skillId]?.groupId;
+		const isDebuff = (skillmeta as Record<string, { iconId: string }>)[skillId]?.iconId?.[0] === '3';
+
+		if (isDebuff) {
+			// Debuffs can be added multiple times
+			if (!skills.includes(skillId)) {
+				onChange([...skills, skillId]);
+			}
+		} else {
+			// Non-debuffs: replace any skill with the same groupId (white→gold upgrade)
+			const filtered = skills.filter(id => {
+				const existingGroupId = (skillmeta as Record<string, { groupId: string }>)[id]?.groupId;
+				return existingGroupId !== newGroupId;
+			});
+			if (!filtered.includes(skillId)) {
+				onChange([...filtered, skillId]);
+			}
 		}
 	}, [skills, onChange]);
 

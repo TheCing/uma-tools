@@ -1118,6 +1118,11 @@ body {
   font-family: "JetBrains Mono", monospace;
 }
 
+/* Light mode font color */
+.light .v2-results-stat-value {
+  color: var(--color-text);
+}
+
 .v2-results-stat-value.uma1 {
   color: #4a9eff;
 }
@@ -2957,7 +2962,7 @@ body {
 
 .v2-uma-epithet {
   font-size: var(--font-base);
-  color: var(--color-text-tertiary);
+  color: var(--color-text);
   letter-spacing: 0.02em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3096,6 +3101,10 @@ body {
   width: 20px;
   height: 20px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.light .v2-stat-type-icon {
+  filter: invert(1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .v2-stat-label {
@@ -3671,21 +3680,30 @@ body {
 
 /* Skill rarity colors */
 .v2-skill-chip.skill-white {
-  border-left: 3px solid #9ca3af;
+  border: 1px solid #9ca3af;
 }
 
 .v2-skill-chip.skill-gold {
-  border-left: 3px solid #f59e0b;
+  border: 1px solid #f59e0b;
   background: linear-gradient(90deg, rgba(245, 158, 11, 0.08) 0%, var(--color-surface-overlay) 40%);
 }
 
 .v2-skill-chip.skill-unique {
-  border-left: 3px solid #ec4899;
-  background: linear-gradient(90deg, rgba(236, 72, 153, 0.08) 0%, var(--color-surface-overlay) 40%);
+  border: 1px solid #ec4899;
+  background: 
+    linear-gradient(90deg, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+    linear-gradient(270deg, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+    var(--color-surface-overlay);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.v2-skill-chip.skill-unique:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
 }
 
 .v2-skill-chip.skill-pink {
-  border-left: 3px solid #a855f7;
+  border: 1px solid #a855f7;
   background: linear-gradient(90deg, rgba(168, 85, 247, 0.08) 0%, var(--color-surface-overlay) 40%);
 }
 
@@ -4056,15 +4074,15 @@ body {
 
 /* Rarity indicators in picker */
 .v2-skill-picker-item.skill-gold {
-  border-left: 3px solid #f59e0b;
+  border: 1px solid #f59e0b;
 }
 
 .v2-skill-picker-item.skill-unique {
-  border-left: 3px solid #ec4899;
+  border: 1px solid #ec4899;
 }
 
 .v2-skill-picker-item.skill-pink {
-  border-left: 3px solid #a855f7;
+  border: 1px solid #a855f7;
 }
 
 .v2-skill-picker-empty {
