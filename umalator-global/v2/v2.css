@@ -5889,11 +5889,6 @@ body {
     top: unset;
   }
 
-  /* Hide moo sound toggle on mobile */
-  .mooSoundToggle {
-    display: none;
-  }
-
   /* Uma panel stats grid - 3 columns on mobile for readability */
   .v2-stats-grid {
     grid-template-columns: repeat(3, 1fr);

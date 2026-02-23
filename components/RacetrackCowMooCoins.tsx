@@ -19,7 +19,6 @@ interface RacetrackCowMooCoinsProps {
 // MooCoin config
 const MOOCOIN_STORAGE_KEY = 'moomoocord_moocoins';
 const MICROCOIN_PER_COIN = 300000; // ~5 minutes of walking at 1 microcoin per ms
-const MOO_SOUND_ENABLED_KEY = 'moomoocord_moo_sound';
 const INVESTMENTS_STORAGE_KEY = 'moomoocord_investments';
 
 // Investment types
@@ -151,22 +150,6 @@ function parseWalletAddress(address: string): { coins: number; microCoins: numbe
 	return null;
 }
 
-function isMooSoundEnabled(): boolean {
-	try {
-		return localStorage.getItem(MOO_SOUND_ENABLED_KEY) !== 'false';
-	} catch {
-		return true;
-	}
-}
-
-function setMooSoundEnabled(enabled: boolean): void {
-	try {
-		localStorage.setItem(MOO_SOUND_ENABLED_KEY, String(enabled));
-	} catch {
-		// Ignore
-	}
-}
-
 function loadInvestments(): Investments {
 	try {
 		const stored = localStorage.getItem(INVESTMENTS_STORAGE_KEY);
@@ -216,7 +199,6 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 	const microCoinsRef = useRef(savedCoins.current.microCoins);
 	const [floatingCoins, setFloatingCoins] = useState<FloatingCoin[]>([]);
 	const [confetti, setConfetti] = useState<ConfettiParticle[]>([]);
-	const [mooSoundOn, setMooSoundOn] = useState(isMooSoundEnabled);
 	const floatingCoinIdRef = useRef(0);
 	const confettiIdRef = useRef(0);
 	const lastSaveRef = useRef(Date.now());
@@ -230,20 +212,6 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 
 	// Wallet toast state
 	const [walletToast, setWalletToast] = useState<string | null>(null);
-
-	// Moo sound audio element (lazy loaded)
-	const mooAudioRef = useRef<HTMLAudioElement | null>(null);
-
-	// Play moo sound
-	const playMoo = useCallback(() => {
-		if (!mooSoundOn) return;
-		if (!mooAudioRef.current) {
-			mooAudioRef.current = new Audio('/uma-tools/icons/cow/moo.mp3');
-			mooAudioRef.current.volume = 0.3;
-		}
-		mooAudioRef.current.currentTime = 0;
-		mooAudioRef.current.play().catch(() => {});
-	}, [mooSoundOn]);
 
 	// Spawn confetti burst
 	const spawnConfetti = useCallback((x: number) => {
@@ -278,21 +246,11 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 		}]);
 
 		spawnConfetti(cowX);
-		playMoo();
 
 		setTimeout(() => {
 			setFloatingCoins(prev => prev.slice(1));
 		}, 1500);
-	}, [spawnConfetti, playMoo]);
-
-	// Toggle moo sound
-	const toggleMooSound = useCallback(() => {
-		setMooSoundOn(prev => {
-			const newVal = !prev;
-			setMooSoundEnabled(newVal);
-			return newVal;
-		});
-	}, []);
+	}, [spawnConfetti]);
 
 	// Buy/sell coins at market price
 	const buyCoin = useCallback((coin: keyof Investments) => {
@@ -468,13 +426,6 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 					<span className="mooCoinLabel">MooCoins</span>
 					{walletToast && <span className="walletToast">{walletToast}</span>}
 				</div>
-				<button
-					className={`mooSoundToggle ${mooSoundOn ? 'on' : 'off'}`}
-					onClick={(e) => { e.stopPropagation(); toggleMooSound(); }}
-					title={mooSoundOn ? 'Moo sound: ON' : 'Moo sound: OFF'}
-				>
-					{mooSoundOn ? '🔊' : '🔇'}
-				</button>
 
 				{/* Market panel */}
 				<div className={`marketPanel ${marketExpanded ? 'expanded' : ''}`}>

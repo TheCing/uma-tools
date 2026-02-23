@@ -105,31 +105,6 @@
 	}
 }
 
-/* Sound toggle button - outside counter, hidden until hover */
-.mooSoundToggle {
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 12px;
-	padding: 4px;
-	opacity: 0;
-	transition: opacity 0.2s, transform 0.2s;
-	border-radius: 4px;
-}
-
-.mooCoinCounterWrapper:hover .mooSoundToggle {
-	opacity: 0.7;
-}
-
-.mooCoinCounterWrapper:hover .mooSoundToggle.off {
-	opacity: 0.4;
-}
-
-.mooSoundToggle:hover {
-	opacity: 1 !important;
-	transform: scale(1.1);
-}
-
 /* Floating +1 coin animation */
 .floatingCoin {
 	position: absolute;
@@ -213,10 +188,6 @@
 
 	.mooCoinIcon {
 		font-size: 12px;
-	}
-
-	.mooSoundToggle {
-		font-size: 10px;
 	}
 
 	.floatingCoin {
