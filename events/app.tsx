@@ -47,16 +47,46 @@ interface UpcomingBanner {
 
 const UPCOMING_BANNERS: UpcomingBanner[] = [
   {
+    // Valentine's banner (currently active)
     startDate: '2026-02-18T22:00:00Z',
-    endDate: '2026-02-26T21:59:00Z',
-    characters: [
-      '[CODE: ICING] Mihono Bourbon',
-      '[Precise Chocolatier] Eishin Flash',
-    ],
-    supports: [
-      '[Little Cupcakes, Big Emotions] Nishino Flower',
-      '[Super! Sonic! Flower Power!] Sakura Bakushin O',
-    ],
+    endDate: '2026-03-01T21:59:00Z',
+    characters: ['[CODE: ICING] Mihono Bourbon', '[Precise Chocolatier] Eishin Flash'],
+    supports: ['[Little Cupcakes, Big Emotions] Nishino Flower', '[Super! Sonic! Flower Power!] Sakura Bakushin O'],
+  },
+  {
+    // Mejiro Ardan banner
+    startDate: '2026-02-25T22:00:00Z',
+    endDate: '2026-03-05T21:59:00Z',
+    characters: ['Mejiro Ardan'],
+    supports: ['Agnes Digital (Power SSR)', 'Ines Fujin (Wit SR)'],
+  },
+  {
+    // Trackblazer scenario launch - Admire Vega
+    startDate: '2026-03-04T22:00:00Z',
+    endDate: '2026-03-14T21:59:00Z',
+    characters: ['Admire Vega'],
+    supports: ['Fine Motion (Wit SSR)', 'Kawakami Princess (Speed SSR)'],
+  },
+  {
+    // Trackblazer scenario - Kitasan Black & Matikanetannhauser
+    startDate: '2026-03-04T22:00:00Z',
+    endDate: '2026-03-14T21:59:00Z',
+    characters: ['Kitasan Black', 'Matikanetannhauser'],
+    supports: ['Narita Top Road (Speed SSR)', 'Admire Vega (Guts SR)'],
+  },
+  {
+    // Satono Diamond
+    startDate: '2026-03-18T22:00:00Z',
+    endDate: '2026-03-28T21:59:00Z',
+    characters: ['Satono Diamond'],
+    supports: ['Marvelous Sunday (Guts SSR)', 'Curren Chan (Speed SR)'],
+  },
+  {
+    // Mejiro Bright
+    startDate: '2026-03-25T22:00:00Z',
+    endDate: '2026-04-04T21:59:00Z',
+    characters: ['Mejiro Bright'],
+    supports: ['Zenno Rob Roy (Speed SSR)', 'Curren Chan (Wit SSR)'],
   },
 ];
 
@@ -793,24 +823,38 @@ function App() {
         {nextEvent ? (
           <>
             {/* Column 1: Current Banners */}
-            {banners && (() => {
+            {(() => {
               const now = Date.now();
-              const validCharBanners = banners.characters.filter(b =>
+
+              // Get banners from GameTora API
+              const validCharBanners = banners?.characters.filter(b =>
                 b.pickupIds?.some(id => banners.charLookup[id]) &&
                 b.endDate && new Date(b.endDate).getTime() > now
-              );
-              const validSupportBanners = banners.supports.filter(b =>
+              ) ?? [];
+              const validSupportBanners = banners?.supports.filter(b =>
                 b.pickupIds?.some(id => banners.supportLookup[id]) &&
                 b.endDate && new Date(b.endDate).getTime() > now
-              );
+              ) ?? [];
+
+              const hasGameToraBanners = validCharBanners.length > 0 || validSupportBanners.length > 0;
+
+              // Fallback: Get currently active banners from UPCOMING_BANNERS
+              const activeFallbackBanners = UPCOMING_BANNERS.filter(b => {
+                const start = new Date(b.startDate).getTime();
+                const end = new Date(b.endDate).getTime();
+                return start <= now && end > now;
+              });
+
+              // Don't show section if no banners from either source
+              if (!hasGameToraBanners && activeFallbackBanners.length === 0) {
+                return null;
+              }
 
               return (
                 <section class="events-section current-banners">
                   <div class="banners-section-card">
                     <h2 class="section-title">Current Banners</h2>
-                    {validCharBanners.length === 0 && validSupportBanners.length === 0 ? (
-                      <p class="no-banners">No active banners</p>
-                    ) : (
+                    {hasGameToraBanners ? (
                       <div class="banners-grid">
                         {validCharBanners.map(banner => (
                           <a
@@ -851,6 +895,35 @@ function App() {
                               <span class="banner-timer">{formatBannerEndDate(banner.endDate)}</span>
                             </div>
                           </a>
+                        ))}
+                      </div>
+                    ) : (
+                      /* Fallback: show manually maintained banners */
+                      <div class="fallback-banners-list">
+                        {activeFallbackBanners.map((banner, i) => (
+                          <div key={i} class="fallback-banner-item">
+                            <div class="fallback-banner-timer">
+                              {formatBannerEndDate(banner.endDate)}
+                            </div>
+                            <div class="fallback-banner-content">
+                              <div class="fallback-banner-group">
+                                <span class="upcoming-banner-type char">Characters</span>
+                                <ul class="upcoming-banner-names">
+                                  {banner.characters.map((name, j) => (
+                                    <li key={j}>{name}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div class="fallback-banner-group">
+                                <span class="upcoming-banner-type support">Supports</span>
+                                <ul class="upcoming-banner-names">
+                                  {banner.supports.map((name, j) => (
+                                    <li key={j}>{name}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                         ))}
                       </div>
                     )}

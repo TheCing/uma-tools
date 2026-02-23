@@ -925,6 +925,51 @@ body {
 }
 
 /* ============================================
+   FALLBACK BANNERS (when GameTora API unavailable)
+   ============================================ */
+
+.fallback-banners-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.fallback-banner-item {
+  padding: var(--space-md) 0;
+}
+
+.fallback-banner-item:first-child {
+  padding-top: 0;
+}
+
+.fallback-banner-item:last-child {
+  padding-bottom: 0;
+}
+
+.fallback-banner-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.fallback-banner-timer {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.fallback-banner-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.fallback-banner-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* ============================================
    UPCOMING BANNERS
    ============================================ */
 
