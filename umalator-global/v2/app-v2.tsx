@@ -2008,6 +2008,25 @@ function App() {
                       />
                     </div>
                     <div class="v2-mobile-settings-section">
+                      <h4>Simulation</h4>
+                      <SimulationSettings
+                        samples={samples}
+                        setSamples={setSamples}
+                        seed={seed}
+                        setSeed={setSeed}
+                        syncRng={syncRng}
+                        setSyncRng={setSyncRng}
+                        skillWisdomCheck={skillWisdomCheck}
+                        setSkillWisdomCheck={setSkillWisdomCheck}
+                        rushedKakari={rushedKakari}
+                        setRushedKakari={setRushedKakari}
+                        leadCompetition={leadCompetition}
+                        setLeadCompetition={setLeadCompetition}
+                        competeFight={competeFight}
+                        setCompeteFight={setCompeteFight}
+                      />
+                    </div>
+                    <div class="v2-mobile-settings-section">
                       <h4>Appearance</h4>
                       <div class="v2-mobile-settings-row">
                         <label>{darkMode ? "Dark Mode" : "Light Mode"}</label>

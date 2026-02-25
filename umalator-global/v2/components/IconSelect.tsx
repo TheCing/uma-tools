@@ -55,10 +55,11 @@ export function IconSelect({
 	useLayoutEffect(() => {
 		if (isOpen && triggerRef.current) {
 			const rect = triggerRef.current.getBoundingClientRect();
+			const isMobile = window.innerWidth <= 768;
 			setPosition({
 				top: rect.bottom + 4,
 				left: rect.left,
-				width: horizontal ? Math.max(rect.width, options.length * (iconSize + 8) + 16) : rect.width
+				width: isMobile ? 0 : (horizontal ? Math.max(rect.width, options.length * (iconSize + 8) + 16) : rect.width)
 			});
 		}
 	}, [isOpen, horizontal, options.length, iconSize]);
@@ -90,15 +91,22 @@ export function IconSelect({
 		}
 	}, [isOpen]);
 
+	useEffect(() => {
+		if (!isOpen) return;
+		function handleScroll() { setIsOpen(false); }
+		window.addEventListener('scroll', handleScroll, true);
+		return () => window.removeEventListener('scroll', handleScroll, true);
+	}, [isOpen]);
+
 	const dropdownContent = isOpen && position && createPortal(
 		<div
 			ref={dropdownRef}
-			class={`v2-icon-select-dropdown ${horizontal ? 'horizontal' : 'vertical'}`}
+			class={`v2-icon-select-dropdown ${(horizontal && position.width > 0) ? 'horizontal' : 'vertical'}`}
 			style={{
 				position: 'fixed',
 				top: `${position.top}px`,
 				left: `${position.left}px`,
-				minWidth: `${position.width}px`
+				...(position.width > 0 ? { minWidth: `${position.width}px` } : {})
 			}}
 		>
 			{options.map(option => (

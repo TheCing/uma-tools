@@ -553,11 +553,11 @@ body {
   justify-content: center;
 }
 
-.v2-icon-group button:first-child {
+.v2-icon-group > :first-child button {
   border-radius: calc(var(--radius-sm) - 1px) 0 0 calc(var(--radius-sm) - 1px);
 }
 
-.v2-icon-group button:last-child {
+.v2-icon-group > :last-child button {
   border-radius: 0 calc(var(--radius-sm) - 1px) calc(var(--radius-sm) - 1px) 0;
 }
 
@@ -5632,6 +5632,7 @@ body {
   top: 0;
   z-index: 10;
   background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .v2-mobile-settings-header h3 {
@@ -5865,6 +5866,40 @@ body {
     flex-shrink: 0;
   }
 
+  .v2-mobile-settings .v2-mode-toggle {
+    width: 100%;
+  }
+
+  .v2-mobile-settings .v2-mode-toggle button {
+    flex: 1;
+  }
+
+  .v2-mobile-settings .v2-sim-settings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: 0;
+    background: none;
+    border: none;
+  }
+
+  .v2-mobile-settings .v2-sim-settings-group {
+    width: 100%;
+  }
+
+  .v2-mobile-settings .v2-sim-seed-input {
+    width: 160px;
+  }
+
+  .v2-mobile-settings .v2-sim-toggles {
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-lg);
+  }
+
+  .v2-mobile-settings .v2-sim-divider {
+    display: none;
+  }
+
   /* Hide backdrop on mobile - drawers are full-screen */
   .v2-backdrop {
     display: none;
@@ -5951,6 +5986,11 @@ body {
   .v2-skill-chip-name {
     font-size: var(--font-md);
   }
+
+  .v2-tooltip {
+    display: none !important;
+  }
+
 }
 
 /* ============================================
