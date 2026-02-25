@@ -282,60 +282,6 @@
     var(--color-bg);
 }
 
-/* Still In Love - Yandere Theme (Easter Egg) */
-@keyframes yandere-pulse {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-#app-v2.yandere {
-  --color-primary: #dc2626;
-  --color-primary-hover: #ef4444;
-  --color-primary-muted: #b91c1c;
-  --color-primary-glow: rgba(220, 38, 38, 0.3);
-  --color-primary-glow-strong: rgba(220, 38, 38, 0.5);
-  --color-primary-text: #fff;
-  background:
-    radial-gradient(
-      ellipse 80% 50% at 50% -20%,
-      rgba(220, 38, 38, 0.08) 0%,
-      transparent 50%
-    ),
-    var(--color-bg);
-}
-
-#app-v2.yandere::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  box-shadow: inset 0 0 60px rgba(220, 38, 38, 0.25);
-  animation: yandere-pulse 3s ease-in-out infinite;
-  z-index: 9999;
-}
-
-#app-v2.yandere.light {
-  --color-primary: #b91c1c;
-  --color-primary-hover: #991b1b;
-  --color-primary-glow: rgba(185, 28, 28, 0.25);
-  --color-primary-glow-strong: rgba(185, 28, 28, 0.4);
-  background:
-    radial-gradient(
-      ellipse 80% 50% at 50% -20%,
-      rgba(185, 28, 28, 0.06) 0%,
-      transparent 50%
-    ),
-    var(--color-bg);
-}
-
-#app-v2.yandere.light::before {
-  box-shadow: inset 0 0 60px rgba(185, 28, 28, 0.2);
-}
-
 /* ============================================
    BASE
    ============================================ */
