@@ -269,8 +269,42 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 		>
 			{step === 'upload' ? (
 				<div class="v2-ocr-upload">
-					{/* API Key Section */}
-					{!OCR_PROXY_URL && (
+					{/* API Key Section - collapsible, auto-opens if key is saved */}
+					{OCR_PROXY_URL ? (
+						<details class="v2-ocr-section v2-ocr-details" open={!!apiKey}>
+							<summary class="v2-ocr-summary">
+								Use your own Gemini API Key <span class="v2-ocr-optional">(optional)</span>
+							</summary>
+							<div class="v2-ocr-details-content">
+								<div class="v2-ocr-api-row">
+									<input
+										type="password"
+										class="v2-ocr-input"
+										placeholder="Enter your Gemini API key"
+										value={apiKey}
+										onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
+									/>
+									<label class="v2-ocr-checkbox">
+										<input
+											type="checkbox"
+											checked={saveApiKey}
+											onChange={(e) => setSaveApiKey((e.target as HTMLInputElement).checked)}
+										/>
+										<span>Save key</span>
+									</label>
+								</div>
+								<a
+									class="v2-ocr-api-link"
+									href="https://aistudio.google.com/app/apikey"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<ExternalLink size={12} />
+									Get a free API key from Google AI Studio
+								</a>
+							</div>
+						</details>
+					) : (
 						<div class="v2-ocr-section">
 							<label class="v2-ocr-label">Gemini API Key</label>
 							<div class="v2-ocr-api-row">

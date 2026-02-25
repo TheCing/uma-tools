@@ -344,7 +344,8 @@ async function callGeminiDirect(requestBody: any, apiKey: string): Promise<Respo
 }
 
 async function callGeminiProxy(requestBody: any): Promise<Response> {
-	return fetch(OCR_PROXY_URL, {
+	const url = OCR_PROXY_URL.endsWith('/gemini') ? OCR_PROXY_URL : OCR_PROXY_URL.replace(/\/?$/, '/gemini');
+	return fetch(url, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(requestBody),

@@ -6,7 +6,7 @@
  *   POST /gemini   - Gemini OCR proxy (screenshot parsing)
  */
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',

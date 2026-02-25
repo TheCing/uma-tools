@@ -1,4 +1,4 @@
-import { defineConfig, Plugin } from 'vite';
+import { defineConfig, loadEnv, Plugin } from 'vite';
 import preact from '@preact/preset-vite';
 import path from 'path';
 import fs from 'fs';
@@ -70,7 +70,11 @@ function serveUmaToolsAssets(): Plugin {
   };
 }
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  // Load .env.local vars so OCR_PROXY_URL is available in process.env
+  const env = loadEnv(mode, __dirname, '');
+
+  return {
   plugins: [redirectDataFiles(), preact(), serveUmaToolsAssets()],
 
   // Use relative paths for flexible deployment at /v2 or /umalator-global/v2
@@ -107,7 +111,7 @@ export default defineConfig(({ mode }) => ({
   define: {
     CC_DEBUG: mode === 'development' ? 'true' : 'false',
     CC_GLOBAL: 'true',
-    CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''),
+    CC_OCR_PROXY: JSON.stringify(env.OCR_PROXY_URL || ''),
   },
 
   // Optimize dependencies
@@ -135,4 +139,5 @@ export default defineConfig(({ mode }) => ({
       }
     }
   }
-}));
+};
+});
