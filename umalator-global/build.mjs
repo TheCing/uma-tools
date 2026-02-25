@@ -102,7 +102,7 @@ const buildOptions = {
 	minify: !debug,
 	outdir: '.',
 	write: !serve,
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true'},
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || '')},
 	external: ['*.ttf'],
 	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin],
 };
@@ -116,7 +116,7 @@ const buildOptionsV2 = {
 	minify: !debug,
 	outdir: '.',
 	write: !serve,
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true'},
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || '')},
 	external: ['*.ttf'],
 	plugins: [redirectData, mockAssert, seedrandomPlugin],  // No redirectTable - use npm packages
 };

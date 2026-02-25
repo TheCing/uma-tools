@@ -107,6 +107,7 @@ export default defineConfig(({ mode }) => ({
   define: {
     CC_DEBUG: mode === 'development' ? 'true' : 'false',
     CC_GLOBAL: 'true',
+    CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''),
   },
 
   // Optimize dependencies

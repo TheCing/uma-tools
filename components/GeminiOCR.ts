@@ -14,6 +14,10 @@ import umas from '../umalator-global/umas.json';
 
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
+// OCR proxy URL set via esbuild define (CC_OCR_PROXY)
+declare const CC_OCR_PROXY: string;
+export const OCR_PROXY_URL: string = typeof CC_OCR_PROXY !== 'undefined' ? CC_OCR_PROXY : '';
+
 // Build a map from normalized skill names to arrays of skill IDs
 // Each skill may have multiple IDs (different grades, inherited vs base versions)
 const skillNameMap: Map<string, string[]> = new Map();
@@ -271,101 +275,113 @@ Examples:
 - "Dancing in the Leaves Lvl 4" (HAS level) = unique skill
 - "Dancing in the Leaves" (NO level) = inherited skill`;
 
+function buildRequestBody(imageBase64: string, mimeType: string) {
+	return {
+		contents: [{
+			parts: [
+				{ inline_data: { mime_type: mimeType, data: imageBase64 } },
+				{ text: EXTRACTION_PROMPT }
+			]
+		}],
+		generationConfig: {
+			temperature: 0.1,
+			topK: 1,
+			topP: 0.8,
+			maxOutputTokens: 4096,
+		}
+	};
+}
+
+function parseGeminiResponse(result: any): OCRResult {
+	const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+	if (!textContent) {
+		throw new Error('No response content from Gemini API');
+	}
+
+	let jsonStr = textContent.trim();
+
+	if (jsonStr.startsWith('```json')) {
+		jsonStr = jsonStr.slice(7);
+	} else if (jsonStr.startsWith('```')) {
+		jsonStr = jsonStr.slice(3);
+	}
+	if (jsonStr.endsWith('```')) {
+		jsonStr = jsonStr.slice(0, -3);
+	}
+	jsonStr = jsonStr.trim();
+
+	if (!jsonStr.endsWith('}')) {
+		console.error('Truncated JSON response:', jsonStr);
+		throw new Error(`AI response appears truncated (doesn't end with }). This may be due to token limits or API issues.\n\nReceived ${jsonStr.length} characters. Response ends with: "${jsonStr.slice(-50)}"`);
+	}
+
+	let horseData: OCRHorseData;
+	try {
+		horseData = JSON.parse(jsonStr);
+	} catch (parseError) {
+		console.error('Failed to parse JSON response:', jsonStr);
+		throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}\n\nRaw response (first 200 chars):\n${jsonStr.slice(0, 200)}...`);
+	}
+
+	if (typeof horseData.speed !== 'number' ||
+		typeof horseData.stamina !== 'number' ||
+		typeof horseData.power !== 'number' ||
+		typeof horseData.guts !== 'number' ||
+		typeof horseData.wisdom !== 'number') {
+		throw new Error('Invalid stat values in response');
+	}
+
+	return { success: true, data: horseData, rawResponse: textContent };
+}
+
+async function callGeminiDirect(requestBody: any, apiKey: string): Promise<Response> {
+	return fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(requestBody),
+	});
+}
+
+async function callGeminiProxy(requestBody: any): Promise<Response> {
+	return fetch(OCR_PROXY_URL, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(requestBody),
+	});
+}
+
 export async function extractHorseDataFromImage(
 	imageBase64: string,
 	mimeType: string,
 	apiKey: string
 ): Promise<OCRResult> {
-	try {
-		const requestBody = {
-			contents: [{
-				parts: [
-					{
-						inline_data: {
-							mime_type: mimeType,
-							data: imageBase64
-						}
-					},
-					{
-						text: EXTRACTION_PROMPT
-					}
-				]
-			}],
-			generationConfig: {
-				temperature: 0.1,
-				topK: 1,
-				topP: 0.8,
-				maxOutputTokens: 4096,  // Increased to prevent truncation
-			}
-		};
+	const requestBody = buildRequestBody(imageBase64, mimeType);
 
-		const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(requestBody)
-		});
+	// Try server proxy first (no user key needed)
+	if (OCR_PROXY_URL) {
+		try {
+			const response = await callGeminiProxy(requestBody);
+			if (response.ok) {
+				return parseGeminiResponse(await response.json());
+			}
+			// Proxy failed (rate limit, misconfigured, etc.) — fall through to direct
+			console.warn('OCR proxy returned', response.status, '— falling back to user key');
+		} catch (err) {
+			console.warn('OCR proxy unreachable — falling back to user key');
+		}
+	}
+
+	// Fall back to direct API call with user's key
+	try {
+		const response = await callGeminiDirect(requestBody, apiKey);
 
 		if (!response.ok) {
 			const errorData = await response.json().catch(() => ({}));
-			throw new Error(errorData.error?.message || `API request failed with status ${response.status}`);
+			throw new Error((errorData as any).error?.message || `API request failed with status ${response.status}`);
 		}
 
-		const result = await response.json();
-
-		// Extract the text response
-		const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-		if (!textContent) {
-			throw new Error('No response content from Gemini API');
-		}
-
-		// Try to parse the JSON from the response
-		// Sometimes the model might wrap it in markdown code blocks
-		let jsonStr = textContent.trim();
-
-		// Remove markdown code blocks if present
-		if (jsonStr.startsWith('```json')) {
-			jsonStr = jsonStr.slice(7);
-		} else if (jsonStr.startsWith('```')) {
-			jsonStr = jsonStr.slice(3);
-		}
-		if (jsonStr.endsWith('```')) {
-			jsonStr = jsonStr.slice(0, -3);
-		}
-		jsonStr = jsonStr.trim();
-
-		// Check if JSON looks truncated (doesn't end with closing brace)
-		if (!jsonStr.endsWith('}')) {
-			console.error('Truncated JSON response:', jsonStr);
-			throw new Error(`AI response appears truncated (doesn't end with }). This may be due to token limits or API issues.\n\nReceived ${jsonStr.length} characters. Response ends with: "${jsonStr.slice(-50)}"`);
-		}
-
-		let horseData: OCRHorseData;
-		try {
-			horseData = JSON.parse(jsonStr);
-		} catch (parseError) {
-			// JSON parsing failed - show the raw response for debugging
-			console.error('Failed to parse JSON response:', jsonStr);
-			throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}\n\nRaw response (first 200 chars):\n${jsonStr.slice(0, 200)}...`);
-		}
-
-		// Validate required fields
-		if (typeof horseData.speed !== 'number' ||
-			typeof horseData.stamina !== 'number' ||
-			typeof horseData.power !== 'number' ||
-			typeof horseData.guts !== 'number' ||
-			typeof horseData.wisdom !== 'number') {
-			throw new Error('Invalid stat values in response');
-		}
-
-		return {
-			success: true,
-			data: horseData,
-			rawResponse: textContent
-		};
-
+		return parseGeminiResponse(await response.json());
 	} catch (error) {
 		return {
 			success: false,
