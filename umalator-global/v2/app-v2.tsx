@@ -213,6 +213,9 @@ function App() {
   );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
+  // Easter egg: "STILL" triggers yandere mode
+  const [yandereMode, setYandereMode] = useState(false);
+
   // Simulation settings
   const [samples, setSamples] = useState(savedSession.current?.samples ?? 500);
   const [mode, setMode] = useState<"compare" | "skill">(
@@ -418,6 +421,37 @@ function App() {
   useEffect(() => {
     savePreferences({ darkMode, colorPalette, uiScale });
   }, [darkMode, colorPalette, uiScale]);
+
+  // Easter egg: detect "STILL" typed outside input fields
+  useEffect(() => {
+    let buffer = '';
+    const TARGET = 'STILL';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
+      // Only track letter keys
+      if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+        buffer += e.key.toUpperCase();
+        // Keep only last N characters
+        if (buffer.length > TARGET.length) {
+          buffer = buffer.slice(-TARGET.length);
+        }
+        // Check for match
+        if (buffer === TARGET) {
+          setYandereMode(prev => !prev);
+          buffer = '';
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Load state from URL on mount (supports ?preset=X and hash-based state)
   useEffect(() => {
@@ -1053,7 +1087,7 @@ function App() {
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
-            class={`${darkMode ? "" : "light"} ${colorPalette !== 'uma-green' ? colorPalette : ''} ${showNotification ? "v2-has-notification" : ""}`}
+            class={`${darkMode ? "" : "light"} ${yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
             {/* NOTIFICATION BANNER */}
