@@ -373,6 +373,15 @@ export async function extractHorseDataFromImage(
 	}
 
 	// Fall back to direct API call with user's key
+	if (!apiKey) {
+		return {
+			success: false,
+			error: OCR_PROXY_URL
+				? 'OCR server is temporarily unavailable. Please try again later or provide your own Gemini API key.'
+				: 'Please enter your Gemini API key.',
+		};
+	}
+
 	try {
 		const response = await callGeminiDirect(requestBody, apiKey);
 
