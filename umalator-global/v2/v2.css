@@ -4679,6 +4679,30 @@ body {
   cursor: pointer;
 }
 
+.v2-ocr-details {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0;
+}
+
+.v2-ocr-summary {
+  cursor: pointer;
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  user-select: none;
+  list-style: revert;
+}
+
+.v2-ocr-summary:hover {
+  color: var(--color-text);
+}
+
+.v2-ocr-details-content {
+  padding: 0 var(--space-md) var(--space-md);
+}
+
 .v2-ocr-optional {
   font-weight: 400;
   color: var(--color-text-muted);
