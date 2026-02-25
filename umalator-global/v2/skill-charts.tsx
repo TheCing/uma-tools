@@ -1,6 +1,9 @@
 /**
  * Chart components for Skill Chart mode
  *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ *
  * Ported from umalator/app.tsx for v2
  * Includes: Histogram, BarChart, LengthDifferenceChart, ActivationFrequencyChart
  */

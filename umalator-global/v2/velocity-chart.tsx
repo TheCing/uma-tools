@@ -1,6 +1,9 @@
 /**
  * V2 Velocity Chart
  * Displays velocity and HP curves for both umas over the race distance
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';

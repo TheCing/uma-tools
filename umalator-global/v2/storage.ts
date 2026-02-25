@@ -1,6 +1,9 @@
 /**
  * V2 Storage Utilities
  * Save/load horse configurations to localStorage and JSON export/import
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { UmaState, defaultUmaState } from './uma-panel';
@@ -374,11 +377,18 @@ export function clearSession(): void {
 // ============================================
 
 /**
+ * Valid color palette names
+ */
+export type ColorPalette = 'uma-green' | 'sage-green' | 'vibrant-coral' | 'majorelle-blue' | 'alice-blue' | 'vintage-grape';
+
+export const COLOR_PALETTES: ColorPalette[] = ['uma-green', 'sage-green', 'vibrant-coral', 'majorelle-blue', 'alice-blue', 'vintage-grape'];
+
+/**
  * User preferences that persist across sessions
  */
 export interface Preferences {
 	darkMode: boolean;
-	classicGreen: boolean;
+	colorPalette: ColorPalette;
 	notificationDismissed: boolean;
 	tourCompleted: boolean;
 	uiScale: number; // UI scale percentage (80-120, default 100)
@@ -386,7 +396,7 @@ export interface Preferences {
 
 const DEFAULT_PREFERENCES: Preferences = {
 	darkMode: true,
-	classicGreen: false,
+	colorPalette: 'sage-green',
 	notificationDismissed: false,
 	tourCompleted: false,
 	uiScale: 100,
@@ -416,9 +426,19 @@ export function loadPreferences(): Preferences {
 		if (!stored) return DEFAULT_PREFERENCES;
 
 		const json = JSON.parse(stored);
+
+		// Migrate old classicGreen boolean to colorPalette string
+		let colorPalette: ColorPalette = DEFAULT_PREFERENCES.colorPalette;
+		if (typeof json.colorPalette === 'string' && COLOR_PALETTES.includes(json.colorPalette)) {
+			colorPalette = json.colorPalette;
+		} else if (typeof json.classicGreen === 'boolean') {
+			// Migration: old classicGreen=true -> sage-green
+			colorPalette = json.classicGreen ? 'sage-green' : 'uma-green';
+		}
+
 		return {
 			darkMode: typeof json.darkMode === 'boolean' ? json.darkMode : DEFAULT_PREFERENCES.darkMode,
-			classicGreen: typeof json.classicGreen === 'boolean' ? json.classicGreen : DEFAULT_PREFERENCES.classicGreen,
+			colorPalette,
 			notificationDismissed: typeof json.notificationDismissed === 'boolean' ? json.notificationDismissed : DEFAULT_PREFERENCES.notificationDismissed,
 			tourCompleted: typeof json.tourCompleted === 'boolean' ? json.tourCompleted : DEFAULT_PREFERENCES.tourCompleted,
 			uiScale: typeof json.uiScale === 'number' && json.uiScale >= 80 && json.uiScale <= 120 ? json.uiScale : DEFAULT_PREFERENCES.uiScale,

@@ -223,6 +223,7 @@ function runChart({ skills, course, racedef, uma, pacer, options, skillmeta, wor
 	// - max > 0.1L: skill shows meaningful positive gain
 	// - variance > 0.1L: skill needs more samples for accuracy
 	// This combines kachi's round 1 and round 2 filters into one
+
 	skills = skills.filter(id => {
 		const r = results.get(id);
 		return r && r.max > 0.1 && Math.abs(r.max - r.min) > 0.1;

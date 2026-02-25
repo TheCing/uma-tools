@@ -1,6 +1,9 @@
 /**
  * v2 OCR Modal
  * Import horse data from screenshots using Google Gemini AI
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';
@@ -17,6 +20,7 @@ import {
 	mapSkillNamesToIds,
 	mapOutfitNameToId,
 	mapCharacterNameToOutfitId,
+	OCR_PROXY_URL,
 	OCRHorseData
 } from '../../components/GeminiOCR';
 
@@ -174,7 +178,7 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 			return;
 		}
 
-		if (!apiKey.trim()) {
+		if (!OCR_PROXY_URL && !apiKey.trim()) {
 			setError('Please enter your Gemini API key');
 			return;
 		}
@@ -266,35 +270,37 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 			{step === 'upload' ? (
 				<div class="v2-ocr-upload">
 					{/* API Key Section */}
-					<div class="v2-ocr-section">
-						<label class="v2-ocr-label">Gemini API Key</label>
-						<div class="v2-ocr-api-row">
-							<input
-								type="password"
-								class="v2-ocr-input"
-								placeholder="Enter your Gemini API key"
-								value={apiKey}
-								onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
-							/>
-							<label class="v2-ocr-checkbox">
+					{!OCR_PROXY_URL && (
+						<div class="v2-ocr-section">
+							<label class="v2-ocr-label">Gemini API Key</label>
+							<div class="v2-ocr-api-row">
 								<input
-									type="checkbox"
-									checked={saveApiKey}
-									onChange={(e) => setSaveApiKey((e.target as HTMLInputElement).checked)}
+									type="password"
+									class="v2-ocr-input"
+									placeholder="Enter your Gemini API key"
+									value={apiKey}
+									onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
 								/>
-								<span>Save key</span>
-							</label>
+								<label class="v2-ocr-checkbox">
+									<input
+										type="checkbox"
+										checked={saveApiKey}
+										onChange={(e) => setSaveApiKey((e.target as HTMLInputElement).checked)}
+									/>
+									<span>Save key</span>
+								</label>
+							</div>
+							<a
+								class="v2-ocr-api-link"
+								href="https://aistudio.google.com/app/apikey"
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<ExternalLink size={12} />
+								Get a free API key from Google AI Studio
+							</a>
 						</div>
-						<a
-							class="v2-ocr-api-link"
-							href="https://aistudio.google.com/app/apikey"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							<ExternalLink size={12} />
-							Get a free API key from Google AI Studio
-						</a>
-					</div>
+					)}
 
 					{/* Image Upload Section */}
 					<div class="v2-ocr-section">

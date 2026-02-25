@@ -1629,7 +1629,7 @@ function App(props) {
 	const [additionalSamplesRunCount, setAdditionalSamplesRunCount] = useState<Map<string, number>>(new Map());
 
 	const [worker1, worker2, worker3, worker4] = [1,2,3,4].map(_ => useMemo(() => {
-		const w = new Worker('./simulator.worker.js');
+		const w = new Worker('./simulator.worker.js?v=20260220a');
 		w.addEventListener('message', function (e) {
 			const {type, results, round, total, skillId, result} = e.data;
 			switch (type) {

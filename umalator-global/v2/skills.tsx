@@ -1,6 +1,9 @@
 /**
  * V2 Skills Components
  * SkillChip, SkillPickerModal, and SkillsSection
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h } from 'preact';
@@ -56,9 +59,12 @@ const filterOps: Record<string, any[]> = {
 const parsedConditions: Record<string, any[]> = {};
 Object.keys(skilldata).forEach(id => {
 	const skill = (skilldata as Record<string, any>)[id];
-	if (skill?.alternatives) {
-		parsedConditions[id] = skill.alternatives.map((ef: any) =>
-			Parser.parse(Parser.tokenize(ef.condition))
+	if (skill?.alternatives?.[0]) {
+		const condition = skill.alternatives[0].condition;
+		// Split by @ to get all triggers, parse each one
+		const triggers = condition.split('@');
+		parsedConditions[id] = triggers.map((trigger: string) =>
+			Parser.parse(Parser.tokenize(trigger))
 		);
 	}
 });
@@ -118,7 +124,7 @@ function matchConditionFilter(id: string, filterKey: string): boolean {
 	const ops = filterOps[filterKey];
 	const conditions = parsedConditions[id];
 	if (!ops || !conditions) return false;
-	return ops.some(op => conditions.some(alt => Matcher.treeMatch(op, alt)));
+	return ops.some(op => conditions.some(skillData => Matcher.treeMatch(op, skillData)));
 }
 
 // Build skill list (unsorted - sorting applied dynamically)
@@ -235,6 +241,44 @@ const LOCATION_FILTERS = [
 	{ id: 'finalstraight', label: 'F. Straight' },
 ];
 
+// Icon type filter - maps icon types to their prefixes (some icons share prefixes)
+const ICON_ID_PREFIXES: Record<string, string[]> = {
+	'1001': ['1001'],           // Speed
+	'1002': ['1002', '2018'],   // Stamina
+	'1003': ['1003'],           // Power
+	'1004': ['1004'],           // Guts
+	'1005': ['1005'],           // Wisdom
+	'1006': ['1006'],           // Acceleration
+	'2002': ['2002', '2011', '2028'],  // Position
+	'2001': ['2001', '2010', '2014', '2015', '2016', '2019', '2021', '2022', '2024', '2026', '2029', '2031', '2032', '2033'],  // Vision
+	'2004': ['2004', '2012', '2017', '2020', '2025', '2027', '2030'],  // HP Recovery
+	'2005': ['2005', '2013'],   // Lane Change
+	'2006': ['2006'],           // Pace Down
+	'2009': ['2009'],           // Start
+	'3001': ['3001'],           // Debuff Speed
+	'3002': ['3002'],           // Debuff Stamina
+	'3004': ['3004'],           // Debuff Guts
+	'3005': ['3005'],           // Debuff Wisdom
+	'3007': ['3007'],           // Debuff Vision
+	'4001': ['4001'],           // Multi-stat
+};
+
+// Icon type filters - order matches v1 for consistency
+const ICON_TYPE_FILTERS = [
+	'1001', '1002', '1003', '1004', '1005', '1006', '4001',
+	'2002', '2001', '2004', '2005', '2006', '2009',
+	'3001', '3002', '3004', '3005', '3007',
+];
+
+// Check if skill matches an icon type filter
+function matchIconType(skillId: string, iconType: string): boolean {
+	const meta = (skillmeta as Record<string, { iconId: string }>)[skillId];
+	if (!meta?.iconId) return false;
+	const prefixes = ICON_ID_PREFIXES[iconType];
+	if (!prefixes) return false;
+	return prefixes.some(p => meta.iconId.startsWith(p));
+}
+
 // ============================================
 // SKILL DETAILS HELPERS
 // ============================================
@@ -271,6 +315,30 @@ function formatEffectValue(type: number, modifier: number): string {
 	}
 }
 
+// Parse condition string into triggers and conditions
+// Condition format: "cond1&cond2&cond3@cond4&cond5" where @ separates triggers (OR) and & separates conditions (AND)
+function parseCondition(conditionStr: string): string[][] {
+	if (!conditionStr || conditionStr.trim() === '') return [[]];
+
+	// Split by @ to get triggers (OR)
+	const triggers = conditionStr.split('@');
+
+	// For each trigger, split by & to get individual conditions (AND)
+	return triggers.map(trigger => trigger.split('&').filter(c => c.trim() !== ''));
+}
+
+// Determine activation type based on condition
+function getActivationType(conditionStr: string): string {
+	// Check for random keywords (Wit Check skills)
+	const lower = conditionStr.toLowerCase();
+	if (lower.includes('_random') || lower.includes('random_')) {
+		return 'Wit Check';
+	}
+
+	// Default to Guaranteed (all other skills)
+	return 'Guaranteed';
+}
+
 // ============================================
 // SKILL CHIP - Expandable skill display
 // ============================================
@@ -285,6 +353,7 @@ interface SkillChipProps {
 
 export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, onPositionChange }: SkillChipProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const chipRef = useRef<HTMLDivElement>(null);
 	const name = getSkillName(skillId);
 	const icon = getSkillIcon(skillId);
 	const rarityClass = getSkillRarityClass(skillId);
@@ -294,8 +363,25 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 		setIsExpanded(prev => !prev);
 	}, []);
 
+	// Scroll expanded chip into view after animation
+	useEffect(() => {
+		if (isExpanded && chipRef.current) {
+			// Wait for animation to mostly complete before scrolling
+			const timer = setTimeout(() => {
+				chipRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+			}, 150);
+			return () => clearTimeout(timer);
+		}
+	}, [isExpanded]);
+
+	// Pre-compute alternatives data for animation (always render, CSS handles visibility)
+	const alternatives = skill?.alternatives;
+	const hasAlternatives = alternatives && alternatives.length > 0;
+	const hasMultipleAlternatives = alternatives && alternatives.length > 1;
+
 	return (
 		<div
+			ref={chipRef}
 			class={`v2-skill-chip ${rarityClass} ${isExpanded ? 'expanded' : ''}`}
 			onClick={handleClick}
 		>
@@ -315,63 +401,115 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 					</button>
 				)}
 			</div>
-			{isExpanded && skill && (
-				<div class="v2-skill-details" onClick={e => e.stopPropagation()}>
-					<div class="v2-skill-detail-row">
-						<span class="v2-skill-detail-label">ID:</span>
-						<span class="v2-skill-detail-value">{skillId}</span>
+			{/* Always render wrapper for smooth animation, CSS controls visibility */}
+			<div class={`v2-skill-details-wrapper ${isExpanded ? 'expanded' : ''}`}>
+				{hasAlternatives && (
+					<div class="v2-skill-details" onClick={e => e.stopPropagation()}>
+						<div class="v2-skill-detail-row">
+							<span class="v2-skill-detail-label">ID:</span>
+							<span class="v2-skill-detail-value">{skillId}</span>
+						</div>
+
+						{/* Activation Type (check all alternatives) */}
+						<div class="v2-skill-detail-row">
+							<span class="v2-skill-detail-label">Activation:</span>
+							<span class="v2-skill-detail-value">
+								{getActivationType(alternatives.map((a: any) => a.condition).join('@'))}
+							</span>
+						</div>
+
+						{/* Alternatives (true multi-trigger when alternatives.length > 1) */}
+						{alternatives.map((alt: any, altIdx: number) => {
+							// @ separates OR conditions within a single alternative (NOT separate triggers)
+							const orConditions = parseCondition(alt.condition);
+							const hasMultipleOrConditions = orConditions.length > 1;
+
+							return (
+								<div key={altIdx} class="v2-skill-alternative-block">
+									{/* Show "Trigger X" header only for true multi-trigger skills */}
+									{hasMultipleAlternatives && (
+										<div class="v2-skill-trigger-header">Trigger {altIdx + 1}</div>
+									)}
+
+									{/* Precondition */}
+									{alt.precondition && (
+										<div class="v2-skill-detail-row">
+											<span class="v2-skill-detail-label">Precondition:</span>
+											<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
+										</div>
+									)}
+
+									{/* Conditions - single code block with all conditions */}
+									<pre class="v2-skill-conditions-block">{
+										orConditions.map((conditions, orIdx) => {
+											const conditionLines = conditions.join('\n');
+											if (hasMultipleOrConditions && orIdx < orConditions.length - 1) {
+												return conditionLines + '\nOR\n';
+											}
+											return conditionLines;
+										}).join('')
+									}</pre>
+
+									{/* Duration */}
+									{alt.baseDuration > 0 && (
+										<div class="v2-skill-detail-row">
+											<span class="v2-skill-detail-label">Duration:</span>
+											<span class="v2-skill-detail-value">
+												{(alt.baseDuration / 10000).toFixed(1)} s
+												{courseDistance && ` (effective ${((alt.baseDuration / 10000) * (courseDistance / 1000)).toFixed(1)} s @ ${courseDistance}m)`}
+											</span>
+										</div>
+									)}
+
+									{/* Effects */}
+									<div class="v2-skill-effects-block">
+										{alt.effects?.map((ef: any, i: number) => (
+											<div key={i} class="v2-skill-effect-row">
+												<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
+												<span class="v2-skill-effect-text">
+													{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, ef.modifier)})
+												</span>
+											</div>
+										))}
+									</div>
+
+									{/* OR separator between alternatives */}
+									{hasMultipleAlternatives && altIdx < alternatives.length - 1 && (
+										<div class="v2-skill-alternative-or">OR</div>
+									)}
+								</div>
+							);
+						})}
+
+						{/* GameTora link (once at the end) */}
+						<a
+							href={`https://gametora.com/umamusume/skill-condition-viewer?skill=${skillId}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="v2-skill-condition-viewer-link"
+							onClick={e => e.stopPropagation()}
+						>
+							View conditions in GameTora
+						</a>
+
+						{onPositionChange && (
+							<div class="v2-skill-detail-row v2-skill-force-position">
+								<label class="v2-skill-detail-label">Force @ position (m):</label>
+								<input
+									type="number"
+									class="v2-force-position-input"
+									placeholder="Optional"
+									value={forcedPosition || ''}
+									onInput={(e) => onPositionChange((e.target as HTMLInputElement).value)}
+									onClick={(e) => e.stopPropagation()}
+									min="0"
+									step="10"
+								/>
+							</div>
+						)}
 					</div>
-					{skill.alternatives?.map((alt: any, idx: number) => (
-						<div key={idx} class="v2-skill-alternative">
-							{alt.precondition && (
-								<div class="v2-skill-detail-row">
-									<span class="v2-skill-detail-label">Precondition:</span>
-									<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
-								</div>
-							)}
-							<div class="v2-skill-detail-row">
-								<span class="v2-skill-detail-label">Condition:</span>
-								<span class="v2-skill-detail-value v2-skill-condition">{alt.condition}</span>
-							</div>
-							<div class="v2-skill-detail-row">
-								<span class="v2-skill-detail-label">Effects:</span>
-								<div class="v2-skill-effects">
-									{alt.effects?.map((ef: any, i: number) => (
-										<span key={i} class="v2-skill-effect">
-											<span class="v2-effect-type">{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`}</span>
-											<span class="v2-effect-value">{formatEffectValue(ef.type, ef.modifier)}</span>
-										</span>
-									))}
-								</div>
-							</div>
-							{alt.baseDuration > 0 && (
-								<div class="v2-skill-detail-row">
-									<span class="v2-skill-detail-label">Duration:</span>
-									<span class="v2-skill-detail-value">
-										{(alt.baseDuration / 10000).toFixed(2)}s base
-										{courseDistance && ` → ${((alt.baseDuration / 10000) * (courseDistance / 1000)).toFixed(2)}s @ ${courseDistance}m`}
-									</span>
-								</div>
-							)}
-						</div>
-					))}
-					{onPositionChange && (
-						<div class="v2-skill-detail-row v2-skill-force-position">
-							<label class="v2-skill-detail-label">Force @ position (m):</label>
-							<input
-								type="number"
-								class="v2-force-position-input"
-								placeholder="Optional"
-								value={forcedPosition || ''}
-								onInput={(e) => onPositionChange((e.target as HTMLInputElement).value)}
-								onClick={(e) => e.stopPropagation()}
-								min="0"
-								step="10"
-							/>
-						</div>
-					)}
-				</div>
-			)}
+				)}
+			</div>
 		</div>
 	);
 }
@@ -408,6 +546,9 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 		location: null,
 	});
 
+	// Icon type filter - separate toggle-based state (all active = show all)
+	const [activeIconTypes, setActiveIconTypes] = useState<Set<string>>(new Set(ICON_TYPE_FILTERS));
+
 	// Focus input when opened
 	useEffect(() => {
 		if (isOpen && inputRef.current) {
@@ -421,6 +562,30 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 			...prev,
 			[group]: prev[group] === filterId ? null : filterId,
 		}));
+	}, []);
+
+	// Toggle icon type filter (v1 behavior: multi-select, all off = show all)
+	const toggleIconType = useCallback((iconType: string) => {
+		setActiveIconTypes(prev => {
+			const allActive = prev.size === ICON_TYPE_FILTERS.length;
+			if (allActive) {
+				// If all are active, clicking one deactivates all others
+				return new Set([iconType]);
+			} else {
+				// Toggle the clicked one
+				const next = new Set(prev);
+				if (next.has(iconType)) {
+					next.delete(iconType);
+				} else {
+					next.add(iconType);
+				}
+				// If none are active, reactivate all
+				if (next.size === 0) {
+					return new Set(ICON_TYPE_FILTERS);
+				}
+				return next;
+			}
+		});
 	}, []);
 
 	// Filter and sort skills
@@ -439,11 +604,17 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 			if (activeFilters.surface && !matchConditionFilter(id, activeFilters.surface)) return false;
 			if (activeFilters.location && !matchConditionFilter(id, activeFilters.location)) return false;
 
+			// Check icon type filter (if not all active, filter by active types)
+			if (activeIconTypes.size < ICON_TYPE_FILTERS.length) {
+				const matchesAny = Array.from(activeIconTypes).some(iconType => matchIconType(id, iconType));
+				if (!matchesAny) return false;
+			}
+
 			return true;
 		});
 		// Apply sorting
 		return filtered.sort(getSortComparator(sortOption));
-	}, [searchQuery, activeFilters, sortOption]);
+	}, [searchQuery, activeFilters, activeIconTypes, sortOption]);
 
 	const handleKeyDown = useCallback((e: KeyboardEvent) => {
 		const len = filteredSkills.length;
@@ -485,6 +656,7 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 				surface: null,
 				location: null,
 			});
+			setActiveIconTypes(new Set(ICON_TYPE_FILTERS));
 		}
 	}, [isOpen]);
 
@@ -616,6 +788,25 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 							</div>
 						</div>
 					</div>
+
+					{/* Row 3: Icon Type (toggle multi-select) */}
+					<div class="v2-filter-row">
+						<div class="v2-filter-group icontype">
+							<span class="v2-filter-label">Effect</span>
+							<div class="v2-filter-chips icontype">
+								{ICON_TYPE_FILTERS.map(iconType => (
+									<button
+										key={iconType}
+										type="button"
+										class={`v2-icon-filter-btn ${activeIconTypes.has(iconType) ? 'active' : ''}`}
+										onClick={() => toggleIconType(iconType)}
+										style={{ backgroundImage: `url(/uma-tools/icons/${iconType}1.png)` }}
+										title={iconType}
+									/>
+								))}
+							</div>
+						</div>
+					</div>
 				</div>
 
 				{/* Skill list */}
@@ -685,8 +876,23 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
-		if (!skills.includes(skillId)) {
-			onChange([...skills, skillId]);
+		const newGroupId = (skillmeta as Record<string, { groupId: string }>)[skillId]?.groupId;
+		const isDebuff = (skillmeta as Record<string, { iconId: string }>)[skillId]?.iconId?.[0] === '3';
+
+		if (isDebuff) {
+			// Debuffs can be added multiple times
+			if (!skills.includes(skillId)) {
+				onChange([...skills, skillId]);
+			}
+		} else {
+			// Non-debuffs: replace any skill with the same groupId (white→gold upgrade)
+			const filtered = skills.filter(id => {
+				const existingGroupId = (skillmeta as Record<string, { groupId: string }>)[id]?.groupId;
+				return existingGroupId !== newGroupId;
+			});
+			if (!filtered.includes(skillId)) {
+				onChange([...filtered, skillId]);
+			}
 		}
 	}, [skills, onChange]);
 

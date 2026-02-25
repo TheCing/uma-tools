@@ -1,6 +1,9 @@
 /**
  * Feedback Drawer
  * Right-side drawer for submitting user feedback via Discord webhook
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h } from 'preact';
@@ -37,6 +40,39 @@ const CATEGORY_OPTIONS: SelectOption[] = [
 const COOLDOWN_MS = 60_000; // 60 seconds between submissions
 const COOLDOWN_KEY = 'umalator_feedback_cooldown';
 
+// If you're reading this code, you've probably been filtered. Get rekt or something.
+const BLOCKED_PATTERNS: RegExp[] = [
+	/\bvibe\s*cod/i,
+	/\bslop\b/i,
+	/\bai\s*generated\b/i,
+	/\bgpt\s*slop\b/i,
+	/\bllm\s*garbage\b/i,
+	/\bn[i1]gg/i,
+	/\bch[i1]nk\b/i,
+	/\bsp[i1]c\b/i,
+	/\bk[i1]ke\b/i,
+	/\bgook\b/i,
+	/\bwetback/i,
+	/\bbeaner\b/i,
+	/\bcoon\b/i,
+	/\bdarkie/i,
+	/\bpajeet/i,
+	/\bsandni/i,
+	/\btowelhead/i,
+	/\bcamel\s*jockey/i,
+	/\bf[a4]gg?[o0]t/i,
+	/\btr[a4]nn/i,
+	/\bdyke\b/i,
+	/\bretard/i,
+	/\bsperg\b/i,
+	/\bautist\b/i,
+];
+
+function containsBlockedContent(text: string): boolean {
+	const normalized = text.toLowerCase();
+	return BLOCKED_PATTERNS.some(pattern => pattern.test(normalized));
+}
+
 function getCooldownRemaining(): number {
 	const lastSubmit = localStorage.getItem(COOLDOWN_KEY);
 	if (!lastSubmit) return 0;
@@ -56,7 +92,7 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 	const [errorMessage, setErrorMessage] = useState('');
 
 	// Spam prevention
-	const [honeypot, setHoneypot] = useState(''); // Hidden field - bots fill this
+	const [honeypot, setHoneypot] = useState('');
 	const [cooldownRemaining, setCooldownRemaining] = useState(getCooldownRemaining);
 
 	// Update cooldown timer
@@ -79,22 +115,28 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 
 	const handleClose = useCallback(() => {
 		onClose();
-		// Reset form after close animation
+	}, [onClose]);
+
+	const handleCloseAndReset = useCallback(() => {
+		onClose();
 		setTimeout(resetForm, 300);
 	}, [onClose, resetForm]);
 
 	const handleSubmit = useCallback(async (e: Event) => {
 		e.preventDefault();
 
-		// Honeypot check - bots fill hidden fields
 		if (honeypot) {
-			// Silently "succeed" to not tip off bots
 			setStatus('success');
-			setTimeout(handleClose, 2000);
+			setTimeout(handleCloseAndReset, 2000);
 			return;
 		}
 
-		// Cooldown check
+		if (containsBlockedContent(message) || containsBlockedContent(contact)) {
+			setStatus('success');
+			setTimeout(handleCloseAndReset, 2000);
+			return;
+		}
+
 		const remaining = getCooldownRemaining();
 		if (remaining > 0) {
 			setCooldownRemaining(remaining);
@@ -134,11 +176,10 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 
 			if (response.ok || response.status === 204) {
 				setStatus('success');
-				setCooldown(); // Start cooldown timer
+				setCooldown();
 				setCooldownRemaining(COOLDOWN_MS);
-				// Auto-close after success
 				setTimeout(() => {
-					handleClose();
+					handleCloseAndReset();
 				}, 2000);
 			} else {
 				throw new Error(`Failed to send: ${response.status}`);
@@ -147,7 +188,7 @@ export function FeedbackDrawer({ isOpen, onClose, webhookUrl }: FeedbackDrawerPr
 			setStatus('error');
 			setErrorMessage(err instanceof Error ? err.message : 'Failed to send feedback');
 		}
-	}, [message, contact, category, webhookUrl, honeypot, handleClose]);
+	}, [message, contact, category, webhookUrl, honeypot, handleCloseAndReset]);
 
 	return (
 		<>

@@ -91,11 +91,33 @@ export function calculateSkillCost(
 }
 
 /**
- * Get uma outfit ID for a unique skill
- * Returns null if skill is not a unique skill or uma doesn't exist
+ * Get uma outfit ID for a character-specific skill (unique or inherited)
+ * Returns null if skill is not character-specific or uma doesn't exist
+ *
+ * Skill ID patterns:
+ * - Unique: 100XXX (e.g., 100681 → uma 1068, outfit 106801)
+ * - Inherited: 90XXX or 9XXXX (e.g., 900681 → uma 1068)
  */
 export function umaForUniqueSkill(skillId: string): string | null {
 	const sid = parseInt(skillId);
+
+	// Handle inherited skills (9xxxxx pattern)
+	if (skillId[0] === '9' && skillId.length >= 6) {
+		// Extract uma ID: 90XXX → uma 10XX, 9XXXX → uma 1XXX
+		// Pattern: 9 + (uma_id - 1000 padded to 4 digits) + variant
+		const umaDigits = skillId.slice(1, 5); // e.g., "0068" from "900681"
+		const umaId = 1000 + parseInt(umaDigits, 10); // 1000 + 68 = 1068
+		const baseUmaId = umaId.toString();
+
+		// Return first outfit for this uma (01 suffix)
+		const outfitId = `${baseUmaId}01`;
+		if (umas[baseUmaId] && umas[baseUmaId].outfits[outfitId]) {
+			return outfitId;
+		}
+		return null;
+	}
+
+	// Handle unique skills (100xxx-199xxx pattern)
 	if (sid < 100000 || sid >= 200000) return null;
 
 	const remainder = sid - 100001;

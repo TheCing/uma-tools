@@ -1,6 +1,9 @@
 /**
  * Tour Steps
  * Configuration for each step in the onboarding tour
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import type { TourStep } from './types';
@@ -81,6 +84,29 @@ export const TOUR_STEPS: TourStep[] = [
 				const toggle = document.querySelector('.v2-uma-toggle') as HTMLElement;
 				toggle?.click();
 				await new Promise(r => setTimeout(r, 400));
+			}
+		},
+	},
+	{
+		id: 'settings',
+		targetSelector: '.v2-dropdown-menu',
+		title: 'Theming',
+		content: 'Switch between Dark and Light mode, choose from 6 color themes, and adjust the UI scale to your preference. I like the bright green. You guys didn\'t. Sadge.',
+		position: 'left',
+		spotlightPadding: 8,
+		beforeShow: async () => {
+			// Open the settings dropdown
+			const settingsBtn = document.querySelector('.v2-settings-btn') as HTMLElement;
+			if (settingsBtn) {
+				settingsBtn.click();
+				await new Promise(r => setTimeout(r, 200));
+			}
+		},
+		afterHide: () => {
+			// Close the dropdown by clicking elsewhere
+			const settingsBtn = document.querySelector('.v2-settings-btn') as HTMLElement;
+			if (settingsBtn) {
+				settingsBtn.click();
 			}
 		},
 	},

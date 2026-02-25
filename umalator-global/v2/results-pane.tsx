@@ -1,12 +1,15 @@
 /**
  * v2 Results Pane
  * Displays simulation results inline below the track
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  * Compare mode only (chart mode deferred)
  */
 
 import { h, Fragment } from 'preact';
 import { useMemo } from 'preact/hooks';
-import { Clock, Zap, Heart, Swords, Flag, TrendingUp } from 'lucide-react';
+import { Clock, Zap, Heart, Shield, Swords, Flag, TrendingUp } from 'lucide-react';
 import skillnames from '../skillnames.json';
 
 // ============================================
@@ -311,6 +314,11 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 						<span class="value">{staminaStats.fullSpurtRate.toFixed(0)}%</span>
 						<span class="label">Full Spurt</span>
 					</div>
+					<div class="v2-stat-item">
+						<Shield size={14} />
+						<span class="value">{staminaStats.staminaSurvivalRate.toFixed(1)}%</span>
+						<span class="label">HP Survival</span>
+					</div>
 				</div>
 
 				{/* Secondary stats */}
@@ -318,10 +326,6 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 					<div class="v2-stat-row">
 						<span class="label">Start Delay</span>
 						<span class="value">{startDelay.toFixed(3)}s</span>
-					</div>
-					<div class="v2-stat-row">
-						<span class="label">HP Survival</span>
-						<span class="value">{staminaStats.staminaSurvivalRate.toFixed(1)}%</span>
 					</div>
 				</div>
 

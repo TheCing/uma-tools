@@ -1,6 +1,9 @@
 /**
  * Custom Select Component
  * Portal-based dropdown for proper z-index handling
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, Fragment } from 'preact';

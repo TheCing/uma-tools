@@ -527,6 +527,14 @@ interface VelocityOverlayProps {
 
 **Note**: On master branch, only the visual cow exists. MooCoins wrapper is dev-only.
 
+**Still In Love (Dev Only):**
+- Type "STILL" anywhere (not in an input field) to trigger yandere mode
+- Theme becomes bright red with subtle pulsing border effect
+- Type "STILL" again to toggle off
+- Reference to the "Still In Love" skill
+- Files: `v2/app-v2.tsx` (keyboard listener), `v2/v2.css` (yandere theme)
+- Dev branch only - do not merge to master
+
 ## Simulation Limitations
 
 The simulator intentionally only simulates one uma (not a full race with competitors) to isolate skill effects in a controlled environment. This affects:
@@ -570,6 +578,32 @@ node umalator-global/build.mjs  # Builds both v1 and v2
 node hp-calculator/build.mjs
 node events/build.mjs
 ```
+
+### Cache Busting
+
+V1 uses manual version query parameters for cache busting. When deploying significant changes (especially bug fixes), bump the version string to force browsers to fetch fresh bundles.
+
+**Files to update:**
+- `umalator-global/index.html`: Update `?v=YYYYMMDD[x]` on `bundle.css` and `bundle.js`
+- `umalator/app.tsx`: Update `?v=YYYYMMDD[x]` on `simulator.worker.js` (line ~1632)
+
+**Example:**
+```html
+<!-- Before -->
+<link rel="stylesheet" href="bundle.css?v=20260220">
+<script src="bundle.js?v=20260220"></script>
+
+<!-- After (bump with letter suffix for same-day changes) -->
+<link rel="stylesheet" href="bundle.css?v=20260220a">
+<script src="bundle.js?v=20260220a"></script>
+```
+
+**When to bump:**
+- Bug fixes that users with cached bundles would miss
+- Breaking changes to the worker protocol
+- After updating skill_data.json or other embedded data
+
+**Note:** V2 uses Vite for production builds, which handles cache busting automatically via content hashing.
 
 ### Cloudflare Pages
 

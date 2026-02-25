@@ -1,6 +1,9 @@
 /**
  * Tour Context
  * State management for the onboarding tour
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, createContext } from 'preact';

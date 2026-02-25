@@ -1,3 +1,11 @@
+/**
+ * Racetrack Cow Easter Egg
+ * Visual cow that walks, idles, and sleeps on the track
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ */
+
 import { h } from 'preact';
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 

@@ -1,13 +1,8 @@
 /**
- * v2 Experimental Layout - CONDENSED
+ * Moomoolator v2 - Modern Uma Musume Race Simulator
  *
- * Goal: Fit essential UI in one viewport without scrolling
- *
- * Key changes from v1:
- * 1. Collapsible Uma panel (drawer instead of fixed sidebar)
- * 2. Compact inline controls (no tall runPane)
- * 3. Track + conditions in header area
- * 4. Results as overlay/modal, not inline
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
  */
 
 import { h, render, Fragment } from "preact";
@@ -46,10 +41,7 @@ import {
   Play,
   GitCompare,
   Zap,
-  Sun,
-  Moon,
   X,
-  Palette,
   ArrowLeftRight,
   Link,
 } from "./components";
@@ -85,6 +77,8 @@ import {
   savePreferences,
   copyShareableUrl,
   deserializeStateFromHash,
+  COLOR_PALETTES,
+  type ColorPalette,
 } from "./storage";
 import courseData from "../course_data.json";
 import skillnames from "../skillnames.json";
@@ -214,8 +208,8 @@ function App() {
 
   // Preferences (persisted separately)
   const [darkMode, setDarkMode] = useState(savedPrefs.current.darkMode);
-  const [classicGreen, setClassicGreen] = useState(
-    savedPrefs.current.classicGreen,
+  const [colorPalette, setColorPalette] = useState<ColorPalette>(
+    savedPrefs.current.colorPalette,
   );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
@@ -422,8 +416,8 @@ function App() {
 
   // Save preferences immediately
   useEffect(() => {
-    savePreferences({ darkMode, classicGreen, uiScale });
-  }, [darkMode, classicGreen, uiScale]);
+    savePreferences({ darkMode, colorPalette, uiScale });
+  }, [darkMode, colorPalette, uiScale]);
 
   // Load state from URL on mount (supports ?preset=X and hash-based state)
   useEffect(() => {
@@ -1059,7 +1053,7 @@ function App() {
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
-            class={`${darkMode ? "" : "light"} ${classicGreen ? "classic-green" : ""} ${showNotification ? "v2-has-notification" : ""}`}
+            class={`${darkMode ? "" : "light"} ${colorPalette !== 'uma-green' ? colorPalette : ''} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
             {/* NOTIFICATION BANNER */}
@@ -1167,15 +1161,51 @@ function App() {
                   items={[
                     {
                       id: "theme",
-                      label: darkMode ? "Light Mode" : "Dark Mode",
-                      icon: darkMode ? <Sun size={16} /> : <Moon size={16} />,
-                      onClick: () => setDarkMode(!darkMode),
+                      label: "",
+                      custom: (
+                        <div class="v2-theme-toggle">
+                          <button
+                            type="button"
+                            class={`v2-theme-btn ${darkMode ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDarkMode(true);
+                            }}
+                          >
+                            Dark
+                          </button>
+                          <button
+                            type="button"
+                            class={`v2-theme-btn ${!darkMode ? 'active' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDarkMode(false);
+                            }}
+                          >
+                            Light
+                          </button>
+                        </div>
+                      ),
                     },
                     {
                       id: "accent",
-                      label: classicGreen ? "Bright Green" : "Classic Green",
-                      icon: <Palette size={16} />,
-                      onClick: () => setClassicGreen(!classicGreen),
+                      label: "",
+                      custom: (
+                        <div class="v2-color-toggle">
+                          {COLOR_PALETTES.map((palette) => (
+                            <button
+                              key={palette}
+                              type="button"
+                              class={`v2-color-swatch ${palette} ${colorPalette === palette ? 'active' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setColorPalette(palette);
+                              }}
+                              title={palette.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                            />
+                          ))}
+                        </div>
+                      ),
                     },
                     { id: "divider-scale", label: "", divider: true },
                     {
@@ -1501,6 +1531,7 @@ function App() {
                         hideOwned={hideOwned}
                         hidePurple={hidePurple}
                         dirty={false}
+                        selectedSkillId={selectedSkillForChart}
                       />
                     ) : (
                       <div class="v2-skill-chart-empty">
@@ -1943,6 +1974,25 @@ function App() {
                       />
                     </div>
                     <div class="v2-mobile-settings-section">
+                      <h4>Simulation</h4>
+                      <SimulationSettings
+                        samples={samples}
+                        setSamples={setSamples}
+                        seed={seed}
+                        setSeed={setSeed}
+                        syncRng={syncRng}
+                        setSyncRng={setSyncRng}
+                        skillWisdomCheck={skillWisdomCheck}
+                        setSkillWisdomCheck={setSkillWisdomCheck}
+                        rushedKakari={rushedKakari}
+                        setRushedKakari={setRushedKakari}
+                        leadCompetition={leadCompetition}
+                        setLeadCompetition={setLeadCompetition}
+                        competeFight={competeFight}
+                        setCompeteFight={setCompeteFight}
+                      />
+                    </div>
+                    <div class="v2-mobile-settings-section">
                       <h4>Appearance</h4>
                       <div class="v2-mobile-settings-row">
                         <label>{darkMode ? "Dark Mode" : "Light Mode"}</label>
@@ -1955,16 +2005,18 @@ function App() {
                           <span class="v2-switch-slider" />
                         </label>
                       </div>
-                      <div class="v2-mobile-settings-row">
-                        <label>Classic Green</label>
-                        <label class="v2-switch">
-                          <input
-                            type="checkbox"
-                            checked={classicGreen}
-                            onChange={() => setClassicGreen(!classicGreen)}
-                          />
-                          <span class="v2-switch-slider" />
-                        </label>
+                      <div class="v2-mobile-settings-row v2-mobile-color-row">
+                        <label>Color</label>
+                        <div class="v2-color-toggle">
+                          {COLOR_PALETTES.map((palette) => (
+                            <button
+                              key={palette}
+                              type="button"
+                              class={`v2-color-swatch ${palette} ${colorPalette === palette ? 'active' : ''}`}
+                              onClick={() => setColorPalette(palette)}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                     <div class="v2-mobile-settings-section">
