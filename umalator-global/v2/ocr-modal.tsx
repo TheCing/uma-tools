@@ -269,38 +269,39 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 		>
 			{step === 'upload' ? (
 				<div class="v2-ocr-upload">
-					{/* API Key Section */}
-					{!OCR_PROXY_URL && (
-						<div class="v2-ocr-section">
-							<label class="v2-ocr-label">Gemini API Key</label>
-							<div class="v2-ocr-api-row">
+					{/* API Key Section - always shown so users can fall back to their own key */}
+					<div class="v2-ocr-section">
+						<label class="v2-ocr-label">
+							Gemini API Key
+							{OCR_PROXY_URL && <span class="v2-ocr-optional"> (optional)</span>}
+						</label>
+						<div class="v2-ocr-api-row">
+							<input
+								type="password"
+								class="v2-ocr-input"
+								placeholder={OCR_PROXY_URL ? "Optional \u2014 uses server key by default" : "Enter your Gemini API key"}
+								value={apiKey}
+								onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
+							/>
+							<label class="v2-ocr-checkbox">
 								<input
-									type="password"
-									class="v2-ocr-input"
-									placeholder="Enter your Gemini API key"
-									value={apiKey}
-									onInput={(e) => setApiKey((e.target as HTMLInputElement).value)}
+									type="checkbox"
+									checked={saveApiKey}
+									onChange={(e) => setSaveApiKey((e.target as HTMLInputElement).checked)}
 								/>
-								<label class="v2-ocr-checkbox">
-									<input
-										type="checkbox"
-										checked={saveApiKey}
-										onChange={(e) => setSaveApiKey((e.target as HTMLInputElement).checked)}
-									/>
-									<span>Save key</span>
-								</label>
-							</div>
-							<a
-								class="v2-ocr-api-link"
-								href="https://aistudio.google.com/app/apikey"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<ExternalLink size={12} />
-								Get a free API key from Google AI Studio
-							</a>
+								<span>Save key</span>
+							</label>
 						</div>
-					)}
+						<a
+							class="v2-ocr-api-link"
+							href="https://aistudio.google.com/app/apikey"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<ExternalLink size={12} />
+							Get a free API key from Google AI Studio
+						</a>
+					</div>
 
 					{/* Image Upload Section */}
 					<div class="v2-ocr-section">

@@ -4679,6 +4679,12 @@ body {
   cursor: pointer;
 }
 
+.v2-ocr-optional {
+  font-weight: 400;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
 .v2-ocr-api-link {
   display: inline-flex;
   align-items: center;
