@@ -5,6 +5,8 @@
  * Licensed under GPL-3.0-or-later
  */
 
+declare const CC_DEV: boolean;
+
 import { h, render, Fragment } from "preact";
 import {
   useState,
@@ -213,6 +215,9 @@ function App() {
   );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
+  // Easter egg: "STILL" triggers yandere mode (dev only)
+  const [yandereMode, setYandereMode] = useState(false);
+
   // Simulation settings
   const [samples, setSamples] = useState(savedSession.current?.samples ?? 500);
   const [mode, setMode] = useState<"compare" | "skill">(
@@ -226,6 +231,7 @@ function App() {
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
+  const [autoSeed, setAutoSeed] = useState(false);
 
   // Panel visibility
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
@@ -419,6 +425,38 @@ function App() {
     savePreferences({ darkMode, colorPalette, uiScale });
   }, [darkMode, colorPalette, uiScale]);
 
+  // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
+  useEffect(() => {
+    if (!CC_DEV) return;
+    let buffer = '';
+    const TARGET = 'STILL';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
+      // Only track letter keys
+      if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+        buffer += e.key.toUpperCase();
+        // Keep only last N characters
+        if (buffer.length > TARGET.length) {
+          buffer = buffer.slice(-TARGET.length);
+        }
+        // Check for match
+        if (buffer === TARGET) {
+          setYandereMode(prev => !prev);
+          buffer = '';
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Load state from URL on mount (supports ?preset=X and hash-based state)
   useEffect(() => {
     // Check for preset query parameter first
@@ -588,6 +626,9 @@ function App() {
 
   // Run simulation via worker
   const handleRunSimulation = useCallback(() => {
+    if (autoSeed) {
+      setSeed(Math.floor(Math.random() * 0xFFFFFFFF));
+    }
     if (mode === "compare") {
       setIsRunning(true);
       setResults(null);
@@ -640,6 +681,7 @@ function App() {
     rushedKakari,
     leadCompetition,
     competeFight,
+    autoSeed,
   ]);
 
   const handleRunSkillChart = useCallback(() => {
@@ -1053,7 +1095,7 @@ function App() {
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
-            class={`${darkMode ? "" : "light"} ${colorPalette !== 'uma-green' ? colorPalette : ''} ${showNotification ? "v2-has-notification" : ""}`}
+            class={`${darkMode ? "" : "light"} ${CC_DEV && yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
             {/* NOTIFICATION BANNER */}
@@ -1325,6 +1367,8 @@ function App() {
               setLeadCompetition={setLeadCompetition}
               competeFight={competeFight}
               setCompeteFight={setCompeteFight}
+              autoSeed={autoSeed}
+              setAutoSeed={setAutoSeed}
             />
 
             {/* Content area wrapper for widescreen layout */}
@@ -1990,6 +2034,8 @@ function App() {
                         setLeadCompetition={setLeadCompetition}
                         competeFight={competeFight}
                         setCompeteFight={setCompeteFight}
+                        autoSeed={autoSeed}
+                        setAutoSeed={setAutoSeed}
                       />
                     </div>
                     <div class="v2-mobile-settings-section">

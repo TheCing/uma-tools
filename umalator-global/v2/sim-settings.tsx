@@ -7,7 +7,7 @@
  */
 
 import { h } from 'preact';
-import { Shuffle } from 'lucide-react';
+import { Shuffle, Dices } from 'lucide-react';
 import { Tooltip } from './components';
 
 interface SimSettingsProps {
@@ -25,6 +25,8 @@ interface SimSettingsProps {
 	setLeadCompetition: (v: boolean) => void;
 	competeFight: boolean;
 	setCompeteFight: (v: boolean) => void;
+	autoSeed: boolean;
+	setAutoSeed: (v: boolean) => void;
 }
 
 export function SimulationSettings({
@@ -42,6 +44,8 @@ export function SimulationSettings({
 	setLeadCompetition,
 	competeFight,
 	setCompeteFight,
+	autoSeed,
+	setAutoSeed,
 }: SimSettingsProps) {
 	const handleSamplesChange = (e: Event) => {
 		const val = parseInt((e.target as HTMLInputElement).value) || 500;
@@ -90,6 +94,15 @@ export function SimulationSettings({
 								onClick={randomizeSeed}
 							>
 								<Shuffle size={14} />
+							</button>
+						</Tooltip>
+						<Tooltip content="Auto-reroll seed on every run" position="bottom">
+							<button
+								type="button"
+								class={`v2-sim-seed-btn ${autoSeed ? 'active' : ''}`}
+								onClick={() => setAutoSeed(!autoSeed)}
+							>
+								<Dices size={14} />
 							</button>
 						</Tooltip>
 					</div>
