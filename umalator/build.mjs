@@ -48,7 +48,7 @@ const buildOptions = {
 	minify: !debug,
 	outdir: '.',
 	write: !serve,
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'false'},
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'false', CC_DEV: 'false'},
 	external: ['*.ttf'],
 	plugins: [mockAssert, redirectTable]
 };

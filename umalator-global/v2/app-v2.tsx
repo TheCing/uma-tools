@@ -5,6 +5,8 @@
  * Licensed under GPL-3.0-or-later
  */
 
+declare const CC_DEV: boolean;
+
 import { h, render, Fragment } from "preact";
 import {
   useState,
@@ -213,7 +215,7 @@ function App() {
   );
   const [uiScale, setUiScale] = useState(savedPrefs.current.uiScale);
 
-  // Easter egg: "STILL" triggers yandere mode
+  // Easter egg: "STILL" triggers yandere mode (dev only)
   const [yandereMode, setYandereMode] = useState(false);
 
   // Simulation settings
@@ -422,8 +424,9 @@ function App() {
     savePreferences({ darkMode, colorPalette, uiScale });
   }, [darkMode, colorPalette, uiScale]);
 
-  // Easter egg: detect "STILL" typed outside input fields
+  // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
   useEffect(() => {
+    if (!CC_DEV) return;
     let buffer = '';
     const TARGET = 'STILL';
 
@@ -1087,7 +1090,7 @@ function App() {
         <IntlProvider definition={STRINGS}>
           <div
             id="app-v2"
-            class={`${darkMode ? "" : "light"} ${yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
+            class={`${darkMode ? "" : "light"} ${CC_DEV && yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
             {/* NOTIFICATION BANNER */}

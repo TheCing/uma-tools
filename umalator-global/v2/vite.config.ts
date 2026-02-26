@@ -111,6 +111,7 @@ export default defineConfig(({ mode }) => {
   define: {
     CC_DEBUG: mode === 'development' ? 'true' : 'false',
     CC_GLOBAL: 'true',
+    CC_DEV: (env.CF_PAGES_BRANCH === 'dev' || env.CC_DEV === 'true') ? 'true' : 'false',
     CC_OCR_PROXY: JSON.stringify(env.OCR_PROXY_URL || ''),
   },
 
