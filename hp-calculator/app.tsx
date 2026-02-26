@@ -32,7 +32,7 @@ import {
   HpStrategyCoefficient,
   STRATEGIES,
   getCourse,
-  trackList,
+  getTrackList,
   coursesByTrack,
   getCourseLabel,
   type Locale,
@@ -297,8 +297,8 @@ function App() {
                 <div className="step-content">
                   <h4>Select a Course</h4>
                   <p>
-                    Select a track, then choose a course distance.
-                    Distance affects HP requirements.
+                    Select a track, then choose a course distance. Distance
+                    affects HP requirements.
                   </p>
                 </div>
               </div>
@@ -362,14 +362,15 @@ function App() {
                         className="select"
                         value={trackId}
                         onChange={(e) => {
-                          const newTrackId = +(e.target as HTMLSelectElement).value;
+                          const newTrackId = +(e.target as HTMLSelectElement)
+                            .value;
                           const firstCourse = coursesByTrack[newTrackId]?.[0];
                           if (firstCourse) {
                             updateState({ courseId: firstCourse });
                           }
                         }}
                       >
-                        {trackList.map((track) => (
+                        {getTrackList(prefs.locale).map((track) => (
                           <option key={track.id} value={track.id}>
                             {track.name}
                           </option>
@@ -389,7 +390,7 @@ function App() {
                       >
                         {(coursesByTrack[trackId] || []).map((cid) => (
                           <option key={cid} value={cid}>
-                            {getCourseLabel(cid)}
+                            {getCourseLabel(cid, prefs.locale)}
                           </option>
                         ))}
                       </select>
@@ -633,13 +634,14 @@ function App() {
                     {/* Course Info - Downhill indicator (informational only) */}
                     {estimate.downhillDistance > 0 && (
                       <div className="course-info-note">
-                        <strong>📉 {estimate.downhillDistance}m downhill</strong> ({estimate.downhillPercent}% of course)
+                        <strong>
+                          📉 {estimate.downhillDistance}m downhill
+                        </strong>{" "}
+                        ({estimate.downhillPercent}% of course)
                         <br />
                         <span className="note-detail">
-                          Downhill mode can reduce HP consumption by up to 60%. Use the{" "}
-                          <a href="/umalator-global/">
-                            full simulator
-                          </a>{" "}
+                          Downhill mode can reduce HP consumption by up to 60%.
+                          Use the <a href="/umalator-global/">full simulator</a>{" "}
                           to calculate accurate survival and spurt rates.
                         </span>
                       </div>
@@ -777,11 +779,8 @@ function App() {
               </ul>
               <p style={{ marginTop: "var(--space-sm)" }}>
                 For accurate survival/spurt rates that include these factors,
-                use the{" "}
-                <a href="/umalator-global/">
-                  Umalator simulator
-                </a>{" "}
-                which runs Monte Carlo simulations.
+                use the <a href="/umalator-global/">Umalator simulator</a> which
+                runs Monte Carlo simulations.
               </p>
             </div>
           </aside>
@@ -799,17 +798,13 @@ function App() {
           >
             GPL-3.0
           </a>
-          .&nbsp; Special thanks to the original authors of&nbsp;
-          <a href="#" target="_blank" rel="noopener">
-            JP Umalator
-          </a>
-          ,&nbsp;
+          .&nbsp; Credit to the original authors: &nbsp;
           <a
             href="https://github.com/alpha123/uma-tools"
             target="_blank"
             rel="noopener"
           >
-            pecan
+            pecan (alpha123)
           </a>
           ,&nbsp;
           <a
@@ -817,9 +812,9 @@ function App() {
             target="_blank"
             rel="noopener"
           >
-            the VFalator team
+            the VFalator team (esp. kachi and Jecht)
           </a>
-          ,&nbsp;and&nbsp;
+          ,&nbsp;and special thanks to the community at &nbsp;
           <a
             href="https://discord.gg/moomoocows"
             target="_blank"
@@ -830,9 +825,7 @@ function App() {
           .
         </p>
         <div className="footer-links">
-          <a href="/umalator-global/">
-            Umalator
-          </a>
+          <a href="/umalator-global/">Umalator</a>
           &nbsp;|&nbsp;
           <a
             href="https://github.com/TheCing/uma-tools"
