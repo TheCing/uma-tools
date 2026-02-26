@@ -4,7 +4,25 @@
  */
 
 import courses from '../umalator-global/course_data.json';
-import tracknames from '../umalator-global/tracknames.json';
+
+// Track names: [jp, en] — merged from JP (superset) and GL tracknames
+const tracknames: Record<string, [string, string]> = {
+	'10001': ['札幌', 'Sapporo'],
+	'10002': ['函館', 'Hakodate'],
+	'10003': ['新潟', 'Niigata'],
+	'10004': ['福島', 'Fukushima'],
+	'10005': ['中山', 'Nakayama'],
+	'10006': ['東京', 'Tokyo'],
+	'10007': ['中京', 'Chukyo'],
+	'10008': ['京都', 'Kyoto'],
+	'10009': ['阪神', 'Hanshin'],
+	'10010': ['小倉', 'Kokura'],
+	'10101': ['大井', 'Ooi'],
+	'10103': ['川崎', 'Kawasaki'],
+	'10104': ['船橋', 'Funabashi'],
+	'10105': ['盛岡', 'Morioka'],
+	'10201': ['ロンシャン', 'Longchamp'],
+};
 
 export type Locale = 'jp' | 'gl';
 export type Strategy = 'nige' | 'senkou' | 'sashi' | 'oikomi' | 'oonige';
@@ -78,8 +96,11 @@ export const StrategyLocalization: Record<Strategy, { jp: string; gl: string }> 
 
 export const STRATEGIES: Strategy[] = ['nige', 'senkou', 'sashi', 'oikomi', 'oonige'];
 
-export function getTrackName(trackId: number): string {
-	return (tracknames as Record<string, string[]>)[String(trackId)]?.[1] || `Track ${trackId}`;
+export function getTrackName(trackId: number, locale: Locale = 'gl'): string {
+	const entry = tracknames[String(trackId)];
+	if (!entry) return `Track ${trackId}`;
+	if (locale === 'jp' && entry[0]) return entry[0];
+	return entry[1] || `Track ${trackId}`;
 }
 
 // Build coursesByTrack mapping: trackId → sorted courseId[]
@@ -105,11 +126,15 @@ export const coursesByTrack: Record<number, string[]> = (() => {
 	return o;
 })();
 
-// Ordered list of tracks that have courses
-export const trackList: Array<{ id: number; name: string }> = Object.keys(tracknames)
+// Track IDs that have courses (merged tracknames is superset)
+const trackIds = Object.keys(tracknames)
 	.map(tid => +tid)
-	.filter(tid => tid in coursesByTrack)
-	.map(tid => ({ id: tid, name: getTrackName(tid) }));
+	.filter(tid => tid in coursesByTrack);
+
+// Ordered list of tracks that have courses
+export function getTrackList(locale: Locale = 'gl'): Array<{ id: number; name: string }> {
+	return trackIds.map(tid => ({ id: tid, name: getTrackName(tid, locale) }));
+}
 
 // Inner/outer labels from course field
 const inoutLabels: Record<number, string> = {
@@ -117,14 +142,16 @@ const inoutLabels: Record<number, string> = {
 };
 
 // Get display label for a course within its track context
-export function getCourseLabel(courseId: string): string {
+export function getCourseLabel(courseId: string, locale: Locale = 'gl'): string {
 	const c = (courses as Record<string, CourseData>)[courseId];
 	if (!c) return courseId;
 	const trackCourses = coursesByTrack[c.raceTrackId] || [];
 	const hasMixedSurfaces = trackCourses.some(
 		id => (courses as Record<string, CourseData>)[id].surface !== c.surface
 	);
-	const surface = c.surface === 1 ? 'Turf' : 'Dirt';
+	const surface = locale === 'jp'
+		? (c.surface === 1 ? '芝' : 'ダート')
+		: (c.surface === 1 ? 'Turf' : 'Dirt');
 	const inout = inoutLabels[c.course] ?? '';
 	return hasMixedSurfaces
 		? `${surface} ${c.distance}m${inout}`
@@ -135,9 +162,11 @@ export function getStrategyName(strategy: Strategy, locale: Locale): string {
 	return StrategyLocalization[strategy][locale];
 }
 
-export function getCourseName(course: CourseData): string {
-	const trackName = getTrackName(course.raceTrackId);
-	const surface = course.surface === 1 ? 'Turf' : 'Dirt';
+export function getCourseName(course: CourseData, locale: Locale = 'gl'): string {
+	const trackName = getTrackName(course.raceTrackId, locale);
+	const surface = locale === 'jp'
+		? (course.surface === 1 ? '芝' : 'ダート')
+		: (course.surface === 1 ? 'Turf' : 'Dirt');
 	return `${trackName} ${surface} ${course.distance}m`;
 }
 

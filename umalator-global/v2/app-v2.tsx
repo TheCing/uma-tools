@@ -624,66 +624,7 @@ function App() {
     }
   }, []);
 
-  // Run simulation via worker
-  const handleRunSimulation = useCallback(() => {
-    if (autoSeed) {
-      setSeed(Math.floor(Math.random() * 0xFFFFFFFF));
-    }
-    if (mode === "compare") {
-      setIsRunning(true);
-      setResults(null);
-
-      const course = courseData[courseId];
-      if (!course) {
-        console.error("[V2] Course not found:", courseId);
-        setIsRunning(false);
-        return;
-      }
-
-      // Send simulation request to worker
-      worker.postMessage({
-        msg: "compare",
-        data: {
-          nsamples: samples,
-          course,
-          racedef: buildRaceParameters(ground, weather, season, time),
-          uma1: convertUmaStateForWorker(uma1),
-          uma2: convertUmaStateForWorker(uma2),
-          pacer: getDefaultPacer(),
-          options: buildSimulationOptions({
-            seed,
-            syncRng,
-            skillWisdomCheck,
-            rushedKakari,
-            leadCompetition,
-            competeFight,
-          }),
-        },
-      });
-    } else {
-      // Skill chart mode
-      handleRunSkillChart();
-    }
-  }, [
-    mode,
-    courseId,
-    samples,
-    ground,
-    weather,
-    season,
-    time,
-    uma1,
-    uma2,
-    worker,
-    seed,
-    syncRng,
-    skillWisdomCheck,
-    rushedKakari,
-    leadCompetition,
-    competeFight,
-    autoSeed,
-  ]);
-
+  // Run skill chart via 4 workers
   const handleRunSkillChart = useCallback(() => {
     setIsRunning(true);
     setCompletedWorkers(0);
@@ -770,9 +711,69 @@ function App() {
     time,
     uma1,
     seed,
-    syncRng,
     chartWorkers,
     chartFastMode,
+  ]);
+
+  // Run simulation via worker
+  const handleRunSimulation = useCallback(() => {
+    if (autoSeed) {
+      setSeed(Math.floor(Math.random() * 0xFFFFFFFF));
+    }
+    if (mode === "compare") {
+      setIsRunning(true);
+      setResults(null);
+
+      const course = courseData[courseId];
+      if (!course) {
+        console.error("[V2] Course not found:", courseId);
+        setIsRunning(false);
+        return;
+      }
+
+      // Send simulation request to worker
+      worker.postMessage({
+        msg: "compare",
+        data: {
+          nsamples: samples,
+          course,
+          racedef: buildRaceParameters(ground, weather, season, time),
+          uma1: convertUmaStateForWorker(uma1),
+          uma2: convertUmaStateForWorker(uma2),
+          pacer: getDefaultPacer(),
+          options: buildSimulationOptions({
+            seed,
+            syncRng,
+            skillWisdomCheck,
+            rushedKakari,
+            leadCompetition,
+            competeFight,
+          }),
+        },
+      });
+    } else {
+      // Skill chart mode
+      handleRunSkillChart();
+    }
+  }, [
+    mode,
+    courseId,
+    samples,
+    ground,
+    weather,
+    season,
+    time,
+    uma1,
+    uma2,
+    worker,
+    seed,
+    syncRng,
+    skillWisdomCheck,
+    rushedKakari,
+    leadCompetition,
+    competeFight,
+    autoSeed,
+    handleRunSkillChart,
   ]);
 
   // Get current snapshot based on displayRun selection
@@ -1785,17 +1786,13 @@ function App() {
                 >
                   GPL-3.0
                 </a>
-                .&nbsp; Special thanks to the original authors of&nbsp;
-                <a href="#" target="_blank" rel="noopener">
-                  JP Umalator
-                </a>
-                ,&nbsp;
+                .&nbsp; Credit to the original authors:&nbsp;
                 <a
                   href="https://github.com/alpha123/uma-tools"
                   target="_blank"
                   rel="noopener"
                 >
-                  pecan
+                  pecan (alpha123)
                 </a>
                 ,&nbsp;
                 <a
@@ -1803,9 +1800,9 @@ function App() {
                   target="_blank"
                   rel="noopener"
                 >
-                  the VFalator team
+                  the VFalator team (esp. kachi and Jecht)
                 </a>
-                ,&nbsp;and&nbsp;
+                ,&nbsp;and special thanks to the community at &nbsp;
                 <a
                   href="https://discord.gg/moomoocows"
                   target="_blank"
