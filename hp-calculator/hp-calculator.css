@@ -474,6 +474,12 @@ body {
   opacity: 0.7;
 }
 
+/* Course select row */
+.course-select-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
 /* Select dropdown */
 .select-wrapper {
   position: relative;

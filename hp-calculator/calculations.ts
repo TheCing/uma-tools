@@ -4,6 +4,7 @@
  */
 
 import courses from '../umalator-global/course_data.json';
+import tracknames from '../umalator-global/tracknames.json';
 
 export type Locale = 'jp' | 'gl';
 export type Strategy = 'nige' | 'senkou' | 'sashi' | 'oikomi' | 'oonige';
@@ -19,6 +20,7 @@ export interface CourseData {
 	distance: number;
 	surface: number;
 	distanceType: number;
+	course: number;
 	slopes: Slope[];
 }
 
@@ -76,26 +78,65 @@ export const StrategyLocalization: Record<Strategy, { jp: string; gl: string }> 
 
 export const STRATEGIES: Strategy[] = ['nige', 'senkou', 'sashi', 'oikomi', 'oonige'];
 
-export const trackNames: Record<number, string> = {
-	10001: 'Sapporo',
-	10002: 'Hakodate',
-	10003: 'Fukushima',
-	10004: 'Niigata',
-	10005: 'Nakayama',
-	10006: 'Tokyo',
-	10007: 'Chukyo',
-	10008: 'Kyoto',
-	10009: 'Hanshin',
-	10010: 'Kokura',
-	10101: 'Oi',
+export function getTrackName(trackId: number): string {
+	return (tracknames as Record<string, string[]>)[String(trackId)]?.[1] || `Track ${trackId}`;
+}
+
+// Build coursesByTrack mapping: trackId → sorted courseId[]
+export const coursesByTrack: Record<number, string[]> = (() => {
+	const o: Record<number, string[]> = {};
+	Object.keys(courses).forEach(cid => {
+		const tid = (courses as Record<string, CourseData>)[cid].raceTrackId;
+		if (tid in o) {
+			o[tid].push(cid);
+		} else {
+			o[tid] = [cid];
+		}
+	});
+	// Sort each track's courses by surface (turf first), then distance
+	for (const tid in o) {
+		o[tid].sort((a, b) => {
+			const ca = (courses as Record<string, CourseData>)[a];
+			const cb = (courses as Record<string, CourseData>)[b];
+			if (ca.surface !== cb.surface) return ca.surface - cb.surface;
+			return ca.distance - cb.distance;
+		});
+	}
+	return o;
+})();
+
+// Ordered list of tracks that have courses
+export const trackList: Array<{ id: number; name: string }> = Object.keys(tracknames)
+	.map(tid => +tid)
+	.filter(tid => tid in coursesByTrack)
+	.map(tid => ({ id: tid, name: getTrackName(tid) }));
+
+// Inner/outer labels from course field
+const inoutLabels: Record<number, string> = {
+	0: '', 1: '', 2: ' (inner)', 3: ' (outer)', 4: ' (outer→inner)',
 };
+
+// Get display label for a course within its track context
+export function getCourseLabel(courseId: string): string {
+	const c = (courses as Record<string, CourseData>)[courseId];
+	if (!c) return courseId;
+	const trackCourses = coursesByTrack[c.raceTrackId] || [];
+	const hasMixedSurfaces = trackCourses.some(
+		id => (courses as Record<string, CourseData>)[id].surface !== c.surface
+	);
+	const surface = c.surface === 1 ? 'Turf' : 'Dirt';
+	const inout = inoutLabels[c.course] ?? '';
+	return hasMixedSurfaces
+		? `${surface} ${c.distance}m${inout}`
+		: `${c.distance}m${inout}`;
+}
 
 export function getStrategyName(strategy: Strategy, locale: Locale): string {
 	return StrategyLocalization[strategy][locale];
 }
 
 export function getCourseName(course: CourseData): string {
-	const trackName = trackNames[course.raceTrackId] || `Track ${course.raceTrackId}`;
+	const trackName = getTrackName(course.raceTrackId);
 	const surface = course.surface === 1 ? 'Turf' : 'Dirt';
 	return `${trackName} ${surface} ${course.distance}m`;
 }
@@ -362,50 +403,3 @@ export function calculateEstimate(
 	};
 }
 
-// Distance type labels
-const distanceTypeLabels: Record<number, string> = {
-	1: 'Sprint',
-	2: 'Mile',
-	3: 'Medium',
-	4: 'Long',
-};
-
-// Generate all courses from course_data.json
-function generateAllCourses(): Array<{ id: string; name: string; tag: string }> {
-	const allCourses = Object.entries(courses as Record<string, CourseData>)
-		.map(([id, course]) => ({
-			id,
-			name: getCourseName(course),
-			tag: distanceTypeLabels[course.distanceType] || 'Unknown',
-			trackId: course.raceTrackId,
-			distance: course.distance,
-			surface: course.surface,
-		}))
-		// Sort by track, then surface (turf first), then distance
-		.sort((a, b) => {
-			if (a.trackId !== b.trackId) return a.trackId - b.trackId;
-			if (a.surface !== b.surface) return a.surface - b.surface;
-			return a.distance - b.distance;
-		})
-		.map(({ id, name, tag }) => ({ id, name, tag }));
-
-	return allCourses;
-}
-
-// All courses from course_data.json
-export const ALL_COURSES = generateAllCourses();
-
-// Common/popular courses for quick access
-export const COMMON_COURSES = [
-	{ id: '10503', name: 'Nakayama Turf 1200m', tag: 'Sprint' },
-	{ id: '10601', name: 'Tokyo Turf 1400m', tag: 'Sprint' },
-	{ id: '10604', name: 'Tokyo Turf 1600m', tag: 'Mile' },
-	{ id: '10611', name: 'Tokyo Dirt 1600m', tag: 'Mile' },
-	{ id: '10507', name: 'Nakayama Turf 3600m', tag: 'Long' },
-	{ id: '10606', name: 'Tokyo Turf 2400m', tag: 'Japan Derby' },
-	{ id: '10906', name: 'Hanshin Turf 2200m', tag: 'Medium' },
-	{ id: '10506', name: 'Nakayama Turf 2500m', tag: 'Arima Kinen' },
-	{ id: '10810', name: 'Kyoto Turf 3000m', tag: 'Kikka-sho' },
-	{ id: '10914', name: 'Hanshin Turf 3200m', tag: 'Tenno-sho Spring' },
-	{ id: '10608', name: 'Tokyo Turf 3400m', tag: 'Long' },
-];
