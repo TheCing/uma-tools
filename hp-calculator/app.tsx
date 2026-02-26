@@ -31,9 +31,10 @@ import {
   getStrategyName,
   HpStrategyCoefficient,
   STRATEGIES,
-  COMMON_COURSES,
-  ALL_COURSES,
   getCourse,
+  trackList,
+  coursesByTrack,
+  getCourseLabel,
   type Locale,
   type Strategy,
   type HpEstimate,
@@ -117,6 +118,10 @@ function App() {
   const [state, setState] = useState<AppState>(loadState);
   const [prefs, setPrefs] = useState<Preferences>(loadPrefs);
   const [appsMenuOpen, setAppsMenuOpen] = useState(false);
+  const trackId = useMemo(() => {
+    const course = getCourse(state.courseId);
+    return course?.raceTrackId ?? 10009;
+  }, [state.courseId]);
 
   // Save state to localStorage (debounced)
   useEffect(() => {
@@ -292,7 +297,7 @@ function App() {
                 <div className="step-content">
                   <h4>Select a Course</h4>
                   <p>
-                    Choose from common race courses or enter a custom course ID.
+                    Select a track, then choose a course distance.
                     Distance affects HP requirements.
                   </p>
                 </div>
@@ -342,7 +347,7 @@ function App() {
                   <span className="card-title">Race Configuration</span>
                 </div>
 
-                {/* Course selector */}
+                {/* Course selector - two dropdowns */}
                 <div
                   className="form-group"
                   style={{ marginBottom: "var(--space-lg)" }}
@@ -351,56 +356,46 @@ function App() {
                     <Target size={14} />
                     Course
                   </label>
-                  <div className="select-wrapper">
-                    <select
-                      className="select"
-                      value={state.courseId}
-                      onChange={(e) =>
-                        updateState({
-                          courseId: (e.target as HTMLSelectElement).value,
-                        })
-                      }
-                    >
-                      <optgroup label="Popular Courses">
-                        {COMMON_COURSES.map((course) => (
-                          <option key={course.id} value={course.id}>
-                            {course.name} ({course.tag})
+                  <div className="course-select-row">
+                    <div className="select-wrapper" style={{ flex: 1 }}>
+                      <select
+                        className="select"
+                        value={trackId}
+                        onChange={(e) => {
+                          const newTrackId = +(e.target as HTMLSelectElement).value;
+                          const firstCourse = coursesByTrack[newTrackId]?.[0];
+                          if (firstCourse) {
+                            updateState({ courseId: firstCourse });
+                          }
+                        }}
+                      >
+                        {trackList.map((track) => (
+                          <option key={track.id} value={track.id}>
+                            {track.name}
                           </option>
                         ))}
-                      </optgroup>
-                      <optgroup label="All Courses">
-                        {ALL_COURSES.filter(
-                          (c) => !COMMON_COURSES.find((cc) => cc.id === c.id)
-                        ).map((course) => (
-                          <option key={course.id} value={course.id}>
-                            {course.name} ({course.tag})
+                      </select>
+                      <ChevronDown size={16} className="select-chevron" />
+                    </div>
+                    <div className="select-wrapper" style={{ flex: 1 }}>
+                      <select
+                        className="select"
+                        value={state.courseId}
+                        onChange={(e) =>
+                          updateState({
+                            courseId: (e.target as HTMLSelectElement).value,
+                          })
+                        }
+                      >
+                        {(coursesByTrack[trackId] || []).map((cid) => (
+                          <option key={cid} value={cid}>
+                            {getCourseLabel(cid)}
                           </option>
                         ))}
-                      </optgroup>
-                      <optgroup label="Custom">
-                        <option value="custom">Enter Course ID...</option>
-                      </optgroup>
-                    </select>
-                    <ChevronDown size={16} className="select-chevron" />
+                      </select>
+                      <ChevronDown size={16} className="select-chevron" />
+                    </div>
                   </div>
-                  {(state.courseId === "custom" ||
-                    !ALL_COURSES.find((c) => c.id === state.courseId)) && (
-                    <input
-                      type="text"
-                      className="input-number"
-                      style={{
-                        marginTop: "var(--space-sm)",
-                        textAlign: "left",
-                      }}
-                      placeholder="Enter course ID (e.g., 10914)"
-                      value={state.courseId === "custom" ? "" : state.courseId}
-                      onChange={(e) =>
-                        updateState({
-                          courseId: (e.target as HTMLInputElement).value,
-                        })
-                      }
-                    />
-                  )}
                 </div>
 
                 {/* Stats grid */}
