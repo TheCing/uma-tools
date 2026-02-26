@@ -1785,17 +1785,13 @@ function App() {
                 >
                   GPL-3.0
                 </a>
-                .&nbsp; Special thanks to the original authors of&nbsp;
-                <a href="#" target="_blank" rel="noopener">
-                  JP Umalator
-                </a>
-                ,&nbsp;
+                .&nbsp; Credit to the original authors:&nbsp;
                 <a
                   href="https://github.com/alpha123/uma-tools"
                   target="_blank"
                   rel="noopener"
                 >
-                  pecan
+                  pecan (alpha123)
                 </a>
                 ,&nbsp;
                 <a
@@ -1803,9 +1799,9 @@ function App() {
                   target="_blank"
                   rel="noopener"
                 >
-                  the VFalator team
+                  the VFalator team (esp. kachi and Jecht)
                 </a>
-                ,&nbsp;and&nbsp;
+                ,&nbsp;and special thanks to the community at &nbsp;
                 <a
                   href="https://discord.gg/moomoocows"
                   target="_blank"
