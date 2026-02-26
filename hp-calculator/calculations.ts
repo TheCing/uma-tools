@@ -401,7 +401,7 @@ export const COMMON_COURSES = [
 	{ id: '10601', name: 'Tokyo Turf 1400m', tag: 'Sprint' },
 	{ id: '10604', name: 'Tokyo Turf 1600m', tag: 'Mile' },
 	{ id: '10611', name: 'Tokyo Dirt 1600m', tag: 'Mile' },
-	{ id: '10507', name: 'Nakayama Turf 2000m', tag: 'Medium' },
+	{ id: '10507', name: 'Nakayama Turf 3600m', tag: 'Long' },
 	{ id: '10606', name: 'Tokyo Turf 2400m', tag: 'Japan Derby' },
 	{ id: '10906', name: 'Hanshin Turf 2200m', tag: 'Medium' },
 	{ id: '10506', name: 'Nakayama Turf 2500m', tag: 'Arima Kinen' },
