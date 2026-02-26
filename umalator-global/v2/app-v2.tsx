@@ -231,6 +231,7 @@ function App() {
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
+  const [autoSeed, setAutoSeed] = useState(false);
 
   // Panel visibility
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
@@ -625,6 +626,9 @@ function App() {
 
   // Run simulation via worker
   const handleRunSimulation = useCallback(() => {
+    if (autoSeed) {
+      setSeed(Math.floor(Math.random() * 0xFFFFFFFF));
+    }
     if (mode === "compare") {
       setIsRunning(true);
       setResults(null);
@@ -677,6 +681,7 @@ function App() {
     rushedKakari,
     leadCompetition,
     competeFight,
+    autoSeed,
   ]);
 
   const handleRunSkillChart = useCallback(() => {
@@ -1362,6 +1367,8 @@ function App() {
               setLeadCompetition={setLeadCompetition}
               competeFight={competeFight}
               setCompeteFight={setCompeteFight}
+              autoSeed={autoSeed}
+              setAutoSeed={setAutoSeed}
             />
 
             {/* Content area wrapper for widescreen layout */}
@@ -2027,6 +2034,8 @@ function App() {
                         setLeadCompetition={setLeadCompetition}
                         competeFight={competeFight}
                         setCompeteFight={setCompeteFight}
+                        autoSeed={autoSeed}
+                        setAutoSeed={setAutoSeed}
                       />
                     </div>
                     <div class="v2-mobile-settings-section">
