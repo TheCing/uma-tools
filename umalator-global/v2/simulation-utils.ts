@@ -134,6 +134,7 @@ export interface SimulationOptions {
 	rushedKakari: boolean;
 	leadCompetition: boolean;
 	competeFight: boolean;
+	laneMovement: boolean;
 }
 
 /**
@@ -149,6 +150,7 @@ export function buildSimulationOptions(options: Partial<SimulationOptions> = {})
 		rushedKakari: options.rushedKakari ?? true,
 		leadCompetition: options.leadCompetition ?? false,
 		competeFight: options.competeFight ?? false,
+		laneMovement: options.laneMovement ?? true,
 	};
 }
 

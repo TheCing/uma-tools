@@ -231,6 +231,7 @@ function App() {
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
+  const [laneMovement, setLaneMovement] = useState(true);
   const [autoSeed, setAutoSeed] = useState(false);
 
   // Panel visibility
@@ -681,6 +682,7 @@ function App() {
         rushedKakari: false,
         leadCompetition: false,
         competeFight: false,
+        laneMovement: false,
       });
 
       // Send tasks to all 4 workers
@@ -748,6 +750,7 @@ function App() {
             rushedKakari,
             leadCompetition,
             competeFight,
+            laneMovement,
           }),
         },
       });
@@ -772,6 +775,7 @@ function App() {
     rushedKakari,
     leadCompetition,
     competeFight,
+    laneMovement,
     autoSeed,
     handleRunSkillChart,
   ]);
@@ -1368,6 +1372,8 @@ function App() {
               setLeadCompetition={setLeadCompetition}
               competeFight={competeFight}
               setCompeteFight={setCompeteFight}
+              laneMovement={laneMovement}
+              setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
               setAutoSeed={setAutoSeed}
             />
@@ -2031,6 +2037,8 @@ function App() {
                         setLeadCompetition={setLeadCompetition}
                         competeFight={competeFight}
                         setCompeteFight={setCompeteFight}
+                        laneMovement={laneMovement}
+                        setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}
                         setAutoSeed={setAutoSeed}
                       />
