@@ -257,7 +257,7 @@ body {
 .events-main {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr minmax(auto, 500px) 1fr;
+  grid-template-columns: 1fr minmax(340px, 500px) 1fr;
   align-items: start;
   justify-items: center;
   padding: var(--space-xl) var(--space-lg);
@@ -314,12 +314,14 @@ body {
 
 .next-event-card {
   width: 100%;
+  min-width: 0;
   padding: var(--space-xl);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   text-align: center;
+  overflow: hidden;
 }
 
 .next-event-label {
@@ -346,7 +348,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: var(--space-md);
+  gap: var(--space-sm);
   margin-bottom: var(--space-xl);
 }
 
@@ -364,8 +366,8 @@ body {
 
 .flip-card {
   position: relative;
-  width: 44px;
-  height: 64px;
+  width: 36px;
+  height: 52px;
   perspective: 200px;
 }
 
@@ -374,7 +376,7 @@ body {
   width: 100%;
   height: 100%;
   font-family: 'DM Mono', monospace;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
   text-align: center;
 }
@@ -398,7 +400,7 @@ body {
 .flip-card-top span {
   position: absolute;
   width: 100%;
-  height: 64px;
+  height: 52px;
   top: 0;
   left: 0;
   display: flex;
@@ -427,7 +429,7 @@ body {
 .flip-card-bottom span {
   position: absolute;
   width: 100%;
-  height: 64px;
+  height: 52px;
   bottom: 0;
   left: 0;
   display: flex;
@@ -467,7 +469,7 @@ body {
   backface-visibility: hidden;
   color: var(--color-primary);
   font-family: 'DM Mono', monospace;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 600;
   text-align: center;
 }
@@ -475,7 +477,7 @@ body {
 .flip-card-flap span {
   position: absolute;
   width: 100%;
-  height: 64px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -542,10 +544,10 @@ body {
 
 .countdown-separator {
   font-family: 'DM Mono', monospace;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--color-text-muted);
-  line-height: 64px;
+  line-height: 52px;
   margin-top: 0;
 }
 
