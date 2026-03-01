@@ -75,8 +75,12 @@ const SEASON_NAMES: Record<number, string> = { 1: 'Spring', 2: 'Summer', 3: 'Aut
 // --- Logic ---
 
 function getNextEvent(now: Date): Preset | null {
+  const CM_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // ~7 days
   const upcoming = PRESETS
-    .filter(p => new Date(p.date + 'T22:00:00Z') > now)
+    .filter(p => {
+      const start = new Date(p.date + 'T22:00:00Z');
+      return start.getTime() + CM_DURATION_MS > now.getTime();
+    })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   return upcoming[0] || null;
 }
