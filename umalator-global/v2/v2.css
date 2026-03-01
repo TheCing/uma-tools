@@ -1650,6 +1650,7 @@ body {
 .v2-drawer-content {
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-md);
 }
 
@@ -2146,7 +2147,7 @@ body {
 
 /* Portal dropdown - rendered at body level, above all modals */
 .v2-select-dropdown-portal {
-  z-index: 1000; /* Above modal overlay (300) */
+  z-index: 1200; /* Above mobile settings drawer (1100) and modal overlay (300) */
   right: auto; /* Width set via inline style */
 }
 
@@ -2686,6 +2687,7 @@ body {
   flex: 1;
   padding: var(--space-lg);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .v2-modal-footer {
@@ -5653,6 +5655,7 @@ body {
   z-index: 1100;
   max-height: 80vh;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
 }
 

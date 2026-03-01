@@ -38,11 +38,19 @@ const BANNERS_CACHE_KEY = 'events-banners-cache';
 const BANNERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 // Upcoming banners (manually maintained until they appear on GameTora)
+// GameTora character thumb URL pattern:
+//   https://gametora.com/images/umamusume/characters/thumb/chara_stand_{charaId}_{outfitId}.png
 interface UpcomingBanner {
   startDate: string;
   endDate: string;
   characters: string[];
   supports: string[];
+  /** GameTora character stand thumbnail URLs */
+  charImages?: string[];
+}
+
+function gtCharImg(charaId: number, outfitId: number) {
+  return `https://gametora.com/images/umamusume/characters/thumb/chara_stand_${charaId}_${outfitId}.png`;
 }
 
 const UPCOMING_BANNERS: UpcomingBanner[] = [
@@ -52,6 +60,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-03-01T21:59:00Z',
     characters: ['[CODE: ICING] Mihono Bourbon', '[Precise Chocolatier] Eishin Flash'],
     supports: ['[Little Cupcakes, Big Emotions] Nishino Flower', '[Super! Sonic! Flower Power!] Sakura Bakushin O'],
+    charImages: [gtCharImg(1026, 102602), gtCharImg(1037, 103702)],
   },
   {
     // Mejiro Ardan banner
@@ -59,6 +68,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-03-05T21:59:00Z',
     characters: ['Mejiro Ardan'],
     supports: ['Agnes Digital (Power SSR)', 'Ines Fujin (Wit SR)'],
+    charImages: [gtCharImg(1071, 107101)],
   },
   {
     // Trackblazer scenario launch - Admire Vega
@@ -66,6 +76,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-03-14T21:59:00Z',
     characters: ['Admire Vega'],
     supports: ['Fine Motion (Wit SSR)', 'Kawakami Princess (Speed SSR)'],
+    charImages: [gtCharImg(1033, 103302)],
   },
   {
     // Trackblazer scenario - Kitasan Black & Matikanetannhauser
@@ -73,6 +84,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-03-14T21:59:00Z',
     characters: ['Kitasan Black', 'Matikanetannhauser'],
     supports: ['Narita Top Road (Speed SSR)', 'Admire Vega (Guts SR)'],
+    charImages: [gtCharImg(1068, 106801), gtCharImg(1056, 105601)],
   },
   {
     // Satono Diamond
@@ -80,6 +92,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-03-28T21:59:00Z',
     characters: ['Satono Diamond'],
     supports: ['Marvelous Sunday (Guts SSR)', 'Curren Chan (Speed SR)'],
+    charImages: [gtCharImg(1067, 106702)],
   },
   {
     // Mejiro Bright
@@ -87,6 +100,7 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     endDate: '2026-04-04T21:59:00Z',
     characters: ['Mejiro Bright'],
     supports: ['Zenno Rob Roy (Speed SSR)', 'Curren Chan (Wit SSR)'],
+    charImages: [gtCharImg(1074, 107401)],
   },
 ];
 
@@ -316,8 +330,10 @@ function formatBannerEndDate(dateStr: string): string {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
 
-  if (days > 0) return `${days}d ${hours}h left`;
-  return `${hours}h left`;
+  if (days > 0) return hours > 0 ? `${days}d ${hours}h left` : `${days}d left`;
+  if (hours > 0) return `${hours}h left`;
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  return `${minutes}m left`;
 }
 
 // Format countdown to banner start
@@ -335,8 +351,10 @@ function formatBannerStartCountdown(dateStr: string): string {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
 
-  if (days > 0) return `Starts in ${days}d ${hours}h`;
-  return `Starts in ${hours}h`;
+  if (days > 0) return hours > 0 ? `Starts in ${days}d ${hours}h` : `Starts in ${days}d`;
+  if (hours > 0) return `Starts in ${hours}h`;
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  return `Starts in ${minutes}m`;
 }
 
 // Format banner start time in user's timezone
@@ -901,26 +919,35 @@ function App() {
                       /* Fallback: show manually maintained banners */
                       <div class="fallback-banners-list">
                         {activeFallbackBanners.map((banner, i) => (
-                          <div key={i} class="fallback-banner-item">
-                            <div class="fallback-banner-timer">
-                              {formatBannerEndDate(banner.endDate)}
-                            </div>
-                            <div class="fallback-banner-content">
-                              <div class="fallback-banner-group">
-                                <span class="upcoming-banner-type char">Characters</span>
-                                <ul class="upcoming-banner-names">
-                                  {banner.characters.map((name, j) => (
-                                    <li key={j}>{name}</li>
-                                  ))}
-                                </ul>
+                          <div key={i} class="fallback-banner-card">
+                            {banner.charImages && banner.charImages.length > 0 && (
+                              <div class="fallback-banner-portraits">
+                                {banner.charImages.map((url, j) => (
+                                  <img key={j} src={url} alt="" class="fallback-banner-portrait" loading="lazy" />
+                                ))}
                               </div>
-                              <div class="fallback-banner-group">
-                                <span class="upcoming-banner-type support">Supports</span>
-                                <ul class="upcoming-banner-names">
-                                  {banner.supports.map((name, j) => (
-                                    <li key={j}>{name}</li>
-                                  ))}
-                                </ul>
+                            )}
+                            <div class="fallback-banner-info">
+                              <div class="fallback-banner-timer">
+                                {formatBannerEndDate(banner.endDate)}
+                              </div>
+                              <div class="fallback-banner-content">
+                                <div class="fallback-banner-group">
+                                  <span class="upcoming-banner-type char">Characters</span>
+                                  <ul class="upcoming-banner-names">
+                                    {banner.characters.map((name, j) => (
+                                      <li key={j}>{name}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div class="fallback-banner-group">
+                                  <span class="upcoming-banner-type support">Supports</span>
+                                  <ul class="upcoming-banner-names">
+                                    {banner.supports.map((name, j) => (
+                                      <li key={j}>{name}</li>
+                                    ))}
+                                  </ul>
+                                </div>
                               </div>
                             </div>
                           </div>

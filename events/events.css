@@ -934,20 +934,29 @@ body {
   gap: var(--space-md);
 }
 
-.fallback-banner-item {
-  padding: var(--space-md) 0;
+.fallback-banner-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
-.fallback-banner-item:first-child {
-  padding-top: 0;
+.fallback-banner-portraits {
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-surface-overlay) 0%, var(--color-surface) 100%);
+  padding: var(--space-sm) 0;
+  gap: var(--space-xs);
 }
 
-.fallback-banner-item:last-child {
-  padding-bottom: 0;
+.fallback-banner-portrait {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
 }
 
-.fallback-banner-item:not(:last-child) {
-  border-bottom: 1px solid var(--color-border);
+.fallback-banner-info {
+  padding: var(--space-md);
 }
 
 .fallback-banner-timer {
