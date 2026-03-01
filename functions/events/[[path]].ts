@@ -33,21 +33,21 @@ const PRESETS: Preset[] = [
   { id: 17, name: 'Virgo Cup', date: '2026-07-20', courseId: 11103, season: 3, ground: 2, weather: 1, time: 2 },
 ];
 
-const COURSE_DATA: Record<number, { raceTrackId: number; distance: number; surface: number }> = {
-  10501: { raceTrackId: 10005, distance: 1200, surface: 1 },
-  10504: { raceTrackId: 10005, distance: 2000, surface: 1 },
-  10506: { raceTrackId: 10005, distance: 2500, surface: 1 },
-  10602: { raceTrackId: 10006, distance: 1600, surface: 1 },
-  10604: { raceTrackId: 10006, distance: 2000, surface: 1 },
-  10606: { raceTrackId: 10006, distance: 2400, surface: 1 },
-  10611: { raceTrackId: 10006, distance: 1600, surface: 2 },
-  10701: { raceTrackId: 10007, distance: 1200, surface: 1 },
-  10810: { raceTrackId: 10008, distance: 3000, surface: 1 },
-  10811: { raceTrackId: 10008, distance: 3200, surface: 1 },
-  10903: { raceTrackId: 10009, distance: 1600, surface: 1 },
-  10906: { raceTrackId: 10009, distance: 2200, surface: 1 },
-  10914: { raceTrackId: 10009, distance: 3200, surface: 1 },
-  11103: { raceTrackId: 10101, distance: 2000, surface: 2 },
+const COURSE_DATA: Record<number, { raceTrackId: number; distance: number; surface: number; course: number }> = {
+  10501: { raceTrackId: 10005, distance: 1200, surface: 1, course: 3 },
+  10504: { raceTrackId: 10005, distance: 2000, surface: 1, course: 2 },
+  10506: { raceTrackId: 10005, distance: 2500, surface: 1, course: 2 },
+  10602: { raceTrackId: 10006, distance: 1600, surface: 1, course: 1 },
+  10604: { raceTrackId: 10006, distance: 2000, surface: 1, course: 1 },
+  10606: { raceTrackId: 10006, distance: 2400, surface: 1, course: 1 },
+  10611: { raceTrackId: 10006, distance: 1600, surface: 2, course: 1 },
+  10701: { raceTrackId: 10007, distance: 1200, surface: 1, course: 1 },
+  10810: { raceTrackId: 10008, distance: 3000, surface: 1, course: 3 },
+  10811: { raceTrackId: 10008, distance: 3200, surface: 1, course: 3 },
+  10903: { raceTrackId: 10009, distance: 1600, surface: 1, course: 3 },
+  10906: { raceTrackId: 10009, distance: 2200, surface: 1, course: 2 },
+  10914: { raceTrackId: 10009, distance: 3200, surface: 1, course: 4 },
+  11103: { raceTrackId: 10101, distance: 2000, surface: 2, course: 1 },
 };
 
 const TRACK_NAMES: Record<number, string> = {
@@ -66,6 +66,26 @@ const CM_ICON_NUMBER: Record<string, number> = {
 function getCmIconUrl(name: string): string | null {
   const num = CM_ICON_NUMBER[name];
   return num ? `https://media.gametora.com/umamusume/events/cm/icon_${num}.png` : null;
+}
+
+// GameTora track slugs (lowercase)
+const TRACK_SLUGS: Record<number, string> = {
+  10001: 'sapporo', 10002: 'hakodate', 10003: 'niigata', 10004: 'fukushima',
+  10005: 'nakayama', 10006: 'tokyo', 10007: 'chukyo', 10008: 'kyoto',
+  10009: 'hanshin', 10010: 'kokura', 10101: 'ooi',
+};
+
+// course field: 1=none, 2=inner, 3=outer, 4=outer-to-inner
+const COURSE_SUFFIX: Record<number, string> = { 1: '', 2: '-inner', 3: '-outer', 4: '-outer-to-inner' };
+
+function getGametoraUrl(courseId: number): string | null {
+  const course = COURSE_DATA[courseId];
+  if (!course) return null;
+  const slug = TRACK_SLUGS[course.raceTrackId];
+  if (!slug) return null;
+  const surface = course.surface === 1 ? 'turf' : 'dirt';
+  const suffix = COURSE_SUFFIX[course.course] || '';
+  return `https://gametora.com/umamusume/racetracks/${slug}#${course.distance}-${surface}${suffix}`;
 }
 
 const GROUND_NAMES: Record<number, string> = { 1: 'Firm', 2: 'Good', 3: 'Soft', 4: 'Heavy' };
@@ -146,9 +166,20 @@ function buildOgData(event: Preset, now: Date): { title: string; description: st
   const isPast = eventDate.getTime() < now.getTime();
   const countdown = isPast ? '(ended)' : `in ${getApproxCountdown(now, eventDate)}`;
 
+  const simulatorUrl = `https://umalator.app/v2/?preset=${event.id}`;
+  const gametoraUrl = getGametoraUrl(event.courseId);
+
+  const lines = [
+    `${event.name} \u2014 ${dateStr}`,
+    `${courseStr} \u00b7 ${conditions}`,
+    '',
+    simulatorUrl,
+  ];
+  if (gametoraUrl) lines.push(gametoraUrl);
+
   return {
-    title: `CM ${event.id}: ${event.name} ${countdown} \u2014 Moomoolator`,
-    description: `${event.name} \u2014 ${dateStr}\n${courseStr} \u00b7 ${conditions}`,
+    title: `CM ${event.id}: ${event.name} ${countdown}`,
+    description: lines.join('\n'),
     image: getCmIconUrl(event.name),
   };
 }
