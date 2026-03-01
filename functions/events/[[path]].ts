@@ -76,7 +76,7 @@ const TRACK_SLUGS: Record<number, string> = {
 };
 
 // course field: 1=none, 2=inner, 3=outer, 4=outer-to-inner
-const COURSE_SUFFIX: Record<number, string> = { 1: '', 2: '-inner', 3: '-outer', 4: '-outer-to-inner' };
+const COURSE_SUFFIX: Record<number, string> = { 1: '', 2: '-inner', 3: '-outer', 4: '-outer%20to%20inner' };
 
 function getGametoraUrl(courseId: number): string | null {
   const course = COURSE_DATA[courseId];
