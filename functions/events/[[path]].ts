@@ -22,7 +22,7 @@ interface Preset {
 
 const PRESETS: Preset[] = [
   { id: 11, name: 'Pisces Cup', date: '2026-03-31', courseId: 10914, season: 1, ground: 4, weather: 3, time: 2 },
-  { id: 10, name: 'Aquarius Cup', date: '2026-03-06', courseId: 10611, season: 4, ground: 1, weather: 1, time: 2 },
+  { id: 10, name: 'Aquarius Cup', date: '2026-03-02', courseId: 10611, season: 4, ground: 1, weather: 1, time: 2 },
   { id: 9, name: 'Capricorn Cup', date: '2026-02-13', courseId: 10701, season: 4, ground: 3, weather: 4, time: 2 },
   { id: 8, name: 'Sagittarius Cup', date: '2026-01-22', courseId: 10506, season: 4, ground: 1, weather: 1, time: 2 },
   { id: 12, name: 'Aries Cup', date: '2026-04-15', courseId: 10504, season: 1, ground: 1, weather: 1, time: 2 },
