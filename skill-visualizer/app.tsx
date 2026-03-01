@@ -9,6 +9,9 @@ import { TRACKNAMES_ja, TRACKNAMES_en } from '../strings/common';
 
 import skills from '../uma-skill-tools/data/skill_data.json';
 import skillnames from '../uma-skill-tools/data/skillnames.json';
+import skillmeta from '../skill_meta.json';
+
+import { Map as IMap } from 'immutable';
 
 import { Region, RegionList } from '../uma-skill-tools/Region';
 import { CourseData, CourseHelpers } from '../uma-skill-tools/CourseData';
@@ -56,8 +59,9 @@ const horse = Object.freeze({
 	strategy: Strategy.Nige,
 	distanceAptitude: Aptitude.S,
 	surfaceAptitude: Aptitude.A,
-	strategyAptitde: Aptitude.A,
-	rawStamina: 2000
+	strategyAptitude: Aptitude.A,
+	rawStamina: 2000,
+	rawWisdom: 2000
 });
 
 function baseSpeed(distance: number) {
@@ -93,8 +97,9 @@ function regionsForSkill(course: CourseData, skillId: string, color: {stroke: st
 	const wholeCourse = new RegionList();
 	wholeCourse.push(new Region(0, course.distance));
 	try {
-		const sd = buildSkillData(horse, {}, course, wholeCourse, parser, skillId, true);
-		if (sd == null) return {err: false, type: RegionDisplayType.Immediate, regions: [], color};
+		const sds = buildSkillData(horse, {}, course, wholeCourse, parser, skillId, true);
+		if (sds.length == 0) return {err: false, type: RegionDisplayType.Immediate, regions: [], color};
+		const sd = sds[0];
 		return {
 			err: false,
 			type: sd.samplePolicy == ImmediatePolicy ? RegionDisplayType.Immediate : RegionDisplayType.Regions,
@@ -108,7 +113,7 @@ function regionsForSkill(course: CourseData, skillId: string, color: {stroke: st
 }
 
 function doesNotActivate(skillRegions) {
-	return skillRegions.regions.length == 0 || skillRegions.regions[0].start == 9999;
+	return !skillRegions || skillRegions.regions.length == 0 || skillRegions.regions[0].start == 9999;
 }
 
 const colors = [
@@ -119,9 +124,12 @@ const colors = [
 ];
 
 function App(props) {
-	const [language, setLanguage] = useLanguageSelect();
+	const [language, setLanguage] = CC_GLOBAL ? ['en', () => {}] as const : useLanguageSelect();
 	const [courseId, setCourseId] = useState(() => +(/cid=(\d+)/.exec(window.location.hash) || [null, DefaultCourseId])[1]);
-	const [selectedSkills, setSelectedSkills] = useState(() => new Set((/sid=(\d+(?:,\d+)*)/.exec(window.location.hash) || [null, ''])[1].split(',').filter(Boolean)));
+	const [selectedSkills, setSelectedSkills] = useState(() => {
+		const ids = (/sid=(\d+(?:,\d+)*)/.exec(window.location.hash) || [null, ''])[1].split(',').filter(Boolean);
+		return IMap(ids.map(id => [skillmeta[id]?.groupId ?? id, id]));
+	});
 	const [skillsOpen, setSkillsOpen] = useState(false);
 
 	useEffect(function () {
@@ -129,7 +137,7 @@ function App(props) {
 	}, [language]);
 
 	useEffect(function () {
-		window.location.replace(`#cid=${courseId}${selectedSkills.size == 0 ? "" : ",sid="}${Array.from(selectedSkills).join(',')}`);
+		window.location.replace(`#cid=${courseId}${selectedSkills.size == 0 ? "" : ",sid="}${selectedSkills.valueSeq().join(',')}`);
 	}, [courseId, selectedSkills]);
 
 	function setSelectedSkillsAndClose(ids) {
@@ -150,22 +158,21 @@ function App(props) {
 		if (se == null) return;
 		e.stopPropagation();
 		const id = se.dataset.skillid;
-		const newSelected = new Set(selectedSkills);
-		newSelected.delete(id);
-		setSelectedSkills(newSelected);
+		const groupId = skillmeta[id]?.groupId ?? id;
+		setSelectedSkills(selectedSkills.delete(groupId));
 	}
 
 	const strings = {skillnames: {}, tracknames: language == 'ja' ? TRACKNAMES_ja : TRACKNAMES_en, ui: language == 'ja' ? UI_ja : UI_en};
 	const langid = +(language == 'en');
-	Object.keys(skillnames).forEach(id => strings.skillnames[id] = skillnames[id][langid]);
+	Object.keys(skillnames).forEach(id => strings.skillnames[id] = skillnames[id][langid] || skillnames[id][0]);
 
 	const course = CourseHelpers.getCourse(courseId);
 
-	const statThresholds = course.courseSetStatus.length == 0 ? strings.ui.stats[0] : course.courseSetStatus.map(s => strings.ui.stats[s]).join(strings.ui.joiner);
-
-	const regions = useMemo(() => Array.from(selectedSkills).map((id,i) => regionsForSkill(course, id, colors[i % colors.length])), [selectedSkills, course]);
+	const skillIds = useMemo(() => selectedSkills.valueSeq().toArray(), [selectedSkills]);
+	const regions = useMemo(() => skillIds.map((id,i) => regionsForSkill(course, id, colors[i % colors.length])), [skillIds, course]);
 	const skillDetails = useMemo(function () {
-		return Array.from(selectedSkills).map(function (id, i) {
+		return skillIds.map(function (id, i) {
+			if (!regions[i]) return null;
 			const hasNotice = regions[i].err || doesNotActivate(regions[i]);
 			return (
 				<li class={`expandedSkillItem${hasNotice ? ' hasNotice' : ''}`}>
@@ -176,18 +183,17 @@ function App(props) {
 				</li>
 			);
 		});
-	}, [selectedSkills, course, regions]);
+	}, [skillIds, course, regions]);
 	
 	return (
 		<Language.Provider value={language}>
 			<IntlProvider definition={strings}>
 				<div id="overlay" class={skillsOpen ? "skillListWrapper-open" : ""} onClick={hideSkillSelector} />
-				<LanguageSelect language={language} setLanguage={setLanguage} />
-				<RaceTrack courseid={courseId} width="960" height="220" regions={regions} />
+				{!CC_GLOBAL && <LanguageSelect language={language} setLanguage={setLanguage} />}
+				<RaceTrack courseid={courseId} width={960} height={220} regions={regions} />
 				<div id="buttonsRow">
 					<TrackSelect courseid={courseId} setCourseid={setCourseId} />
-					<div id="thresholds"><Text id="ui.thresholds" />{statThresholds}</div>
-					<button id="addSkill" onClick={showSkillSelector}><Text id="ui.addskill" /></button>
+<button id="addSkill" onClick={showSkillSelector}><Text id="ui.addskill" /></button>
 				</div>
 				<div id="skillDetailsWrapper" onClick={removeSkill}>
 					<ul class="skillDetailsList">

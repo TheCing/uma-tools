@@ -1,4 +1,4 @@
-/* ../components/Language.css */
+/* ../../components/Language.css */
 .langSelect {
   background: none;
   border: 1px solid rgb(148, 150, 189);
@@ -11,7 +11,7 @@
   color: var(--fg);
 }
 
-/* ../components/Tooltip.css */
+/* ../../components/Tooltip.css */
 .hasTooltip {
   display: inline-block;
   position: relative;
@@ -62,7 +62,7 @@
   border-top-color: var(--bg-subtle);
 }
 
-/* ../components/SkillList.css */
+/* ../../components/SkillList.css */
 .filterButton {
   background: rgb(214, 207, 231);
   border: none;
@@ -399,7 +399,7 @@
   border-image: linear-gradient(var(--text-primary), var(--text-primary)) 90;
 }
 
-/* ../components/RacetrackCow.css */
+/* ../../components/RacetrackCow.css */
 .racetrackCowContainer {
   position: absolute;
   top: 0;
@@ -497,7 +497,7 @@
   }
 }
 
-/* ../components/RacetrackCowMooCoins.css */
+/* ../../components/RacetrackCowMooCoins.css */
 .mooCoinCounterWrapper {
   position: absolute;
   top: 8px;
@@ -969,7 +969,7 @@
   }
 }
 
-/* ../components/RaceTrack.css */
+/* ../../components/RaceTrack.css */
 .distanceMarker {
   font-weight: 600;
   paint-order: stroke;
@@ -1087,7 +1087,7 @@
   display: block;
 }
 
-/* app.css */
+/* ../../skill-visualizer/app.css */
 .racetrackWrapper {
   margin: auto;
 }

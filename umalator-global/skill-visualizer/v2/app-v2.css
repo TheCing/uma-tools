@@ -1,0 +1,211 @@
+/**
+ * Skill Visualizer v2 Styles
+ *
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
+ * Licensed under GPL-3.0-or-later
+ */
+
+/* ============================================
+   BASE / RESET
+   ============================================ */
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	background: var(--color-bg);
+	color: var(--color-text);
+	line-height: 1.5;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+
+.sv2-app {
+	max-width: 1080px;
+	margin: 0 auto;
+	padding: var(--space-md);
+}
+
+.sv2-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--space-sm) 0 var(--space-md);
+}
+
+.sv2-header h1 {
+	font-size: var(--font-lg);
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+/* ============================================
+   TRACK AREA
+   ============================================ */
+
+.sv2-track-area {
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-md);
+	margin-bottom: var(--space-md);
+}
+
+.sv2-track-area .racetrackWrapper {
+	margin: 0;
+}
+
+.sv2-track-area .racetrackName {
+	background: linear-gradient(135deg, #f0c040 0%, #ffe580 25%, #ffd54f 50%, #f0c040 75%, #c9a227 100%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	color: transparent;
+	filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.sv2-track-controls {
+	display: flex;
+	align-items: center;
+	gap: var(--space-md);
+	margin-bottom: var(--space-md);
+}
+
+.sv2-track-controls .v2-track-select-course {
+	width: 280px;
+}
+
+.sv2-track-controls .v2-track-select {
+	flex: 1;
+}
+
+.sv2-thresholds {
+	font-size: var(--font-xs);
+	color: var(--color-text-secondary);
+	padding: var(--space-xs) 0;
+}
+
+/* ============================================
+   SKILL CARDS
+   ============================================ */
+
+.sv2-skills-area {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-sm);
+	margin-bottom: var(--space-md);
+}
+
+.sv2-skill-card {
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	padding: var(--space-sm) var(--space-md);
+	position: relative;
+	min-width: 200px;
+}
+
+.sv2-skill-card-color {
+	height: 3px;
+	border-radius: 2px;
+	margin-bottom: var(--space-xs);
+}
+
+.sv2-skill-card .v2-skill-chip {
+	background: none;
+	border: none;
+	padding: 0;
+}
+
+/* Always show skill details expanded — the whole point is conditions at a glance */
+.sv2-skill-card .v2-skill-details-wrapper {
+	grid-template-rows: 1fr;
+}
+
+.sv2-skill-card .v2-skill-details-wrapper .v2-skill-details {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid var(--color-border);
+}
+
+.sv2-skill-card-notice {
+	position: absolute;
+	top: var(--space-xs);
+	right: var(--space-xs);
+	font-size: var(--font-2xs);
+	font-weight: 700;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+}
+
+.sv2-skill-card-notice.error {
+	background: rgba(239, 68, 68, 0.2);
+	color: #ef4444;
+}
+
+.sv2-skill-card-notice.dna {
+	background: rgba(245, 166, 35, 0.2);
+	color: #f5a623;
+}
+
+
+.sv2-skill-card.has-notice .v2-skill-chip {
+	opacity: 0.6;
+}
+
+/* ============================================
+   ADD SKILL BUTTON
+   ============================================ */
+
+.sv2-add-skill {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 200px;
+	min-height: 80px;
+	background: var(--color-surface);
+	border: 1px dashed var(--color-border-strong);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	font-size: var(--font-sm);
+	transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.sv2-add-skill:hover {
+	border-color: var(--color-primary);
+	color: var(--color-primary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+	.sv2-app {
+		padding: var(--space-sm);
+	}
+
+	.sv2-track-controls {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.sv2-skills-area {
+		flex-direction: column;
+	}
+
+	.sv2-skill-card {
+		min-width: 0;
+	}
+}

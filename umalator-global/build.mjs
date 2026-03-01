@@ -153,10 +153,12 @@ function runServer(ctx, port) {
 		let artifactKey = url;
 		if (artifactKey.startsWith('umalator-global/')) artifactKey = artifactKey.slice('umalator-global/'.length);
 		const filename = path.basename(url);
+		// Skill-visualizer has its own pre-built bundles on disk — skip artifact matching
+		const isSkillVis = artifactKey.startsWith('skill-visualizer/');
 		// Check if this is a v2 artifact or main artifact
 		const isV2Artifact = artifactKey.startsWith('v2/') && ARTIFACTS.some(a => artifactKey.endsWith(a.replace('bundle-v2', 'bundle-v2')));
 		const artifactName = isV2Artifact ? path.basename(artifactKey) : filename;
-		if (ARTIFACTS.indexOf(artifactName) > -1) {
+		if (!isSkillVis && ARTIFACTS.indexOf(artifactName) > -1) {
 			const requestN = requestCount.get(artifactName) + (artifactName == 'simulator.worker.js' ? (workerState = +!workerState) : 1);
 			requestCount.set(artifactName, requestN);
 			if (requestN != buildCount) {
