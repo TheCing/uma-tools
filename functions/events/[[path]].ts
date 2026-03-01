@@ -56,6 +56,18 @@ const TRACK_NAMES: Record<number, string> = {
   10009: 'Hanshin', 10010: 'Kokura', 10101: 'Ooi',
 };
 
+// CM icon numbers: zodiac order starting from Capricorn = 1 (January)
+const CM_ICON_NUMBER: Record<string, number> = {
+  'Capricorn Cup': 1, 'Aquarius Cup': 2, 'Pisces Cup': 3, 'Aries Cup': 4,
+  'Taurus Cup': 5, 'Gemini Cup': 6, 'Cancer Cup': 7, 'Leo Cup': 8,
+  'Virgo Cup': 9, 'Libra Cup': 10, 'Scorpio Cup': 11, 'Sagittarius Cup': 12,
+};
+
+function getCmIconUrl(name: string): string | null {
+  const num = CM_ICON_NUMBER[name];
+  return num ? `https://media.gametora.com/umamusume/events/cm/icon_${num}.png` : null;
+}
+
 const GROUND_NAMES: Record<number, string> = { 1: 'Firm', 2: 'Good', 3: 'Soft', 4: 'Heavy' };
 const WEATHER_NAMES: Record<number, string> = { 1: 'Sunny', 2: 'Cloudy', 3: 'Rainy', 4: 'Snowy' };
 const SEASON_NAMES: Record<number, string> = { 1: 'Spring', 2: 'Summer', 3: 'Autumn', 4: 'Winter' };
@@ -121,7 +133,7 @@ function getEventById(id: number): Preset | null {
   return PRESETS.find(p => p.id === id) || null;
 }
 
-function buildOgData(event: Preset, now: Date): { title: string; description: string } {
+function buildOgData(event: Preset, now: Date): { title: string; description: string; image: string | null } {
   const eventDate = new Date(event.date + 'T22:00:00Z');
   const courseStr = getCourseString(event.courseId);
   const conditions = getConditionsString(event);
@@ -133,10 +145,15 @@ function buildOgData(event: Preset, now: Date): { title: string; description: st
   return {
     title: `CM ${event.id}: ${event.name} ${countdown} \u2014 Moomoolator`,
     description: `${event.name} \u2014 ${dateStr}\n${courseStr} \u00b7 ${conditions}`,
+    image: getCmIconUrl(event.name),
   };
 }
 
-function buildHtml(title: string, description: string, canonicalUrl: string): string {
+function buildHtml(title: string, description: string, canonicalUrl: string, image: string | null): string {
+  const imageTags = image ? `
+  <meta property="og:image" content="${escapeAttr(image)}">
+  <meta name="twitter:image" content="${escapeAttr(image)}">` : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,7 +161,7 @@ function buildHtml(title: string, description: string, canonicalUrl: string): st
   <meta property="og:type" content="website">
   <meta property="og:title" content="${escapeAttr(title)}">
   <meta property="og:description" content="${escapeAttr(description)}">
-  <meta property="og:url" content="${canonicalUrl}">
+  <meta property="og:url" content="${canonicalUrl}">${imageTags}
   <meta property="og:site_name" content="Moomoolator">
   <meta name="theme-color" content="#6ee718">
   <meta name="twitter:card" content="summary">
@@ -178,13 +195,14 @@ export const onRequest: PagesFunction = async (context) => {
 
   let title: string;
   let description: string;
+  let image: string | null = null;
 
   if (specificEvent) {
-    ({ title, description } = buildOgData(specificEvent, now));
+    ({ title, description, image } = buildOgData(specificEvent, now));
   } else {
     const nextEvent = getNextEvent(now);
     if (nextEvent) {
-      ({ title, description } = buildOgData(nextEvent, now));
+      ({ title, description, image } = buildOgData(nextEvent, now));
     } else {
       title = 'Events \u2014 Moomoolator';
       description = 'Upcoming Champions Meeting events and gacha banners for Uma Musume Pretty Derby';
@@ -195,7 +213,7 @@ export const onRequest: PagesFunction = async (context) => {
     ? `https://umalator.app/events/${specificEvent.id}`
     : 'https://umalator.app/events/';
 
-  const html = buildHtml(title, description, canonicalUrl);
+  const html = buildHtml(title, description, canonicalUrl, image);
 
   return new Response(html, {
     headers: {
