@@ -180,14 +180,18 @@ function buildHtml(title: string, description: string, canonicalUrl: string, ima
 
 export const onRequest: PagesFunction = async (context) => {
   const userAgent = context.request.headers.get('User-Agent') || '';
+  const url = new URL(context.request.url);
+  const pathParts = url.pathname.replace(/^\/events\/?/, '').split('/').filter(Boolean);
 
+  // For browsers hitting /events/:number, redirect to /events/
   if (!isBot(userAgent)) {
+    if (pathParts.length > 0 && /^\d+$/.test(pathParts[0])) {
+      return Response.redirect(new URL('/events/', url.origin).toString(), 302);
+    }
     return context.next();
   }
 
   const now = new Date();
-  const url = new URL(context.request.url);
-  const pathParts = url.pathname.replace(/^\/events\/?/, '').split('/').filter(Boolean);
 
   // Check for /events/:id pattern
   const eventId = pathParts.length > 0 ? parseInt(pathParts[0], 10) : NaN;
