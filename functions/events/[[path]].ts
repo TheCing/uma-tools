@@ -117,6 +117,48 @@ function isBot(userAgent: string): boolean {
   return botPatterns.some(bot => userAgent.includes(bot));
 }
 
+function getEventById(id: number): Preset | null {
+  return PRESETS.find(p => p.id === id) || null;
+}
+
+function buildOgData(event: Preset, now: Date): { title: string; description: string } {
+  const eventDate = new Date(event.date + 'T22:00:00Z');
+  const courseStr = getCourseString(event.courseId);
+  const conditions = getConditionsString(event);
+  const dateStr = formatEventDate(eventDate);
+
+  const isPast = eventDate.getTime() < now.getTime();
+  const countdown = isPast ? '(ended)' : `in ${getApproxCountdown(now, eventDate)}`;
+
+  return {
+    title: `CM ${event.id}: ${event.name} ${countdown} \u2014 Moomoolator`,
+    description: `${event.name} \u2014 ${dateStr}\n${courseStr} \u00b7 ${conditions}`,
+  };
+}
+
+function buildHtml(title: string, description: string, canonicalUrl: string): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${escapeAttr(title)}">
+  <meta property="og:description" content="${escapeAttr(description)}">
+  <meta property="og:url" content="${canonicalUrl}">
+  <meta property="og:site_name" content="Moomoolator">
+  <meta name="theme-color" content="#6ee718">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="${escapeAttr(title)}">
+  <meta name="twitter:description" content="${escapeAttr(description)}">
+  <title>${escapeHtml(title)}</title>
+  <meta http-equiv="refresh" content="0;url=${canonicalUrl}">
+</head>
+<body>
+  <p>Redirecting to <a href="${canonicalUrl}">${canonicalUrl}</a></p>
+</body>
+</html>`;
+}
+
 // --- Handler ---
 
 export const onRequest: PagesFunction = async (context) => {
@@ -127,44 +169,33 @@ export const onRequest: PagesFunction = async (context) => {
   }
 
   const now = new Date();
-  const event = getNextEvent(now);
+  const url = new URL(context.request.url);
+  const pathParts = url.pathname.replace(/^\/events\/?/, '').split('/').filter(Boolean);
 
-  let title = 'Events \u2014 Moomoolator';
-  let description = 'Upcoming Champions Meeting events and gacha banners for Uma Musume Pretty Derby';
+  // Check for /events/:id pattern
+  const eventId = pathParts.length > 0 ? parseInt(pathParts[0], 10) : NaN;
+  const specificEvent = !isNaN(eventId) ? getEventById(eventId) : null;
 
-  if (event) {
-    const eventDate = new Date(event.date + 'T22:00:00Z');
-    const countdown = getApproxCountdown(now, eventDate);
-    const dateStr = formatEventDate(eventDate);
-    const courseStr = getCourseString(event.courseId);
-    const conditions = getConditionsString(event);
+  let title: string;
+  let description: string;
 
-    title = `CM ${event.id}: ${event.name} in ${countdown} \u2014 Moomoolator`;
-    description = `${event.name} \u2014 ${dateStr}\n${courseStr} \u00b7 ${conditions}`;
+  if (specificEvent) {
+    ({ title, description } = buildOgData(specificEvent, now));
+  } else {
+    const nextEvent = getNextEvent(now);
+    if (nextEvent) {
+      ({ title, description } = buildOgData(nextEvent, now));
+    } else {
+      title = 'Events \u2014 Moomoolator';
+      description = 'Upcoming Champions Meeting events and gacha banners for Uma Musume Pretty Derby';
+    }
   }
 
-  const url = 'https://umalator.app/events/';
+  const canonicalUrl = specificEvent
+    ? `https://umalator.app/events/${specificEvent.id}`
+    : 'https://umalator.app/events/';
 
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="${escapeAttr(title)}">
-  <meta property="og:description" content="${escapeAttr(description)}">
-  <meta property="og:url" content="${url}">
-  <meta property="og:site_name" content="Moomoolator">
-  <meta name="theme-color" content="#6ee718">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="${escapeAttr(title)}">
-  <meta name="twitter:description" content="${escapeAttr(description)}">
-  <title>${escapeHtml(title)}</title>
-  <meta http-equiv="refresh" content="0;url=${url}">
-</head>
-<body>
-  <p>Redirecting to <a href="${url}">${url}</a></p>
-</body>
-</html>`;
+  const html = buildHtml(title, description, canonicalUrl);
 
   return new Response(html, {
     headers: {
