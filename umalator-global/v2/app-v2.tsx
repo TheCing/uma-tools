@@ -1117,7 +1117,7 @@ function App() {
           >
             {showNotification && (
               <NotificationBanner onDismiss={dismissNotification}>
-                Notice: Upcoming maintenance period - <MaintenanceTime />.
+                Notice: Upcoming in-game maintenance period - <MaintenanceTime />.
               </NotificationBanner>
             )}
 
