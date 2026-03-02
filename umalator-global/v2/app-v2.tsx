@@ -47,6 +47,7 @@ import {
   ArrowLeftRight,
   Link,
 } from "./components";
+import { NotificationBanner } from "./components/NotificationBanner";
 import {
   Users,
   HelpCircle,
@@ -182,6 +183,15 @@ import tracknames from "../../uma-skill-tools/data/tracknames.json";
 Object.keys(tracknames).forEach(
   (k) => (STRINGS["tracknames"][k] = tracknames[k][1]),
 );
+
+const dateFmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+const timeFmt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+
+function MaintenanceTime() {
+  const start = new Date('2026-03-03T07:00:00Z');
+  const end = new Date('2026-03-03T09:00:00Z');
+  return <>{timeFmt.format(start)} – {timeFmt.format(end)}, {dateFmt.format(start)}</>;
+}
 
 function App() {
   // Load saved state on mount
@@ -588,14 +598,16 @@ function App() {
     return () => document.body.removeEventListener("click", handleClick);
   }, []);
 
-  // Notification banner
+  // Notification banner — change this ID to force-show a new notification
+  const NOTIFICATION_ID = 'maintenance-2026-03-03';
+
   const [showNotification, setShowNotification] = useState(
-    () => !savedPrefs.current.notificationDismissed,
+    () => savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
   );
 
   const dismissNotification = useCallback(() => {
     setShowNotification(false);
-    savePreferences({ notificationDismissed: true });
+    savePreferences({ notificationDismissed: NOTIFICATION_ID });
   }, []);
 
   // Mobile view change handler
@@ -1103,22 +1115,10 @@ function App() {
             class={`${darkMode ? "" : "light"} ${CC_DEV && yandereMode ? "yandere" : (colorPalette !== 'uma-green' ? colorPalette : '')} ${showNotification ? "v2-has-notification" : ""}`}
             style={{ "--ui-scale": uiScale / 100 } as any}
           >
-            {/* NOTIFICATION BANNER */}
             {showNotification && (
-              <div class="v2-notification">
-                <p>
-                  Notice: This fork of the Umalator is brought to you by
-                  MooMooCord. Includes the best of both the original Umalator
-                  and VFCord's VFalator, in addition to a suite of new features.
-                  Also, cow.
-                </p>
-                <button
-                  class="v2-notification-close"
-                  onClick={dismissNotification}
-                >
-                  ✕
-                </button>
-              </div>
+              <NotificationBanner onDismiss={dismissNotification}>
+                Notice: Upcoming maintenance period - <MaintenanceTime />.
+              </NotificationBanner>
             )}
 
             {/* HEADER BAR - Track selection + conditions + run */}

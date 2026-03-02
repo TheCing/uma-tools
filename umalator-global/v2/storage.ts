@@ -389,7 +389,7 @@ export const COLOR_PALETTES: ColorPalette[] = ['uma-green', 'sage-green', 'vibra
 export interface Preferences {
 	darkMode: boolean;
 	colorPalette: ColorPalette;
-	notificationDismissed: boolean;
+	notificationDismissed: string; // ID of the last dismissed notification, or '' if none
 	tourCompleted: boolean;
 	uiScale: number; // UI scale percentage (80-120, default 100)
 }
@@ -397,7 +397,7 @@ export interface Preferences {
 const DEFAULT_PREFERENCES: Preferences = {
 	darkMode: true,
 	colorPalette: 'sage-green',
-	notificationDismissed: false,
+	notificationDismissed: '',
 	tourCompleted: false,
 	uiScale: 100,
 };
@@ -439,7 +439,7 @@ export function loadPreferences(): Preferences {
 		return {
 			darkMode: typeof json.darkMode === 'boolean' ? json.darkMode : DEFAULT_PREFERENCES.darkMode,
 			colorPalette,
-			notificationDismissed: typeof json.notificationDismissed === 'boolean' ? json.notificationDismissed : DEFAULT_PREFERENCES.notificationDismissed,
+			notificationDismissed: typeof json.notificationDismissed === 'string' ? json.notificationDismissed : DEFAULT_PREFERENCES.notificationDismissed,
 			tourCompleted: typeof json.tourCompleted === 'boolean' ? json.tourCompleted : DEFAULT_PREFERENCES.tourCompleted,
 			uiScale: typeof json.uiScale === 'number' && json.uiScale >= 80 && json.uiScale <= 120 ? json.uiScale : DEFAULT_PREFERENCES.uiScale,
 		};
