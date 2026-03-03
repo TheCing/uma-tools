@@ -598,11 +598,11 @@ function App() {
     return () => document.body.removeEventListener("click", handleClick);
   }, []);
 
-  // Notification banner — change this ID to force-show a new notification
-  const NOTIFICATION_ID = 'maintenance-2026-03-03';
+  // Notification banner — set NOTIFICATION_ID to show, or '' to hide
+  const NOTIFICATION_ID = '';
 
   const [showNotification, setShowNotification] = useState(
-    () => savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
+    () => NOTIFICATION_ID !== '' && savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
   );
 
   const dismissNotification = useCallback(() => {

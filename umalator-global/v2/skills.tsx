@@ -549,11 +549,15 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 	// Icon type filter - separate toggle-based state (all active = show all)
 	const [activeIconTypes, setActiveIconTypes] = useState<Set<string>>(new Set(ICON_TYPE_FILTERS));
 
-	// Focus input when opened
+	// Focus input and lock body scroll when opened
 	useEffect(() => {
-		if (isOpen && inputRef.current) {
-			inputRef.current.focus();
+		if (isOpen) {
+			document.body.style.overflow = 'hidden';
+			if (inputRef.current) inputRef.current.focus();
+		} else {
+			document.body.style.overflow = '';
 		}
+		return () => { document.body.style.overflow = ''; };
 	}, [isOpen]);
 
 	// Toggle a filter (clicking same filter twice clears it)

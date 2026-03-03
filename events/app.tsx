@@ -433,7 +433,7 @@ function useCountdown(targetDate: Date | null) {
 }
 
 // CM Event Phases
-type CMPhase = 'upcoming' | 'r1d1' | 'r1d2' | 'r2d1' | 'r2d2' | 'registration' | 'finals' | 'ended';
+type CMPhase = 'upcoming' | 'league_selection' | 'round1' | 'round2' | 'finals_reg' | 'finals_matching' | 'finals_race' | 'ended';
 
 interface CMPhaseInfo {
   phase: CMPhase;
@@ -445,30 +445,32 @@ interface CMPhaseInfo {
   progressPercent: number; // 0-100 within current phase
 }
 
-// Phase durations in hours from event start
+// Phase durations in hours from event start (22:00 UTC on event date)
+// Registration/League Selection: 4 days, Round 1: 2 days, Round 2: 2 days,
+// Finals Reg: 12h, Finals Matching: 12h, Finals Race: 24h = 10 days total
 const CM_PHASE_HOURS: Record<CMPhase, { start: number; end: number }> = {
-  upcoming: { start: -Infinity, end: 0 },
-  r1d1: { start: 0, end: 24 },
-  r1d2: { start: 24, end: 48 },
-  r2d1: { start: 48, end: 72 },
-  r2d2: { start: 72, end: 96 },
-  registration: { start: 96, end: 120 },
-  finals: { start: 120, end: 144 },
-  ended: { start: 144, end: Infinity },
+  upcoming:        { start: -Infinity, end: 0   },
+  league_selection:{ start: 0,         end: 96  },  // 4 days
+  round1:          { start: 96,        end: 144 },  // 2 days
+  round2:          { start: 144,       end: 192 },  // 2 days
+  finals_reg:      { start: 192,       end: 204 },  // 12 hours
+  finals_matching: { start: 204,       end: 216 },  // 12 hours
+  finals_race:     { start: 216,       end: 240 },  // 24 hours
+  ended:           { start: 240,       end: Infinity },
 };
 
 const CM_PHASE_LABELS: Record<CMPhase, { label: string; short: string }> = {
-  upcoming: { label: 'Starting Soon', short: 'Soon' },
-  r1d1: { label: 'Round 1 - Day 1', short: 'R1D1' },
-  r1d2: { label: 'Round 1 - Day 2', short: 'R1D2' },
-  r2d1: { label: 'Round 2 - Day 1', short: 'R2D1' },
-  r2d2: { label: 'Round 2 - Day 2', short: 'R2D2' },
-  registration: { label: 'Finals Registration', short: 'Finals Reg' },
-  finals: { label: 'Finals', short: 'Finals' },
-  ended: { label: 'Event Ended', short: 'Ended' },
+  upcoming:        { label: 'Starting Soon', short: 'Soon' },
+  league_selection:{ label: 'League Selection', short: 'League' },
+  round1:          { label: 'Round 1', short: 'R1' },
+  round2:          { label: 'Round 2', short: 'R2' },
+  finals_reg:      { label: 'Finals Registration', short: 'Finals Reg' },
+  finals_matching: { label: 'Finals Matching', short: 'Matching' },
+  finals_race:     { label: 'Finals', short: 'Finals' },
+  ended:           { label: 'Event Ended', short: 'Ended' },
 };
 
-const PHASE_ORDER: CMPhase[] = ['upcoming', 'r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals', 'ended'];
+const PHASE_ORDER: CMPhase[] = ['upcoming', 'league_selection', 'round1', 'round2', 'finals_reg', 'finals_matching', 'finals_race', 'ended'];
 
 function getCMPhaseInfo(eventStart: Date): CMPhaseInfo {
   const now = Date.now();
@@ -494,9 +496,8 @@ function getCMPhaseInfo(eventStart: Date): CMPhaseInfo {
   // Find next phase
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
 
-  // Calculate overall progress across all visible phases (r1d1 through finals = 6 phases)
-  // The progress bar spans from r1d1 (index 1) to finals (index 6)
-  const visiblePhases = PHASE_ORDER.slice(1, -1); // ['r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals']
+  // Calculate overall progress across all visible phases (league_selection through finals_race)
+  const visiblePhases = PHASE_ORDER.slice(1, -1);
   const numVisiblePhases = visiblePhases.length;
   const visiblePhaseIndex = visiblePhases.indexOf(currentPhase);
 
@@ -745,8 +746,8 @@ function App() {
     const now = new Date();
     const upcoming = cmEvents.filter(event => {
       const eventDate = getEventStartDate(event);
-      // Consider event "past" if it started more than 7 days ago (typical CM duration)
-      const eventEndApprox = new Date(eventDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      // Consider event "past" if it started more than 10 days ago (typical CM duration)
+      const eventEndApprox = new Date(eventDate.getTime() + 10 * 24 * 60 * 60 * 1000);
       return eventEndApprox >= now;
     });
 
@@ -998,6 +999,17 @@ function App() {
                       <div class="phase-next">
                         <span class="phase-next-label">{cmPhase.nextPhaseLabel} in</span>
                         <div class="countdown countdown-compact">
+                          {phaseCountdown.days > 0 && (<>
+                          <div class="countdown-segment">
+                            <div class="countdown-cards">
+                              {String(phaseCountdown.days).split('').map((digit, i) => (
+                                <FlipDigit key={`phase-days-${i}`} digit={digit} id={`phase-days-${i}`} />
+                              ))}
+                            </div>
+                            <span class="countdown-label">Days</span>
+                          </div>
+                          <span class="countdown-separator">:</span>
+                          </>)}
                           <div class="countdown-segment">
                             <div class="countdown-cards">
                               {String(phaseCountdown.hours).padStart(2, '0').split('').map((digit, i) => (

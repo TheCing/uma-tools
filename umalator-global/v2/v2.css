@@ -4005,6 +4005,8 @@ body {
 
 /* Skill list */
 .v2-skill-picker-list {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: var(--space-xs);
   display: grid;
@@ -4098,6 +4100,26 @@ body {
 
 .v2-skill-picker-list::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
+}
+
+/* Mobile: make skill picker full-screen above mobile nav */
+@media (max-width: 768px) {
+  .v2-skill-picker-overlay {
+    padding-top: 0;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0));
+    align-items: stretch;
+  }
+
+  .v2-skill-picker-modal {
+    max-height: 100%;
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .v2-skill-picker-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ============================================
