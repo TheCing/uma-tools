@@ -80,8 +80,8 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
   },
   {
     // Trackblazer scenario - Kitasan Black & Matikanetannhauser
-    startDate: '2026-03-04T22:00:00Z',
-    endDate: '2026-03-14T21:59:00Z',
+    startDate: '2026-03-12T22:00:00Z',
+    endDate: '2026-03-23T21:59:00Z',
     characters: ['Kitasan Black', 'Matikanetannhauser'],
     supports: ['Narita Top Road (Speed SSR)', 'Admire Vega (Guts SR)'],
     charImages: [gtCharImg(1068, 106801), gtCharImg(1056, 105601)],

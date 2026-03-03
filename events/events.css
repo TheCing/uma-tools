@@ -1402,32 +1402,34 @@ body {
 
 /* Compact countdown variant for phase timer */
 .countdown.countdown-compact {
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .countdown.countdown-compact .flip-card {
-  width: 44px;
-  height: 58px;
+  width: 38px;
+  height: 50px;
 }
 
 .countdown.countdown-compact .flip-card-inner,
 .countdown.countdown-compact .flip-card-flap {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
 .countdown.countdown-compact .flip-card-top span,
 .countdown.countdown-compact .flip-card-bottom span,
 .countdown.countdown-compact .flip-card-flap span {
-  height: 58px;
+  height: 50px;
 }
 
 .countdown.countdown-compact .countdown-separator {
-  font-size: 1.5rem;
-  line-height: 58px;
+  font-size: 1.3rem;
+  line-height: 50px;
 }
 
 .countdown.countdown-compact .countdown-label {
-  font-size: var(--font-sm);
+  font-size: var(--font-xs);
 }
 
 /* Mobile adjustments for phase display */
