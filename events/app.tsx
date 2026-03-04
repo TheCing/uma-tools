@@ -55,7 +55,6 @@ function gtCharImg(charaId: number, outfitId: number) {
 
 const UPCOMING_BANNERS: UpcomingBanner[] = [
   {
-    // Valentine's banner (currently active)
     startDate: '2026-02-18T22:00:00Z',
     endDate: '2026-03-01T21:59:00Z',
     characters: ['[CODE: ICING] Mihono Bourbon', '[Precise Chocolatier] Eishin Flash'],
@@ -63,7 +62,6 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     charImages: [gtCharImg(1026, 102602), gtCharImg(1037, 103702)],
   },
   {
-    // Mejiro Ardan banner
     startDate: '2026-02-25T22:00:00Z',
     endDate: '2026-03-05T21:59:00Z',
     characters: ['Mejiro Ardan'],
@@ -71,15 +69,13 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     charImages: [gtCharImg(1071, 107101)],
   },
   {
-    // Trackblazer scenario launch - Admire Vega
-    startDate: '2026-03-04T22:00:00Z',
-    endDate: '2026-03-14T21:59:00Z',
+    startDate: '2026-03-05T22:00:00Z',
+    endDate: '2026-03-13T21:59:00Z',
     characters: ['Admire Vega'],
     supports: ['Fine Motion (Wit SSR)', 'Kawakami Princess (Speed SSR)'],
     charImages: [gtCharImg(1033, 103302)],
   },
   {
-    // Trackblazer scenario - Kitasan Black & Matikanetannhauser
     startDate: '2026-03-12T22:00:00Z',
     endDate: '2026-03-23T21:59:00Z',
     characters: ['Kitasan Black', 'Matikanetannhauser'],
@@ -87,17 +83,15 @@ const UPCOMING_BANNERS: UpcomingBanner[] = [
     charImages: [gtCharImg(1068, 106801), gtCharImg(1056, 105601)],
   },
   {
-    // Satono Diamond
-    startDate: '2026-03-18T22:00:00Z',
-    endDate: '2026-03-28T21:59:00Z',
+    startDate: '2026-03-22T22:00:00Z',
+    endDate: '2026-04-02T21:59:00Z',
     characters: ['Satono Diamond'],
     supports: ['Marvelous Sunday (Guts SSR)', 'Curren Chan (Speed SR)'],
     charImages: [gtCharImg(1067, 106702)],
   },
   {
-    // Mejiro Bright
-    startDate: '2026-03-25T22:00:00Z',
-    endDate: '2026-04-04T21:59:00Z',
+    startDate: '2026-03-26T22:00:00Z',
+    endDate: '2026-04-06IT21:59:00Z',
     characters: ['Mejiro Bright'],
     supports: ['Zenno Rob Roy (Speed SSR)', 'Curren Chan (Wit SSR)'],
     charImages: [gtCharImg(1074, 107401)],
