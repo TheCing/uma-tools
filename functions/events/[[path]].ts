@@ -75,7 +75,7 @@ const SEASON_NAMES: Record<number, string> = { 1: 'Spring', 2: 'Summer', 3: 'Aut
 // --- Logic ---
 
 function getNextEvent(now: Date): Preset | null {
-  const CM_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // ~7 days
+  const CM_DURATION_MS = 10 * 24 * 60 * 60 * 1000; // ~10 days
   const upcoming = PRESETS
     .filter(p => {
       const start = new Date(p.date + 'T22:00:00Z');
@@ -143,8 +143,10 @@ function buildOgData(event: Preset, now: Date): { title: string; description: st
   const conditions = getConditionsString(event);
   const dateStr = formatEventDate(eventDate);
 
-  const isPast = eventDate.getTime() < now.getTime();
-  const countdown = isPast ? '(ended)' : `in ${getApproxCountdown(now, eventDate)}`;
+  const CM_END_MS = 10 * 24 * 60 * 60 * 1000;
+  const hasStarted = now.getTime() >= eventDate.getTime();
+  const hasEnded = now.getTime() >= eventDate.getTime() + CM_END_MS;
+  const countdown = hasEnded ? '(ended)' : hasStarted ? '(live)' : `in ${getApproxCountdown(now, eventDate)}`;
 
   return {
     title: `CM ${event.id}: ${event.name} ${countdown}`,
