@@ -62,7 +62,7 @@ export function CustomSelect({
 
 	// Close on outside click (check both container and portal dropdown)
 	useEffect(() => {
-		function handleClickOutside(e: MouseEvent) {
+		function handleClickOutside(e: Event) {
 			const target = e.target as Node;
 			const clickedContainer = containerRef.current?.contains(target);
 			const clickedDropdown = dropdownRef.current?.contains(target);
@@ -71,8 +71,8 @@ export function CustomSelect({
 			}
 		}
 		if (isOpen) {
-			document.addEventListener('mousedown', handleClickOutside);
-			return () => document.removeEventListener('mousedown', handleClickOutside);
+			document.addEventListener('pointerdown', handleClickOutside);
+			return () => document.removeEventListener('pointerdown', handleClickOutside);
 		}
 	}, [isOpen]);
 

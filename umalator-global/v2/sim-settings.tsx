@@ -25,6 +25,8 @@ interface SimSettingsProps {
 	setLeadCompetition: (v: boolean) => void;
 	competeFight: boolean;
 	setCompeteFight: (v: boolean) => void;
+	laneMovement: boolean;
+	setLaneMovement: (v: boolean) => void;
 	autoSeed: boolean;
 	setAutoSeed: (v: boolean) => void;
 }
@@ -44,6 +46,8 @@ export function SimulationSettings({
 	setLeadCompetition,
 	competeFight,
 	setCompeteFight,
+	laneMovement,
+	setLaneMovement,
 	autoSeed,
 	setAutoSeed,
 }: SimSettingsProps) {
@@ -169,6 +173,18 @@ export function SimulationSettings({
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Dueling</span>
+					</label>
+				</Tooltip>
+
+				<Tooltip content="Enable lane movement simulation" position="bottom">
+					<label class="v2-switch">
+						<input
+							type="checkbox"
+							checked={laneMovement}
+							onChange={() => setLaneMovement(!laneMovement)}
+						/>
+						<span class="v2-switch-slider" />
+						<span class="v2-switch-label">Lane Movement</span>
 					</label>
 				</Tooltip>
 			</div>

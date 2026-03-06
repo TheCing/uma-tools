@@ -66,7 +66,7 @@ export function IconSelect({
 
 	// Close on outside click
 	useEffect(() => {
-		function handleClickOutside(e: MouseEvent) {
+		function handleClickOutside(e: Event) {
 			const target = e.target as Node;
 			const clickedContainer = containerRef.current?.contains(target);
 			const clickedDropdown = dropdownRef.current?.contains(target);
@@ -75,8 +75,8 @@ export function IconSelect({
 			}
 		}
 		if (isOpen) {
-			document.addEventListener('mousedown', handleClickOutside);
-			return () => document.removeEventListener('mousedown', handleClickOutside);
+			document.addEventListener('pointerdown', handleClickOutside);
+			return () => document.removeEventListener('pointerdown', handleClickOutside);
 		}
 	}, [isOpen]);
 

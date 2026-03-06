@@ -38,55 +38,63 @@ const BANNERS_CACHE_KEY = 'events-banners-cache';
 const BANNERS_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 // Upcoming banners (manually maintained until they appear on GameTora)
+// GameTora character thumb URL pattern:
+//   https://gametora.com/images/umamusume/characters/thumb/chara_stand_{charaId}_{outfitId}.png
 interface UpcomingBanner {
   startDate: string;
   endDate: string;
   characters: string[];
   supports: string[];
+  /** GameTora character stand thumbnail URLs */
+  charImages?: string[];
+}
+
+function gtCharImg(charaId: number, outfitId: number) {
+  return `https://gametora.com/images/umamusume/characters/thumb/chara_stand_${charaId}_${outfitId}.png`;
 }
 
 const UPCOMING_BANNERS: UpcomingBanner[] = [
   {
-    // Valentine's banner (currently active)
     startDate: '2026-02-18T22:00:00Z',
     endDate: '2026-03-01T21:59:00Z',
     characters: ['[CODE: ICING] Mihono Bourbon', '[Precise Chocolatier] Eishin Flash'],
     supports: ['[Little Cupcakes, Big Emotions] Nishino Flower', '[Super! Sonic! Flower Power!] Sakura Bakushin O'],
+    charImages: [gtCharImg(1026, 102602), gtCharImg(1037, 103702)],
   },
   {
-    // Mejiro Ardan banner
     startDate: '2026-02-25T22:00:00Z',
     endDate: '2026-03-05T21:59:00Z',
     characters: ['Mejiro Ardan'],
     supports: ['Agnes Digital (Power SSR)', 'Ines Fujin (Wit SR)'],
+    charImages: [gtCharImg(1071, 107101)],
   },
   {
-    // Trackblazer scenario launch - Admire Vega
-    startDate: '2026-03-04T22:00:00Z',
-    endDate: '2026-03-14T21:59:00Z',
+    startDate: '2026-03-05T22:00:00Z',
+    endDate: '2026-03-13T21:59:00Z',
     characters: ['Admire Vega'],
     supports: ['Fine Motion (Wit SSR)', 'Kawakami Princess (Speed SSR)'],
+    charImages: [gtCharImg(1033, 103302)],
   },
   {
-    // Trackblazer scenario - Kitasan Black & Matikanetannhauser
-    startDate: '2026-03-04T22:00:00Z',
-    endDate: '2026-03-14T21:59:00Z',
+    startDate: '2026-03-12T22:00:00Z',
+    endDate: '2026-03-23T21:59:00Z',
     characters: ['Kitasan Black', 'Matikanetannhauser'],
     supports: ['Narita Top Road (Speed SSR)', 'Admire Vega (Guts SR)'],
+    charImages: [gtCharImg(1068, 106801), gtCharImg(1056, 105601)],
   },
   {
-    // Satono Diamond
-    startDate: '2026-03-18T22:00:00Z',
-    endDate: '2026-03-28T21:59:00Z',
+    startDate: '2026-03-22T22:00:00Z',
+    endDate: '2026-04-02T21:59:00Z',
     characters: ['Satono Diamond'],
     supports: ['Marvelous Sunday (Guts SSR)', 'Curren Chan (Speed SR)'],
+    charImages: [gtCharImg(1067, 106702)],
   },
   {
-    // Mejiro Bright
-    startDate: '2026-03-25T22:00:00Z',
-    endDate: '2026-04-04T21:59:00Z',
+    startDate: '2026-03-26T22:00:00Z',
+    endDate: '2026-04-06IT21:59:00Z',
     characters: ['Mejiro Bright'],
     supports: ['Zenno Rob Roy (Speed SSR)', 'Curren Chan (Wit SSR)'],
+    charImages: [gtCharImg(1074, 107401)],
   },
 ];
 
@@ -316,8 +324,10 @@ function formatBannerEndDate(dateStr: string): string {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
 
-  if (days > 0) return `${days}d ${hours}h left`;
-  return `${hours}h left`;
+  if (days > 0) return hours > 0 ? `${days}d ${hours}h left` : `${days}d left`;
+  if (hours > 0) return `${hours}h left`;
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  return `${minutes}m left`;
 }
 
 // Format countdown to banner start
@@ -335,8 +345,10 @@ function formatBannerStartCountdown(dateStr: string): string {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
 
-  if (days > 0) return `Starts in ${days}d ${hours}h`;
-  return `Starts in ${hours}h`;
+  if (days > 0) return hours > 0 ? `Starts in ${days}d ${hours}h` : `Starts in ${days}d`;
+  if (hours > 0) return `Starts in ${hours}h`;
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  return `Starts in ${minutes}m`;
 }
 
 // Format banner start time in user's timezone
@@ -415,7 +427,7 @@ function useCountdown(targetDate: Date | null) {
 }
 
 // CM Event Phases
-type CMPhase = 'upcoming' | 'r1d1' | 'r1d2' | 'r2d1' | 'r2d2' | 'registration' | 'finals' | 'ended';
+type CMPhase = 'upcoming' | 'league_selection' | 'round1' | 'round2' | 'finals_reg' | 'finals_matching' | 'finals_race' | 'ended';
 
 interface CMPhaseInfo {
   phase: CMPhase;
@@ -427,30 +439,32 @@ interface CMPhaseInfo {
   progressPercent: number; // 0-100 within current phase
 }
 
-// Phase durations in hours from event start
+// Phase durations in hours from event start (22:00 UTC on event date)
+// Registration/League Selection: 4 days, Round 1: 2 days, Round 2: 2 days,
+// Finals Reg: 12h, Finals Matching: 12h, Finals Race: 24h = 10 days total
 const CM_PHASE_HOURS: Record<CMPhase, { start: number; end: number }> = {
-  upcoming: { start: -Infinity, end: 0 },
-  r1d1: { start: 0, end: 24 },
-  r1d2: { start: 24, end: 48 },
-  r2d1: { start: 48, end: 72 },
-  r2d2: { start: 72, end: 96 },
-  registration: { start: 96, end: 120 },
-  finals: { start: 120, end: 144 },
-  ended: { start: 144, end: Infinity },
+  upcoming:        { start: -Infinity, end: 0   },
+  league_selection:{ start: 0,         end: 96  },  // 4 days
+  round1:          { start: 96,        end: 144 },  // 2 days
+  round2:          { start: 144,       end: 192 },  // 2 days
+  finals_reg:      { start: 192,       end: 204 },  // 12 hours
+  finals_matching: { start: 204,       end: 216 },  // 12 hours
+  finals_race:     { start: 216,       end: 240 },  // 24 hours
+  ended:           { start: 240,       end: Infinity },
 };
 
 const CM_PHASE_LABELS: Record<CMPhase, { label: string; short: string }> = {
-  upcoming: { label: 'Starting Soon', short: 'Soon' },
-  r1d1: { label: 'Round 1 - Day 1', short: 'R1D1' },
-  r1d2: { label: 'Round 1 - Day 2', short: 'R1D2' },
-  r2d1: { label: 'Round 2 - Day 1', short: 'R2D1' },
-  r2d2: { label: 'Round 2 - Day 2', short: 'R2D2' },
-  registration: { label: 'Finals Registration', short: 'Finals Reg' },
-  finals: { label: 'Finals', short: 'Finals' },
-  ended: { label: 'Event Ended', short: 'Ended' },
+  upcoming:        { label: 'Starting Soon', short: 'Soon' },
+  league_selection:{ label: 'League Selection', short: 'League' },
+  round1:          { label: 'Round 1', short: 'R1' },
+  round2:          { label: 'Round 2', short: 'R2' },
+  finals_reg:      { label: 'Finals Registration', short: 'Finals Reg' },
+  finals_matching: { label: 'Finals Matching', short: 'Matching' },
+  finals_race:     { label: 'Finals', short: 'Finals' },
+  ended:           { label: 'Event Ended', short: 'Ended' },
 };
 
-const PHASE_ORDER: CMPhase[] = ['upcoming', 'r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals', 'ended'];
+const PHASE_ORDER: CMPhase[] = ['upcoming', 'league_selection', 'round1', 'round2', 'finals_reg', 'finals_matching', 'finals_race', 'ended'];
 
 function getCMPhaseInfo(eventStart: Date): CMPhaseInfo {
   const now = Date.now();
@@ -476,9 +490,8 @@ function getCMPhaseInfo(eventStart: Date): CMPhaseInfo {
   // Find next phase
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
 
-  // Calculate overall progress across all visible phases (r1d1 through finals = 6 phases)
-  // The progress bar spans from r1d1 (index 1) to finals (index 6)
-  const visiblePhases = PHASE_ORDER.slice(1, -1); // ['r1d1', 'r1d2', 'r2d1', 'r2d2', 'registration', 'finals']
+  // Calculate overall progress across all visible phases (league_selection through finals_race)
+  const visiblePhases = PHASE_ORDER.slice(1, -1);
   const numVisiblePhases = visiblePhases.length;
   const visiblePhaseIndex = visiblePhases.indexOf(currentPhase);
 
@@ -727,8 +740,8 @@ function App() {
     const now = new Date();
     const upcoming = cmEvents.filter(event => {
       const eventDate = getEventStartDate(event);
-      // Consider event "past" if it started more than 7 days ago (typical CM duration)
-      const eventEndApprox = new Date(eventDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+      // Consider event "past" if it started more than 10 days ago (typical CM duration)
+      const eventEndApprox = new Date(eventDate.getTime() + 10 * 24 * 60 * 60 * 1000);
       return eventEndApprox >= now;
     });
 
@@ -901,26 +914,35 @@ function App() {
                       /* Fallback: show manually maintained banners */
                       <div class="fallback-banners-list">
                         {activeFallbackBanners.map((banner, i) => (
-                          <div key={i} class="fallback-banner-item">
-                            <div class="fallback-banner-timer">
-                              {formatBannerEndDate(banner.endDate)}
-                            </div>
-                            <div class="fallback-banner-content">
-                              <div class="fallback-banner-group">
-                                <span class="upcoming-banner-type char">Characters</span>
-                                <ul class="upcoming-banner-names">
-                                  {banner.characters.map((name, j) => (
-                                    <li key={j}>{name}</li>
-                                  ))}
-                                </ul>
+                          <div key={i} class="fallback-banner-card">
+                            {banner.charImages && banner.charImages.length > 0 && (
+                              <div class="fallback-banner-portraits">
+                                {banner.charImages.map((url, j) => (
+                                  <img key={j} src={url} alt="" class="fallback-banner-portrait" loading="lazy" />
+                                ))}
                               </div>
-                              <div class="fallback-banner-group">
-                                <span class="upcoming-banner-type support">Supports</span>
-                                <ul class="upcoming-banner-names">
-                                  {banner.supports.map((name, j) => (
-                                    <li key={j}>{name}</li>
-                                  ))}
-                                </ul>
+                            )}
+                            <div class="fallback-banner-info">
+                              <div class="fallback-banner-timer">
+                                {formatBannerEndDate(banner.endDate)}
+                              </div>
+                              <div class="fallback-banner-content">
+                                <div class="fallback-banner-group">
+                                  <span class="upcoming-banner-type char">Characters</span>
+                                  <ul class="upcoming-banner-names">
+                                    {banner.characters.map((name, j) => (
+                                      <li key={j}>{name}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div class="fallback-banner-group">
+                                  <span class="upcoming-banner-type support">Supports</span>
+                                  <ul class="upcoming-banner-names">
+                                    {banner.supports.map((name, j) => (
+                                      <li key={j}>{name}</li>
+                                    ))}
+                                  </ul>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -971,6 +993,17 @@ function App() {
                       <div class="phase-next">
                         <span class="phase-next-label">{cmPhase.nextPhaseLabel} in</span>
                         <div class="countdown countdown-compact">
+                          {phaseCountdown.days > 0 && (<>
+                          <div class="countdown-segment">
+                            <div class="countdown-cards">
+                              {String(phaseCountdown.days).split('').map((digit, i) => (
+                                <FlipDigit key={`phase-days-${i}`} digit={digit} id={`phase-days-${i}`} />
+                              ))}
+                            </div>
+                            <span class="countdown-label">Days</span>
+                          </div>
+                          <span class="countdown-separator">:</span>
+                          </>)}
                           <div class="countdown-segment">
                             <div class="countdown-cards">
                               {String(phaseCountdown.hours).padStart(2, '0').split('').map((digit, i) => (

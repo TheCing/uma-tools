@@ -266,6 +266,7 @@ interface StatInputProps {
 }
 
 export function StatInput({ label, icon, value, onChange }: StatInputProps) {
+	const [draft, setDraft] = useState<string | null>(null);
 	const rank = rankForStat(value);
 	const rankIcon = `/uma-tools/icons/statusrank/ui_statusrank_${(100 + rank).toString().slice(1)}.png`;
 
@@ -281,8 +282,15 @@ export function StatInput({ label, icon, value, onChange }: StatInputProps) {
 					type="number"
 					min="1"
 					max="2000"
-					value={value}
-					onInput={e => onChange(parseInt((e.target as HTMLInputElement).value) || 1)}
+					value={draft !== null ? draft : value}
+					onFocus={() => setDraft(String(value))}
+					onInput={e => {
+						const raw = (e.target as HTMLInputElement).value;
+						setDraft(raw);
+						const n = parseInt(raw);
+						if (!isNaN(n)) onChange(Math.min(2000, Math.max(1, n)));
+					}}
+					onBlur={() => setDraft(null)}
 				/>
 			</div>
 		</div>

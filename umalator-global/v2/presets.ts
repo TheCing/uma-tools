@@ -48,7 +48,7 @@ export const presets: Preset[] = [
 		id: 10,
 		type: EventType.CM,
 		name: 'Aquarius Cup',
-		date: '2026-03-06',
+		date: '2026-03-02',
 		courseId: 10611,
 		season: Season.Winter,
 		ground: GroundCondition.Good,

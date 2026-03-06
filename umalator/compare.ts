@@ -63,6 +63,11 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		compare.leadCompetition(options.leadCompetition);
 	}
 
+	if (options.laneMovement !== undefined) {
+		standard.laneMovement(options.laneMovement);
+		compare.laneMovement(options.laneMovement);
+	}
+
 	// ensure skills common to the two umas are added in the same order regardless of what additional skills they have
 	// this is important to make sure the rng for their activations is synced
 	// sort first by groupId so that white and gold versions of a skill get added in the same order
