@@ -6107,16 +6107,14 @@ body {
   background:
     linear-gradient(
       135deg,
-      #f0c040 0%,
-      #ffe580 25%,
-      #ffd54f 50%,
-      #f0c040 75%,
-      #c9a227 100%);
+      #9cdcfe 0%,
+      #4fc1ff 50%,
+      #569cd6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
 }
 .sv2-track-controls {
   display: flex;
