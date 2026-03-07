@@ -1,8 +1,5 @@
 # Cloudflare Pages redirect rules
 
-# Redirect does.redshift.work to v2
-https://does.redshift.work/* https://umalator.app/v2/ 301
-
 # Redirect www to non-www (canonical)
 https://www.umalator.app/* https://umalator.app/:splat 301
 
