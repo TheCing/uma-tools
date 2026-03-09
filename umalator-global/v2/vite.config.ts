@@ -77,7 +77,7 @@ export default defineConfig(({ mode }) => {
   return {
   plugins: [redirectDataFiles(), preact(), serveUmaToolsAssets()],
 
-  // Use relative paths for flexible deployment at /v2 or /umalator-global/v2
+  // Use relative paths — v2 is served at root (/) in production
   // Can be overridden via VITE_BASE env var if needed
   base: process.env.VITE_BASE || './',
 
@@ -111,7 +111,7 @@ export default defineConfig(({ mode }) => {
   define: {
     CC_DEBUG: mode === 'development' ? 'true' : 'false',
     CC_GLOBAL: 'true',
-    CC_DEV: (env.CF_PAGES_BRANCH === 'dev' || env.CC_DEV === 'true') ? 'true' : 'false',
+    CC_DEV: (env.CF_PAGES_BRANCH === 'dev' || env.CC_DEV === 'true' || mode === 'development') ? 'true' : 'false',
     CC_OCR_PROXY: JSON.stringify(env.OCR_PROXY_URL || ''),
   },
 

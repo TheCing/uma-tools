@@ -19,10 +19,12 @@ cd umalator-global/v2
 npx vite build
 cd ../..
 
-# Copy v2 dist to root /v2 for cleaner URLs
-echo "Copying v2 to /v2..."
-rm -rf v2
-cp -r umalator-global/v2/dist v2
+# Copy v2 dist to project root (v2 is the default landing page)
+echo "Copying v2 to root..."
+cp umalator-global/v2/dist/index.html ./index.html
+cp umalator-global/v2/dist/favicon.svg ./favicon.svg 2>/dev/null || true
+rm -rf assets
+cp -r umalator-global/v2/dist/assets ./assets
 
 echo ""
 echo "Building umalator (JP)..."
