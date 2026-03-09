@@ -6368,6 +6368,12 @@ body {
   border-radius: var(--radius-md);
 }
 
+.v2-skill-chart-actions {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
 .v2-skill-chart-filters {
   display: flex;
   gap: var(--space-md);
@@ -6477,6 +6483,12 @@ body {
   color: var(--color-text);
 }
 
+.v2-skill-chart-table th:first-child,
+.v2-skill-chart-table td:first-child {
+  width: 28px;
+  padding: 0 var(--space-xs);
+}
+
 /* Header with radio buttons */
 .v2-skill-chart-header {
   display: flex;
@@ -6522,6 +6534,38 @@ body {
   width: 24px;
   height: 24px;
   object-fit: contain;
+}
+
+/* Hide skill button */
+.v2-skill-hide-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+tr:hover .v2-skill-hide-btn {
+  opacity: 1;
+}
+
+.v2-skill-hide-btn:hover {
+  color: var(--color-text-muted);
+  background: var(--color-surface-hover);
+}
+
+@media (hover: none) {
+  .v2-skill-hide-btn {
+    opacity: 0.5;
+  }
 }
 
 /* Hint buttons */
@@ -6691,11 +6735,12 @@ body {
   .v2-skill-chart-controls {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-sm);
   }
 
   .v2-skill-chart-filters {
     flex-wrap: wrap;
-    gap: var(--space-sm);
+    gap: var(--space-sm) var(--space-md);
   }
 
   .v2-skill-chart-table {

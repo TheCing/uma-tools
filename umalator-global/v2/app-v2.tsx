@@ -283,6 +283,7 @@ function App() {
   const [showUmaIcons, setShowUmaIcons] = useState(false);
   const [chartFastMode, setChartFastMode] = useState(false); // 2x faster, lower accuracy
   const [skillHints, setSkillHints] = useState<Map<string, number>>(new Map());
+  const [hiddenSkills, setHiddenSkills] = useState<Set<string>>(new Set());
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 
@@ -1528,15 +1529,26 @@ function App() {
                           <span class="v2-switch-label">Fast ⚡</span>
                         </label>
                       </div>
-                      {skillHints.size > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSkillHints(new Map())}
-                        >
-                          Reset Hints
-                        </Button>
-                      )}
+                      <div class="v2-skill-chart-actions">
+                        {skillHints.size > 0 && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setSkillHints(new Map())}
+                          >
+                            Reset Hints
+                          </Button>
+                        )}
+                        {hiddenSkills.size > 0 && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setHiddenSkills(new Set())}
+                          >
+                            Show Hidden ({hiddenSkills.size})
+                          </Button>
+                        )}
+                      </div>
                       {/* Progress indicator */}
                       {isRunning &&
                         Object.keys(skillChartProgress).length > 0 && (
@@ -1592,6 +1604,12 @@ function App() {
                         hidePurple={hidePurple}
                         dirty={false}
                         selectedSkillId={selectedSkillForChart}
+                        hiddenSkills={hiddenSkills}
+                        onHideSkill={(id) => setHiddenSkills(prev => {
+                          const next = new Set(prev);
+                          next.add(id);
+                          return next;
+                        })}
                       />
                     ) : (
                       <div class="v2-skill-chart-empty">

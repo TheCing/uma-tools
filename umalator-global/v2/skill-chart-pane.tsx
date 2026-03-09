@@ -9,6 +9,7 @@
 
 import { h, Fragment } from 'preact';
 import { useState, useMemo, useId, useRef } from 'preact/hooks';
+import { EyeOff } from 'lucide-react';
 import {
 	type ColumnDef, type SortingState,
 	useReactTable, flexRender, getSortedRowModel, getCoreRowModel
@@ -37,6 +38,8 @@ interface SkillChartPaneProps {
 	hidePurple: boolean;
 	dirty?: boolean;
 	selectedSkillId?: string;
+	hiddenSkills: Set<string>;
+	onHideSkill: (skillId: string) => void;
 }
 
 /**
@@ -176,10 +179,30 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 			data = data.filter(row => !isPurpleSkill(row.id));
 		}
 
+		if (props.hiddenSkills.size > 0) {
+			data = data.filter(row => !props.hiddenSkills.has(row.id));
+		}
+
 		return data;
-	}, [props.data, props.hideOwned, props.hidePurple, props.hasSkills]);
+	}, [props.data, props.hideOwned, props.hidePurple, props.hasSkills, props.hiddenSkills]);
 
 	const columns: ColumnDef<SkillChartResult, any>[] = useMemo(() => [{
+		id: 'hide',
+		header: () => null,
+		accessorKey: 'id',
+		cell: (info) => (
+			<button
+				class="v2-skill-hide-btn"
+				title="Hide skill"
+				type="button"
+				onClick={(e) => { e.stopPropagation(); props.onHideSkill(info.getValue()); }}
+			>
+				<EyeOff size={12} />
+			</button>
+		),
+		enableSorting: false,
+		size: 28,
+	}, {
 		header: () => <span>Skill name</span>,
 		accessorKey: 'id',
 		cell: (info) => <SkillNameCell id={info.getValue()} showUmaIcons={props.showUmaIcons} />,
@@ -241,7 +264,7 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 			return xf && yf ? +(y < x) - +(x < y) : +xf - +yf;
 		},
 		sortDescFirst: true
-	}], [selectedType, props.showUmaIcons, props.hints, props.hasSkills, radioGroup]);
+	}], [selectedType, props.showUmaIcons, props.hints, props.hasSkills, radioGroup, props.onHideSkill]);
 
 	const [sorting, setSorting] = useState<SortingState>([{ id: 'median', desc: true }]);
 
