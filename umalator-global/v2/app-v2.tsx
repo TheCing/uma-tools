@@ -1528,6 +1528,15 @@ function App() {
                           <span class="v2-switch-label">Fast ⚡</span>
                         </label>
                       </div>
+                      {skillHints.size > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSkillHints(new Map())}
+                        >
+                          Reset Hints
+                        </Button>
+                      )}
                       {/* Progress indicator */}
                       {isRunning &&
                         Object.keys(skillChartProgress).length > 0 && (
