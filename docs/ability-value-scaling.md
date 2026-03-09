@@ -15,7 +15,7 @@ Each skill effect in `skill_data` has an `ability_value_usage` column that contr
 | 7 | Team Wit | Multiplied by team wit stat (Aoharu) |
 | 8 | Random Roll | 60% = 0.0x, 30% = 0.02x, 10% = 0.04x |
 | 9 | Random Roll | Same as 8 |
-| 10 | Race Wins | Multiplied by number of race wins |
+| 10 | Race Wins (Climax) | Scales by races won during training: <6 = 0.8x, 6-13 = 0.9x, 14-17 = 1.0x, 18-24 = 1.1x, 25+ = 1.2x |
 | 11 | Final Corner Place Change | Multiplied by positions gained at final corner |
 | 12 | Fan Count | Multiplied by fan count |
 | 13 | Maximum Raw Stats | Multiplied by highest raw stat value |
@@ -61,6 +61,11 @@ Where `[alt]` is the alternative index (1 or 2) and `[effect]` is the effect ind
 - Effect 1: Speed +2500, Direct (1) — flat +0.25 speed
 - Effect 2: Speed +500, Activated Passive Skills (14) — 0/+500/+1000/+1500 based on green skill count
 - Effect 3: Accel +500, Activated Passive Skills (14) — 0/+500/+1000/+1500 based on green skill count
+
+**Radiant Star (210061)**
+- Effect 1: Speed +2500, Race Wins (10) — ranges from +2000 (0.8x) to +3000 (1.2x)
+- Effect 2: Accel +3000, Race Wins (10) — ranges from +2400 (0.8x) to +3600 (1.2x)
+- Effect 3: Recovery +350, Race Wins (10) — ranges from +280 (0.8x) to +420 (1.2x)
 
 ## Simulator Note
 
