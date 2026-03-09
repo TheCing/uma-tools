@@ -13,7 +13,7 @@ program
 program.parse();
 const options = program.opts();
 const port = options.serve;
-const isDev = process.env.CF_PAGES_BRANCH === 'dev' || process.env.CC_DEV === 'true';
+const isDev = process.env.CF_PAGES_BRANCH === 'dev' || process.env.CC_DEV === 'true' || port != null;
 const serve = port != null;
 const debug = !!options.debug;
 
@@ -211,8 +211,8 @@ if (serve) {
 
 	runServer(combinedCtx, port);
 	console.log(`Serving on http://[::]:${port}/ ...`);
-	console.log(`  Main: http://localhost:${port}/umalator-global/`);
-	console.log(`  v2:   http://localhost:${port}/umalator-global/v2/`);
+	console.log(`  v1: http://localhost:${port}/umalator-global/`);
+	console.log(`  v2: use Vite — cd v2 && npm run dev`);
 } else {
 	await Promise.all([
 		esbuild.build(buildOptions),
