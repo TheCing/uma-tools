@@ -161,12 +161,17 @@ export function RaceTrack(props) {
 
 	function doMouseMove(e) {
 		const svg = e.currentTarget;
-		if (e.offsetX < xOffset) return;
+		const rect = svg.getBoundingClientRect();
+		// Use clientX/clientY with getBoundingClientRect for correct coordinates under CSS zoom/scale
+		const scaleX = (rect.width) / svg.viewBox.baseVal.width;
+		const rawX = (e.clientX - rect.left) / scaleX;
+		const rawY = (e.clientY - rect.top) / scaleX;
+		if (rawX < xOffset) return;
 		const line = svg.querySelector('.mouseoverLine');
 		const text = svg.querySelector('.mouseoverText');
-		const w = svg.getBoundingClientRect().width - xOffset;
-		const x = e.offsetX - xOffset;
-		const y = e.offsetY - yOffset;
+		const w = svg.viewBox.baseVal.width - xOffset;
+		const x = rawX - xOffset;
+		const y = rawY - yOffset;
 		line.setAttribute('x1', x);
 		line.setAttribute('x2', x);
 		text.setAttribute('x', x > w - 45 ? x - 45 : x + 5);
@@ -176,11 +181,6 @@ export function RaceTrack(props) {
 		
 		//dragging handler
 		if (draggedSkill) {
-			// Use the same coordinate calculation as the mouse down handler
-			const rect = svg.getBoundingClientRect();
-			const w = rect.width - xOffset;
-			const x = e.clientX - rect.left - xOffset;
-			
 			const newStart = Math.round(Math.max(0, Math.min(course.distance, x / w * course.distance - dragOffset.x)));
 			const skillLength = Math.max(50, draggedSkill.originalEnd - draggedSkill.originalStart); // Ensure minimum length of 50m
 			const newEnd = Math.round(Math.max(newStart + skillLength, Math.min(course.distance, newStart + skillLength)));
