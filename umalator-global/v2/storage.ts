@@ -12,6 +12,7 @@ import skilldata from '../skill_data.json'; // Use Global version
 
 // LocalStorage keys
 const HORSE_SLOTS_KEY = 'umalator_v2_horse_slots';
+const FOLDERS_KEY = 'umalator_v2_trainee_folders';
 const SESSION_KEY = 'umalator_v2_session';
 const PREFERENCES_KEY = 'umalator_v2_prefs';
 
@@ -97,12 +98,23 @@ export interface SavedSlot {
 	data: UmaState;
 	savedAt: number;
 	memo?: string;  // User-editable notes
+	folder?: string;  // Folder name, or undefined for ungrouped
+}
+
+// ============================================
+// TRAINEE FOLDERS
+// ============================================
+
+export interface TraineeFolder {
+	name: string;
+	order: number;
+	collapsed: boolean;
 }
 
 /**
  * Get all saved horse slots from localStorage (raw)
  */
-export function getHorseSlots(): Record<string, { data: any; savedAt: number; memo?: string }> {
+export function getHorseSlots(): Record<string, { data: any; savedAt: number; memo?: string; folder?: string }> {
 	try {
 		const stored = localStorage.getItem(HORSE_SLOTS_KEY);
 		return stored ? JSON.parse(stored) : {};
@@ -127,6 +139,7 @@ export function getAllSavedSlots(): SavedSlot[] {
 				data,
 				savedAt: slot.savedAt || 0,
 				memo: slot.memo || '',
+				folder: slot.folder,
 			});
 		}
 	}
@@ -151,15 +164,16 @@ export function getSavedSlotNames(): string[] {
  * Save a horse to a named slot
  * If memo is not provided, preserves existing memo (for updates)
  */
-export function saveHorseSlot(name: string, horse: UmaState, memo?: string): boolean {
+export function saveHorseSlot(name: string, horse: UmaState, memo?: string, folder?: string): boolean {
 	try {
 		const slots = getHorseSlots();
-		const existingMemo = slots[name]?.memo;
+		const existing = slots[name];
 
 		slots[name] = {
 			data: horse,
 			savedAt: Date.now(),
-			memo: memo !== undefined ? memo : existingMemo || '',
+			memo: memo !== undefined ? memo : existing?.memo || '',
+			folder: folder !== undefined ? folder : existing?.folder,
 		};
 		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
 		return true;
@@ -206,6 +220,140 @@ export function updateSlotMemo(name: string, memo: string): boolean {
 		return true;
 	} catch (e) {
 		console.error('Failed to update slot memo:', e);
+		return false;
+	}
+}
+
+/**
+ * Get all trainee folders sorted by order
+ */
+export function getFolders(): TraineeFolder[] {
+	try {
+		const stored = localStorage.getItem(FOLDERS_KEY);
+		if (!stored) return [];
+		const folders: Record<string, { order: number; collapsed: boolean }> = JSON.parse(stored);
+		return Object.entries(folders)
+			.map(([name, f]) => ({ name, order: f.order, collapsed: f.collapsed }))
+			.sort((a, b) => a.order - b.order);
+	} catch (e) {
+		console.error('Failed to load folders:', e);
+		return [];
+	}
+}
+
+function saveFoldersRaw(folders: Record<string, { order: number; collapsed: boolean }>): void {
+	localStorage.setItem(FOLDERS_KEY, JSON.stringify(folders));
+}
+
+function loadFoldersRaw(): Record<string, { order: number; collapsed: boolean }> {
+	try {
+		const stored = localStorage.getItem(FOLDERS_KEY);
+		return stored ? JSON.parse(stored) : {};
+	} catch {
+		return {};
+	}
+}
+
+/**
+ * Create a new folder
+ */
+export function createFolder(name: string): boolean {
+	try {
+		const folders = loadFoldersRaw();
+		if (folders[name]) return false; // Already exists
+		const maxOrder = Object.values(folders).reduce((m, f) => Math.max(m, f.order), -1);
+		folders[name] = { order: maxOrder + 1, collapsed: false };
+		saveFoldersRaw(folders);
+		return true;
+	} catch (e) {
+		console.error('Failed to create folder:', e);
+		return false;
+	}
+}
+
+/**
+ * Delete a folder (ungroups contained builds, does not delete them)
+ */
+export function deleteFolder(name: string): boolean {
+	try {
+		const folders = loadFoldersRaw();
+		delete folders[name];
+		saveFoldersRaw(folders);
+
+		// Ungroup all builds in this folder
+		const slots = getHorseSlots();
+		for (const slot of Object.values(slots)) {
+			if (slot.folder === name) {
+				delete slot.folder;
+			}
+		}
+		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
+		return true;
+	} catch (e) {
+		console.error('Failed to delete folder:', e);
+		return false;
+	}
+}
+
+/**
+ * Rename a folder and update all slot references
+ */
+export function renameFolder(oldName: string, newName: string): boolean {
+	if (!newName.trim() || oldName === newName) return false;
+	try {
+		const folders = loadFoldersRaw();
+		if (!folders[oldName] || folders[newName]) return false;
+		folders[newName] = folders[oldName];
+		delete folders[oldName];
+		saveFoldersRaw(folders);
+
+		// Update slot references
+		const slots = getHorseSlots();
+		for (const slot of Object.values(slots)) {
+			if (slot.folder === oldName) {
+				slot.folder = newName;
+			}
+		}
+		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
+		return true;
+	} catch (e) {
+		console.error('Failed to rename folder:', e);
+		return false;
+	}
+}
+
+/**
+ * Move a slot to a folder (or ungroup with null)
+ */
+export function moveSlotToFolder(slotName: string, folder: string | null): boolean {
+	try {
+		const slots = getHorseSlots();
+		if (!slots[slotName]) return false;
+		if (folder) {
+			slots[slotName].folder = folder;
+		} else {
+			delete slots[slotName].folder;
+		}
+		localStorage.setItem(HORSE_SLOTS_KEY, JSON.stringify(slots));
+		return true;
+	} catch (e) {
+		console.error('Failed to move slot to folder:', e);
+		return false;
+	}
+}
+
+/**
+ * Toggle folder collapsed state
+ */
+export function toggleFolderCollapsed(name: string): boolean {
+	try {
+		const folders = loadFoldersRaw();
+		if (!folders[name]) return false;
+		folders[name].collapsed = !folders[name].collapsed;
+		saveFoldersRaw(folders);
+		return true;
+	} catch (e) {
+		console.error('Failed to toggle folder:', e);
 		return false;
 	}
 }

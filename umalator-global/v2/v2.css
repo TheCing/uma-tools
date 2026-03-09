@@ -4395,6 +4395,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
   border-bottom: 1px solid var(--color-border-subtle);
   background: var(--color-surface);
@@ -4412,7 +4414,12 @@ body {
 
 .v2-trainees-save-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-xs);
+}
+
+.v2-trainees-save-buttons .v2-button {
+  white-space: nowrap;
 }
 
 /* Grid */
@@ -4533,9 +4540,9 @@ body {
 /* Card actions */
 .v2-trainee-actions {
   display: flex;
+  align-items: stretch;
   gap: var(--space-xs);
   margin-top: var(--space-sm);
-  opacity: 1;
 }
 
 .v2-trainee-load-btn {
@@ -4568,12 +4575,35 @@ body {
   background: rgba(255, 107, 107, 0.15);
 }
 
+.v2-trainee-move-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.v2-trainee-move-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.v2-trainee-actions .v2-dropdown {
+  display: flex;
+  align-items: stretch;
+}
+
+.v2-trainee-actions .v2-dropdown-trigger {
+  display: flex;
+  align-items: stretch;
+}
+
 .v2-trainee-delete-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 28px;
-  height: 28px;
   padding: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -4650,6 +4680,256 @@ body {
 
 .v2-save-trainee-input::placeholder {
   color: var(--color-text-faint);
+}
+
+/* Folder dropdown portal needs higher z-index */
+.v2-dropdown-menu[style*="position: fixed"] {
+  z-index: 1000;
+}
+
+/* View toggle button */
+.v2-view-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-view-toggle-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+/* Folder back button */
+.v2-folder-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-folder-back-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+/* Sections container */
+.v2-trainees-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.v2-trainees-sections > .v2-trainees-grid {
+  padding: 0;
+  overflow: visible;
+  flex: none;
+}
+
+/* Drill-down container */
+.v2-trainees-drilldown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.v2-trainees-drilldown > .v2-trainees-grid {
+  padding: 0;
+  overflow: visible;
+  flex: none;
+}
+
+/* Folder section (collapsible) */
+.v2-folder-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.v2-folder-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-surface-elevated);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+}
+
+.v2-folder-section-header:hover {
+  background: var(--color-surface-overlay);
+}
+
+.v2-folder-section-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.v2-folder-name {
+  cursor: text;
+}
+
+.v2-folder-rename-input {
+  padding: 2px var(--space-xs);
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  outline: none;
+  width: 150px;
+}
+
+.v2-folder-count {
+  font-size: var(--font-xs);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.v2-folder-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-folder-delete-btn:hover {
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.v2-folder-section-content {
+  border-top: 1px solid var(--color-border);
+}
+
+.v2-folder-section-content > .v2-trainees-grid {
+  padding: var(--space-sm);
+  overflow: visible;
+  flex: none;
+}
+
+.v2-folder-empty {
+  padding: var(--space-md);
+  text-align: center;
+  color: var(--color-text-faint);
+  font-size: var(--font-sm);
+}
+
+/* Folder cards (drill-down view) */
+.v2-folder-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+@media (max-width: 600px) {
+  .v2-folder-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.v2-folder-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.v2-folder-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.v2-folder-card-icon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.v2-folder-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.v2-folder-card-name {
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-folder-card-count {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.v2-folder-card-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.v2-folder-card-delete:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: rgba(239, 68, 68, 0.1);
 }
 
 /* Tab button styling for trainees */
