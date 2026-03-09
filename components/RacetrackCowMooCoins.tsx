@@ -26,6 +26,9 @@ interface Investments {
 	shnailCoins: number;
 	ramenCoins: number;
 	aderynCoins: number;
+	glassesCoins: number;
+	meloCoins: number;
+	redShiftCoins: number;
 }
 
 // Market data
@@ -33,12 +36,18 @@ interface MarketPrices {
 	shnailCoins: number;
 	ramenCoins: number;
 	aderynCoins: number;
+	glassesCoins: number;
+	meloCoins: number;
+	redShiftCoins: number;
 }
 
 interface PriceHistory {
 	shnailCoins: number[];
 	ramenCoins: number[];
 	aderynCoins: number[];
+	glassesCoins: number[];
+	meloCoins: number[];
+	redShiftCoins: number[];
 }
 
 const MARKET_STORAGE_KEY = 'moomoocord_market';
@@ -50,6 +59,9 @@ const COIN_CONFIG = {
 	shnailCoins: { basePrice: 1.0, volatility: 0.15, icon: '🐌', name: 'ShnailCoin', ticker: 'SHNL' },
 	ramenCoins: { basePrice: 2.5, volatility: 0.25, icon: '🍜', name: 'RamenCoin', ticker: 'RAMN' },
 	aderynCoins: { basePrice: 5.0, volatility: 0.35, icon: '🦅', name: 'AderynCoin', ticker: 'ADRN' },
+	glassesCoins: { basePrice: 10.0, volatility: 0.45, icon: '👓', name: 'GlassesCoin', ticker: 'GLSS' },
+	meloCoins: { basePrice: 20.0, volatility: 0.55, icon: '🎵', name: 'MeloCoin', ticker: 'MLO' },
+	redShiftCoins: { basePrice: 30.0, volatility: 0.65, icon: '🔥', name: 'RedShiftCoin', ticker: 'RDS' },
 };
 
 interface MarketState {
@@ -58,31 +70,36 @@ interface MarketState {
 	lastUpdate: number;
 }
 
+function defaultMarketState(): MarketState {
+	const prices = {} as MarketPrices;
+	const history = {} as PriceHistory;
+	for (const [coin, config] of Object.entries(COIN_CONFIG)) {
+		const key = coin as keyof typeof COIN_CONFIG;
+		prices[key] = config.basePrice;
+		history[key] = [config.basePrice];
+	}
+	return { prices, history, lastUpdate: Date.now() };
+}
+
 function loadMarketState(): MarketState {
 	try {
 		const stored = localStorage.getItem(MARKET_STORAGE_KEY);
 		if (stored) {
 			const data = JSON.parse(stored);
 			if (data.prices && data.history && data.lastUpdate) {
+				// Backfill any missing coins from defaults
+				const defaults = defaultMarketState();
+				for (const coin of Object.keys(COIN_CONFIG) as Array<keyof typeof COIN_CONFIG>) {
+					if (data.prices[coin] == null) data.prices[coin] = defaults.prices[coin];
+					if (!data.history[coin]) data.history[coin] = defaults.history[coin];
+				}
 				return data;
 			}
 		}
 	} catch (e) {
 		console.error('Failed to load market state:', e);
 	}
-	return {
-		prices: {
-			shnailCoins: COIN_CONFIG.shnailCoins.basePrice,
-			ramenCoins: COIN_CONFIG.ramenCoins.basePrice,
-			aderynCoins: COIN_CONFIG.aderynCoins.basePrice,
-		},
-		history: {
-			shnailCoins: [COIN_CONFIG.shnailCoins.basePrice],
-			ramenCoins: [COIN_CONFIG.ramenCoins.basePrice],
-			aderynCoins: [COIN_CONFIG.aderynCoins.basePrice],
-		},
-		lastUpdate: Date.now(),
-	};
+	return defaultMarketState();
 }
 
 function saveMarketState(state: MarketState): void {
@@ -159,12 +176,15 @@ function loadInvestments(): Investments {
 				shnailCoins: typeof data.shnailCoins === 'number' ? data.shnailCoins : 0,
 				ramenCoins: typeof data.ramenCoins === 'number' ? data.ramenCoins : 0,
 				aderynCoins: typeof data.aderynCoins === 'number' ? data.aderynCoins : 0,
+				glassesCoins: typeof data.glassesCoins === 'number' ? data.glassesCoins : 0,
+				meloCoins: typeof data.meloCoins === 'number' ? data.meloCoins : 0,
+				redShiftCoins: typeof data.redShiftCoins === 'number' ? data.redShiftCoins : 0,
 			};
 		}
 	} catch (e) {
 		console.error('Failed to load investments:', e);
 	}
-	return { shnailCoins: 0, ramenCoins: 0, aderynCoins: 0 };
+	return { shnailCoins: 0, ramenCoins: 0, aderynCoins: 0, glassesCoins: 0, meloCoins: 0, redShiftCoins: 0 };
 }
 
 function saveInvestments(investments: Investments): void {
@@ -296,7 +316,7 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 	// Price change indicator
 	const getPriceChange = useCallback((coin: keyof Investments) => {
 		const history = market.history[coin];
-		if (history.length < 2) return 0;
+		if (!history || history.length < 2) return 0;
 		const prev = history[history.length - 2];
 		const current = history[history.length - 1];
 		return ((current - prev) / prev) * 100;
