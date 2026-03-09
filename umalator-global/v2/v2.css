@@ -3086,6 +3086,11 @@ body {
   min-width: 0;
 }
 
+.v2-uma-search-toggle {
+	padding: var(--space-xs) var(--space-sm);
+	border-bottom: 1px solid var(--color-border);
+}
+
 /* Stats grid - compact 5-column layout */
 .v2-stats-grid {
   display: grid;

@@ -28,6 +28,7 @@ import { OCRModal } from './ocr-modal';
 import umas from '../umas.json';
 import icons from '../../icons.json';
 import skilldata from '../skill_data.json';
+import notInGame from '../not-in-game.json';
 
 // ============================================
 // UNIQUE SKILL CALCULATION
@@ -128,6 +129,7 @@ function rankForStat(x: number): number {
 interface UmaPortraitProps {
 	outfitId: string;
 	onSelect: (outfitId: string) => void;
+	hideNotInGame?: boolean;
 }
 
 // Build search index
@@ -143,15 +145,28 @@ function searchNames(query: string): string[] {
 	return umaAltIds.filter(oid => umaNamesForSearch[oid].indexOf(q) > -1);
 }
 
-export function UmaPortrait({ outfitId, onSelect }: UmaPortraitProps) {
+export function UmaPortrait({ outfitId, onSelect, hideNotInGame = false }: UmaPortraitProps) {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [activeIdx, setActiveIdx] = useState(-1);
+	const [showUnreleased, setShowUnreleased] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const listRef = useRef<HTMLUListElement>(null);
 
+	// Reset override toggle when search modal closes
+	useEffect(() => {
+		if (!isSearchOpen) setShowUnreleased(false);
+	}, [isSearchOpen]);
+
 	const uma = outfitId ? (umas as any)[outfitId.slice(0, 4)] : null;
-	const suggestions = useMemo(() => searchNames(searchQuery), [searchQuery]);
+	const suggestions = useMemo(() => {
+		let results = searchNames(searchQuery);
+		if (hideNotInGame && !showUnreleased && notInGame.outfits.length > 0) {
+			const notInGameSet = new Set(notInGame.outfits);
+			results = results.filter(oid => !notInGameSet.has(oid));
+		}
+		return results;
+	}, [searchQuery, hideNotInGame, showUnreleased]);
 
 	// Random mob portrait for empty state
 	const randomMob = useMemo(() =>
@@ -230,6 +245,15 @@ export function UmaPortrait({ outfitId, onSelect }: UmaPortraitProps) {
 							}}
 							onKeyDown={handleKeyDown}
 						/>
+						{hideNotInGame && notInGame.outfits.length > 0 && (
+							<label class="v2-switch v2-uma-search-toggle">
+								<input type="checkbox" checked={showUnreleased}
+									onChange={(e) => setShowUnreleased((e.target as HTMLInputElement).checked)}
+								/>
+								<span class="v2-switch-slider" />
+								<span class="v2-switch-label">Show Unreleased ({notInGame.outfits.length})</span>
+							</label>
+						)}
 						<ul ref={listRef} class="v2-uma-search-results">
 							{suggestions.slice(0, 50).map((oid, i) => {
 								const uid = oid.slice(0, 4);
@@ -512,9 +536,10 @@ interface V2UmaPanelProps {
 	onResetAll?: () => void;
 	title?: string;
 	courseDistance?: number;
+	hideNotInGame?: boolean;
 }
 
-export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title = 'Umamusume', courseDistance }: V2UmaPanelProps) {
+export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title = 'Umamusume', courseDistance, hideNotInGame = false }: V2UmaPanelProps) {
 	const [savedSlots, setSavedSlots] = useState<string[]>([]);
 	const [isOCRModalOpen, setIsOCRModalOpen] = useState(false);
 	const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -774,7 +799,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 			</div>
 
 			{/* Character portrait and selector */}
-			<UmaPortrait outfitId={state.outfitId} onSelect={handleOutfitSelect} />
+			<UmaPortrait outfitId={state.outfitId} onSelect={handleOutfitSelect} hideNotInGame={hideNotInGame} />
 
 			{/* Stats */}
 			<CollapsibleSection title="Stats" defaultOpen={true}>
@@ -792,6 +817,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 					skills={state.skills}
 					onChange={skills => onChange({ skills })}
 					courseDistance={courseDistance}
+					hideNotInGame={hideNotInGame}
 					forcedSkillPositions={state.forcedSkillPositions}
 					onForcedPositionChange={(skillId, position) => {
 						const newPositions = { ...state.forcedSkillPositions };

@@ -284,6 +284,10 @@ function App() {
   const [chartFastMode, setChartFastMode] = useState(false); // 2x faster, lower accuracy
   const [skillHints, setSkillHints] = useState<Map<string, number>>(new Map());
   const [hiddenSkills, setHiddenSkills] = useState<Set<string>>(new Set());
+  const [hideNotInGame, setHideNotInGame] = useState(() => {
+	const saved = localStorage.getItem('umalator_v2_hideNotInGame');
+	return saved !== null ? saved === 'true' : true; // default: hidden
+  });
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 
@@ -436,6 +440,10 @@ function App() {
   useEffect(() => {
     savePreferences({ darkMode, colorPalette, uiScale });
   }, [darkMode, colorPalette, uiScale]);
+
+  useEffect(() => {
+	localStorage.setItem('umalator_v2_hideNotInGame', String(hideNotInGame));
+  }, [hideNotInGame]);
 
   // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
   useEffect(() => {
@@ -1528,6 +1536,13 @@ function App() {
                           <span class="v2-switch-slider" />
                           <span class="v2-switch-label">Fast ⚡</span>
                         </label>
+                        <label class="v2-switch">
+                          <input type="checkbox" checked={hideNotInGame}
+                            onChange={(e) => setHideNotInGame((e.target as HTMLInputElement).checked)}
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">In-Game Only</span>
+                        </label>
                       </div>
                       <div class="v2-skill-chart-actions">
                         {skillHints.size > 0 && (
@@ -1602,6 +1617,7 @@ function App() {
                         showUmaIcons={showUmaIcons}
                         hideOwned={hideOwned}
                         hidePurple={hidePurple}
+                        hideNotInGame={hideNotInGame}
                         dirty={false}
                         selectedSkillId={selectedSkillForChart}
                         hiddenSkills={hiddenSkills}
@@ -1723,6 +1739,7 @@ function App() {
                           courseId
                         ]?.distance
                       }
+                      hideNotInGame={hideNotInGame}
                     />
                   )}
                   {mode === "compare" && activeUmaTab === 2 && (
@@ -1738,6 +1755,7 @@ function App() {
                           courseId
                         ]?.distance
                       }
+                      hideNotInGame={hideNotInGame}
                     />
                   )}
                   {activeUmaTab === "trainees" && (

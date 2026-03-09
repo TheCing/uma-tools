@@ -20,6 +20,7 @@ import * as Matcher from '../../uma-skill-tools/tools/ConditionMatcher';
 import skilldata from '../skill_data.json';
 import skillmeta from '../skill_meta.json';
 import skillnames from '../skillnames.json';
+import notInGame from '../not-in-game.json';
 
 // ============================================
 // CONDITION PARSING FOR FILTERS
@@ -526,11 +527,13 @@ interface SkillPickerModalProps {
 	onClose: () => void;
 	onSelect: (skillId: string) => void;
 	selectedSkills: string[];
+	hideNotInGame: boolean;
 }
 
-export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: SkillPickerModalProps) {
+export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills, hideNotInGame }: SkillPickerModalProps) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const inputRef = useRef<HTMLInputElement>(null);
+	const [showUnreleased, setShowUnreleased] = useState(false);
 	const listRef = useRef<HTMLDivElement>(null);
 	const [activeIdx, setActiveIdx] = useState(-1);
 
@@ -614,11 +617,16 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 				if (!matchesAny) return false;
 			}
 
+			// Check not-in-game filter
+			if (hideNotInGame && !showUnreleased && notInGame.skills.length > 0) {
+				if (notInGame.skills.indexOf(id) > -1) return false;
+			}
+
 			return true;
 		});
 		// Apply sorting
 		return filtered.sort(getSortComparator(sortOption));
-	}, [searchQuery, activeFilters, activeIconTypes, sortOption]);
+	}, [searchQuery, activeFilters, activeIconTypes, sortOption, hideNotInGame, showUnreleased]);
 
 	const handleKeyDown = useCallback((e: KeyboardEvent) => {
 		const len = filteredSkills.length;
@@ -647,7 +655,7 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 		}
 	}, [activeIdx]);
 
-	// Reset search, filters, and sort when closed
+	// Reset search, filters, sort, and override when closed
 	useEffect(() => {
 		if (!isOpen) {
 			setSearchQuery('');
@@ -661,6 +669,7 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 				location: null,
 			});
 			setActiveIconTypes(new Set(ICON_TYPE_FILTERS));
+			setShowUnreleased(false);
 		}
 	}, [isOpen]);
 
@@ -811,6 +820,17 @@ export function SkillPickerModal({ isOpen, onClose, onSelect, selectedSkills }: 
 							</div>
 						</div>
 					</div>
+					{hideNotInGame && notInGame.skills.length > 0 && (
+						<div class="v2-filter-row">
+							<label class="v2-switch">
+								<input type="checkbox" checked={showUnreleased}
+									onChange={(e) => setShowUnreleased((e.target as HTMLInputElement).checked)}
+								/>
+								<span class="v2-switch-slider" />
+								<span class="v2-switch-label">Show Unreleased ({notInGame.skills.length})</span>
+							</label>
+						</div>
+					)}
 				</div>
 
 				{/* Skill list */}
@@ -862,6 +882,7 @@ interface SkillsSectionProps {
 	courseDistance?: number;
 	forcedSkillPositions?: Record<string, string>;
 	onForcedPositionChange?: (skillId: string, position: string) => void;
+	hideNotInGame: boolean;
 }
 
 // Sort skills like v1: by skillmeta order, then by ID
@@ -876,7 +897,7 @@ function skillOrder(a: string, b: string): number {
 	return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange }: SkillsSectionProps) {
+export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame }: SkillsSectionProps) {
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
@@ -942,6 +963,7 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 				onClose={() => setIsPickerOpen(false)}
 				onSelect={handleAddSkill}
 				selectedSkills={skills}
+				hideNotInGame={hideNotInGame}
 			/>
 		</div>
 	);

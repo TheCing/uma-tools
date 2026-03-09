@@ -21,6 +21,7 @@ import skillnames from '../skillnames.json';
 import skillmeta from '../../skill_meta.json';
 import umas from '../../umas.json';
 import icons from '../../icons.json';
+import notInGame from '../not-in-game.json';
 
 interface SkillChartPaneProps {
 	data: SkillChartResult[];
@@ -36,6 +37,7 @@ interface SkillChartPaneProps {
 	showUmaIcons: boolean;
 	hideOwned: boolean;
 	hidePurple: boolean;
+	hideNotInGame: boolean;
 	dirty?: boolean;
 	selectedSkillId?: string;
 	hiddenSkills: Set<string>;
@@ -179,12 +181,17 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 			data = data.filter(row => !isPurpleSkill(row.id));
 		}
 
+		if (props.hideNotInGame && notInGame.skills.length > 0) {
+			const notInGameSet = new Set(notInGame.skills);
+			data = data.filter(row => !notInGameSet.has(row.id));
+		}
+
 		if (props.hiddenSkills.size > 0) {
 			data = data.filter(row => !props.hiddenSkills.has(row.id));
 		}
 
 		return data;
-	}, [props.data, props.hideOwned, props.hidePurple, props.hasSkills, props.hiddenSkills]);
+	}, [props.data, props.hideOwned, props.hidePurple, props.hideNotInGame, props.hasSkills, props.hiddenSkills]);
 
 	const columns: ColumnDef<SkillChartResult, any>[] = useMemo(() => [{
 		id: 'hide',
