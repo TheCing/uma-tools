@@ -98,6 +98,16 @@ export function IconSelect({
 		return () => window.removeEventListener('scroll', handleScroll, true);
 	}, [isOpen]);
 
+	// Keyboard shortcut: type a letter/number to select matching option
+	const handleKeyDown = (e: KeyboardEvent) => {
+		const key = e.key.toUpperCase();
+		const match = options.find(opt => String(opt.value).toUpperCase() === key);
+		if (match) {
+			e.preventDefault();
+			onChange(match.value);
+		}
+	};
+
 	const dropdownContent = isOpen && position && createPortal(
 		<div
 			ref={dropdownRef}
@@ -143,6 +153,7 @@ export function IconSelect({
 						type="button"
 						class="v2-icon-select-trigger"
 						onClick={() => setIsOpen(!isOpen)}
+						onKeyDown={handleKeyDown}
 					>
 						{selectedOption && (
 							<img
