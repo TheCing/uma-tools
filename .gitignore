@@ -9,6 +9,7 @@ node_modules/
 # Build outputs
 **/dist/
 /assets/
+/simulator.worker.js
 
 # Large media files
 videos/
