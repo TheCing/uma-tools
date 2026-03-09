@@ -1415,19 +1415,19 @@ function App() {
                     )}
 
                     {/* Mouse-over readout box (same as v1) */}
-                    <g id="rtMouseOverBox" style="display:none">
+                    <g id="rtMouseOverBox" class="v2-track-readout" style="display:none">
                       <text
                         id="rtV1"
                         x="25"
                         y="10"
-                        fill="#2a77c5"
+                        fill="#4a9eff"
                         font-size="10px"
                       ></text>
                       <text
                         id="rtV2"
                         x="25"
                         y="20"
-                        fill="#c52a2a"
+                        fill="#ff6b6b"
                         font-size="10px"
                       ></text>
                     </g>

@@ -1022,6 +1022,14 @@ body {
 /* Keep the cow mascot! */
 
 /* Velocity overlay toggles below track */
+.v2-track-readout text {
+  paint-order: stroke fill;
+  stroke: var(--color-surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  font-family: var(--font-mono);
+}
+
 .v2-velocity-toggles {
   display: flex;
   gap: var(--space-lg);
