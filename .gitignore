@@ -10,6 +10,7 @@ node_modules/
 **/dist/
 /assets/
 /simulator.worker.js
+umalator-global/not-in-game.json
 
 # Large media files
 videos/

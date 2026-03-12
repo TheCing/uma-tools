@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as http from 'node:http';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 import { program, Option } from 'commander';
 
@@ -96,6 +97,37 @@ export default function seedrandom(seed) {
 		}));
 	}
 };
+
+// Generate not-in-game.json by diffing local data against kachi-dev/master
+function generateNotInGame() {
+	const outPath = path.join(dirname, 'not-in-game.json');
+	try {
+		const kachiSkillRaw = execSync('git show kachi-dev/master:umalator-global/skill_data.json', { cwd: root, encoding: 'utf-8' });
+		const kachiUmaRaw = execSync('git show kachi-dev/master:umalator-global/umas.json', { cwd: root, encoding: 'utf-8' });
+		const kachiSkills = new Set(Object.keys(JSON.parse(kachiSkillRaw)));
+		const kachiUmas = JSON.parse(kachiUmaRaw);
+		const kachiOutfits = new Set(
+			Object.keys(kachiUmas).flatMap(id => Object.keys(kachiUmas[id].outfits || {}))
+		);
+
+		const localSkills = JSON.parse(fs.readFileSync(path.join(dirname, 'skill_data.json'), 'utf-8'));
+		const localUmas = JSON.parse(fs.readFileSync(path.join(dirname, 'umas.json'), 'utf-8'));
+		const localOutfits = Object.keys(localUmas).flatMap(id => Object.keys(localUmas[id].outfits || {}));
+
+		const result = {
+			skills: Object.keys(localSkills).filter(id => !kachiSkills.has(id)),
+			outfits: localOutfits.filter(id => !kachiOutfits.has(id))
+		};
+
+		fs.writeFileSync(outPath, JSON.stringify(result));
+		console.log(`not-in-game.json: ${result.skills.length} skills, ${result.outfits.length} outfits`);
+	} catch (e) {
+		console.warn('Could not generate not-in-game.json (kachi-dev remote unavailable), using empty list');
+		fs.writeFileSync(outPath, JSON.stringify({ skills: [], outfits: [] }));
+	}
+}
+
+generateNotInGame();
 
 const buildOptions = {
 	entryPoints: [{in: '../umalator/app.tsx', out: 'bundle'}, '../umalator/simulator.worker.ts'],

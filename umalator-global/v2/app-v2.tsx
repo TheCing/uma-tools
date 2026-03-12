@@ -283,6 +283,11 @@ function App() {
   const [showUmaIcons, setShowUmaIcons] = useState(false);
   const [chartFastMode, setChartFastMode] = useState(false); // 2x faster, lower accuracy
   const [skillHints, setSkillHints] = useState<Map<string, number>>(new Map());
+  const [hiddenSkills, setHiddenSkills] = useState<Set<string>>(new Set());
+  const [hideNotInGame, setHideNotInGame] = useState(() => {
+	const saved = localStorage.getItem('umalator_v2_hideNotInGame');
+	return saved !== null ? saved === 'true' : true; // default: hidden
+  });
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 
@@ -435,6 +440,10 @@ function App() {
   useEffect(() => {
     savePreferences({ darkMode, colorPalette, uiScale });
   }, [darkMode, colorPalette, uiScale]);
+
+  useEffect(() => {
+	localStorage.setItem('umalator_v2_hideNotInGame', String(hideNotInGame));
+  }, [hideNotInGame]);
 
   // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
   useEffect(() => {
@@ -1415,19 +1424,19 @@ function App() {
                     )}
 
                     {/* Mouse-over readout box (same as v1) */}
-                    <g id="rtMouseOverBox" style="display:none">
+                    <g id="rtMouseOverBox" class="v2-track-readout" style="display:none">
                       <text
                         id="rtV1"
                         x="25"
                         y="10"
-                        fill="#2a77c5"
+                        fill="#4a9eff"
                         font-size="10px"
                       ></text>
                       <text
                         id="rtV2"
                         x="25"
                         y="20"
-                        fill="#c52a2a"
+                        fill="#ff6b6b"
                         font-size="10px"
                       ></text>
                     </g>
@@ -1527,6 +1536,33 @@ function App() {
                           <span class="v2-switch-slider" />
                           <span class="v2-switch-label">Fast ⚡</span>
                         </label>
+                        <label class="v2-switch">
+                          <input type="checkbox" checked={hideNotInGame}
+                            onChange={(e) => setHideNotInGame((e.target as HTMLInputElement).checked)}
+                          />
+                          <span class="v2-switch-slider" />
+                          <span class="v2-switch-label">In-Game Only</span>
+                        </label>
+                      </div>
+                      <div class="v2-skill-chart-actions">
+                        {skillHints.size > 0 && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setSkillHints(new Map())}
+                          >
+                            Reset Hints
+                          </Button>
+                        )}
+                        {hiddenSkills.size > 0 && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setHiddenSkills(new Set())}
+                          >
+                            Show Hidden ({hiddenSkills.size})
+                          </Button>
+                        )}
                       </div>
                       {/* Progress indicator */}
                       {isRunning &&
@@ -1581,8 +1617,15 @@ function App() {
                         showUmaIcons={showUmaIcons}
                         hideOwned={hideOwned}
                         hidePurple={hidePurple}
+                        hideNotInGame={hideNotInGame}
                         dirty={false}
                         selectedSkillId={selectedSkillForChart}
+                        hiddenSkills={hiddenSkills}
+                        onHideSkill={(id) => setHiddenSkills(prev => {
+                          const next = new Set(prev);
+                          next.add(id);
+                          return next;
+                        })}
                       />
                     ) : (
                       <div class="v2-skill-chart-empty">
@@ -1696,6 +1739,7 @@ function App() {
                           courseId
                         ]?.distance
                       }
+                      hideNotInGame={hideNotInGame}
                     />
                   )}
                   {mode === "compare" && activeUmaTab === 2 && (
@@ -1711,6 +1755,7 @@ function App() {
                           courseId
                         ]?.distance
                       }
+                      hideNotInGame={hideNotInGame}
                     />
                   )}
                   {activeUmaTab === "trainees" && (
