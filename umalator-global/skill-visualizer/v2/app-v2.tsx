@@ -192,6 +192,7 @@ function App() {
 						onClose={() => setSkillsOpen(false)}
 						onSelect={addSkill}
 						selectedSkills={skillIds}
+						hideNotInGame={false}
 					/>
 				</div>
 			</IntlProvider>
