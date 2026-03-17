@@ -461,7 +461,7 @@ export interface SessionState {
 	time: number;
 	// Simulation settings
 	samples: number;
-	mode: 'compare' | 'skill';
+	mode: 'compare' | 'skill' | 'stamina';
 	// Uma states
 	uma1: UmaState;
 	uma2: UmaState;

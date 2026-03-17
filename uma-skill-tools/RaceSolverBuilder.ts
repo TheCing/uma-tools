@@ -1,17 +1,17 @@
 import { HorseParameters, Strategy, Aptitude } from './HorseTypes';
 import { CourseData, CourseHelpers, DistanceType } from './CourseData';
 import { Region, RegionList } from './Region';
-import { Rule30CARng, SeededRng } from './Random';
+import { PRNG, Rule30CARng, SeededRng } from './Random';
 import { Conditions, random, immediate, noopRandom } from './ActivationConditions';
 import { ActivationSamplePolicy, ImmediatePolicy, createFixedPositionPolicy } from './ActivationSamplePolicy';
 import { getParser } from './ConditionParser';
 import { RaceSolver, RaceState, PendingSkill, DynamicCondition, SkillType, SkillRarity, SkillEffect, Perspective, PosKeepMode } from './RaceSolver';
 import { Mood, GroundCondition, Weather, Season, Time, Grade, RaceParameters } from './RaceParameters';
-import { GameHpPolicy, NoopHpPolicy } from './HpPolicy';
+import { HpPolicy, GameHpPolicy, NoopHpPolicy } from './HpPolicy';
 
 import skills from './data/skill_data.json';
 
-type PartialRaceParameters = Omit<{ -readonly [K in keyof RaceParameters]: RaceParameters[K] }, 'skillId'>;
+export type PartialRaceParameters = Omit<{ -readonly [K in keyof RaceParameters]: RaceParameters[K] }, 'skillId'>;
 
 export interface HorseDesc {
 	speed: number
@@ -419,6 +419,7 @@ export class RaceSolverBuilder {
 		lateSurger: number,
 		endCloser: number
 	} | undefined
+	_hpPolicyFactory: ((course: CourseData, params: PartialRaceParameters, rng: PRNG) => HpPolicy) | null
 
 	constructor(readonly nsamples: number) {
 		this._course = null;
@@ -453,6 +454,7 @@ export class RaceSolverBuilder {
 		this._leadCompetition = undefined;
 		this._laneMovement = undefined;
 		this._duelingRates = undefined;
+		this._hpPolicyFactory = null;
 	}
 
 	seed(seed: number) {
@@ -744,6 +746,11 @@ export class RaceSolverBuilder {
 		return this;
 	}
 
+	hpPolicyFactory(fn: (course: CourseData, params: PartialRaceParameters, rng: PRNG) => HpPolicy) {
+		this._hpPolicyFactory = fn;
+		return this;
+	}
+
 	skillWisdomCheck(enabled: boolean) {
 		this._skillWisdomCheck = enabled;
 		return this;
@@ -823,6 +830,7 @@ export class RaceSolverBuilder {
 		// but it does mean that if you want to compare different power stats or moods, you must call withAsiwotameru()
 		// after fork() on each instance separately, which is a potential gotcha
 		clone._extraSkillHooks = this._extraSkillHooks.slice();
+		clone._hpPolicyFactory = this._hpPolicyFactory;
 		return clone;
 	}
 
@@ -867,7 +875,9 @@ export class RaceSolverBuilder {
 			}));
 
 			const hpRng = new Rule30CARng(this._rng.int32());
-			const hpPolicy = (this._mode === 'compare' || this._mode === 'chart') ? new GameHpPolicy(this._course, this._raceParams.groundCondition, hpRng) : NoopHpPolicy;
+			const hpPolicy = this._hpPolicyFactory
+				? this._hpPolicyFactory(this._course, this._raceParams, hpRng)
+				: (this._mode === 'compare' || this._mode === 'chart') ? new GameHpPolicy(this._course, this._raceParams.groundCondition, hpRng) : NoopHpPolicy;
 
 			const redo: boolean = yield new RaceSolver({
 				horse,

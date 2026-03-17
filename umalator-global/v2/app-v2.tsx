@@ -58,6 +58,7 @@ import {
   Calculator,
   Book,
   Calendar,
+  Heart,
 } from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
@@ -69,6 +70,7 @@ import { VelocityOverlay } from "./velocity-overlay";
 import { TourProvider, TourOverlay } from "./tour";
 import { SkillChartPane } from "./skill-chart-pane";
 import { SkillChartDetail } from "./skill-chart-detail";
+import { StaCalcResults } from "./stacalc";
 // import { PasswordGate } from "./PasswordGate";
 import { FeedbackDrawer } from "./feedback-drawer";
 import { SimulationSettings } from "./sim-settings";
@@ -230,7 +232,7 @@ function App() {
 
   // Simulation settings
   const [samples, setSamples] = useState(savedSession.current?.samples ?? 500);
-  const [mode, setMode] = useState<"compare" | "skill">(
+  const [mode, setMode] = useState<"compare" | "skill" | "stamina">(
     savedSession.current?.mode ?? "compare",
   );
   const [seed, setSeed] = useState(() =>
@@ -243,6 +245,7 @@ function App() {
   const [competeFight, setCompeteFight] = useState(false);
   const [laneMovement, setLaneMovement] = useState(true);
   const [autoSeed, setAutoSeed] = useState(false);
+  const [forceFullSpurt, setForceFullSpurt] = useState(true);
 
   // Panel visibility
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
@@ -267,6 +270,7 @@ function App() {
   // Simulation results
   const [isRunning, setIsRunning] = useState(false);
   const [results, setResults] = useState<CompareResults | null>(null);
+  const [hpcalcResults, setHpcalcResults] = useState<any>(null);
 
   // Skill chart results
   const [skillChartResults, setSkillChartResults] = useState<Map<string, any>>(
@@ -303,6 +307,12 @@ function App() {
           setResults(workerResults);
           break;
         case "compare-complete":
+          setIsRunning(false);
+          break;
+        case "hpcalc":
+          setHpcalcResults(workerResults);
+          break;
+        case "hpcalc-complete":
           setIsRunning(false);
           break;
       }
@@ -775,6 +785,39 @@ function App() {
           }),
         },
       });
+    } else if (mode === "stamina") {
+      setIsRunning(true);
+      setHpcalcResults(null);
+
+      const course = courseData[courseId];
+      if (!course) {
+        console.error("[V2] Course not found:", courseId);
+        setIsRunning(false);
+        return;
+      }
+
+      worker.postMessage({
+        msg: "hpcalc",
+        data: {
+          nsamples: samples,
+          course,
+          racedef: buildRaceParameters(ground, weather, season, time),
+          uma: convertUmaStateForWorker(uma1),
+          pacer: getDefaultPacer(),
+          options: {
+            ...buildSimulationOptions({
+              seed,
+              syncRng,
+              skillWisdomCheck,
+              rushedKakari,
+              leadCompetition,
+              competeFight,
+              laneMovement,
+            }),
+            forceFullSpurt,
+          },
+        },
+      });
     } else {
       // Skill chart mode
       handleRunSkillChart();
@@ -816,6 +859,28 @@ function App() {
     }
   }, [results, displayRun]);
 
+  // Stamina calculator snapshot - convert single-uma run data to RaceSnapshot format
+  const [staminaRunType, setStaminaRunType] = useState<string>('medianrun');
+  const staminaSnapshot = useMemo(() => {
+    if (!hpcalcResults?.runData) return null;
+    const run = hpcalcResults.runData[staminaRunType];
+    if (!run) return null;
+    // Pad single-uma data to two-uma RaceSnapshot format
+    return {
+      t: [run.t[0], []] as [number[], number[]],
+      p: [run.p[0], []] as [number[], number[]],
+      v: [run.v[0], []] as [number[], number[]],
+      hp: [run.hp[0], []] as [number[], number[]],
+      sk: [run.sk[0] || new Map(), new Map()] as [Map<string, number[][]>, Map<string, number[][]>],
+      sdly: [run.sdly, 0] as [number, number],
+      rushed: [[], []] as [[number, number][], [number, number][]],
+      posKeep: [],
+      competeFight: [[0, 0], [0, 0]] as [[number, number], [number, number]],
+      leadCompetition: [[0, 0], [0, 0]] as [[number, number], [number, number]],
+      downhillActivations: [[], []] as [[number, number][], [number, number][]],
+    } as RaceSnapshot;
+  }, [hpcalcResults, staminaRunType]);
+
   // Skill chart snapshot - selected skill's run data for visualization
   const skillChartSnapshot = useMemo(() => {
     if (mode !== "skill" || !selectedSkillForChart || !skillChartResults.has(selectedSkillForChart)) {
@@ -830,9 +895,8 @@ function App() {
 
   // Extract skill activation regions from results for track visualization
   const skillRegions = useMemo(() => {
-    // In skill mode, only show regions when a skill is selected
-    // In compare mode, use current snapshot
-    const snapshot = mode === "skill" ? skillChartSnapshot : currentSnapshot;
+    // Use appropriate snapshot based on mode
+    const snapshot = mode === "skill" ? skillChartSnapshot : mode === "stamina" ? staminaSnapshot : currentSnapshot;
     if (!snapshot) return [];
 
     const colors = [
@@ -875,7 +939,7 @@ function App() {
     });
 
     return regions;
-  }, [mode, skillChartSnapshot, currentSnapshot]);
+  }, [mode, skillChartSnapshot, currentSnapshot, staminaSnapshot]);
 
   // Build position keep labels from simulation results
   const posKeepLabels = useMemo(() => {
@@ -1197,6 +1261,14 @@ function App() {
                     <Zap size={14} />
                     Skill
                   </button>
+                  <button
+                    type="button"
+                    class={mode === "stamina" ? "active" : ""}
+                    onClick={() => setMode("stamina")}
+                  >
+                    <Heart size={14} />
+                    Stamina
+                  </button>
                 </div>
                 <Button
                   variant="primary"
@@ -1409,9 +1481,9 @@ function App() {
                     uma2={uma2ForTrack}
                   >
                     {/* Velocity overlay - use appropriate snapshot based on mode */}
-                    {((mode === "compare" && currentSnapshot) || (mode === "skill" && skillChartSnapshot)) && (
+                    {((mode === "compare" && currentSnapshot) || (mode === "skill" && skillChartSnapshot) || (mode === "stamina" && staminaSnapshot)) && (
                       <VelocityOverlay
-                        data={mode === "skill" ? skillChartSnapshot : currentSnapshot}
+                        data={mode === "skill" ? skillChartSnapshot : mode === "stamina" ? staminaSnapshot : currentSnapshot}
                         courseDistance={
                           (courseData as any)[courseId]?.distance ?? 2000
                         }
@@ -1443,7 +1515,7 @@ function App() {
                   </RaceTrack>
 
                   {/* Velocity toggle controls below track - show when there's data to display */}
-                  {((mode === "compare" && results) || (mode === "skill" && skillChartSnapshot)) && (
+                  {((mode === "compare" && results) || (mode === "skill" && skillChartSnapshot) || (mode === "stamina" && staminaSnapshot)) && (
                     <div class="v2-velocity-toggles">
                       <label class="v2-switch">
                         <input
@@ -1648,6 +1720,47 @@ function App() {
                             </p>
                           </div>
                         )}
+                      </div>
+                    )}
+                  </div>
+                ) : mode === "stamina" ? (
+                  /* RESULTS - Stamina calculator mode */
+                  <div class="v2-results-pane">
+                    <div class="stacalc-controls">
+                      <label class="v2-switch">
+                        <input
+                          type="checkbox"
+                          checked={forceFullSpurt}
+                          onChange={(e) => setForceFullSpurt((e.target as HTMLInputElement).checked)}
+                        />
+                        <span class="v2-switch-slider" />
+                        <span class="v2-switch-label">Force Full Spurt</span>
+                      </label>
+                      <Tooltip content="When ON, the uma always sprints at max speed in the final stretch — even without enough stamina. Remaining HP can go negative, showing how much stamina you're short. When OFF, the uma slows down if stamina is low, matching real race behavior." position="bottom" className="stacalc-info-tooltip">
+                        <HelpCircle size={14} class="stacalc-info-icon" />
+                      </Tooltip>
+                    </div>
+                    {hpcalcResults ? (
+                      <StaCalcResults
+                        results={hpcalcResults}
+                        nsamples={samples}
+                        strategy={uma1.strategy}
+                        courseDistance={courseData[courseId]?.distance || 2000}
+                        onSelectRun={(runType) => setStaminaRunType(runType)}
+                      />
+                    ) : isRunning ? (
+                      <div class="v2-results-pane v2-results-empty">
+                        <div class="v2-results-running">
+                          <span class="v2-spinner" />
+                          Running stamina analysis...
+                        </div>
+                      </div>
+                    ) : (
+                      <div class="v2-results-pane v2-results-empty">
+                        <div class="v2-results-placeholder">
+                          <Heart size={32} />
+                          <p>Click RUN to analyze stamina requirements</p>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -2037,6 +2150,14 @@ function App() {
                         >
                           <Zap size={14} />
                           Skill
+                        </button>
+                        <button
+                          type="button"
+                          class={mode === "stamina" ? "active" : ""}
+                          onClick={() => setMode("stamina")}
+                        >
+                          <Heart size={14} />
+                          Stamina
                         </button>
                       </div>
                     </div>

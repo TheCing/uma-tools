@@ -124,7 +124,7 @@ export function Tooltip({
 	const tooltipElement = isVisible && coords.ready && createPortal(
 		<div
 			ref={tooltipRef}
-			class={`v2-tooltip v2-tooltip-${position}`}
+			class={`v2-tooltip v2-tooltip-${position} ${className}`}
 			style={{
 				left: `${coords.x}px`,
 				top: `${coords.y}px`,

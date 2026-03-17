@@ -6,6 +6,7 @@
 import { fromJS, Map as ImmMap } from 'immutable';
 import { HorseState } from '../../components/HorseDefTypes';
 import { runComparison } from '../../umalator/compare';
+import { runHpCalc } from '../../umalator/hpcalc';
 
 /**
  * Merge skill activation maps from two result sets
@@ -239,6 +240,24 @@ function runChart({ skills, course, racedef, uma, pacer, options, skillmeta, wor
 }
 
 /**
+ * Run stamina calculator simulation
+ */
+function runHpCalcWorker({ nsamples, course, racedef, uma, pacer, options }: {
+	nsamples: number;
+	course: any;
+	racedef: any;
+	uma: any;
+	pacer: any;
+	options: any;
+}) {
+	const uma_ = convertToHorseState(uma);
+	const pacer_ = pacer ? convertToHorseState(pacer) : null;
+	const results = runHpCalc(nsamples, course, racedef, uma_, pacer_, options);
+	self.postMessage({ type: 'hpcalc', results });
+	self.postMessage({ type: 'hpcalc-complete' });
+}
+
+/**
  * Message handler
  */
 self.addEventListener('message', function(e: MessageEvent) {
@@ -251,6 +270,10 @@ self.addEventListener('message', function(e: MessageEvent) {
 
 		case 'chart':
 			runChart(data);
+			break;
+
+		case 'hpcalc':
+			runHpCalcWorker(data);
 			break;
 
 		case 'chart-cancel':
