@@ -375,6 +375,23 @@
 	gap: 4px;
 }
 
+.tradeColumn {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.bulkButtons {
+	display: flex;
+	gap: 2px;
+}
+
+.buyButton.bulk, .sellButton.bulk {
+	padding: 2px 4px;
+	font-size: 7px;
+	flex: 1;
+}
+
 .buyButton, .sellButton {
 	border: none;
 	border-radius: 4px;

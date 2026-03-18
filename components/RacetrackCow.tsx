@@ -22,6 +22,7 @@ export interface RacetrackCowProps {
 	onDoubleClick?: () => void; // Called on double-click
 }
 
+const COW_SKIN: string = typeof CC_COW_SKIN !== 'undefined' ? CC_COW_SKIN : '';
 const COW_SIZE = 32; // Display size in pixels
 const WALK_SPEED = 0.02; // Pixels per ms
 const FRAME_INTERVAL = 150; // ms between animation frames
@@ -207,13 +208,45 @@ export function RacetrackCow({ trackWidth, onWalk, onStateChange, onClick, onDou
 		);
 	}
 
+	// Convert pixel position to percentage for responsive scaling
+	const leftPercent = (positionRef.current / trackWidth) * 100;
+
+	const flip = directionRef.current === 'right' ? 'scaleX(-1)' : '';
+
+	if (COW_SKIN) {
+		const wobble = stateRef.current === 'walk'
+			? `rotate(${Math.sin(renderTick * 0.12) * 6}deg)`
+			: stateRef.current === 'idle'
+				? `rotate(${Math.sin(renderTick * 0.05) * 2}deg)`
+				: '';
+
+		return (
+			<div className="racetrackCowContainer">
+				<div
+					className={`racetrackCow ${stateRef.current}`}
+					style={{
+						left: `${leftPercent}%`,
+						width: '64px',
+						height: '48px',
+						backgroundImage: `url('/uma-tools/icons/cow/${COW_SKIN}.png')`,
+						backgroundSize: 'contain',
+						backgroundRepeat: 'no-repeat',
+						backgroundPosition: 'center',
+						transform: `${flip} ${wobble}`.trim(),
+						transformOrigin: 'bottom center',
+					}}
+					onClick={handleClick}
+					onDblClick={handleDoubleClick}
+					title="Click me!"
+				/>
+			</div>
+		);
+	}
+
 	const config = SPRITE_CONFIG[stateRef.current];
 	const dirRow = directionRef.current === 'left' ? DIRECTION_ROW.left : DIRECTION_ROW.right;
 	const frameX = frameRef.current * 64;
 	const frameY = dirRow * 64;
-
-	// Convert pixel position to percentage for responsive scaling
-	const leftPercent = (positionRef.current / trackWidth) * 100;
 
 	return (
 		<div className="racetrackCowContainer">
