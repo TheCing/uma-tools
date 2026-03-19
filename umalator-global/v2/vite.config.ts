@@ -114,6 +114,7 @@ export default defineConfig(({ mode }) => {
     CC_GLOBAL: 'true',
     CC_DEV: (env.CF_PAGES_BRANCH === 'dev' || env.CC_DEV === 'true' || mode === 'development') ? 'true' : 'false',
     CC_OCR_PROXY: JSON.stringify(env.OCR_PROXY_URL || ''),
+    CC_COW_SKIN: JSON.stringify(env.COW_SKIN || ''),
   },
 
   // Optimize dependencies

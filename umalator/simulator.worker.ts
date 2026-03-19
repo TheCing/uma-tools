@@ -6,6 +6,7 @@ import type { RaceParameters } from '../uma-skill-tools/RaceParameters';
 import { Map as ImmMap } from 'immutable';
 import { HorseState } from '../components/HorseDefTypes';
 import { runComparison } from './compare';
+import { runHpCalc } from './hpcalc';
 import skillmeta from '../skill_meta.json';
 
 function mergeSkillMaps(map1, map2) {
@@ -195,6 +196,18 @@ function runAdditionalSamples({skillId, nsamples, course, racedef, uma, pacer, o
 	postMessage({type: 'additional-samples', skillId, result: newResult});
 }
 
+function runHpCalcWorker({nsamples, course, racedef, uma, pacer, options}) {
+	const uma_ = new HorseState(uma)
+		.set('skills', fromJS(uma.skills))
+		.set('forcedSkillPositions', ImmMap(uma.forcedSkillPositions || {}));
+	const pacer_ = pacer ? new HorseState(pacer)
+		.set('skills', fromJS(pacer.skills || []))
+		.set('forcedSkillPositions', ImmMap(pacer.forcedSkillPositions || {})) : null;
+	const results = runHpCalc(nsamples, course, racedef, uma_, pacer_, options);
+	postMessage({type: 'hpcalc', results});
+	postMessage({type: 'hpcalc-complete'});
+}
+
 self.addEventListener('message', function (e) {
 	const {msg, data} = e.data;
 	switch (msg) {
@@ -206,6 +219,9 @@ self.addEventListener('message', function (e) {
 			break;
 		case 'additional-samples':
 			runAdditionalSamples(data);
+			break;
+		case 'hpcalc':
+			runHpCalcWorker(data);
 			break;
 	}
 });

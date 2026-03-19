@@ -1,0 +1,228 @@
+/* Stamina Calculator Results */
+
+.stacalc-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: var(--space-sm);
+}
+
+.stacalc-info-icon {
+  color: var(--color-text-muted);
+  cursor: help;
+}
+
+.v2-tooltip.stacalc-info-tooltip {
+  white-space: normal;
+  max-width: 280px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.stacalc-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.stacalc-section {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.stacalc-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-weight: 600;
+  font-size: var(--font-base);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+}
+
+/* Summary buttons (Min/Max/Mean/Median) */
+.stacalc-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+.stacalc-summary-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xs) var(--space-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.stacalc-summary-btn:hover {
+  background: var(--color-surface-overlay);
+}
+
+.stacalc-summary-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.stacalc-summary-btn.active .stacalc-summary-label {
+  color: var(--color-primary-text);
+}
+
+.stacalc-summary-btn.active .stacalc-summary-value {
+  color: var(--color-primary-text);
+}
+
+.stacalc-summary-label {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stacalc-summary-value {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stacalc-summary-value.positive {
+  color: var(--color-success, #4caf50);
+}
+
+.stacalc-summary-value.negative {
+  color: var(--color-danger, #f44336);
+}
+
+/* Histogram */
+.stacalc-histogram-container {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.stacalc-histogram-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.stacalc-bar-positive {
+  fill: var(--color-primary, #4a9eff);
+  opacity: 0.8;
+}
+
+.stacalc-bar-negative {
+  fill: var(--color-danger, #f44336);
+  opacity: 0.8;
+}
+
+.stacalc-zero-line {
+  stroke: var(--color-text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 4 2;
+}
+
+.stacalc-axis line,
+.stacalc-axis path {
+  stroke: var(--color-border);
+}
+
+.stacalc-axis text {
+  fill: var(--color-text-muted);
+  font-size: 11px;
+}
+
+.stacalc-axis-label {
+  fill: var(--color-text-muted);
+  font-size: 12px;
+}
+
+/* Stats grid */
+.stacalc-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.stacalc-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xs) 0;
+}
+
+.stacalc-stat + .stacalc-stat {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.stacalc-stat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-base);
+  color: var(--color-text-secondary);
+}
+
+.stacalc-stat-value {
+  font-size: var(--font-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.stacalc-stat-value.positive {
+  color: var(--color-success, #4caf50);
+}
+
+.stacalc-stat-value.warning {
+  color: var(--color-warning, #ff9800);
+}
+
+.stacalc-stat-value.negative {
+  color: var(--color-danger, #f44336);
+}
+
+.stacalc-stat-sub {
+  font-size: var(--font-sm);
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+/* Percentage input */
+.stacalc-perc-input {
+  width: 42px;
+  padding: 2px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-base);
+  text-align: center;
+}
+
+.stacalc-perc-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Required stamina stat layout */
+.stacalc-req-stamina .stacalc-stat-header {
+  flex-wrap: wrap;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .stacalc-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

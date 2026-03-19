@@ -273,33 +273,35 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 	}, [spawnConfetti]);
 
 	// Buy/sell coins at market price
-	const buyCoin = useCallback((coin: keyof Investments) => {
+	const buyCoin = useCallback((coin: keyof Investments, qty = 1) => {
 		const price = market.prices[coin];
-		if (mooCoins < price) return;
+		const totalCost = price * qty;
+		if (mooCoins < totalCost) return;
 
 		setMooCoins(prev => {
-			const newTotal = Math.round((prev - price) * 100) / 100;
+			const newTotal = Math.round((prev - totalCost) * 100) / 100;
 			saveMooCoins(newTotal, microCoinsRef.current);
 			return newTotal;
 		});
 		setInvestments(prev => {
-			const updated = { ...prev, [coin]: prev[coin] + 1 };
+			const updated = { ...prev, [coin]: prev[coin] + qty };
 			saveInvestments(updated);
 			return updated;
 		});
 	}, [mooCoins, market.prices]);
 
-	const sellCoin = useCallback((coin: keyof Investments) => {
-		if (investments[coin] <= 0) return;
+	const sellCoin = useCallback((coin: keyof Investments, qty = 1) => {
+		const actual = Math.min(qty, investments[coin]);
+		if (actual <= 0) return;
 		const price = market.prices[coin];
 
 		setMooCoins(prev => {
-			const newTotal = Math.round((prev + price) * 100) / 100;
+			const newTotal = Math.round((prev + price * actual) * 100) / 100;
 			saveMooCoins(newTotal, microCoinsRef.current);
 			return newTotal;
 		});
 		setInvestments(prev => {
-			const updated = { ...prev, [coin]: prev[coin] - 1 };
+			const updated = { ...prev, [coin]: prev[coin] - actual };
 			saveInvestments(updated);
 			return updated;
 		});
@@ -482,18 +484,46 @@ export function RacetrackCowMooCoins({ trackWidth }: RacetrackCowMooCoinsProps) 
 									<span className="holdingsCount">{holdings}</span>
 								</div>
 								<div className="tradeButtons">
-									<button
-										className="buyButton"
-										onClick={(e) => { e.stopPropagation(); buyCoin(coin); }}
-										disabled={!canBuy}
-										title={`Buy 1 ${config.ticker} for ${price.toFixed(2)} MooCoins`}
-									>BUY</button>
-									<button
-										className="sellButton"
-										onClick={(e) => { e.stopPropagation(); sellCoin(coin); }}
-										disabled={!canSell}
-										title={`Sell 1 ${config.ticker} for ${price.toFixed(2)} MooCoins`}
-									>SELL</button>
+									<div className="tradeColumn">
+										<button
+											className="buyButton"
+											onClick={(e) => { e.stopPropagation(); buyCoin(coin); }}
+											disabled={!canBuy}
+											title={`Buy 1 ${config.ticker} for ${price.toFixed(2)} MooCoins`}
+										>BUY</button>
+										<div className="bulkButtons">
+											<button
+												className="buyButton bulk"
+												onClick={(e) => { e.stopPropagation(); buyCoin(coin, 10); }}
+												disabled={mooCoins < price * 10}
+											>x10</button>
+											<button
+												className="buyButton bulk"
+												onClick={(e) => { e.stopPropagation(); buyCoin(coin, 100); }}
+												disabled={mooCoins < price * 100}
+											>x100</button>
+										</div>
+									</div>
+									<div className="tradeColumn">
+										<button
+											className="sellButton"
+											onClick={(e) => { e.stopPropagation(); sellCoin(coin); }}
+											disabled={!canSell}
+											title={`Sell 1 ${config.ticker} for ${price.toFixed(2)} MooCoins`}
+										>SELL</button>
+										<div className="bulkButtons">
+											<button
+												className="sellButton bulk"
+												onClick={(e) => { e.stopPropagation(); sellCoin(coin, 10); }}
+												disabled={holdings < 10}
+											>x10</button>
+											<button
+												className="sellButton bulk"
+												onClick={(e) => { e.stopPropagation(); sellCoin(coin, 100); }}
+												disabled={holdings < 100}
+											>x100</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						);

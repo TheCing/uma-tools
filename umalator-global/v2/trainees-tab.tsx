@@ -448,7 +448,7 @@ type ViewMode = 'sections' | 'drilldown';
 interface TraineesTabProps {
 	onLoadToUma1: (state: UmaState) => void;
 	onLoadToUma2: (state: UmaState) => void;
-	currentMode: 'compare' | 'skill';
+	currentMode: 'compare' | 'skill' | 'stamina';
 	currentUma1: UmaState;
 	currentUma2: UmaState;
 }

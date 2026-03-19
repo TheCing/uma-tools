@@ -6827,3 +6827,15 @@ tr:hover .v2-skill-hide-btn {
   display: flex;
   justify-content: space-between;
 }
+
+@media (max-width: 420px) {
+  .v2-stats-primary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+  }
+
+  .v2-stat-item .value {
+    font-size: var(--font-md);
+  }
+}

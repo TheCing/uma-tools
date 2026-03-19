@@ -115,7 +115,7 @@ export class GameHpPolicy {
 		const s = (maxDist - 60) / maxSpeed;
 		const lastleg = {phase: 2 as Phase, positionKeepState: PositionKeepState.None, leadCompetition: false, posKeepStrategy: state.posKeepStrategy};
 		const hpNeeded = this.hpPerSecond(lastleg, maxSpeed) * s;
-		
+
 		if (this.hp >= hpNeeded) {
 			// Only set on first call (when not already set)
 			// This matches Kotlin behavior: track initial decision, not later changes
