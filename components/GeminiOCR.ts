@@ -144,10 +144,10 @@ function normalizeEpithet(epithet: string): string {
 		const outfits = (umaData as any).outfits;
 		if (!outfits) continue;
 
-		for (const [outfitId, epithet] of Object.entries(outfits)) {
-			if (typeof epithet === 'string') {
-				const normalized = normalizeEpithet(epithet);
-				epithetToOutfitMap.set(normalized, outfitId);
+		for (const [outfitId, outfitVal] of Object.entries(outfits)) {
+			const epithet = typeof outfitVal === 'string' ? outfitVal : (outfitVal as any)?.epithet;
+			if (epithet) {
+				epithetToOutfitMap.set(normalizeEpithet(epithet), outfitId);
 			}
 		}
 	}
