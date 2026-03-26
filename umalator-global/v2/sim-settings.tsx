@@ -29,6 +29,7 @@ interface SimSettingsProps {
 	setLaneMovement: (v: boolean) => void;
 	autoSeed: boolean;
 	setAutoSeed: (v: boolean) => void;
+	mode?: string;
 }
 
 export function SimulationSettings({
@@ -50,6 +51,7 @@ export function SimulationSettings({
 	setLaneMovement,
 	autoSeed,
 	setAutoSeed,
+	mode,
 }: SimSettingsProps) {
 	const handleSamplesChange = (e: Event) => {
 		const val = parseInt((e.target as HTMLInputElement).value) || 500;
@@ -128,12 +130,13 @@ export function SimulationSettings({
 					</label>
 				</Tooltip>
 
-				<Tooltip content="Skills check wisdom for activation" position="bottom">
+				<Tooltip content={mode === "stamina" ? "Always enabled in Stamina mode" : "Skills check wisdom for activation"} position="bottom">
 					<label class="v2-switch">
 						<input
 							type="checkbox"
 							checked={skillWisdomCheck}
 							onChange={() => setSkillWisdomCheck(!skillWisdomCheck)}
+							disabled={mode === "stamina"}
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Wit Check</span>

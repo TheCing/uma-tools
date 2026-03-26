@@ -239,7 +239,8 @@ function App() {
     Math.floor(Math.random() * 0xffffffff),
   );
   const [syncRng, setSyncRng] = useState(true);
-  const [skillWisdomCheck, setSkillWisdomCheck] = useState(true);
+  const [skillWisdomCheck_, setSkillWisdomCheck] = useState(true);
+  const skillWisdomCheck = skillWisdomCheck_ || mode === "stamina";
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
@@ -1457,6 +1458,7 @@ function App() {
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
               setAutoSeed={setAutoSeed}
+              mode={mode}
             />
 
             {/* Content area wrapper for widescreen layout */}
@@ -2207,6 +2209,7 @@ function App() {
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}
                         setAutoSeed={setAutoSeed}
+                        mode={mode}
                       />
                     </div>
                     <div class="v2-mobile-settings-section">
