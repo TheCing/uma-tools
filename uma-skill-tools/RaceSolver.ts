@@ -194,10 +194,21 @@ export function getPosKeepModeName(mode: PosKeepMode): string {
 	}
 }
 
+export const enum DurationScalingType {
+	Direct = 1,
+	MultiplyDistanceDiffTop = 2,
+	MultiplyRemainHpType1 = 3,
+	IncrementOrderUp = 4,
+	MultiplyBlockedTime1 = 5,
+	MultiplyBlockedTime2 = 6,
+	MultiplyRemainHpType2 = 7
+}
+
 export interface SkillEffect {
 	type: SkillType
 	baseDuration: number
 	modifier: number
+	durationScaling?: DurationScalingType
 }
 
 export interface PendingSkill {
@@ -1370,11 +1381,49 @@ export class RaceSolver {
 	}
 
 
+	getDurationScalingMultiplier(scalingType: DurationScalingType) {
+		switch (scalingType) {
+		case DurationScalingType.MultiplyRemainHpType1: {
+			// With NoopHpPolicy (CLI tools), currentHp is unavailable; default to max multiplier (best-case).
+			// With GameHpPolicy (web UI compare mode), uses actual remaining HP at activation time.
+			const hp = this.hp.currentHp ? this.hp.currentHp() : Infinity;
+			if (hp >= 3500) return 4.0;
+			if (hp >= 3200) return 3.5;
+			if (hp >= 3000) return 3.0;
+			if (hp >= 2800) return 2.5;
+			if (hp >= 2600) return 2.2;
+			if (hp >= 2400) return 2.0;
+			if (hp >= 2000) return 1.5;
+			return 1.0;
+		}
+		case DurationScalingType.MultiplyRemainHpType2: {
+			const hp = this.hp.currentHp ? this.hp.currentHp() : Infinity;
+			if (hp >= 2100) return 3.0;
+			if (hp >= 2000) return 2.5;
+			if (hp >= 1800) return 2.0;
+			if (hp >= 1500) return 1.5;
+			return 1.0;
+		}
+		case DurationScalingType.MultiplyDistanceDiffTop:
+			// distanceDiffTop is not tracked in single-uma sim; assume mid-pack (~5 bashin = 12.5m)
+			// Formula: min(0.8 + distFromTop_m / (25 bashin * 2.5 m/bashin), 1.6)
+			return Math.min(0.8 + 12.5 / 62.5, 1.6);
+		case DurationScalingType.MultiplyBlockedTime1:
+			// blocked time not tracked; assume no blocking (1.0x)
+			return 1.0;
+		default:
+			// Unimplemented: IncrementOrderUp (4) needs overtake tracking, MultiplyBlockedTime2 (6) not in game yet
+			return 1.0;
+		}
+	}
+
 	activateSkill(s: PendingSkill) {
 		// sort so that the ExtendEvolvedDuration effect always activates after other effects, since it shouldn't extend the duration of other
 		// effects on the same skill
 		s.effects.sort((a,b) => +(a.type == 42) - +(b.type == 42)).forEach(ef => {
-			const scaledDuration = ef.baseDuration * (this.course.distance / 1000) *
+			const durationScalingMultiplier = ef.durationScaling && ef.durationScaling !== DurationScalingType.Direct
+				? this.getDurationScalingMultiplier(ef.durationScaling) : 1;
+			const scaledDuration = ef.baseDuration * (this.course.distance / 1000) * durationScalingMultiplier *
 				(s.rarity == SkillRarity.Evolution ? this.modifiers.specialSkillDurationScaling : 1);  // TODO should probably be awakened skills
 				                                                                                       // and not just pinks
 			switch (ef.type) {

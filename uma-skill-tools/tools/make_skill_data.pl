@@ -37,13 +37,13 @@ sub patch_modifier {
 my $select = $db->prepare(<<SQL
 SELECT id, rarity,
        precondition_1, condition_1,
-       float_ability_time_1,
+       float_ability_time_1, ability_time_usage_1,
        ability_type_1_1, float_ability_value_1_1, target_type_1_1,
        ability_type_1_2, float_ability_value_1_2, target_type_1_2,
        ability_type_1_3, float_ability_value_1_3, target_type_1_3,
 
        precondition_2, condition_2,
-       float_ability_time_2,
+       float_ability_time_2, ability_time_usage_2,
        ability_type_2_1, float_ability_value_2_1, target_type_2_1,
        ability_type_2_2, float_ability_value_2_2, target_type_2_2,
        ability_type_2_3, float_ability_value_2_3, target_type_2_3
@@ -57,13 +57,13 @@ $select->execute;
 my (
 	$id, $rarity,
 	$precondition_1, $condition_1,
-	$float_ability_time_1,
+	$float_ability_time_1, $ability_time_usage_1,
 	$ability_type_1_1, $float_ability_value_1_1, $target_type_1_1,
 	$ability_type_1_2, $float_ability_value_1_2, $target_type_1_2,
 	$ability_type_1_3, $float_ability_value_1_3, $target_type_1_3,
 
 	$precondition_2, $condition_2,
-	$float_ability_time_2,
+	$float_ability_time_2, $ability_time_usage_2,
 	$ability_type_2_1, $float_ability_value_2_1, $target_type_2_1,
 	$ability_type_2_2, $float_ability_value_2_2, $target_type_2_2,
 	$ability_type_2_3, $float_ability_value_2_3, $target_type_2_3
@@ -72,13 +72,13 @@ my (
 $select->bind_columns(\(
 	$id, $rarity,
 	$precondition_1, $condition_1,
-	$float_ability_time_1,
+	$float_ability_time_1, $ability_time_usage_1,
 	$ability_type_1_1, $float_ability_value_1_1, $target_type_1_1,
 	$ability_type_1_2, $float_ability_value_1_2, $target_type_1_2,
 	$ability_type_1_3, $float_ability_value_1_3, $target_type_1_3,
 
 	$precondition_2, $condition_2,
-	$float_ability_time_2,
+	$float_ability_time_2, $ability_time_usage_2,
 	$ability_type_2_1, $float_ability_value_2_1, $target_type_2_1,
 	$ability_type_2_2, $float_ability_value_2_2, $target_type_2_2,
 	$ability_type_2_3, $float_ability_value_2_3, $target_type_2_3
@@ -93,12 +93,16 @@ while ($select->fetch) {
 	if ($ability_type_1_3 != 0) {
 		push @effects_1, {type => $ability_type_1_3, modifier => patch_modifier($id, $float_ability_value_1_3), target => $target_type_1_3};
 	}
-	my @triggers = ({
+	my %trigger_1 = (
 		precondition => $precondition_1,
 		condition => $condition_1,
 		baseDuration => $float_ability_time_1,
 		effects => \@effects_1
-	});
+	);
+	if ($ability_time_usage_1 != 1) {
+		$trigger_1{durationScaling} = $ability_time_usage_1 + 0;
+	}
+	my @triggers = (\%trigger_1);
 	if ($condition_2 ne '' && $condition_2 ne '0') {
 		my @effects_2 = ({type => $ability_type_2_1, modifier => patch_modifier($id, $float_ability_value_2_1), target => $target_type_2_1});
 		if ($ability_type_2_2 != 0) {
@@ -107,12 +111,16 @@ while ($select->fetch) {
 		if ($ability_type_2_3 != 0) {
 			push @effects_2, {type => $ability_type_2_3, modifier => patch_modifier($id, $float_ability_value_2_3), target => $target_type_2_3};
 		}
-		push @triggers, {
+		my %trigger_2 = (
 			precondition => $precondition_2,
 			condition => $condition_2,
 			baseDuration => $float_ability_time_2,
 			effects => \@effects_2
-		};
+		);
+		if ($ability_time_usage_2 != 1) {
+			$trigger_2{durationScaling} = $ability_time_usage_2 + 0;
+		}
+		push @triggers, \%trigger_2;
 	}
 	$skills->{$id} = {rarity => $rarity, alternatives => \@triggers};
 }
