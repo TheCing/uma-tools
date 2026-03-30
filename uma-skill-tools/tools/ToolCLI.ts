@@ -68,12 +68,13 @@ export interface SkillData {
 
 function buildSkillEffects(skill) {
 	// im on a really old version of node and cant use flatMap
+	const ds = skill.durationScaling || 1;
 	return skill.effects.reduce((acc,ef) => {
 		if (ef.type == 21) {  // debuffs
-			acc.push({type: SkillType.CurrentSpeed, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000});
-			acc.push({type: SkillType.TargetSpeed, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000});
+			acc.push({type: SkillType.CurrentSpeed, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000, durationScaling: ds});
+			acc.push({type: SkillType.TargetSpeed, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000, durationScaling: ds});
 		} else if (SkillType.hasOwnProperty(ef.type)) {
-			acc.push({type: ef.type, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000});
+			acc.push({type: ef.type, baseDuration: skill.baseDuration / 10000, modifier: ef.modifier / 10000, durationScaling: ds});
 		}
 		return acc;
 	}, []);

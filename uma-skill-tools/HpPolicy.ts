@@ -12,6 +12,7 @@ export interface HpPolicy {
 	hpRatioRemaining(): number  // separate methods as the former can be much cheaper to check
 	recover(modifier: number): void
 	getLastSpurtPair(state: RaceState, maxSpeed: number, baseTargetSpeed2: number): [number, number]
+	currentHp?(): number
 }
 
 export const NoopHpPolicy: HpPolicy = {
@@ -154,6 +155,10 @@ export class GameHpPolicy {
 		return candidates[candidates.length-1];
 	}
 	
+	currentHp(): number {
+		return this.hp;
+	}
+
 	/**
 	 * Check if max spurt was achieved
 	 */

@@ -371,7 +371,7 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 								<div key={skillId} class="v2-skill-activation">
 									<span class="skill-id">{(skillnames as Record<string, string[]>)[skillId]?.[0] ?? skillId}</span>
 									<span class="skill-pos">
-										{activations[0]?.[0]?.toFixed(0)}m – {activations[0]?.[1]?.toFixed(0)}m
+										{activations[0]?.[0]?.toFixed(0)}m – {activations[0]?.[1]?.toFixed(0)}m{activations[0]?.[1] !== -1 && activations[0]?.[2] != null && ` (${activations[0][2].toFixed(1)}s)`}
 									</span>
 								</div>
 							))}

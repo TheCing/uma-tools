@@ -452,15 +452,24 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 									}</pre>
 
 									{/* Duration */}
-									{alt.baseDuration > 0 && (
+									{alt.baseDuration > 0 && (() => {
+										const baseSec = alt.baseDuration / 10000;
+										const effSec = courseDistance ? baseSec * (courseDistance / 1000) : 0;
+										const ds = alt.durationScaling;
+										return (
 										<div class="v2-skill-detail-row">
 											<span class="v2-skill-detail-label">Duration:</span>
 											<span class="v2-skill-detail-value">
-												{(alt.baseDuration / 10000).toFixed(1)} s
-												{courseDistance && ` (effective ${((alt.baseDuration / 10000) * (courseDistance / 1000)).toFixed(1)} s @ ${courseDistance}m)`}
+												{baseSec.toFixed(1)} s
+												{courseDistance && !ds && ` (effective ${effSec.toFixed(1)} s @ ${courseDistance}m)`}
+												{courseDistance && ds === 3 && ` (${effSec.toFixed(1)}–${(effSec * 4).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
+												{courseDistance && ds === 7 && ` (${effSec.toFixed(1)}–${(effSec * 3).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
+												{courseDistance && ds === 2 && ` (${(effSec * 0.8).toFixed(1)}–${(effSec * 1.6).toFixed(1)} s @ ${courseDistance}m, scales with lead gap)`}
+												{courseDistance && ds && ![2,3,7].includes(ds) && ` (${effSec.toFixed(1)} s+ @ ${courseDistance}m, variable duration)`}
 											</span>
 										</div>
-									)}
+										);
+									})()}
 
 									{/* Effects */}
 									<div class="v2-skill-effects-block">

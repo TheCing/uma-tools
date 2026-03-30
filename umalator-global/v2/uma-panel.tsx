@@ -132,12 +132,15 @@ interface UmaPortraitProps {
 	hideNotInGame?: boolean;
 }
 
+// Outfit values may be a string (epithet) or an object with an epithet property
+function outfitName(o: any): string { return typeof o === 'string' ? o : o.epithet; }
+
 // Build search index
 const umaAltIds = Object.keys(umas).flatMap(id => Object.keys((umas as any)[id].outfits));
 const umaNamesForSearch: Record<string, string> = {};
 umaAltIds.forEach(id => {
 	const u = (umas as any)[id.slice(0, 4)];
-	umaNamesForSearch[id] = (u.outfits[id] + ' ' + u.name[1]).toUpperCase().replace(/\./g, '');
+	umaNamesForSearch[id] = (outfitName(u.outfits[id]) + ' ' + u.name[1]).toUpperCase().replace(/\./g, '');
 });
 
 function searchNames(query: string): string[] {
@@ -222,7 +225,7 @@ export function UmaPortrait({ outfitId, onSelect, hideNotInGame = false }: UmaPo
 			<div class="v2-uma-info">
 				{uma ? (
 					<>
-						<span class="v2-uma-epithet">{uma.outfits[outfitId]}</span>
+						<span class="v2-uma-epithet">{outfitName(uma.outfits[outfitId])}</span>
 						<span class="v2-uma-name">{uma.name[1]}</span>
 					</>
 				) : (
@@ -265,7 +268,7 @@ export function UmaPortrait({ outfitId, onSelect, hideNotInGame = false }: UmaPo
 										onClick={() => handleSelect(oid)}
 									>
 										<img src={(icons as any)[oid]} alt="" loading="lazy" />
-										<span class="v2-uma-search-epithet">{u.outfits[oid]}</span>
+										<span class="v2-uma-search-epithet">{outfitName(u.outfits[oid])}</span>
 										<span class="v2-uma-search-name">{u.name[1]}</span>
 									</li>
 								);

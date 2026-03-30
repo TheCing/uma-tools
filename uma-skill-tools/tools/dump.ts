@@ -1,7 +1,7 @@
 import { Option } from 'commander';
 import { HorseParameters } from '../HorseTypes';
 import { CourseData } from '../CourseData';
-import { RaceSolver } from '../RaceSolver';
+import { RaceSolver, PositionKeepState } from '../RaceSolver';
 import { Rule30CARng } from '../Random';
 import { NoopHpPolicy } from '../HpPolicy';
 import { SkillData, ToolCLI, PacerProvider } from './ToolCLI';
@@ -45,8 +45,8 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 		pacerSeedHi = 0;
 		pacerSeedLo = rng.int32();
 	}
-	const solverRng = new Rule30CARng(solverSeedLo, solverSeedHi);
-	const pacerRng = new Rule30CARng(pacerSeedLo, pacerSeedHi);
+	const solverRng = new Rule30CARng(solverSeedLo);
+	const pacerRng = new Rule30CARng(pacerSeedLo);
 
 	const skillTypes = {};
 	const skills = [];
@@ -70,7 +70,6 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 	const s = new RaceSolver({
 		horse, course, skills,
 		hp: NoopHpPolicy,
-		pacer: getPacer(pacerRng),
 		rng: solverRng,
 		onSkillActivate: (s,skillId) => {
 			plotData.skills[skillId] = [skillTypes[skillId],s.accumulatetime.t,0,s.pos,0];
@@ -94,7 +93,7 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 		plotData.v.push(s.currentSpeed + s.modifiers.currentSpeed.acc + s.modifiers.currentSpeed.err);
 		plotData.targetv.push(s.targetSpeed);
 		plotData.a.push(s.accel);
-		if (s.isPaceDown != paceDownToggle) {
+		if ((s.positionKeepState === PositionKeepState.PaceDown) != paceDownToggle) {
 			const k = 'pd' + paceDownN;
 			if (plotData.skills[k] && plotData.skills[k][2] == 0) {
 				plotData.skills[k][2] = s.accumulatetime.t;
@@ -103,7 +102,7 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 			} else {
 				plotData.skills[k] = [-1,s.accumulatetime.t,0,s.pos,0];
 			}
-			paceDownToggle = s.isPaceDown;
+			paceDownToggle = s.positionKeepState === PositionKeepState.PaceDown;
 		}
 	}
 

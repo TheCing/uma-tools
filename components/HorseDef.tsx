@@ -25,14 +25,17 @@ import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillmeta from '../skill_meta.json';
 
 // Helper to get outfit name in the appropriate language
+// Outfit values may be a string (epithet) or an object with an epithet property
+function outfitName(o: any): string { return typeof o === 'string' ? o : o?.epithet || ''; }
+
 function getOutfitName(outfitId: string, lang: string): string {
 	const umaId = outfitId.slice(0, 4);
 	// Use Japanese for 'ja' language, English for others
 	if (lang === 'ja') {
-		return umas[umaId]?.outfits?.[outfitId] || '';
+		return outfitName(umas[umaId]?.outfits?.[outfitId]) || '';
 	}
 	// Try global (English) first, fall back to JP
-	return globalUmas[umaId]?.outfits?.[outfitId] || umas[umaId]?.outfits?.[outfitId] || '';
+	return outfitName(globalUmas[umaId]?.outfits?.[outfitId]) || outfitName(umas[umaId]?.outfits?.[outfitId]) || '';
 }
 
 // LocalStorage key for horse slots
@@ -191,7 +194,7 @@ const umaAltIds = Object.keys(umas).flatMap(id => Object.keys(umas[id].outfits))
 const umaNamesForSearch = {};
 umaAltIds.forEach(id => {
 	const u = umas[id.slice(0,4)];
-	umaNamesForSearch[id] = (u.outfits[id] + ' ' + u.name[1]).toUpperCase().replace(/\./g, '');
+	umaNamesForSearch[id] = (outfitName(u.outfits[id]) + ' ' + u.name[1]).toUpperCase().replace(/\./g, '');
 });
 
 function searchNames(query) {

@@ -8,7 +8,7 @@
  */
 
 import { h, Fragment } from 'preact';
-import { useState, useMemo, useId, useRef } from 'preact/hooks';
+import { useState, useMemo, useEffect, useId, useRef } from 'preact/hooks';
 import { EyeOff } from 'lucide-react';
 import {
 	type ColumnDef, type SortingState,
@@ -319,8 +319,23 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 		props.onDblClickRow(id);
 	}
 
+	// IntersectionObserver virtualization — only render cells for visible rows
+	const root = useRef<HTMLDivElement>(null);
+	const inView = useRef(new Map<string, boolean>());
+	const [, forceRerender] = useState(false);
+	const obs = useMemo(() => {
+		return new IntersectionObserver((entries) => {
+			entries.forEach(entry => inView.current.set((entry.target as HTMLElement).dataset.skillid!, entry.isIntersecting));
+			forceRerender({} as any);
+		}, {
+			root: root.current,
+			rootMargin: "68px 0px 68px 0px"
+		});
+	}, [props.data]);
+	useEffect(() => () => obs.disconnect(), [props.data]);
+
 	return (
-		<div class={`v2-skill-chart-wrapper${props.dirty ? ' dirty' : ''}`}>
+		<div class={`v2-skill-chart-wrapper${props.dirty ? ' dirty' : ''}`} ref={root}>
 			<table class="v2-skill-chart-table">
 				<thead>
 					{table.getHeaderGroups().map(headerGroup => (
@@ -352,15 +367,19 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 					{table.getRowModel().rows.map(row => {
 						const id = row.getValue('id') as string;
 
-						return (
-							<tr key={row.id} data-skillid={id} class={props.selectedSkillId === id ? 'selected' : ''}>
-								{row.getAllCells().map(cell => (
-									<td key={cell.id}>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</td>
-								))}
-							</tr>
-						);
+						if (inView.current.get(id)) {
+							return (
+								<tr key={row.id} data-skillid={id} class={props.selectedSkillId === id ? 'selected' : ''}>
+									{row.getAllCells().map(cell => (
+										<td key={cell.id}>
+											{flexRender(cell.column.columnDef.cell, cell.getContext())}
+										</td>
+									))}
+								</tr>
+							);
+						} else {
+							return <tr key={row.id} data-skillid={id} ref={el => el && obs.observe(el)}>{(skillnames as any)[id]?.[0] ?? id}</tr>;
+						}
 					})}
 				</tbody>
 			</table>

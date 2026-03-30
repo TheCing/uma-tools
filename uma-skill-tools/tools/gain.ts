@@ -34,15 +34,15 @@ cli.options(program => {
 		.option('--dump', 'instead of printing a summary, dump data. intended to be piped into histogram.py.')
 		.option('--csv [first_col]', 'print data as a CSV row (intended for batch scripting)');
 });
-cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cliSkills: SkillData[], getPacer: PacerProvider, cliOptions: any) => {
+cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cliSkills: SkillData[], _getPacer: PacerProvider, cliOptions: any) => {
 	const nsamples = cliOptions.nsamples;
 	const triggers = [];
 	const seed = ('seed' in cliOptions ? cliOptions.seed : Math.floor(Math.random() * (-1 >>> 0))) >>> 0;
 	const rng = new Rule30CARng(seed);
 	const solverRng1 = new Rule30CARng(rng.int32());
 	const solverRng2 = new Rule30CARng(rng.int32());
-	const pacerRng1 = new Rule30CARng(rng.int32());
-	const pacerRng2 = new Rule30CARng(rng.int32());
+	rng.int32(); // skip pacer seeds for deterministic RNG sequence
+	rng.int32();
 
 	// TODO bugged since this will be affected by strategy aptitude—will be fixed once we ditch this mess and use
 	// RaceSolverBuilder for gain.ts
@@ -117,7 +117,7 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 		cliSkills
 			.filter((sd,sdi) => wisdomCheck1(sd, sdi + defSkills.length))
 			.forEach((sd,sdi) => addSkill(skills1, sd, triggers[sdi + defSkills.length], i));
-		const s = new RaceSolver({horse: testHorse, course, hp: NoopHpPolicy, skills: skills1, pacer: getPacer(pacerRng1), rng: solverRng1});
+		const s = new RaceSolver({horse: testHorse, course, hp: NoopHpPolicy, skills: skills1, rng: solverRng1});
 
 		while (s.pos < course.distance) {
 			s.step(dt);
@@ -132,7 +132,7 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 		debuffs
 			.filter((sd,sdi) => wisdomCheck2(sd, sdi + defSkills.length + cliSkills.length))
 			.forEach((sd,sdi) => addSkill(skills2, sd, triggers[sdi + defSkills.length + cliSkills.length], i));
-		const s2 = new RaceSolver({horse, course, hp: NoopHpPolicy, skills: skills2, pacer: getPacer(pacerRng2), rng: solverRng2});
+		const s2 = new RaceSolver({horse, course, hp: NoopHpPolicy, skills: skills2, rng: solverRng2});
 		while (s2.accumulatetime.t < s.accumulatetime.t) {
 			s2.step(dt);
 		}

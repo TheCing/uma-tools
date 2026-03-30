@@ -1040,7 +1040,7 @@ function ResultsTable(props) {
 					{Array.from(chartData.sk[idx].entries()).map(([id,ars]) => ars.flatMap(pos =>
 						<tr>
 							<th>{skillnames[id][0]}</th>
-							<td>{pos[1] == -1 ? `${pos[0].toFixed(2)} m` : `${pos[0].toFixed(2)} m – ${pos[1].toFixed(2)} m`}</td>
+							<td>{pos[1] == -1 ? `${pos[0].toFixed(2)} m` : `${pos[0].toFixed(2)} m – ${pos[1].toFixed(2)} m`}{pos[1] != -1 && pos[2] != null ? ` (${pos[2].toFixed(1)}s)` : ''}</td>
 						</tr>))}
 				</tbody>}
 		</table>

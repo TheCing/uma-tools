@@ -6443,6 +6443,8 @@ body {
 .v2-skill-chart-table {
   width: 100%;
   border-collapse: collapse;
+  content-visibility: auto;
+  table-layout: fixed;
   font-size: var(--font-sm);
 }
 

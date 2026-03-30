@@ -142,7 +142,7 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		return function (s, id, persp) {
 			if (persp == Perspective.Self && id != 'asitame' && id != 'staminasyoubu') {
 				if (!skillSet.has(id)) skillSet.set(id, []);
-				skillSet.get(id).push([s.pos, -1]);
+				skillSet.get(id).push([s.pos, -1, s.accumulatetime.t]);
 			}
 		};
 	}
@@ -158,7 +158,10 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 				const r = ar.find(x => x[1] == -1);
 				// onSkillDeactivate gets called twice for skills that have both speed and accel components, so the end
 				// position could already have been filled out and r will be undefined
-				if (r != null) r[1] = Math.min(s.pos, course.distance);
+				if (r != null) {
+					r[1] = Math.min(s.pos, course.distance);
+					r[2] = s.accumulatetime.t - r[2];  // store duration in seconds
+				}
 			}
 		};
 	}

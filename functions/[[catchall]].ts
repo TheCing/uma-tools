@@ -16,6 +16,13 @@ interface Response {
 // CM preset ID → Red Shift viability
 // TODO: Fill in actual answers
 const RESPONSES: Record<number, Response> = {
+  1:  { answer: 'Yes', detail: 'Taurus Cup — Tokyo 2400m Turf' },
+  2:  { answer: 'Glue', detail: 'Gemini Cup — Kyoto 3200m Turf' },
+  3:  { answer: 'Yes, but delayed', detail: 'Cancer Cup — Tokyo 1600m Turf' },
+  4:  { answer: 'Yes', detail: 'Leo Cup — Hanshin 2200m Turf' },
+  5:  { answer: 'Yes, but delayed', detail: 'Virgo Cup — Hanshin 1600m Turf' },
+  6:  { answer: 'Glue', detail: 'Libra Cup — Kyoto 3000m Turf' },
+  7:  { answer: 'Yes', detail: 'Scorpio Cup — Tokyo 2000m Turf' },
   8:  { answer: 'Yes', detail: 'Sagittarius Cup — Nakayama 2500m Turf' },
   9:  { answer: 'Yes', detail: 'Capricorn Cup — Chukyo 1200m Turf' },
   10: { answer: 'Yes, but delayed', detail: 'Aquarius Cup — Tokyo 1600m Dirt' },
