@@ -4,18 +4,161 @@
  * Handles does.redshift.work/[id] requests.
  * Shows whether the skill Red Shift is viable for a given CM preset.
  * All other hostnames pass through to the static site.
+ *
+ * April Fools 2026: Maruzensky takeover
  */
 
 const REDIRECT_HOST = 'does.redshift.work';
+const ASSETS_HOST = 'https://umalator.app';
 
-interface Response {
+// April Fools: check if it's April 1st in any timezone that's currently April 1st
+// (generous window: UTC Mar 31 12:00 through UTC Apr 2 12:00 to cover all timezones)
+function isAprilFools(): boolean {
+  const now = new Date();
+  const month = now.getUTCMonth(); // 0-indexed, so March=2, April=3
+  const day = now.getUTCDate();
+  const hour = now.getUTCHours();
+  return (month === 2 && day === 31 && hour >= 12) ||
+         (month === 3 && day === 1) ||
+         (month === 3 && day === 2 && hour < 12);
+}
+
+function buildAprilFools(): string {
+  const base = ASSETS_HOST + '/icons/april-fools';
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Does Maruzensky?</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      background: #1a0a2e;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .center-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+    }
+    .center-wrap img {
+      max-width: min(80vw, 500px);
+      max-height: 60vh;
+      border-radius: 12px;
+      box-shadow: 0 0 60px rgba(255, 0, 128, 0.6), 0 0 120px rgba(128, 0, 255, 0.4);
+    }
+    .title {
+      font-size: clamp(2rem, 8vw, 5rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #ff0080, #ff8c00, #ff0080);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 2s ease infinite;
+      margin-top: 1rem;
+      text-shadow: none;
+    }
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .bouncer {
+      position: absolute;
+      width: 150px;
+      z-index: 5;
+    }
+    .bouncer img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle-fade 1.5s ease-out forwards;
+    }
+    @keyframes sparkle-fade {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="center-wrap">
+    <img src="${base}/maruzensky.gif" alt="Maruzensky" />
+    <p class="title">ABSOLUTE SUPERCAR</p>
+  </div>
+
+  <div class="bouncer" id="b1"><img src="${base}/maru_fan.gif" alt="" /></div>
+  <div class="bouncer" id="b2"><img src="${base}/maru_fan_dance.gif" alt="" /></div>
+
+  <script>
+    // DVD bouncing logic
+    function makeBouncer(el, speedX, speedY) {
+      let x = Math.random() * (window.innerWidth - 150);
+      let y = Math.random() * (window.innerHeight - 150);
+      let vx = speedX;
+      let vy = speedY;
+      const w = 150;
+      const h = 150;
+
+      function step() {
+        x += vx;
+        y += vy;
+
+        if (x <= 0 || x + w >= window.innerWidth) {
+          vx = -vx;
+          x = Math.max(0, Math.min(x, window.innerWidth - w));
+        }
+        if (y <= 0 || y + h >= window.innerHeight) {
+          vy = -vy;
+          y = Math.max(0, Math.min(y, window.innerHeight - h));
+        }
+
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        requestAnimationFrame(step);
+      }
+      step();
+    }
+
+    makeBouncer(document.getElementById('b1'), 2.5, 1.8);
+    makeBouncer(document.getElementById('b2'), -2.0, 2.3);
+
+    // Random sparkles
+    setInterval(() => {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = Math.random() * window.innerWidth + 'px';
+      s.style.top = Math.random() * window.innerHeight + 'px';
+      s.style.width = s.style.height = (3 + Math.random() * 6) + 'px';
+      s.style.background = ['#ff0080','#ff8c00','#8000ff','#00ffff','#fff'][Math.floor(Math.random()*5)];
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1500);
+    }, 100);
+  </script>
+</body>
+</html>`;
+}
+
+interface CmResponse {
   answer: string;
   detail: string;
 }
 
 // CM preset ID → Red Shift viability
-// TODO: Fill in actual answers
-const RESPONSES: Record<number, Response> = {
+const RESPONSES: Record<number, CmResponse> = {
   1:  { answer: 'Yes', detail: 'Taurus Cup — Tokyo 2400m Turf' },
   2:  { answer: 'Glue', detail: 'Gemini Cup — Kyoto 3200m Turf' },
   3:  { answer: 'Yes, but delayed', detail: 'Cancer Cup — Tokyo 1600m Turf' },
@@ -111,6 +254,16 @@ export const onRequest: PagesFunction = async (context) => {
 
   if (url.hostname !== REDIRECT_HOST) {
     return context.next();
+  }
+
+  // April Fools takeover — every route gets Maruzensky'd
+  if (isAprilFools()) {
+    return new Response(buildAprilFools(), {
+      headers: {
+        'Content-Type': 'text/html;charset=UTF-8',
+        'Cache-Control': 'public, max-age=300',
+      },
+    });
   }
 
   const path = url.pathname.replace(/^\/+|\/+$/g, '');
