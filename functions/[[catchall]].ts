@@ -102,6 +102,7 @@ function buildAprilFools(): string {
 
   <div class="bouncer" id="b1"><img src="${base}/maru_fan.gif" alt="" /></div>
   <div class="bouncer" id="b2"><img src="${base}/maru_fan_dance.gif" alt="" /></div>
+  <div class="bouncer" id="b3"><img src="${base}/uma-musume-maruzensky.gif" alt="" /></div>
 
   <script>
     // DVD bouncing logic
@@ -135,6 +136,7 @@ function buildAprilFools(): string {
 
     makeBouncer(document.getElementById('b1'), 2.5, 1.8);
     makeBouncer(document.getElementById('b2'), -2.0, 2.3);
+    makeBouncer(document.getElementById('b3'), 1.7, -2.6);
 
     // Random sparkles
     setInterval(() => {
