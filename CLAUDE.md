@@ -38,6 +38,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── hp-calculator/               # HP calculator tool
 ├── events/                      # Events page
 ├── uma-skill-tools/             # Core simulation library
+├── tools/                       # Utility scripts
+│   └── pull-master-mdb.sh      # Pull latest Global master.mdb from MEGA
+├── docs/                        # Documentation and reference data
+│   └── master.mdb              # Global master.mdb (source of truth for in-game data)
 ├── uma-tools-worker/            # Cloudflare Worker for webhooks
 ├── components/                  # Shared UI components
 │   ├── HorseDef.tsx
@@ -304,12 +308,14 @@ The `CC_GLOBAL` flag controls UI strings (e.g., "Firm/Good/Soft/Heavy" vs "良/�
 ### Data Files
 
 **Game Data:**
+- `docs/master.mdb`: Global master.mdb — source of truth for what's in-game on Global (pulled from MEGA)
 - `uma-skill-tools/data/skill_data.json`: JP game skill definitions
 - `uma-skill-tools/data/skillnames.json`: JP skill name translations
 - `uma-skill-tools/data/course_data.json`: JP race course definitions
 - `umalator-global/skill_data.json`: Global/English skill definitions
 - `umalator-global/skillnames.json`: Global/English skill names
 - `umalator-global/course_data.json`: Global/English course data
+- `umalator-global/not-in-game.json`: Auto-generated list of fast-forwarded skills/outfits (built from master.mdb diff)
 
 **Metadata:**
 - `skill_meta.json`: Metadata about skills (root directory)
@@ -341,6 +347,93 @@ perl make_global_course_data.pl /path/to/master.mdb courseeventparams > course_d
 ```
 
 Requires Perl with `DBI` and `DBD::SQLite` modules.
+
+### Updating Global master.mdb
+
+The Global `master.mdb` (SQLite database extracted from the game client) is the source of truth for what skills, characters, and courses are currently in the Global version. It is stored at `docs/master.mdb` and automatically synced to MEGA (`/uma/master.mdb`) from another machine.
+
+**Pull the latest DB:**
+```bash
+./tools/pull-master-mdb.sh          # Download latest from MEGA → docs/master.mdb
+./tools/pull-master-mdb.sh --check  # Check if a newer version is available
+```
+
+**Prerequisites:**
+- `brew install megatools`
+- `~/.megarc` with MEGA credentials:
+  ```
+  [Login]
+  Username = your@email.com
+  Password = yourpassword
+  ```
+
+After pulling a new DB, rebuild to update the not-in-game filter:
+```bash
+cd umalator-global && node build.mjs
+```
+
+### Not-In-Game Filter
+
+The build generates `umalator-global/not-in-game.json` listing skills and outfits that exist in our data files but aren't in the Global game yet (fast-forwarded from JP). The UI uses this to show a "Not in game" badge and allow filtering.
+
+**How it works** (in `umalator-global/build.mjs` → `generateNotInGame()`):
+1. **Primary**: Diffs `skill_data.json` and `umas.json` against `docs/master.mdb` via `sqlite3` CLI
+2. **Fallback**: If `master.mdb` is unavailable (e.g., on Cloudflare Pages CI), diffs against `kachi-dev/master` git remote
+
+**UI usage**: Skills filter in `v2/skills.tsx`, uma panel in `v2/uma-panel.tsx`, skill charts in `v2/skill-chart-pane.tsx`
+
+### Fast-Forwarding Characters from JP
+
+To add a character/outfit that exists in JP but not yet on Global:
+
+1. **Find the JP master.mdb** — typically at `docs/master(1).mdb`
+
+2. **Extract outfit data** from the JP DB:
+   ```sql
+   -- Aptitudes (short,mile,mid,long,nige,senkou,sashi,oikomi,turf,dirt)
+   SELECT proper_distance_short, proper_distance_mile, proper_distance_middle,
+          proper_distance_long, proper_running_style_nige, proper_running_style_senkou,
+          proper_running_style_sasi, proper_running_style_oikomi,
+          proper_ground_turf, proper_ground_dirt
+   FROM card_rarity_data WHERE card_id = <outfit_id> AND rarity = 5;
+
+   -- Growth rates
+   SELECT default_rarity FROM card_data WHERE id = <outfit_id>;
+
+   -- Awakenings (skill IDs unlocked at each rank)
+   SELECT skill_id FROM available_skill_set
+   WHERE card_id = <outfit_id> ORDER BY need_rank, id;
+   ```
+
+3. **Add to `umalator-global/umas.json`**:
+   ```json
+   "<chara_id>": {
+     "outfits": {
+       "<outfit_id>": {
+         "aptitudes": [short,mile,mid,long,nige,senkou,sashi,oikomi,turf,dirt],
+         "awakenings": ["skill1", "skill2", ...],
+         "epithet": "[Epithet Name]",
+         "rarity": 3,
+         "strategy": 1
+       }
+     }
+   }
+   ```
+   - **Aptitude values**: 1=G, 2=F, 3=E, 4=D, 5=C, 6=B, 7=A, 8=S
+   - **Strategy**: 1=Nige, 2=Senkou, 3=Sashi, 4=Oikomi (based on highest aptitude)
+   - Keep keys sorted numerically
+
+4. **Add skills to `umalator-global/skill_data.json`** — extract from JP `skill_data` table
+
+5. **Add skill names to `umalator-global/skillnames.json`**:
+   ```json
+   "<skill_id>": ["English Skill Name"]
+   ```
+   **Important**: Values must be arrays, not strings. The code does `names?.[0]` — a bare string would return just the first character.
+
+6. **Add character icon** to `icons/chara/trained_chr_icon_<uid>_<outfitId>_02.png`
+
+7. **Rebuild**: `cd umalator-global && node build.mjs` — the new skills/outfits will automatically appear in `not-in-game.json`
 
 ## Adding Race Event Presets
 
