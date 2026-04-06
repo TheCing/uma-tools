@@ -29,6 +29,8 @@ interface SimSettingsProps {
 	setLaneMovement: (v: boolean) => void;
 	autoSeed: boolean;
 	setAutoSeed: (v: boolean) => void;
+	hideNotInGame: boolean;
+	setHideNotInGame: (v: boolean) => void;
 	mode?: string;
 }
 
@@ -51,6 +53,8 @@ export function SimulationSettings({
 	setLaneMovement,
 	autoSeed,
 	setAutoSeed,
+	hideNotInGame,
+	setHideNotInGame,
 	mode,
 }: SimSettingsProps) {
 	const handleSamplesChange = (e: Event) => {
@@ -188,6 +192,18 @@ export function SimulationSettings({
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Lane Movement</span>
+					</label>
+				</Tooltip>
+
+				<Tooltip content="Only show skills and outfits currently in the Global game" position="bottom">
+					<label class="v2-switch">
+						<input
+							type="checkbox"
+							checked={hideNotInGame}
+							onChange={() => setHideNotInGame(!hideNotInGame)}
+						/>
+						<span class="v2-switch-slider" />
+						<span class="v2-switch-label">In-Game Only</span>
 					</label>
 				</Tooltip>
 			</div>

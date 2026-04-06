@@ -1458,6 +1458,8 @@ function App() {
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
               setAutoSeed={setAutoSeed}
+              hideNotInGame={hideNotInGame}
+              setHideNotInGame={setHideNotInGame}
               mode={mode}
             />
 
@@ -1609,13 +1611,6 @@ function App() {
                           />
                           <span class="v2-switch-slider" />
                           <span class="v2-switch-label">Fast ⚡</span>
-                        </label>
-                        <label class="v2-switch">
-                          <input type="checkbox" checked={hideNotInGame}
-                            onChange={(e) => setHideNotInGame((e.target as HTMLInputElement).checked)}
-                          />
-                          <span class="v2-switch-slider" />
-                          <span class="v2-switch-label">In-Game Only</span>
                         </label>
                       </div>
                       <div class="v2-skill-chart-actions">
