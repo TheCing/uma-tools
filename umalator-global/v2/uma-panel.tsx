@@ -542,16 +542,17 @@ interface V2UmaPanelProps {
 	title?: string;
 	courseDistance?: number;
 	hideNotInGame?: boolean;
+	wideSkills?: boolean;
+	setWideSkills?: (v: boolean) => void;
 }
 
-export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title = 'Umamusume', courseDistance, hideNotInGame = false }: V2UmaPanelProps) {
+export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title = 'Umamusume', courseDistance, hideNotInGame = false, wideSkills = false, setWideSkills }: V2UmaPanelProps) {
 	const [savedSlots, setSavedSlots] = useState<string[]>([]);
 	const [isOCRModalOpen, setIsOCRModalOpen] = useState(false);
 	const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 	const [saveModalName, setSaveModalName] = useState('');
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [deleteSlotName, setDeleteSlotName] = useState('');
-	const [wideSkills, setWideSkills] = useState(false);
 
 	// Refresh saved slots list
 	const refreshSlots = useCallback(() => {
@@ -822,7 +823,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 				<span
 					class="v2-collapsible-layout-toggle"
 					title={wideSkills ? 'Compact layout (3 columns)' : 'Wide layout (2 columns)'}
-					onClick={(e: MouseEvent) => { e.stopPropagation(); setWideSkills(!wideSkills); }}
+					onClick={(e: MouseEvent) => { e.stopPropagation(); setWideSkills?.(!wideSkills); }}
 				>
 					{wideSkills ? <Columns2 size={14} /> : <LayoutGrid size={14} />}
 				</span>

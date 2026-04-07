@@ -293,6 +293,7 @@ function App() {
 	const saved = localStorage.getItem('umalator_v2_hideNotInGame');
 	return saved !== null ? saved === 'true' : true; // default: hidden
   });
+  const [wideSkills, setWideSkills] = useState(() => localStorage.getItem('umalator_v2_wideSkills') === 'true');
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 
@@ -455,6 +456,10 @@ function App() {
   useEffect(() => {
 	localStorage.setItem('umalator_v2_hideNotInGame', String(hideNotInGame));
   }, [hideNotInGame]);
+
+  useEffect(() => {
+	localStorage.setItem('umalator_v2_wideSkills', String(wideSkills));
+  }, [wideSkills]);
 
   // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
   useEffect(() => {
@@ -1850,6 +1855,8 @@ function App() {
                         ]?.distance
                       }
                       hideNotInGame={hideNotInGame}
+                      wideSkills={wideSkills}
+                      setWideSkills={setWideSkills}
                     />
                   )}
                   {mode === "compare" && activeUmaTab === 2 && (
@@ -1866,6 +1873,8 @@ function App() {
                         ]?.distance
                       }
                       hideNotInGame={hideNotInGame}
+                      wideSkills={wideSkills}
+                      setWideSkills={setWideSkills}
                     />
                   )}
                   {activeUmaTab === "trainees" && (
@@ -2204,6 +2213,8 @@ function App() {
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}
                         setAutoSeed={setAutoSeed}
+                        hideNotInGame={hideNotInGame}
+                        setHideNotInGame={setHideNotInGame}
                         mode={mode}
                       />
                     </div>
