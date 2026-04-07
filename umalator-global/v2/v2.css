@@ -3322,8 +3322,26 @@ body {
   letter-spacing: 0.04em;
 }
 
-.v2-collapsible-badge {
+.v2-collapsible-layout-toggle {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.v2-collapsible-layout-toggle:hover {
+  color: var(--color-text);
+  background: var(--color-border-subtle);
+}
+
+.v2-collapsible-badge {
+  margin-left: var(--space-xs);
   padding: 2px 8px;
   background: var(--color-primary);
   border-radius: var(--radius-full);
@@ -3384,6 +3402,10 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-xs);
+}
+
+.v2-skills-list--wide {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .v2-skills-empty {
@@ -6326,6 +6348,11 @@ body {
 
   .v2-aptitude-label {
     font-size: var(--font-xs);
+  }
+
+  /* Hide layout toggle on mobile (always single column) */
+  .v2-collapsible-layout-toggle {
+    display: none;
   }
 
   /* Skills list - single column on mobile */

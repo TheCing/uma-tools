@@ -21,7 +21,7 @@ import {
 	copyHorseToClipboard,
 	pasteHorseFromClipboard,
 } from './storage';
-import { ChevronRight, Save, Upload, Download, Copy, Clipboard, Trash2, RotateCcw, Camera } from 'lucide-react';
+import { ChevronRight, Save, Upload, Download, Copy, Clipboard, Trash2, RotateCcw, Camera, LayoutGrid, Columns2 } from 'lucide-react';
 import { OCRModal } from './ocr-modal';
 
 // Import data - use global versions for English names
@@ -510,9 +510,10 @@ interface CollapsibleSectionProps {
 	defaultOpen?: boolean;
 	children: preact.ComponentChildren;
 	badge?: string | number;
+	headerAction?: preact.ComponentChildren;
 }
 
-export function CollapsibleSection({ title, defaultOpen = false, children, badge }: CollapsibleSectionProps) {
+export function CollapsibleSection({ title, defaultOpen = false, children, badge, headerAction }: CollapsibleSectionProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 
 	return (
@@ -520,6 +521,7 @@ export function CollapsibleSection({ title, defaultOpen = false, children, badge
 			<button class="v2-collapsible-header" onClick={() => setIsOpen(!isOpen)}>
 				<ChevronRight size={16} class={`v2-collapsible-icon ${isOpen ? 'open' : ''}`} />
 				<span class="v2-collapsible-title">{title}</span>
+				{headerAction}
 				{badge !== undefined && <span class="v2-collapsible-badge">{badge}</span>}
 			</button>
 			{isOpen && <div class="v2-collapsible-body">{children}</div>}
@@ -549,6 +551,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 	const [saveModalName, setSaveModalName] = useState('');
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [deleteSlotName, setDeleteSlotName] = useState('');
+	const [wideSkills, setWideSkills] = useState(false);
 
 	// Refresh saved slots list
 	const refreshSlots = useCallback(() => {
@@ -815,12 +818,21 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 			</CollapsibleSection>
 
 			{/* Skills */}
-			<CollapsibleSection title="Skills" badge={state.skills.length} defaultOpen={true}>
+			<CollapsibleSection title="Skills" badge={state.skills.length} defaultOpen={true} headerAction={
+				<span
+					class="v2-collapsible-layout-toggle"
+					title={wideSkills ? 'Compact layout (3 columns)' : 'Wide layout (2 columns)'}
+					onClick={(e: MouseEvent) => { e.stopPropagation(); setWideSkills(!wideSkills); }}
+				>
+					{wideSkills ? <Columns2 size={14} /> : <LayoutGrid size={14} />}
+				</span>
+			}>
 				<SkillsSection
 					skills={state.skills}
 					onChange={skills => onChange({ skills })}
 					courseDistance={courseDistance}
 					hideNotInGame={hideNotInGame}
+					wideLayout={wideSkills}
 					forcedSkillPositions={state.forcedSkillPositions}
 					onForcedPositionChange={(skillId, position) => {
 						const newPositions = { ...state.forcedSkillPositions };

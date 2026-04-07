@@ -892,6 +892,7 @@ interface SkillsSectionProps {
 	forcedSkillPositions?: Record<string, string>;
 	onForcedPositionChange?: (skillId: string, position: string) => void;
 	hideNotInGame: boolean;
+	wideLayout?: boolean;
 }
 
 // Sort skills like v1: by skillmeta order, then by ID
@@ -906,7 +907,7 @@ function skillOrder(a: string, b: string): number {
 	return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame }: SkillsSectionProps) {
+export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame, wideLayout }: SkillsSectionProps) {
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
@@ -940,7 +941,7 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 	return (
 		<div class="v2-skills-section">
 			{sortedSkills.length > 0 ? (
-				<div class="v2-skills-list">
+				<div class={`v2-skills-list${wideLayout ? ' v2-skills-list--wide' : ''}`}>
 					{sortedSkills.map(id => (
 						<SkillChip
 							key={id}
