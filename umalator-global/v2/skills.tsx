@@ -15,6 +15,7 @@ import { Dropdown } from './components';
 // Import condition matching
 import { getParser } from '../../uma-skill-tools/ConditionParser';
 import * as Matcher from '../../uma-skill-tools/tools/ConditionMatcher';
+import { levelScalingCoef } from '../../uma-skill-tools/RaceSolverBuilder';
 
 // Import data - use Global versions
 import skilldata from '../skill_data.json';
@@ -350,9 +351,13 @@ interface SkillChipProps {
 	courseDistance?: number;
 	forcedPosition?: string;
 	onPositionChange?: (value: string) => void;
+	lv?: number;
+	onLvChange?: (lv: number) => void;
+	minLv?: number;
+	maxLv?: number;
 }
 
-export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, onPositionChange }: SkillChipProps) {
+export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, onPositionChange, lv, onLvChange, minLv, maxLv }: SkillChipProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const chipRef = useRef<HTMLDivElement>(null);
 	const name = getSkillName(skillId);
@@ -389,6 +394,13 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 			<div class="v2-skill-chip-header">
 				<img src={icon} alt="" class="v2-skill-chip-icon" />
 				<span class="v2-skill-chip-name">{name}</span>
+				{lv != null && onLvChange && (
+					<span class="v2-skill-lv" onClick={e => e.stopPropagation()}>
+						<label>Lvl</label>
+						<input type="number" class="v2-skill-lv-input" min={minLv} max={maxLv} value={lv}
+							onInput={e => onLvChange(+(e.target as HTMLInputElement).value)} />
+					</span>
+				)}
 				{onRemove && (
 					<button
 						type="button"
@@ -473,14 +485,17 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 
 									{/* Effects */}
 									<div class="v2-skill-effects-block">
-										{alt.effects?.map((ef: any, i: number) => (
-											<div key={i} class="v2-skill-effect-row">
-												<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
-												<span class="v2-skill-effect-text">
-													{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, ef.modifier)})
-												</span>
-											</div>
-										))}
+										{alt.effects?.map((ef: any, i: number) => {
+									const scaledMod = lv && lv > 1 ? ef.modifier * levelScalingCoef(ef.type, lv) : ef.modifier;
+									return (
+										<div key={i} class="v2-skill-effect-row">
+											<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
+											<span class="v2-skill-effect-text">
+												{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, scaledMod)})
+											</span>
+										</div>
+									);
+								})}
 									</div>
 
 									{/* OR separator between alternatives */}
@@ -893,6 +908,10 @@ interface SkillsSectionProps {
 	onForcedPositionChange?: (skillId: string, position: string) => void;
 	hideNotInGame: boolean;
 	wideLayout?: boolean;
+	uniqueSkillId?: string;
+	uniqueLv?: number;
+	onUniqueLvChange?: (lv: number) => void;
+	starCount?: number;
 }
 
 // Sort skills like v1: by skillmeta order, then by ID
@@ -907,7 +926,7 @@ function skillOrder(a: string, b: string): number {
 	return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame, wideLayout }: SkillsSectionProps) {
+export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame, wideLayout, uniqueSkillId, uniqueLv, onUniqueLvChange, starCount }: SkillsSectionProps) {
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
@@ -942,7 +961,11 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 		<div class="v2-skills-section">
 			{sortedSkills.length > 0 ? (
 				<div class={`v2-skills-list${wideLayout ? ' v2-skills-list--wide' : ''}`}>
-					{sortedSkills.map(id => (
+					{sortedSkills.map(id => {
+					const isUnique = uniqueSkillId && id === uniqueSkillId;
+					const sc = starCount || 3;
+					const minLvVal = sc % 3 + Math.floor(sc / 3);
+					return (
 						<SkillChip
 							key={id}
 							skillId={id}
@@ -950,8 +973,13 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 							courseDistance={courseDistance}
 							forcedPosition={forcedSkillPositions?.[id]}
 							onPositionChange={onForcedPositionChange ? (pos) => onForcedPositionChange(id, pos) : undefined}
+							lv={isUnique ? uniqueLv : undefined}
+							onLvChange={isUnique ? onUniqueLvChange : undefined}
+							minLv={isUnique ? minLvVal : undefined}
+							maxLv={isUnique ? 6 : undefined}
 						/>
-					))}
+					);
+				})}
 				</div>
 			) : (
 				<div class="v2-skills-empty">

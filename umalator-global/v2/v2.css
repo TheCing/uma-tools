@@ -3482,6 +3482,46 @@ body {
   color: #fff;
 }
 
+.v2-skill-lv {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+.v2-skill-lv label {
+  white-space: nowrap;
+}
+.v2-skill-lv-input {
+  width: 36px;
+  padding: 2px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1em;
+  text-align: center;
+}
+.v2-skill-lv-input:hover {
+  border-color: var(--color-border-strong);
+}
+.v2-skill-lv-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  background: var(--color-surface-elevated);
+}
+.v2-skill-lv-input::-webkit-outer-spin-button,
+.v2-skill-lv-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.v2-skill-lv-input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /* Skill Details Animation Wrapper */
 .v2-skill-details-wrapper {
   display: grid;

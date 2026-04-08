@@ -14,7 +14,7 @@ import { COMMON_STRINGS } from '../strings/common';
 
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 
-import { SkillSet, HorseState } from './HorseDefTypes';
+import { SkillSet, HorseState, uniqueSkillForUma } from './HorseDefTypes';
 
 import './HorseDef.css';
 
@@ -89,6 +89,8 @@ function loadHorseSlot(name: string): HorseState | null {
 function horseStateToJson(horse: HorseState) {
 	return {
 		outfitId: horse.outfitId,
+		starCount: horse.starCount,
+		uniqueLv: horse.uniqueLv,
 		speed: horse.speed,
 		stamina: horse.stamina,
 		power: horse.power,
@@ -168,6 +170,8 @@ function validateAndParseHorseJson(json: any): HorseState | null {
 	// Build the HorseState
 	let horse = new HorseState({
 		outfitId: json.outfitId || '',
+		starCount: typeof json.starCount === 'number' ? Math.max(1, Math.min(5, json.starCount)) as 1|2|3|4|5 : 3,
+		uniqueLv: typeof json.uniqueLv === 'number' ? Math.max(1, Math.min(6, json.uniqueLv)) : 1,
 		speed: json.speed,
 		stamina: json.stamina,
 		power: json.power,
@@ -680,17 +684,6 @@ export function isGeneralSkill(id: string) {
 	return skilldata[id].rarity < 3 || universallyAccessiblePinks.indexOf(id) > -1;
 }
 
-function assertIsSkill(sid: string): asserts sid is keyof typeof skilldata {
-	console.assert(skilldata[sid] != null);
-}
-
-function uniqueSkillForUma(oid: typeof umaAltIds[number]): keyof typeof skilldata {
-	const i = +oid.slice(1, -2), v = +oid.slice(-2);
-	const sid = (100000 + 10000 * (v - 1) + i * 10 + 1).toString();
-	assertIsSkill(sid);
-	return sid;
-}
-
 function skillOrder(a, b) {
 	const x = skillmeta[a].order, y = skillmeta[b].order;
 	return +(y < x) - +(x < y) || +(b < a) - +(a < b);
@@ -725,12 +718,16 @@ export function HorseDef(props) {
 
 	function setUma(id) {
 		let newSkills = state.skills.filter(isGeneralSkill);
+		let starCount = state.starCount;
 
 		if (id) {
-			const uid = uniqueSkillForUma(id);
-			newSkills = newSkills.set(skillmeta[uid].groupId, uid);
+			const u = globalUmas[id.slice(0,4)]?.outfits?.[id] || umas[id.slice(0,4)]?.outfits?.[id];
+			if (u?.rarity) starCount = Math.max(starCount, u.rarity) as 1|2|3|4|5;
+			const uid = uniqueSkillForUma(id, starCount);
+			if (uid) newSkills = newSkills.set(skillmeta[uid].groupId, uid);
 		}
 
+		const uniqueLv = starCount % 3 + Math.floor(starCount / 3);
 		const removedSkillIds = state.skills.keySeq().toSet().subtract(newSkills.keySeq().toSet());
 		let newForcedPositions = state.forcedSkillPositions;
 		removedSkillIds.forEach(skillId => {
@@ -739,6 +736,8 @@ export function HorseDef(props) {
 
 		setState(
 			state.set('outfitId', id)
+				.set('starCount', starCount)
+				.set('uniqueLv', uniqueLv)
 				.set('skills', newSkills)
 				.set('forcedSkillPositions', newForcedPositions)
 		);
@@ -781,7 +780,7 @@ export function HorseDef(props) {
 
 		// Add the unique skill for this outfit if we have a valid outfit ID
 		if (outfitId) {
-			const uniqueSkillId = uniqueSkillForUma(outfitId);
+			const uniqueSkillId = uniqueSkillForUma(outfitId, 3);
 			const uniqueBaseId = uniqueSkillId.split('-')[0];
 			const goldVersionId = '9' + uniqueBaseId.slice(1);
 			const isUmasOwnUniqueVariant = (id: string) => {
@@ -884,8 +883,12 @@ export function HorseDef(props) {
 	}, [hasRunawaySkill, state.strategy]);
 
 	const skillList = useMemo(function () {
-		const u = uniqueSkillForUma(umaId);
+		const u = uniqueSkillForUma(umaId, state.starCount);
 		const hasRunData = props.runData != null && props.umaIndex != null;
+		const uniqueLv = state.uniqueLv;
+		const setUniqueLv = (lv: number) => setState(state.set('uniqueLv', lv));
+		const minLv = state.starCount % 3 + Math.floor(state.starCount / 3);
+		const maxLv = 6;
 		return Array.from(state.skills.values()).sort(skillOrder).map(id =>
 			expanded.has(id)
 				? <li key={id} class="horseExpandedSkill">
@@ -893,6 +896,7 @@ export function HorseDef(props) {
 						  id={id}
 						  distanceFactor={props.courseDistance}
 						  dismissable={id != u}
+						  lv={id == u ? {value: uniqueLv, min: minLv, max: maxLv, set: setUniqueLv} : null}
 						  forcedPosition={state.forcedSkillPositions.get(id) || ''}
 						  onPositionChange={(value: string) => handlePositionChange(id, value)}
 						  runData={hasRunData ? props.runData : null}
@@ -901,7 +905,7 @@ export function HorseDef(props) {
 					  />
 				  </li>
 				: <li key={id} style="">
-					  <Skill id={id} selected={false} dismissable={id != u} />
+					  <Skill id={id} selected={false} dismissable={id != u} lv={id == u ? {value: uniqueLv, min: minLv, max: maxLv, set: setUniqueLv} : null} />
 						  {state.forcedSkillPositions.has(id) && (
 							  <span class="forcedPositionLabel inline">
 								  @{state.forcedSkillPositions.get(id)}m
@@ -909,7 +913,7 @@ export function HorseDef(props) {
 						  )}
 				  </li>
 		);
-	}, [state.skills, umaId, expanded, props.courseDistance, state.forcedSkillPositions, props.runData, props.umaIndex]);
+	}, [state.skills, umaId, expanded, props.courseDistance, state.forcedSkillPositions, props.runData, props.umaIndex, state.starCount, state.uniqueLv]);
 
 	return (
 		<div class="horseDef">

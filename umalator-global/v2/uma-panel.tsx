@@ -39,10 +39,11 @@ import notInGame from '../not-in-game.json';
  * Formula: 100000 + 10000 * (version - 1) + characterIndex * 10 + 1
  * e.g., outfit "102201" -> character 22, version 01 -> skill "100221"
  */
-function uniqueSkillForUma(oid: string): string {
+function uniqueSkillForUma(oid: string, starCount: number = 3): string {
+	if (oid.length == 0) return '';
 	const i = +oid.slice(1, -2);  // Character index (e.g., "22" from "102201")
 	const v = +oid.slice(-2);      // Version number (e.g., "01" from "102201")
-	const sid = (100000 + 10000 * (v - 1) + i * 10 + 1).toString();
+	const sid = (10000 * (1 + 9 * +(starCount > 2)) + 10000 * (v - 1) + i * 10 + 1).toString();
 	// Verify it's a valid skill
 	if ((skilldata as Record<string, any>)[sid]) {
 		return sid;
@@ -73,6 +74,8 @@ type Mood = -2 | -1 | 0 | 1 | 2;
 
 export interface UmaState {
 	outfitId: string;
+	starCount: number;
+	uniqueLv: number;
 	speed: number;
 	stamina: number;
 	power: number;
@@ -90,6 +93,8 @@ export interface UmaState {
 // Default state
 export const defaultUmaState: UmaState = {
 	outfitId: '',
+	starCount: 3,
+	uniqueLv: 1,
 	speed: 1200,
 	stamina: 1200,
 	power: 800,
@@ -576,16 +581,24 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 			delete newForcedPositions[id];
 		});
 
+		// Compute star count from outfit rarity
+		let starCount = state.starCount || 3;
+		if (outfitId) {
+			const u = (umas as any)[outfitId.slice(0, 4)]?.outfits?.[outfitId];
+			if (u?.rarity) starCount = Math.max(starCount, u.rarity);
+		}
+		const uniqueLv = starCount % 3 + Math.floor(starCount / 3);
+
 		// Add the NEW uma's unique skill
 		if (outfitId) {
-			const newUniqueSkill = uniqueSkillForUma(outfitId);
+			const newUniqueSkill = uniqueSkillForUma(outfitId, starCount);
 			if (newUniqueSkill) {
 				newSkills.unshift(newUniqueSkill);
 			}
 		}
 
-		onChange({ outfitId, skills: newSkills, forcedSkillPositions: newForcedPositions });
-	}, [onChange, state.skills, state.forcedSkillPositions]);
+		onChange({ outfitId, starCount, uniqueLv, skills: newSkills, forcedSkillPositions: newForcedPositions });
+	}, [onChange, state.skills, state.forcedSkillPositions, state.starCount]);
 
 	// Save handlers
 	const handleSaveNew = useCallback(() => {
@@ -844,6 +857,10 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 						}
 						onChange({ forcedSkillPositions: newPositions });
 					}}
+					uniqueSkillId={state.outfitId ? uniqueSkillForUma(state.outfitId, state.starCount) : undefined}
+					uniqueLv={state.uniqueLv}
+					onUniqueLvChange={lv => onChange({ uniqueLv: lv })}
+					starCount={state.starCount}
 				/>
 			</CollapsibleSection>
 

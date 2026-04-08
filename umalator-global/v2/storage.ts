@@ -74,6 +74,8 @@ export function validateAndParseUmaJson(json: any): UmaState | null {
 
 	return {
 		outfitId: typeof json.outfitId === 'string' ? json.outfitId : '',
+		starCount: typeof json.starCount === 'number' ? Math.max(1, Math.min(5, json.starCount)) : 3,
+		uniqueLv: typeof json.uniqueLv === 'number' ? Math.max(1, Math.min(6, json.uniqueLv)) : 1,
 		speed: Math.max(1, Math.min(2000, json.speed)),
 		stamina: Math.max(1, Math.min(2000, json.stamina)),
 		power: Math.max(1, Math.min(2000, json.power)),
