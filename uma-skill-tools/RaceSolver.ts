@@ -209,6 +209,7 @@ export interface SkillEffect {
 	baseDuration: number
 	modifier: number
 	durationScaling?: DurationScalingType
+	valueScaling?: number
 }
 
 export interface PendingSkill {
@@ -349,6 +350,7 @@ export class RaceSolver {
     forceInSpeed: number
 
 	firstUmaInLateRace: boolean
+	randomRolls: Map<string, number>
 
 	hpDied: boolean
 	hpDiedPosition: number | null
@@ -473,6 +475,7 @@ export class RaceSolver {
 		this.rushedActivations = [];
 		this.positionKeepActivations = [];
 		this.firstUmaInLateRace = false;
+		this.randomRolls = new Map();
 		this.hpDied = false;
 		this.hpDiedPosition = null;
 		this.fullSpurt = false;
@@ -1426,65 +1429,74 @@ export class RaceSolver {
 			const scaledDuration = ef.baseDuration * (this.course.distance / 1000) * durationScalingMultiplier *
 				(s.rarity == SkillRarity.Evolution ? this.modifiers.specialSkillDurationScaling : 1);  // TODO should probably be awakened skills
 				                                                                                       // and not just pinks
+			// Apply ability_value_usage scaling
+			let modifier = ef.modifier;
+			if (ef.valueScaling === 8 || ef.valueScaling === 9) {
+				const roll = this.rng.random();
+				const rollMult = roll < 0.6 ? 0.0 : roll < 0.9 ? 0.02 : 0.04;
+				modifier *= rollMult;
+				this.randomRolls.set(s.skillId, rollMult);
+			}
+
 			switch (ef.type) {
 			case SkillType.Noop:
 				break;
 			case SkillType.SpeedUp:
-				this.horse.speed = Math.max(this.horse.speed + ef.modifier, 1);
+				this.horse.speed = Math.max(this.horse.speed + modifier, 1);
 				break;
 			case SkillType.StaminaUp:
-				this.horse.stamina = Math.max(this.horse.stamina + ef.modifier, 1);
-				this.horse.rawStamina = Math.max(this.horse.rawStamina + ef.modifier, 1);
+				this.horse.stamina = Math.max(this.horse.stamina + modifier, 1);
+				this.horse.rawStamina = Math.max(this.horse.rawStamina + modifier, 1);
 				break;
 			case SkillType.PowerUp:
-				this.horse.power = Math.max(this.horse.power + ef.modifier, 1);
+				this.horse.power = Math.max(this.horse.power + modifier, 1);
 				break;
 			case SkillType.GutsUp:
-				this.horse.guts = Math.max(this.horse.guts + ef.modifier, 1);
+				this.horse.guts = Math.max(this.horse.guts + modifier, 1);
 				break;
 			case SkillType.WisdomUp:
-				this.horse.wisdom = Math.max(this.horse.wisdom + ef.modifier, 1);
+				this.horse.wisdom = Math.max(this.horse.wisdom + modifier, 1);
 				break;
 			case SkillType.MultiplyStartDelay:
-				this.startDelay *= ef.modifier;
+				this.startDelay *= modifier;
 				break;
 			case SkillType.SetStartDelay:
-				this.startDelay = ef.modifier;
+				this.startDelay = modifier;
 				break;
 			case SkillType.TargetSpeed:
-				this.modifiers.targetSpeed.add(ef.modifier);
-				this.activeTargetSpeedSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier: ef.modifier});
+				this.modifiers.targetSpeed.add(modifier);
+				this.activeTargetSpeedSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier});
 				break;
 			case SkillType.Accel:
-				this.modifiers.accel.add(ef.modifier);
-				this.activeAccelSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier: ef.modifier});
+				this.modifiers.accel.add(modifier);
+				this.activeAccelSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier});
 				break;
 			case SkillType.LaneMovementSpeed:
-				this.activeLaneMovementSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier: ef.modifier});
+				this.activeLaneMovementSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier});
 				break;
 			case SkillType.CurrentSpeed:
 			case SkillType.CurrentSpeedWithNaturalDeceleration:
-				this.modifiers.currentSpeed.add(ef.modifier);
+				this.modifiers.currentSpeed.add(modifier);
 				this.activeCurrentSpeedSkills.push({
-					skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier: ef.modifier,
+					skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier,
 					naturalDeceleration: ef.type == SkillType.CurrentSpeedWithNaturalDeceleration
 				});
 				break;
 			case SkillType.Recovery:
 				if (s.perspective == Perspective.Self) ++this.activateCountHeal;
-				this.hp.recover(ef.modifier);
+				this.hp.recover(modifier);
 				if (this.phase >= 2 && !this.isLastSpurt) {
 					this.updateLastSpurtState(true);
 				}
 				break;
 			case SkillType.ActivateRandomGold:
-				this.doActivateRandomGold(ef.modifier);
+				this.doActivateRandomGold(modifier);
 				break;
 			case SkillType.ExtendEvolvedDuration:
-				this.modifiers.specialSkillDurationScaling = ef.modifier;
+				this.modifiers.specialSkillDurationScaling = modifier;
 				break;
 			case SkillType.ChangeLane:
-				this.activeChangeLaneSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier: ef.modifier});
+				this.activeChangeLaneSkills.push({skillId: s.skillId, perspective: s.perspective, durationTimer: this.getNewTimer(-scaledDuration), modifier});
 				break;
 			}
 		});

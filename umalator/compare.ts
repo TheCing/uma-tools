@@ -149,7 +149,8 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		return function (s, id, persp) {
 			if (persp == Perspective.Self && id != 'asitame' && id != 'staminasyoubu') {
 				if (!skillSet.has(id)) skillSet.set(id, []);
-				skillSet.get(id).push([s.pos, -1, s.accumulatetime.t]);
+				const roll = s.randomRolls.get(id);
+				skillSet.get(id).push([s.pos, -1, s.accumulatetime.t, roll != null ? roll : undefined]);
 			}
 		};
 	}

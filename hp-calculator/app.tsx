@@ -29,7 +29,6 @@ import {
 import {
   calculateEstimate,
   getStrategyName,
-  HpStrategyCoefficient,
   STRATEGIES,
   getCourse,
   getTrackList,
@@ -631,20 +630,66 @@ function App() {
                       </span>
                     </div>
 
-                    {/* Course Info - Downhill indicator (informational only) */}
+                    {/* Downhill Mode results */}
                     {estimate.downhillDistance > 0 && (
-                      <div className="course-info-note">
-                        <strong>
-                          📉 {estimate.downhillDistance}m downhill
-                        </strong>{" "}
-                        ({estimate.downhillPercent}% of course)
-                        <br />
-                        <span className="note-detail">
-                          Downhill mode can reduce HP consumption by up to 60%.
-                          Use the <a href="/umalator-global/">full simulator</a>{" "}
-                          to calculate accurate survival and spurt rates.
-                        </span>
-                      </div>
+                      <>
+                        <div className="downhill-section-header">
+                          Downhill Mode (Expected)
+                        </div>
+
+                        <div className="downhill-stats-bar">
+                          <span>{estimate.downhillDistance}m downhill ({estimate.downhillPercent}% of course)</span>
+                          <span>DH Rate: {estimate.expectedDownhillModePercent}%</span>
+                        </div>
+
+                        <div className="result-row">
+                          <span className="result-label">HP Savings</span>
+                          <span className="result-value mono">
+                            {estimate.downhillHpSavings.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="result-row">
+                          <span className="result-label">Adjusted HP Needed</span>
+                          <span className="result-value mono">
+                            {estimate.adjustedTotalHpNeeded.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="result-highlight">
+                          <span className="result-highlight-label">Surplus (w/ DH)</span>
+                          <span
+                            className={`result-highlight-value ${estimate.adjustedCanFullSpurt ? "success" : "error"}`}
+                          >
+                            {estimate.adjustedHpSurplus >= 0 ? "+" : ""}
+                            {estimate.adjustedHpSurplus.toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="result-highlight">
+                          <span className="result-highlight-label">Full Spurt (w/ DH)</span>
+                          <div
+                            className={`spurt-indicator ${estimate.adjustedCanFullSpurt ? "success" : "failure"}`}
+                          >
+                            {estimate.adjustedCanFullSpurt ? <Check /> : <X />}
+                            {estimate.adjustedCanFullSpurt ? "YES" : "NO"}
+                          </div>
+                        </div>
+
+                        <div className="min-stamina-row downhill-min-stamina">
+                          <span className="min-stamina-label">
+                            Min Stamina (w/ DH)
+                            {state.healPercent > 0 && (
+                              <span className="result-note">
+                                {" "}(with {state.healPercent}% heal)
+                              </span>
+                            )}
+                          </span>
+                          <span className="min-stamina-value">
+                            {estimate.adjustedMinStamina.toLocaleString()}
+                          </span>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>
@@ -671,52 +716,81 @@ function App() {
                 <div
                   className={`comparison-table-wrapper ${state.showComparison ? "open" : ""}`}
                 >
-                  <table className="comparison-table">
-                    <thead>
-                      <tr>
-                        <th>Strategy</th>
-                        <th>HP Coef</th>
-                        <th>Max HP</th>
-                        <th>Surplus</th>
-                        <th>Min Stam</th>
-                        <th>Spurt</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {comparison.map(({ strategy, estimate: est }) => (
-                        <tr
-                          key={strategy}
-                          className={
-                            strategy === state.strategy ? "highlight-row" : ""
-                          }
-                        >
-                          <td>{getStrategyName(strategy, prefs.locale)}</td>
-                          <td>{HpStrategyCoefficient[strategy].toFixed(3)}</td>
-                          <td>{est?.maxHp.toLocaleString() ?? "-"}</td>
-                          <td>
-                            {est
-                              ? `${est.hpSurplus >= 0 ? "+" : ""}${est.hpSurplus.toLocaleString()}`
-                              : "-"}
-                          </td>
-                          <td>
-                            {est?.minStaminaForFullSpurt.toLocaleString() ??
-                              "-"}
-                          </td>
-                          <td
-                            className={
-                              est?.canFullSpurt ? "spurt-yes" : "spurt-no"
-                            }
-                          >
-                            {est?.canFullSpurt ? (
-                              <Check size={16} />
-                            ) : (
-                              <X size={16} />
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  {(() => {
+                    const hasDH = comparison[0]?.estimate?.downhillDistance > 0;
+                    return (
+                      <table className="comparison-table">
+                        <thead>
+                          <tr>
+                            <th>Strategy</th>
+                            <th>Max HP</th>
+                            <th>Surplus</th>
+                            <th>Spurt</th>
+                            {hasDH && <th className="dh-col">w/ DH</th>}
+                            {hasDH && <th className="dh-col">Spurt</th>}
+                            <th>Min Stam</th>
+                            {hasDH && <th className="dh-col">w/ DH</th>}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {comparison.map(({ strategy, estimate: est }) => (
+                            <tr
+                              key={strategy}
+                              className={
+                                strategy === state.strategy ? "highlight-row" : ""
+                              }
+                            >
+                              <td>{getStrategyName(strategy, prefs.locale)}</td>
+                              <td>{est?.maxHp.toLocaleString() ?? "-"}</td>
+                              <td>
+                                {est
+                                  ? `${est.hpSurplus >= 0 ? "+" : ""}${est.hpSurplus.toLocaleString()}`
+                                  : "-"}
+                              </td>
+                              <td
+                                className={
+                                  est?.canFullSpurt ? "spurt-yes" : "spurt-no"
+                                }
+                              >
+                                {est?.canFullSpurt ? (
+                                  <Check size={16} />
+                                ) : (
+                                  <X size={16} />
+                                )}
+                              </td>
+                              {hasDH && (
+                                <td className={`dh-col ${est?.adjustedCanFullSpurt ? "spurt-yes" : "spurt-no"}`}>
+                                  {est
+                                    ? `${est.adjustedHpSurplus >= 0 ? "+" : ""}${est.adjustedHpSurplus.toLocaleString()}`
+                                    : "-"}
+                                </td>
+                              )}
+                              {hasDH && (
+                                <td
+                                  className={`dh-col ${est?.adjustedCanFullSpurt ? "spurt-yes" : "spurt-no"}`}
+                                >
+                                  {est?.adjustedCanFullSpurt ? (
+                                    <Check size={16} />
+                                  ) : (
+                                    <X size={16} />
+                                  )}
+                                </td>
+                              )}
+                              <td>
+                                {est?.minStaminaForFullSpurt.toLocaleString() ??
+                                  "-"}
+                              </td>
+                              {hasDH && (
+                                <td className="dh-col">
+                                  {est?.adjustedMinStamina.toLocaleString() ?? "-"}
+                                </td>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -769,10 +843,10 @@ function App() {
               </div>
               <p>
                 This calculator provides <strong>analytical estimates</strong>{" "}
-                assuming ideal conditions. It does not account for:
+                assuming ideal conditions. Downhill Mode uses the Markov
+                steady-state model. It does not account for:
               </p>
               <ul className="sidebar-list">
-                <li>Downhill Mode HP savings</li>
                 <li>Position Keep variations</li>
                 <li>Kakari (rushed) state</li>
                 <li>Skill activation timing</li>

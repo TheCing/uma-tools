@@ -204,7 +204,8 @@ export function runHpCalc(
 	b0.onSkillActivate(function (s, id, persp) {
 		if (persp == Perspective.Self && id != 'asitame' && id != 'staminasyoubu') {
 			if (!skillActivations.has(id)) skillActivations.set(id, []);
-			skillActivations.get(id).push([s.pos, -1]);
+			const roll = s.randomRolls.get(id);
+			skillActivations.get(id).push([s.pos, -1, roll != null ? roll : undefined]);
 		}
 	});
 	b0.onSkillDeactivate(function (s, id, persp) {

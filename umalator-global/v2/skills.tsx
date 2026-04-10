@@ -302,19 +302,57 @@ const EFFECT_TYPE_NAMES: Record<number, string> = {
 	42: 'Duration Increase',
 };
 
+// Scaling type names for ability_value_usage
+const SCALING_NAMES: Record<number, string> = {
+	2: 'x Acquired Skills',
+	8: 'Random Roll',
+	9: 'Random Roll',
+	10: 'x Race Wins',
+	11: 'x Final Corner Place Change',
+	13: 'x Max Raw Stat',
+	14: 'x Green Skills',
+	15: 'x Heal Skills Activated',
+	16: 'x Final Corner Position',
+	18: 'x Base Wit',
+	19: 'x Runners Overtaken',
+	22: 'x Speed',
+	23: 'x Speed',
+	25: 'x Lead Distance',
+};
+
 // Format effect value based on type
-function formatEffectValue(type: number, modifier: number): string {
+function formatEffectValue(type: number, modifier: number, scaling?: number): string {
 	const value = modifier / 10000;
+
+	// Random roll (scaling 8/9): show the probability distribution instead of raw value
+	if (scaling === 8 || scaling === 9) {
+		const base = Math.abs(value * 100);
+		return `60%: 0 / 30%: ${(base * 0.02).toFixed(1)}% / 10%: ${(base * 0.04).toFixed(1)}%`;
+	}
+
+	let formatted: string;
 	switch (type) {
 		case 9: // Recovery - percentage
-			return `${(value * 100).toFixed(1)}%`;
+			formatted = `${(value * 100).toFixed(1).replace(/\.0$/, '')}%`;
+			break;
 		case 31: // Acceleration
-			return `${value > 0 ? '+' : ''}${value}m/s²`;
+			formatted = `${value > 0 ? '+' : ''}${value}m/s²`;
+			break;
 		case 42: // Duration increase
-			return `${value}×`;
+			formatted = `${value}×`;
+			break;
 		default: // Stats and speed - show with sign
-			return value > 0 ? `+${value}` : `${value}`;
+			formatted = value > 0 ? `+${value}` : `${value}`;
+			break;
 	}
+
+	// Append scaling label for non-direct types
+	const scalingName = scaling && scaling > 1 ? SCALING_NAMES[scaling] : null;
+	if (scalingName) {
+		formatted += ` ${scalingName}`;
+	}
+
+	return formatted;
 }
 
 // Parse condition string into triggers and conditions
@@ -491,7 +529,7 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 										<div key={i} class="v2-skill-effect-row">
 											<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
 											<span class="v2-skill-effect-text">
-												{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, scaledMod)})
+												{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, scaledMod, ef.scaling)})
 											</span>
 										</div>
 									);

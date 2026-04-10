@@ -18,7 +18,8 @@ const skillids = Object.freeze(Object.keys(skills).filter(id => {
 		strategy: 'Nige',
 		distanceAptitude: 'A',
 		surfaceAptitude: 'A',
-		strategyAptitude: 'A'
+		strategyAptitude: 'A',
+		mood: 2 as rparams.Mood
 	}).addSkill(id);
 	try {
 		const g = b.build();
@@ -77,7 +78,8 @@ export function HorseDesc() {
 		strategy: Strategy(),
 		distanceAptitude: Aptitude(),
 		surfaceAptitude: Aptitude(),
-		strategyAptitude: Aptitude()
+		strategyAptitude: Aptitude(),
+		mood: Mood()
 	});
 }
 
