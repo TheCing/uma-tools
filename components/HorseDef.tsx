@@ -8,6 +8,7 @@ import { SkillProcDataDialog } from './SkillProcDataDialog';
 import { OCRModal } from './OCRModal';
 import { OCRHorseData, mapSkillNamesToIds, mapOutfitNameToId } from './GeminiOCR';
 import { createUmaCard, extractDataFromPng } from './UmaCard';
+import { tryParseImportText } from './gameExportParser';
 import { SlotDialog } from './SlotDialog';
 import { useLanguage } from './Language';
 import { COMMON_STRINGS } from '../strings/common';
@@ -238,8 +239,8 @@ export function UmaSelector(props) {
 				const reader = new FileReader();
 				reader.onload = (event) => {
 					try {
-						const json = JSON.parse(event.target.result as string);
-						const horse = validateAndParseHorseJson(json);
+						const json = tryParseImportText(event.target.result as string);
+						const horse = json ? validateAndParseHorseJson(json) : null;
 						if (horse && props.onLoad) {
 							props.onLoad(horse);
 						} else {

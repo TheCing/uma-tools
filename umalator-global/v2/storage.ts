@@ -9,6 +9,7 @@
 import { UmaState, defaultUmaState } from './uma-panel';
 import umas from '../umas.json'; // Use global version for English names
 import skilldata from '../skill_data.json'; // Use Global version
+import { tryParseImportText } from '../../components/gameExportParser';
 
 // LocalStorage keys
 const HORSE_SLOTS_KEY = 'umalator_v2_horse_slots';
@@ -405,8 +406,8 @@ export function importHorseJson(): Promise<UmaState | null> {
 
 			try {
 				const text = await file.text();
-				const json = JSON.parse(text);
-				const parsed = validateAndParseUmaJson(json);
+				const json = tryParseImportText(text);
+				const parsed = json ? validateAndParseUmaJson(json) : null;
 				resolve(parsed);
 			} catch (err) {
 				console.error('Failed to parse JSON file:', err);
@@ -438,8 +439,8 @@ export async function copyHorseToClipboard(horse: UmaState): Promise<boolean> {
 export async function pasteHorseFromClipboard(): Promise<UmaState | null> {
 	try {
 		const text = await navigator.clipboard.readText();
-		const json = JSON.parse(text);
-		return validateAndParseUmaJson(json);
+		const json = tryParseImportText(text);
+		return json ? validateAndParseUmaJson(json) : null;
 	} catch (e) {
 		console.error('Failed to paste from clipboard:', e);
 		return null;
