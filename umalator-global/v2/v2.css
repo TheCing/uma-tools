@@ -3400,12 +3400,12 @@ body {
 
 .v2-skills-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-xs);
 }
 
-.v2-skills-list--wide {
-  grid-template-columns: repeat(2, 1fr);
+.v2-skills-list--compact {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .v2-skills-empty {

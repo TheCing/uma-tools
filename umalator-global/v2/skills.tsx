@@ -998,7 +998,7 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 	return (
 		<div class="v2-skills-section">
 			{sortedSkills.length > 0 ? (
-				<div class={`v2-skills-list${wideLayout ? ' v2-skills-list--wide' : ''}`}>
+				<div class={`v2-skills-list${wideLayout ? '' : ' v2-skills-list--compact'}`}>
 					{sortedSkills.map(id => {
 					const isUnique = uniqueSkillId && id === uniqueSkillId;
 					const sc = starCount || 3;

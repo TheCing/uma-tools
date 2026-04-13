@@ -293,7 +293,7 @@ function App() {
 	const saved = localStorage.getItem('umalator_v2_hideNotInGame');
 	return saved !== null ? saved === 'true' : true; // default: hidden
   });
-  const [wideSkills, setWideSkills] = useState(() => localStorage.getItem('umalator_v2_wideSkills') === 'true');
+  const [wideSkills, setWideSkills] = useState(() => localStorage.getItem('umalator_v2_wideSkills') !== 'false');
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 

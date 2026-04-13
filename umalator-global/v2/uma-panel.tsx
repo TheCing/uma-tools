@@ -835,10 +835,10 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 			<CollapsibleSection title="Skills" badge={state.skills.length} defaultOpen={true} headerAction={
 				<span
 					class="v2-collapsible-layout-toggle"
-					title={wideSkills ? 'Compact layout (3 columns)' : 'Wide layout (2 columns)'}
+					title={wideSkills ? 'Wide layout (2 columns)' : 'Compact layout (3 columns)'}
 					onClick={(e: MouseEvent) => { e.stopPropagation(); setWideSkills?.(!wideSkills); }}
 				>
-					{wideSkills ? <Columns2 size={14} /> : <LayoutGrid size={14} />}
+					{wideSkills ? <LayoutGrid size={14} /> : <Columns2 size={14} />}
 				</span>
 			}>
 				<SkillsSection
