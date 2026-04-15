@@ -5,7 +5,7 @@ import { RaceSolverBuilder, Perspective, parseStrategy, parseAptitude, buildBase
 import { GameHpPolicy } from '../uma-skill-tools/HpPolicy';
 import { HorseParameters } from '../uma-skill-tools/HorseTypes';
 
-import { HorseState } from '../components/HorseDefTypes';
+import { HorseState, uniqueSkillForUma } from '../components/HorseDefTypes';
 
 import skilldata from '../uma-skill-tools/data/skill_data.json';
 import skillmeta from '../skill_meta.json';
@@ -79,43 +79,50 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 	const uma1BaseStats = buildBaseStats(uma1Horse, uma1Horse.mood);
 	const uma1AdjustedStats = buildAdjustedStats(uma1BaseStats, course, racedef.groundCondition);
 	const uma1Wisdom = uma1AdjustedStats.wisdom;
-	
+
 	const uma2Horse = uma2.toJS();
 	const uma2BaseStats = buildBaseStats(uma2Horse, uma2Horse.mood);
 	const uma2AdjustedStats = buildAdjustedStats(uma2BaseStats, course, racedef.groundCondition);
 	const uma2Wisdom = uma2AdjustedStats.wisdom;
+
+	const uma1UniqueId = uniqueSkillForUma(uma1.outfitId, uma1.starCount);
+	const uma2UniqueId = uniqueSkillForUma(uma2.outfitId, uma2.starCount);
 	
 	uma1_.skills.sort(sort).forEach(id => {
+		const lv = id === uma1UniqueId ? uma1.uniqueLv : 1;
 		const forcedPos = uma1.forcedSkillPositions.get(id);
 		if (forcedPos != null) {
-			standard.addSkillAtPosition(id, forcedPos, Perspective.Self);
+			standard.addSkillAtPosition(id, forcedPos, Perspective.Self, undefined, lv);
 		} else {
-			standard.addSkill(id, Perspective.Self);
+			standard.addSkill(id, Perspective.Self, undefined, undefined, lv);
 		}
 	});
 	uma2_.skills.sort(sort).forEach(id => {
+		const lv = id === uma2UniqueId ? uma2.uniqueLv : 1;
 		const forcedPos = uma2.forcedSkillPositions.get(id);
 		if (forcedPos != null) {
-			compare.addSkillAtPosition(id, forcedPos, Perspective.Self);
+			compare.addSkillAtPosition(id, forcedPos, Perspective.Self, undefined, lv);
 		} else {
-			compare.addSkill(id, Perspective.Self);
+			compare.addSkill(id, Perspective.Self, undefined, undefined, lv);
 		}
 	});
 	uma1_.skills.forEach(id => {
+		const lv = id === uma1UniqueId ? uma1.uniqueLv : 1;
 		const forcedPos = uma1.forcedSkillPositions.get(id);
 		if (forcedPos != null) {
-			compare.addSkillAtPosition(id, forcedPos, Perspective.Other, uma1Wisdom);
+			compare.addSkillAtPosition(id, forcedPos, Perspective.Other, uma1Wisdom, lv);
 		} else {
-			compare.addSkill(id, Perspective.Other, undefined, uma1Wisdom); 
+			compare.addSkill(id, Perspective.Other, undefined, uma1Wisdom, lv);
 		}
 	});
 	uma2_.skills.forEach(id => {
+		const lv = id === uma2UniqueId ? uma2.uniqueLv : 1;
 		const forcedPos = uma2.forcedSkillPositions.get(id);
 		if (forcedPos != null) {
-			standard.addSkillAtPosition(id, forcedPos, Perspective.Other, uma2Wisdom);
+			standard.addSkillAtPosition(id, forcedPos, Perspective.Other, uma2Wisdom, lv);
 		} else {
-			standard.addSkill(id, Perspective.Other, undefined, uma2Wisdom);
-		} 
+			standard.addSkill(id, Perspective.Other, undefined, uma2Wisdom, lv);
+		}
 	});
 	if (!CC_GLOBAL) {
 		standard.withAsiwotameru().withStaminaSyoubu();
@@ -142,7 +149,8 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 		return function (s, id, persp) {
 			if (persp == Perspective.Self && id != 'asitame' && id != 'staminasyoubu') {
 				if (!skillSet.has(id)) skillSet.set(id, []);
-				skillSet.get(id).push([s.pos, -1, s.accumulatetime.t]);
+				const roll = s.randomRolls.get(id);
+				skillSet.get(id).push([s.pos, -1, s.accumulatetime.t, roll != null ? roll : undefined]);
 			}
 		};
 	}

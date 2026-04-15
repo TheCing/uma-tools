@@ -1833,7 +1833,7 @@ function App(props) {
 			strings.skillnames[id] = skillnames[id][0];
 		} else if (globalSkillnames[id]) {
 			// English mode - use Global English names where available
-			strings.skillnames[id] = globalSkillnames[id][0];
+			strings.skillnames[id] = globalSkillnames[id].slice(-1)[0] || globalSkillnames[id][0];
 		} else {
 			// Fallback to JP data's English name, or Japanese if English is empty
 			strings.skillnames[id] = skillnames[id][1] || skillnames[id][0];

@@ -9,6 +9,7 @@
 import { UmaState, defaultUmaState } from './uma-panel';
 import umas from '../umas.json'; // Use global version for English names
 import skilldata from '../skill_data.json'; // Use Global version
+import { tryParseImportText } from '../../components/gameExportParser';
 
 // LocalStorage keys
 const HORSE_SLOTS_KEY = 'umalator_v2_horse_slots';
@@ -74,6 +75,8 @@ export function validateAndParseUmaJson(json: any): UmaState | null {
 
 	return {
 		outfitId: typeof json.outfitId === 'string' ? json.outfitId : '',
+		starCount: typeof json.starCount === 'number' ? Math.max(1, Math.min(5, json.starCount)) : 3,
+		uniqueLv: typeof json.uniqueLv === 'number' ? Math.max(1, Math.min(6, json.uniqueLv)) : 1,
 		speed: Math.max(1, Math.min(2000, json.speed)),
 		stamina: Math.max(1, Math.min(2000, json.stamina)),
 		power: Math.max(1, Math.min(2000, json.power)),
@@ -403,8 +406,8 @@ export function importHorseJson(): Promise<UmaState | null> {
 
 			try {
 				const text = await file.text();
-				const json = JSON.parse(text);
-				const parsed = validateAndParseUmaJson(json);
+				const json = tryParseImportText(text);
+				const parsed = json ? validateAndParseUmaJson(json) : null;
 				resolve(parsed);
 			} catch (err) {
 				console.error('Failed to parse JSON file:', err);
@@ -436,8 +439,8 @@ export async function copyHorseToClipboard(horse: UmaState): Promise<boolean> {
 export async function pasteHorseFromClipboard(): Promise<UmaState | null> {
 	try {
 		const text = await navigator.clipboard.readText();
-		const json = JSON.parse(text);
-		return validateAndParseUmaJson(json);
+		const json = tryParseImportText(text);
+		return json ? validateAndParseUmaJson(json) : null;
 	} catch (e) {
 		console.error('Failed to paste from clipboard:', e);
 		return null;

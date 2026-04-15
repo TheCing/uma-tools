@@ -1,10 +1,11 @@
 import { h, Fragment, cloneElement } from 'preact';
-import { useState, useContext, useMemo, useEffect, useRef } from 'preact/hooks';
+import { useState, useContext, useMemo, useEffect, useRef, useId } from 'preact/hooks';
 import { IntlProvider, Text, Localizer } from 'preact-i18n';
 
 import { getParser } from '../uma-skill-tools/ConditionParser';
 import * as Matcher from '../uma-skill-tools/tools/ConditionMatcher';
 import { SkillRarity } from '../uma-skill-tools/RaceSolver.ts';
+import { levelScalingCoef } from '../uma-skill-tools/RaceSolverBuilder';
 
 import { useLanguage } from './Language';
 import { Tooltip } from './Tooltip';
@@ -227,8 +228,9 @@ const classnames = Object.freeze(['', 'skill-white', 'skill-gold', 'skill-unique
 export function Skill(props) {
 	return (
 		<div class={`skill ${classnames[skilldata[props.id].rarity]} ${props.selected ? 'selected' : ''}`} data-skillid={props.id}>
-			<img class="skillIcon" src={`/uma-tools/icons/${skillmeta[props.id].iconId}.png`} /> 
+			<img class="skillIcon" src={`/uma-tools/icons/${skillmeta[props.id].iconId}.png`} />
 			<span class="skillName"><Text id={`skillnames.${props.id}`} /></span>
+			{props.lv && <SkillLevelEdit lv={props.lv} />}
 			{props.dismissable && <span class="skillDismiss">✕</span>}
 		</div>
 	);
@@ -375,7 +377,19 @@ const FormatParser = getParser<ConditionFormatter,OpFormatter>(conditionFormatte
 });
 
 function forceSign(n: number) {
-	return n <= 0 ? n.toString() : '+' + n;
+	const s = n.toFixed(4).replace(/\.?0+$/, '');
+	return n <= 0 ? s : '+' + s;
+}
+
+function SkillLevelEdit(props: {lv: {value: number, min: number, max: number, set: (v: number) => void}}) {
+	const id = useId();
+	const {value, min, max, set} = props.lv;
+	return (
+		<div class="skillLv" onClick={e => e.stopPropagation()}>
+			<label for={id}>{CC_GLOBAL ? 'Lvl ' : 'Lv'}</label>
+			<input type="number" id={id} min={min} max={max} value={value} onInput={e => set(+(e.target as HTMLInputElement).value)} />
+		</div>
+	);
 }
 
 const formatStat = forceSign;
@@ -401,12 +415,14 @@ const formatEffect = Object.freeze({
 export function ExpandedSkillDetails(props) {
 	const skill = skilldata[props.id];
 	const lang = useLanguage();
+	const lv = props.lv ? props.lv.value : 1;
 	return (
 		<IntlProvider definition={STRINGS[lang]}>
 			<div class={`expandedSkill ${classnames[skill.rarity]}`} data-skillid={props.id}>
 				<div class="expandedSkillHeader">
 					<img class="skillIcon" src={`/uma-tools/icons/${skillmeta[props.id].iconId}.png`} />
 					<span class="skillName"><Text id={`skillnames.${props.id}`} /></span>
+					{props.lv && <SkillLevelEdit lv={props.lv} />}
 					{props.dismissable && <span class="skillDismiss">✕</span>}
 				</div>
 				<div class="skillDetails">
@@ -428,12 +444,13 @@ export function ExpandedSkillDetails(props) {
 							</div>
 							<Text id="skilldetails.effects" />
 							<div class="skillEffects">
-								{alt.effects.map(ef =>
-									<div class="skillEffect">
+								{alt.effects.map(ef => {
+									const mod = ef.modifier / 10000 * levelScalingCoef(ef.type, lv);
+									return <div class="skillEffect">
 										<span class="skillEffectType"><Text id={`skilleffecttypes.${ef.type}`}>{ef.type}</Text></span>
-										<span class="skillEffectValue">{ef.type in formatEffect ? formatEffect[ef.type](ef.modifier / 10000) : ef.modifier / 10000}</span>
-									</div>
-								)}
+										<span class="skillEffectValue">{ef.type in formatEffect ? formatEffect[ef.type](mod) : mod}</span>
+									</div>;
+								})}
 							</div>
 							{alt.baseDuration > 0 && <span class="skillDuration"><Text id="skilldetails.baseduration" />{' '}<Text id="skilldetails.seconds" fields={{n: alt.baseDuration / 10000}} /></span>}
 							{props.distanceFactor && alt.baseDuration > 0 &&

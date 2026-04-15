@@ -293,6 +293,7 @@ function App() {
 	const saved = localStorage.getItem('umalator_v2_hideNotInGame');
 	return saved !== null ? saved === 'true' : true; // default: hidden
   });
+  const [wideSkills, setWideSkills] = useState(() => localStorage.getItem('umalator_v2_wideSkills') !== 'false');
   const [selectedSkillForChart, setSelectedSkillForChart] = useState("");
   const [chartRunType, setChartRunType] = useState("medianrun");
 
@@ -455,6 +456,10 @@ function App() {
   useEffect(() => {
 	localStorage.setItem('umalator_v2_hideNotInGame', String(hideNotInGame));
   }, [hideNotInGame]);
+
+  useEffect(() => {
+	localStorage.setItem('umalator_v2_wideSkills', String(wideSkills));
+  }, [wideSkills]);
 
   // Easter egg: detect "STILL" typed outside input fields (dev only, stripped in prod)
   useEffect(() => {
@@ -920,8 +925,8 @@ function App() {
         const iconId = skillmeta[skillId]?.iconId;
         if (NO_SHOW.includes(iconId)) return;
 
-        // Get skill name (fallback to ID if not found)
-        const name = skillnames[skillId]?.[0] ?? skillId;
+        // Get skill name (prefer EN name at end of array for bilingual entries)
+        const name = skillnames[skillId]?.slice(-1)[0] ?? skillId;
 
         activations.forEach((ar: number[]) => {
           if (!ar || ar.length < 2) return;
@@ -1458,6 +1463,8 @@ function App() {
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
               setAutoSeed={setAutoSeed}
+              hideNotInGame={hideNotInGame}
+              setHideNotInGame={setHideNotInGame}
               mode={mode}
             />
 
@@ -1609,13 +1616,6 @@ function App() {
                           />
                           <span class="v2-switch-slider" />
                           <span class="v2-switch-label">Fast ⚡</span>
-                        </label>
-                        <label class="v2-switch">
-                          <input type="checkbox" checked={hideNotInGame}
-                            onChange={(e) => setHideNotInGame((e.target as HTMLInputElement).checked)}
-                          />
-                          <span class="v2-switch-slider" />
-                          <span class="v2-switch-label">In-Game Only</span>
                         </label>
                       </div>
                       <div class="v2-skill-chart-actions">
@@ -1855,6 +1855,8 @@ function App() {
                         ]?.distance
                       }
                       hideNotInGame={hideNotInGame}
+                      wideSkills={wideSkills}
+                      setWideSkills={setWideSkills}
                     />
                   )}
                   {mode === "compare" && activeUmaTab === 2 && (
@@ -1871,6 +1873,8 @@ function App() {
                         ]?.distance
                       }
                       hideNotInGame={hideNotInGame}
+                      wideSkills={wideSkills}
+                      setWideSkills={setWideSkills}
                     />
                   )}
                   {activeUmaTab === "trainees" && (
@@ -2209,6 +2213,8 @@ function App() {
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}
                         setAutoSeed={setAutoSeed}
+                        hideNotInGame={hideNotInGame}
+                        setHideNotInGame={setHideNotInGame}
                         mode={mode}
                       />
                     </div>

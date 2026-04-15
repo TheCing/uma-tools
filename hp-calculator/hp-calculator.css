@@ -763,40 +763,61 @@ body {
 }
 
 /* ============================================
-   COURSE INFO NOTE
+   DOWNHILL MODE SECTION
    ============================================ */
 
-.course-info-note {
+.downhill-section-header {
   grid-column: 1 / -1;
   font-size: 0.8125rem;
-  color: var(--color-text-secondary);
-  text-align: center;
-  padding: var(--space-md);
-  background: var(--color-surface-overlay);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  padding: var(--space-md) 0 var(--space-xs) 0;
   margin-top: var(--space-sm);
-  line-height: 1.6;
+  border-top: 1px solid rgba(56, 189, 248, 0.2);
 }
 
-.course-info-note strong {
-  color: var(--color-text);
+.downhill-stats-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  font-family: 'DM Mono', monospace;
 }
 
-.course-info-note .note-detail {
-  display: block;
-  margin-top: var(--space-xs);
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+.downhill-min-stamina {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.2);
 }
 
-.course-info-note a {
-  color: var(--color-primary);
-  text-decoration: none;
+.downhill-min-stamina .min-stamina-value {
+  color: #38bdf8;
 }
 
-.course-info-note a:hover {
-  text-decoration: underline;
+.light .downhill-section-header {
+  color: #0284c7;
+  border-top-color: rgba(2, 132, 199, 0.2);
+}
+
+.light .downhill-stats-bar {
+  background: rgba(2, 132, 199, 0.06);
+  border-color: rgba(2, 132, 199, 0.12);
+}
+
+.light .downhill-min-stamina {
+  background: rgba(2, 132, 199, 0.06);
+  border-color: rgba(2, 132, 199, 0.15);
+}
+
+.light .downhill-min-stamina .min-stamina-value {
+  color: #0284c7;
 }
 
 /* ============================================
@@ -851,6 +872,7 @@ body {
 
 .comparison-table-wrapper.open {
   max-height: 400px;
+  overflow-x: auto;
 }
 
 .comparison-table {
@@ -900,6 +922,32 @@ body {
 
 .comparison-table .spurt-no {
   color: var(--color-error);
+}
+
+.comparison-table th.dh-col,
+.comparison-table td.dh-col {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.comparison-table tr:hover td.dh-col {
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.comparison-table .highlight-row td.dh-col {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.light .comparison-table th.dh-col,
+.light .comparison-table td.dh-col {
+  background: rgba(2, 132, 199, 0.04);
+}
+
+.light .comparison-table tr:hover td.dh-col {
+  background: rgba(2, 132, 199, 0.08);
+}
+
+.light .comparison-table .highlight-row td.dh-col {
+  background: rgba(2, 132, 199, 0.08);
 }
 
 /* ============================================

@@ -98,9 +98,38 @@ export default function seedrandom(seed) {
 	}
 };
 
-// Generate not-in-game.json by diffing local data against kachi-dev/master
+// Generate not-in-game.json by diffing local data against Global master.mdb
+// Falls back to kachi-dev/master if master.mdb is unavailable
 function generateNotInGame() {
 	const outPath = path.join(dirname, 'not-in-game.json');
+	const masterDb = path.join(root, 'docs', 'master.mdb');
+
+	// Try Global master.mdb first (most accurate)
+	if (fs.existsSync(masterDb)) {
+		try {
+			const dbSkillsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
+			const dbSkills = new Set(dbSkillsRaw.trim().split('\n'));
+			const dbOutfitsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM card_data"`, { encoding: 'utf-8' });
+			const dbOutfits = new Set(dbOutfitsRaw.trim().split('\n'));
+
+			const localSkills = JSON.parse(fs.readFileSync(path.join(dirname, 'skill_data.json'), 'utf-8'));
+			const localUmas = JSON.parse(fs.readFileSync(path.join(dirname, 'umas.json'), 'utf-8'));
+			const localOutfits = Object.keys(localUmas).flatMap(id => Object.keys(localUmas[id].outfits || {}));
+
+			const result = {
+				skills: Object.keys(localSkills).filter(id => !dbSkills.has(id)),
+				outfits: localOutfits.filter(id => !dbOutfits.has(id))
+			};
+
+			fs.writeFileSync(outPath, JSON.stringify(result));
+			console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`);
+			return;
+		} catch (e) {
+			console.warn('Failed to read master.mdb, falling back to kachi-dev');
+		}
+	}
+
+	// Fallback: diff against kachi-dev/master
 	try {
 		const kachiSkillRaw = execSync('git show kachi-dev/master:umalator-global/skill_data.json', { cwd: root, encoding: 'utf-8' });
 		const kachiUmaRaw = execSync('git show kachi-dev/master:umalator-global/umas.json', { cwd: root, encoding: 'utf-8' });
@@ -120,9 +149,9 @@ function generateNotInGame() {
 		};
 
 		fs.writeFileSync(outPath, JSON.stringify(result));
-		console.log(`not-in-game.json: ${result.skills.length} skills, ${result.outfits.length} outfits`);
+		console.log(`not-in-game.json (kachi-dev): ${result.skills.length} skills, ${result.outfits.length} outfits`);
 	} catch (e) {
-		console.warn('Could not generate not-in-game.json (kachi-dev remote unavailable), using empty list');
+		console.warn('Could not generate not-in-game.json, using empty list');
 		fs.writeFileSync(outPath, JSON.stringify({ skills: [], outfits: [] }));
 	}
 }

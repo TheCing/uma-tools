@@ -7,7 +7,7 @@ import { HpPolicy, GameHpPolicy } from '../uma-skill-tools/HpPolicy';
 import { PRNG } from '../uma-skill-tools/Random';
 import { GroundCondition } from '../uma-skill-tools/RaceParameters';
 
-import { HorseState } from '../components/HorseDefTypes';
+import { HorseState, uniqueSkillForUma } from '../components/HorseDefTypes';
 
 import skillmeta from '../skill_meta.json';
 
@@ -154,13 +154,15 @@ export function runHpCalc(
 	}
 
 	// Add skills
+	const umaUniqueId = uniqueSkillForUma(uma.outfitId, uma.starCount);
 	const skillActivations = new Map();
 	uma_.skills.forEach(id => {
+		const lv = id === umaUniqueId ? uma.uniqueLv : 1;
 		const forcedPos = uma.forcedSkillPositions.get(id);
 		if (forcedPos != null) {
-			b0.addSkillAtPosition(id, forcedPos, Perspective.Self);
+			b0.addSkillAtPosition(id, forcedPos, Perspective.Self, undefined, lv);
 		} else {
-			b0.addSkill(id, Perspective.Self);
+			b0.addSkill(id, Perspective.Self, undefined, undefined, lv);
 		}
 	});
 
@@ -202,7 +204,8 @@ export function runHpCalc(
 	b0.onSkillActivate(function (s, id, persp) {
 		if (persp == Perspective.Self && id != 'asitame' && id != 'staminasyoubu') {
 			if (!skillActivations.has(id)) skillActivations.set(id, []);
-			skillActivations.get(id).push([s.pos, -1]);
+			const roll = s.randomRolls.get(id);
+			skillActivations.get(id).push([s.pos, -1, roll != null ? roll : undefined]);
 		}
 	});
 	b0.onSkillDeactivate(function (s, id, persp) {
