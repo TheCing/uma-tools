@@ -75,10 +75,11 @@ Object.keys(skilldata).forEach(id => {
 // SKILL HELPERS
 // ============================================
 
-// Get skill name from skillnames.json
+// Get skill name from skillnames.json (prefer EN name at end of array for bilingual entries)
 export function getSkillName(skillId: string): string {
 	const names = (skillnames as Record<string, string[]>)[skillId];
-	return names?.[0] || `Skill ${skillId}`;
+	if (!names || names.length === 0) return `Skill ${skillId}`;
+	return names[names.length - 1] || names[0];
 }
 
 // Get skill icon path from skillmeta

@@ -925,8 +925,8 @@ function App() {
         const iconId = skillmeta[skillId]?.iconId;
         if (NO_SHOW.includes(iconId)) return;
 
-        // Get skill name (fallback to ID if not found)
-        const name = skillnames[skillId]?.[0] ?? skillId;
+        // Get skill name (prefer EN name at end of array for bilingual entries)
+        const name = skillnames[skillId]?.slice(-1)[0] ?? skillId;
 
         activations.forEach((ar: number[]) => {
           if (!ar || ar.length < 2) return;

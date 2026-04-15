@@ -63,8 +63,9 @@ function SkillNameCell(props: { id: string; showUmaIcons: boolean }) {
 		return <div class="v2-skill-chart-skill-name"><span>???</span></div>;
 	}
 
-	// skillnames values are arrays like ["Name"], access [0]
-	const name = skillnames[id]?.[0] || id;
+	// skillnames values are arrays like ["Name"] or ["JP", "EN"] — prefer last (EN)
+	const names = skillnames[id];
+	const name = names?.[names.length - 1] || names?.[0] || id;
 
 	if (showUmaIcons) {
 		const umaId = umaForUniqueSkill(id);
@@ -378,7 +379,7 @@ export function SkillChartPane(props: SkillChartPaneProps) {
 								</tr>
 							);
 						} else {
-							return <tr key={row.id} data-skillid={id} ref={el => el && obs.observe(el)}>{(skillnames as any)[id]?.[0] ?? id}</tr>;
+							return <tr key={row.id} data-skillid={id} ref={el => el && obs.observe(el)}>{((skillnames as any)[id]?.slice(-1)[0]) ?? id}</tr>;
 						}
 					})}
 				</tbody>
