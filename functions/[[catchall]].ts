@@ -173,7 +173,7 @@ const RESPONSES: Record<number, CmResponse> = {
   10: { answer: 'Yes, but delayed', detail: 'Aquarius Cup — Tokyo 1600m Dirt' },
   11: { answer: 'Glue', detail: 'Pisces Cup — Hanshin 3200m Turf' },
   12: { answer: 'Glue', detail: 'Aries Cup — Nakayama 2000m Turf' },
-  13: { answer: 'Yes', detail: 'Taurus Cup — Tokyo 2400m Turf' },
+  13: { answer: 'Mandatory 😠', detail: 'Taurus Cup — Tokyo 2400m Turf' },
   14: { answer: 'TBD', detail: 'Gemini Cup — Tokyo 1600m Turf' },
   15: { answer: 'TBD', detail: 'Cancer Cup — Hanshin 2200m Turf' },
   16: { answer: 'TBD', detail: 'Leo Cup — Nakayama 1200m Turf' },
