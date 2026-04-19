@@ -174,10 +174,13 @@ const RESPONSES: Record<number, CmResponse> = {
   11: { answer: 'Glue', detail: 'Pisces Cup — Hanshin 3200m Turf' },
   12: { answer: 'Glue', detail: 'Aries Cup — Nakayama 2000m Turf' },
   13: { answer: 'Mandatory 😠', detail: 'Taurus Cup — Tokyo 2400m Turf' },
-  14: { answer: 'TBD', detail: 'Gemini Cup — Tokyo 1600m Turf' },
-  15: { answer: 'TBD', detail: 'Cancer Cup — Hanshin 2200m Turf' },
-  16: { answer: 'TBD', detail: 'Leo Cup — Nakayama 1200m Turf' },
-  17: { answer: 'TBD', detail: 'Virgo Cup — Ooi 2000m Dirt' },
+  14: { answer: 'Glue - Credit/Blame @FalooslessFukuFan', detail: 'Gemini Cup — Tokyo 1600m Turf' },
+  15: { answer: 'Glue - Credit/Blame @FalooslessFukuFan', detail: 'Cancer Cup — Hanshin 2200m Turf' },
+  16: { answer: 'Glue - Credit/Blame @FalooslessFukuFan', detail: 'Leo Cup — Nakayama 1200m Turf' },
+  17: { answer: 'Yes - Credit/Blame @FalooslessFukuFan', detail: 'Virgo Cup — Ooi 2000m Dirt' },
+  18: { answer: 'Glue - Credit/Blame @FalooslessFukuFan', detail: 'Libra Cup — Tokyo 2000m Turf' },
+  19: { answer: 'Yes - Credit/Blame @FalooslessFukuFan', detail: 'Scorpio Cup — Kyoto 2400m Turf' },
+  20: { answer: 'Yes - Credit/Blame @FalooslessFukuFan', detail: 'Sagittarius Cup — Hanshin 1600m Turf' },
 };
 
 function buildPage(answer: string, detail: string): string {
@@ -208,11 +211,19 @@ function buildPage(answer: string, detail: string): string {
       color: #888;
       margin-top: 1rem;
     }
+    .attr {
+      position: fixed;
+      bottom: 0.75rem;
+      right: 1rem;
+      font-size: 0.8rem;
+      color: #bbb;
+    }
   </style>
 </head>
 <body>
   <p class="answer">${escapeHtml(answer)}</p>
   <p class="detail">${escapeHtml(detail)}</p>
+  <span class="attr">@cing</span>
 </body>
 </html>`;
 }
@@ -239,10 +250,18 @@ function build404(): string {
       font-weight: 700;
       color: #ccc;
     }
+    .attr {
+      position: fixed;
+      bottom: 0.75rem;
+      right: 1rem;
+      font-size: 0.8rem;
+      color: #bbb;
+    }
   </style>
 </head>
 <body>
   <p class="answer">Unknown CM</p>
+  <span class="attr">@cing</span>
 </body>
 </html>`;
 }
