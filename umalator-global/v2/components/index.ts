@@ -19,6 +19,24 @@ export { Button } from './Button';
 
 export { Tooltip } from './Tooltip';
 
+export { Input } from './Input';
+
+export { Checkbox } from './Checkbox';
+
+export { Switch } from './Switch';
+
+export { Tabs } from './Tabs';
+export type { TabItem } from './Tabs';
+
+export { Badge } from './Badge';
+
+export { Textarea } from './Textarea';
+
+export { NumberInput } from './NumberInput';
+
+export { SegmentedControl } from './SegmentedControl';
+export type { SegmentOption } from './SegmentedControl';
+
 // Re-export commonly used icons for convenience
 export {
 	ChevronDown,

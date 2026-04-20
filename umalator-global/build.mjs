@@ -178,6 +178,7 @@ const buildOptionsV2 = {
 	minify: !debug,
 	outdir: '.',
 	write: !serve,
+	format: 'esm',  // v2 uses import.meta (env vars, worker URLs) — legal only in ESM output
 	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
 	external: ['*.ttf'],
 	plugins: [redirectData, mockAssert, seedrandomPlugin],  // No redirectTable - use npm packages

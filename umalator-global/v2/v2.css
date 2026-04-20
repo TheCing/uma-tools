@@ -6908,3 +6908,572 @@ tr:hover .v2-skill-hide-btn {
     font-size: var(--font-md);
   }
 }
+
+/* ============================================
+   NEW PRIMITIVES: Input / Checkbox / Tabs / Badge
+   (Switch and base .v2-input already defined above)
+   ============================================ */
+
+/* ---------- Input field wrapper ---------- */
+.v2-input-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.v2-input-required {
+  color: var(--color-error);
+}
+
+.v2-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.v2-input-wrap .v2-input {
+  width: 100%;
+}
+
+.v2-input-wrap.has-icon-left .v2-input {
+  padding-left: 34px;
+}
+
+.v2-input-wrap.has-icon-right .v2-input {
+  padding-right: 34px;
+}
+
+.v2-input-icon {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.v2-input-icon-left {
+  left: 10px;
+}
+
+.v2-input-icon-right {
+  right: 10px;
+}
+
+.v2-input:disabled,
+.v2-input[readonly] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.v2-input-error,
+.v2-input.v2-input-error:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.v2-input-helper {
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.v2-input-helper-error {
+  color: var(--color-error);
+}
+
+/* ---------- Checkbox ---------- */
+.v2-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.v2-checkbox.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.v2-checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.v2-checkbox-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary-text);
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.v2-checkbox:hover input:not(:disabled) ~ .v2-checkbox-box {
+  border-color: var(--color-border-strong);
+}
+
+.v2-checkbox input:checked ~ .v2-checkbox-box,
+.v2-checkbox input:indeterminate ~ .v2-checkbox-box {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.v2-checkbox input:focus-visible ~ .v2-checkbox-box {
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.v2-checkbox-label {
+  font-size: var(--font-base);
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.v2-checkbox:hover .v2-checkbox-label,
+.v2-checkbox input:checked ~ .v2-checkbox-label {
+  color: var(--color-text);
+}
+
+/* ---------- Tabs ---------- */
+.v2-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.v2-tabs-list {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.v2-tabs.full-width .v2-tabs-list {
+  display: flex;
+  width: 100%;
+}
+
+.v2-tabs.full-width .v2-tab {
+  flex: 1;
+  justify-content: center;
+}
+
+.v2-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  font-family: inherit;
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.v2-tabs-sm .v2-tab {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-xs);
+}
+
+.v2-tab:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.v2-tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v2-tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.v2-tab-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Line variant (default) */
+.v2-tabs-line .v2-tabs-list {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.v2-tabs-line .v2-tab {
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.v2-tabs-line .v2-tab.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Pill variant */
+.v2-tabs-pill .v2-tab {
+  border-radius: var(--radius-md);
+}
+
+.v2-tabs-pill .v2-tab.active {
+  color: var(--color-primary-text);
+  background: var(--color-primary);
+}
+
+/* Segmented variant */
+.v2-tabs-segmented .v2-tabs-list {
+  padding: 3px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  gap: 0;
+}
+
+.v2-tabs-segmented .v2-tab {
+  border-radius: calc(var(--radius-md) - 3px);
+}
+
+.v2-tabs-segmented .v2-tab.active {
+  color: var(--color-text);
+  background: var(--color-surface-overlay);
+}
+
+.v2-tab-panel {
+  min-height: 0;
+}
+
+/* ---------- Badge ---------- */
+.v2-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: var(--font-2xs);
+  font-weight: 600;
+  line-height: 1.4;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.v2-badge-sm {
+  padding: 1px 6px;
+  font-size: 10px;
+}
+
+.v2-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.v2-badge-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.v2-badge-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 2px;
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+}
+
+.v2-badge-remove:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Badge variants (solid) */
+.v2-badge-neutral {
+  background: var(--color-surface-overlay);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+}
+
+.v2-badge-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.v2-badge-success {
+  background: var(--color-success);
+  color: #062b13;
+}
+
+.v2-badge-warning {
+  background: var(--color-warning);
+  color: #3a2400;
+}
+
+.v2-badge-danger {
+  background: var(--color-error);
+  color: #fff;
+}
+
+.v2-badge-accent {
+  background: var(--color-accent);
+  color: #3a2400;
+}
+
+/* Badge outline variants */
+.v2-badge.outline {
+  background: transparent;
+}
+
+.v2-badge-neutral.outline {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-strong);
+}
+
+.v2-badge-primary.outline {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.v2-badge-success.outline {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.v2-badge-warning.outline {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.v2-badge-danger.outline {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.v2-badge-accent.outline {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* ============================================
+   TIER 2 PRIMITIVES: Textarea / NumberInput / SegmentedControl
+   ============================================ */
+
+/* ---------- Textarea (extends .v2-input) ---------- */
+.v2-textarea {
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.v2-textarea.auto-resize {
+  resize: none;
+  overflow: hidden;
+}
+
+.v2-input-helper-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-sm);
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.v2-input-helper-row.v2-input-helper-error .v2-input-helper {
+  color: var(--color-error);
+}
+
+.v2-input-count {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-faint);
+  flex-shrink: 0;
+}
+
+/* ---------- NumberInput ---------- */
+.v2-number-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.v2-number-wrap .v2-number-input {
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.v2-number-wrap.has-prefix .v2-number-input {
+  padding-left: 32px;
+}
+
+.v2-number-wrap.has-suffix .v2-number-input {
+  padding-right: 42px;
+}
+
+.v2-number-wrap.has-stepper .v2-number-input {
+  padding-right: 28px;
+}
+
+.v2-number-wrap.has-suffix.has-stepper .v2-number-input {
+  padding-right: 64px;
+}
+
+.v2-number-prefix,
+.v2-number-suffix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-xs);
+  color: var(--color-text-muted);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.v2-number-prefix {
+  left: 10px;
+}
+
+.v2-number-suffix {
+  right: 10px;
+}
+
+.v2-number-wrap.has-stepper .v2-number-suffix {
+  right: 32px;
+}
+
+.v2-number-stepper {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  width: 22px;
+  overflow: hidden;
+  border-radius: calc(var(--radius-sm) - 2px);
+}
+
+.v2-number-step-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: var(--color-surface-overlay);
+  border: none;
+  border-left: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.v2-number-step-btn:first-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.v2-number-step-btn:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.v2-number-step-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ---------- SegmentedControl ---------- */
+.v2-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  padding: 3px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  gap: 0;
+}
+
+.v2-segmented.full-width {
+  display: flex;
+  width: 100%;
+}
+
+.v2-segmented.full-width .v2-segment {
+  flex: 1;
+}
+
+.v2-segment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-md);
+  font-family: inherit;
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-md) - 3px);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  min-height: 28px;
+}
+
+.v2-segmented-sm .v2-segment {
+  padding: 2px var(--space-sm);
+  font-size: var(--font-xs);
+  min-height: 22px;
+}
+
+.v2-segment:hover:not(:disabled):not(.active) {
+  color: var(--color-text);
+}
+
+.v2-segment:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.v2-segment:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.v2-segment.active {
+  color: var(--color-text);
+  background: var(--color-surface-overlay);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.v2-segment-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.v2-segmented.icon-only .v2-segment {
+  padding: var(--space-xs) var(--space-sm);
+}
