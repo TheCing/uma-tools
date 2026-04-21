@@ -52,6 +52,12 @@ node build.mjs
 cd ..
 
 echo ""
+echo "Building release-timeline..."
+cd release-timeline
+node build.mjs
+cd ..
+
+echo ""
 echo "Building build-planner..."
 cd build-planner
 ../node_modules/.bin/esbuild app.tsx --bundle --external:node:assert --outfile=bundle.js
