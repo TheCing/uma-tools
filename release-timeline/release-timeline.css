@@ -408,6 +408,55 @@ body {
 	flex-shrink: 0;
 }
 
+/* ---------- Mode tabs (Support Cards / Umas) ---------- */
+.rt-mode-tabs {
+	margin-top: var(--space-sm);
+}
+
+/* ---------- Uma card (portrait + body) ---------- */
+.rt-uma-card {
+	align-items: stretch;
+	padding: var(--space-xs);
+}
+
+.rt-uma-portrait {
+	flex-shrink: 0;
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+	background: var(--color-surface-overlay);
+	display: block;
+}
+
+.rt-uma-rarity {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1px 6px;
+	font-size: 10px;
+	font-weight: 700;
+	border-radius: 999px;
+	letter-spacing: 0.04em;
+}
+
+.rt-uma-rarity-1 {
+	color: var(--color-text-secondary);
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border);
+}
+
+.rt-uma-rarity-2 {
+	color: #faf4ff;
+	background: #5b3f85;
+}
+
+.rt-uma-rarity-3 {
+	color: #1f1400;
+	background: linear-gradient(135deg, #f5c35a, #f59038);
+}
+
 /* ---------- Footer ---------- */
 .rt-footer {
 	margin-top: var(--space-xl);

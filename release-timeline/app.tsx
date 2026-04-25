@@ -1,17 +1,17 @@
 /**
  * Release Timeline
  *
- * Browse Uma Musume JP release history — scenarios + every support card,
- * grouped chronologically. Cards are attributed to the scenario that was
- * active at their release date. Uses the v2 component library.
+ * Browse Uma Musume JP release history — scenarios + every support card + every
+ * uma outfit, grouped chronologically. Entries are attributed to the scenario
+ * that was active at their release date. Uses the v2 component library.
  *
- * Copyright (c) 2026 TheCing (https://github.com/TheCing/theCing/uma-tools)
+ * Copyright (c) 2026 TheCing (https://github.com/TheCing/uma-tools)
  * Licensed under GPL-3.0-or-later
  */
 
 import { h, render, Fragment } from 'preact';
 import { useState, useMemo } from 'preact/hooks';
-import { Search, Calendar, ListFilter } from 'lucide-react';
+import { Search, Calendar, ListFilter, CreditCard, User } from 'lucide-react';
 
 import {
 	Input,
@@ -26,6 +26,7 @@ import {
 
 import scenariosData from '../docs/jp-scenarios.json';
 import cardsData from '../docs/jp-support-card-releases.json';
+import umasData from '../docs/jp-uma-releases.json';
 
 import '../umalator-global/v2/v2.css';
 import './release-timeline.css';
@@ -60,8 +61,26 @@ interface Card {
 	scenario: string;
 }
 
+interface Uma {
+	cardId: number;
+	charaId: number;
+	rarity: number;
+	rarityLabel: string;
+	obtained: string;
+	nameJp: string;
+	nameEn: string;
+	titleJp: string | null;
+	titleEn: string | null;
+	urlName: string;
+	startDate: string;
+	releaseEn: string | null;
+	scenario: string;
+}
+
+type Mode = 'cards' | 'umas';
 type RarityFilter = 'all' | 'R' | 'SR' | 'SSR';
 type TypeFilter = 'all' | CardType;
+type UmaRarityFilter = 'all' | '1' | '2' | '3';
 type ViewMode = 'scenario' | 'chronological';
 
 const TYPE_ORDER: CardType[] = ['speed', 'stamina', 'power', 'guts', 'wit', 'friend', 'group'];
@@ -74,6 +93,7 @@ const TYPE_LABELS: Record<CardType, string> = {
 
 const scenarios = (scenariosData as any).scenarios as Scenario[];
 const allCards = (cardsData as any).cards as Card[];
+const allUmas = (umasData as any).umas as Uma[];
 
 const SCENARIO_PALETTE = [
 	'#6ca9e0', '#7fbf7e', '#f0a55a', '#e07373', '#b08ad4',
@@ -85,34 +105,46 @@ const scenarioColorMap = new Map<string, string>();
 scenarios.forEach((s, i) => scenarioColorMap.set(s.enName, SCENARIO_PALETTE[i % SCENARIO_PALETTE.length]));
 scenarioColorMap.set('Pre-URA (JP launch period)', '#555');
 
-const scenarioByName = new Map(scenarios.map(s => [s.enName, s]));
-
-function displayName(c: Card): string {
+function displayCardName(c: Card): string {
 	if (c.nameEn) return c.nameEn;
-	// Hybrid fallback: keep JP epithet bracket, substitute English chara
 	const bracketMatch = c.nameJp.match(/^\[([^\]]+)\]/);
 	if (bracketMatch && c.charaNameEn) return `[${bracketMatch[1]}] ${c.charaNameEn}`;
 	return c.nameJp;
 }
 
-/** Split "[Epithet] Character Name" into { epithet, chara }. Handles names without brackets too. */
 function splitName(full: string): { epithet: string | null; chara: string } {
 	const m = full.match(/^\s*\[([^\]]+)\]\s*(.*)$/);
 	if (m) return { epithet: m[1].trim(), chara: m[2].trim() };
 	return { epithet: null, chara: full };
 }
 
+function umaDisplayEpithet(u: Uma): string | null {
+	// Prefer official Global translation; else fall back to JP (readers can recognize epithets)
+	return u.titleEn || u.titleJp || null;
+}
+
+function umaIconUrl(u: Uma): string {
+	return `/uma-tools/icons/chara/trained_chr_icon_${u.charaId}_${u.cardId}_02.png`;
+}
+function umaIconFallback(u: Uma): string {
+	const base = `${u.charaId}01`;
+	return `/uma-tools/icons/chara/trained_chr_icon_${u.charaId}_${base}_02.png`;
+}
+
 // --- Main App --------------------------------------------------------------
 
 function App() {
+	const [mode, setMode] = useState<Mode>('cards');
 	const [search, setSearch] = useState('');
 	const [rarity, setRarity] = useState<RarityFilter>('all');
 	const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+	const [umaRarity, setUmaRarity] = useState<UmaRarityFilter>('all');
 	const [scenarioFilter, setScenarioFilter] = useState<string>('all');
 	const [showUnlocalized, setShowUnlocalized] = useState(true);
 	const [view, setView] = useState<ViewMode>('scenario');
 
-	const filtered = useMemo(() => {
+	// --- filter Support Cards ---
+	const filteredCards = useMemo(() => {
 		const q = search.trim().toLowerCase();
 		return allCards.filter(c => {
 			if (rarity !== 'all' && c.rarityLabel !== rarity) return false;
@@ -127,15 +159,38 @@ function App() {
 		});
 	}, [search, rarity, typeFilter, scenarioFilter, showUnlocalized]);
 
-	const grouped = useMemo(() => {
-		const groups = new Map<string, Card[]>();
-		for (const c of filtered) {
-			const k = c.scenario;
-			if (!groups.has(k)) groups.set(k, []);
-			groups.get(k)!.push(c);
+	// --- filter Umas ---
+	const filteredUmas = useMemo(() => {
+		const q = search.trim().toLowerCase();
+		return allUmas.filter(u => {
+			if (umaRarity !== 'all' && String(u.rarity) !== umaRarity) return false;
+			if (scenarioFilter !== 'all' && u.scenario !== scenarioFilter) return false;
+			if (!showUnlocalized && !u.titleEn) return false;
+			if (q) {
+				const hay = [u.nameJp, u.nameEn, u.titleJp || '', u.titleEn || ''].join(' ').toLowerCase();
+				if (!hay.includes(q)) return false;
+			}
+			return true;
+		});
+	}, [search, umaRarity, scenarioFilter, showUnlocalized]);
+
+	const groupedCards = useMemo(() => {
+		const g = new Map<string, Card[]>();
+		for (const c of filteredCards) {
+			if (!g.has(c.scenario)) g.set(c.scenario, []);
+			g.get(c.scenario)!.push(c);
 		}
-		return groups;
-	}, [filtered]);
+		return g;
+	}, [filteredCards]);
+
+	const groupedUmas = useMemo(() => {
+		const g = new Map<string, Uma[]>();
+		for (const u of filteredUmas) {
+			if (!g.has(u.scenario)) g.set(u.scenario, []);
+			g.get(u.scenario)!.push(u);
+		}
+		return g;
+	}, [filteredUmas]);
 
 	const scenarioOptions: SelectOption[] = useMemo(() => [
 		{ value: 'all', label: 'All scenarios' },
@@ -150,18 +205,35 @@ function App() {
 		{ id: 'chronological', label: 'Chronological', icon: <Calendar size={14} /> },
 	];
 
+	const modeTabs: TabItem[] = [
+		{ id: 'cards', label: `Support Cards (${allCards.length})`, icon: <CreditCard size={14} /> },
+		{ id: 'umas', label: `Umas (${allUmas.length})`, icon: <User size={14} /> },
+	];
+
+	const filteredCount = mode === 'cards' ? filteredCards.length : filteredUmas.length;
+	const totalCount = mode === 'cards' ? allCards.length : allUmas.length;
+
 	return (
 		<div class="rt-app">
 			<header class="rt-header">
 				<div class="rt-header-main">
 					<h1 class="rt-title">Uma Musume Release Timeline</h1>
 					<div class="rt-header-stats">
-						<span><strong>{filtered.length}</strong> cards</span>
+						<span><strong>{filteredCount}</strong> / {totalCount} {mode === 'cards' ? 'cards' : 'umas'}</span>
 						<span class="rt-sep">•</span>
 						<span><strong>{scenarios.length}</strong> scenarios</span>
 						<span class="rt-sep">•</span>
 						<span>JP server</span>
 					</div>
+				</div>
+				<div class="rt-mode-tabs">
+					<Tabs
+						items={modeTabs}
+						activeId={mode}
+						onChange={(id) => setMode(id as Mode)}
+						variant="line"
+						size="md"
+					/>
 				</div>
 			</header>
 
@@ -169,12 +241,11 @@ function App() {
 				{scenarios.map(s => {
 					const color = scenarioColorMap.get(s.enName) || '#888';
 					const isActive = scenarioFilter === s.enName;
-					const isCurrent = s.isCurrent;
 					return (
 						<button
 							key={s.enName}
 							type="button"
-							class={`rt-scenario-chip ${isActive ? 'active' : ''} ${isCurrent ? 'current' : ''}`}
+							class={`rt-scenario-chip ${isActive ? 'active' : ''} ${s.isCurrent ? 'current' : ''}`}
 							style={{ '--rt-accent': color } as any}
 							onClick={() => setScenarioFilter(isActive ? 'all' : s.enName)}
 							title={`${s.startDate} → ${s.endDate || 'current'} (${s.lifespanDays} days)`}
@@ -193,22 +264,37 @@ function App() {
 						<Input
 							value={search}
 							onInput={setSearch}
-							placeholder="Search by name (JP or EN) or character…"
+							placeholder={`Search ${mode === 'cards' ? 'cards' : 'umas'} by name or epithet…`}
 							iconLeft={<Search size={14} />}
 						/>
 					</div>
-					<SegmentedControl<RarityFilter>
-						value={rarity}
-						onChange={setRarity}
-						size="sm"
-						options={[
-							{ value: 'all', label: 'All' },
-							{ value: 'R', label: 'R' },
-							{ value: 'SR', label: 'SR' },
-							{ value: 'SSR', label: 'SSR' },
-						]}
-						ariaLabel="Filter by rarity"
-					/>
+					{mode === 'cards' ? (
+						<SegmentedControl<RarityFilter>
+							value={rarity}
+							onChange={setRarity}
+							size="sm"
+							options={[
+								{ value: 'all', label: 'All' },
+								{ value: 'R', label: 'R' },
+								{ value: 'SR', label: 'SR' },
+								{ value: 'SSR', label: 'SSR' },
+							]}
+							ariaLabel="Filter by rarity"
+						/>
+					) : (
+						<SegmentedControl<UmaRarityFilter>
+							value={umaRarity}
+							onChange={setUmaRarity}
+							size="sm"
+							options={[
+								{ value: 'all', label: 'All' },
+								{ value: '1', label: '1★' },
+								{ value: '2', label: '2★' },
+								{ value: '3', label: '3★' },
+							]}
+							ariaLabel="Filter by rarity"
+						/>
+					)}
 					<div class="rt-filter-select">
 						<CustomSelect
 							value={scenarioFilter}
@@ -217,27 +303,28 @@ function App() {
 						/>
 					</div>
 				</div>
-				<div class="rt-filters-row rt-filters-row-types">
-					<span class="rt-filter-label">Type</span>
-					<SegmentedControl<TypeFilter>
-						value={typeFilter}
-						onChange={setTypeFilter}
-						size="sm"
-						options={[
-							{ value: 'all', label: 'All' },
-							...TYPE_ORDER.map(t => ({
-								value: t,
-								label: TYPE_LABELS[t],
-							})),
-						]}
-						ariaLabel="Filter by card type"
-					/>
-				</div>
+
+				{mode === 'cards' && (
+					<div class="rt-filters-row rt-filters-row-types">
+						<span class="rt-filter-label">Type</span>
+						<SegmentedControl<TypeFilter>
+							value={typeFilter}
+							onChange={setTypeFilter}
+							size="sm"
+							options={[
+								{ value: 'all', label: 'All' },
+								...TYPE_ORDER.map(t => ({ value: t, label: TYPE_LABELS[t] })),
+							]}
+							ariaLabel="Filter by card type"
+						/>
+					</div>
+				)}
+
 				<div class="rt-filters-row rt-filters-row-2">
 					<Switch
 						checked={showUnlocalized}
 						onChange={setShowUnlocalized}
-						label="Show cards not yet on Global"
+						label="Show entries not yet on Global"
 					/>
 					<div class="rt-view-switch">
 						<Tabs
@@ -252,27 +339,9 @@ function App() {
 			</section>
 
 			<main class="rt-results">
-				{filtered.length === 0 ? (
-					<div class="rt-empty">No cards match those filters.</div>
-				) : view === 'scenario' ? (
-					scenarios
-						.filter(s => grouped.has(s.enName))
-						.map(s => (
-							<ScenarioSection
-								key={s.enName}
-								scenario={s}
-								cards={grouped.get(s.enName) || []}
-								color={scenarioColorMap.get(s.enName) || '#888'}
-							/>
-						))
-						.concat(
-							grouped.has('Pre-URA (JP launch period)')
-								? [<PreURASection cards={grouped.get('Pre-URA (JP launch period)')!} />]
-								: []
-						)
-				) : (
-					<ChronologicalList cards={filtered} />
-				)}
+				{mode === 'cards'
+					? <CardResults filtered={filteredCards} grouped={groupedCards} view={view} />
+					: <UmaResults filtered={filteredUmas} grouped={groupedUmas} view={view} />}
 			</main>
 
 			<footer class="rt-footer">
@@ -282,14 +351,110 @@ function App() {
 	);
 }
 
-// --- Scenario Section ------------------------------------------------------
+// --- Results wrappers ------------------------------------------------------
 
-function ScenarioSection({ scenario, cards, color }: { scenario: Scenario; cards: Card[]; color: string }) {
-	const rarityCounts = {
-		R: cards.filter(c => c.rarityLabel === 'R').length,
-		SR: cards.filter(c => c.rarityLabel === 'SR').length,
-		SSR: cards.filter(c => c.rarityLabel === 'SSR').length,
-	};
+function CardResults({ filtered, grouped, view }: { filtered: Card[]; grouped: Map<string, Card[]>; view: ViewMode }) {
+	if (filtered.length === 0) return <div class="rt-empty">No cards match those filters.</div>;
+	if (view === 'chronological') {
+		return (
+			<ul class="rt-card-grid rt-card-grid-flat">
+				{filtered.map(c => <CardRow key={c.id} card={c} showScenario />)}
+			</ul>
+		);
+	}
+	const sections = scenarios
+		.filter(s => grouped.has(s.enName))
+		.map(s => (
+			<ScenarioSection<Card>
+				key={s.enName}
+				scenario={s}
+				items={grouped.get(s.enName) || []}
+				color={scenarioColorMap.get(s.enName) || '#888'}
+				renderItem={c => <CardRow key={c.id} card={c} />}
+				summary={items => cardSummary(items)}
+			/>
+		));
+	if (grouped.has('Pre-URA (JP launch period)')) {
+		sections.push(
+			<PreURASection<Card>
+				key="pre"
+				items={grouped.get('Pre-URA (JP launch period)')!}
+				renderItem={c => <CardRow key={c.id} card={c} />}
+			/>
+		);
+	}
+	return <Fragment>{sections}</Fragment>;
+}
+
+function UmaResults({ filtered, grouped, view }: { filtered: Uma[]; grouped: Map<string, Uma[]>; view: ViewMode }) {
+	if (filtered.length === 0) return <div class="rt-empty">No umas match those filters.</div>;
+	if (view === 'chronological') {
+		return (
+			<ul class="rt-card-grid rt-card-grid-flat">
+				{filtered.map(u => <UmaCard key={u.cardId} uma={u} showScenario />)}
+			</ul>
+		);
+	}
+	const sections = scenarios
+		.filter(s => grouped.has(s.enName))
+		.map(s => (
+			<ScenarioSection<Uma>
+				key={s.enName}
+				scenario={s}
+				items={grouped.get(s.enName) || []}
+				color={scenarioColorMap.get(s.enName) || '#888'}
+				renderItem={u => <UmaCard key={u.cardId} uma={u} />}
+				summary={items => umaSummary(items)}
+			/>
+		));
+	return <Fragment>{sections}</Fragment>;
+}
+
+// --- Summary renderers -----------------------------------------------------
+
+function cardSummary(cards: Card[]) {
+	const r = cards.filter(c => c.rarityLabel === 'R').length;
+	const sr = cards.filter(c => c.rarityLabel === 'SR').length;
+	const ssr = cards.filter(c => c.rarityLabel === 'SSR').length;
+	return (
+		<Fragment>
+			<span>{cards.length} card{cards.length === 1 ? '' : 's'}</span>
+			{ssr > 0 && <span class="rt-rarity-count rt-rarity-ssr">{ssr} SSR</span>}
+			{sr > 0 && <span class="rt-rarity-count rt-rarity-sr">{sr} SR</span>}
+			{r > 0 && <span class="rt-rarity-count rt-rarity-r">{r} R</span>}
+		</Fragment>
+	);
+}
+
+function umaSummary(umas: Uma[]) {
+	const three = umas.filter(u => u.rarity === 3).length;
+	const two = umas.filter(u => u.rarity === 2).length;
+	const one = umas.filter(u => u.rarity === 1).length;
+	return (
+		<Fragment>
+			<span>{umas.length} uma{umas.length === 1 ? '' : 's'}</span>
+			{three > 0 && <span class="rt-rarity-count rt-rarity-ssr">{three} 3★</span>}
+			{two > 0 && <span class="rt-rarity-count rt-rarity-sr">{two} 2★</span>}
+			{one > 0 && <span class="rt-rarity-count rt-rarity-r">{one} 1★</span>}
+		</Fragment>
+	);
+}
+
+// --- Scenario Section (generic) --------------------------------------------
+
+function ScenarioSection<T>({
+	scenario,
+	items,
+	color,
+	renderItem,
+	summary,
+}: {
+	scenario: Scenario;
+	items: T[];
+	color: string;
+	renderItem: (item: T) => any;
+	summary: (items: T[]) => any;
+}) {
 	return (
 		<section class="rt-section" style={{ '--rt-accent': color } as any}>
 			<header class="rt-section-header">
@@ -303,21 +468,18 @@ function ScenarioSection({ scenario, cards, color }: { scenario: Scenario; cards
 					<span class="rt-sep">•</span>
 					<span>{scenario.lifespanDays} days</span>
 					<span class="rt-sep">•</span>
-					<span>{cards.length} card{cards.length === 1 ? '' : 's'}</span>
-					{rarityCounts.SSR > 0 && <span class="rt-rarity-count rt-rarity-ssr">{rarityCounts.SSR} SSR</span>}
-					{rarityCounts.SR > 0 && <span class="rt-rarity-count rt-rarity-sr">{rarityCounts.SR} SR</span>}
-					{rarityCounts.R > 0 && <span class="rt-rarity-count rt-rarity-r">{rarityCounts.R} R</span>}
+					{summary(items)}
 				</div>
 				<p class="rt-section-jp">{scenario.jpName}</p>
 			</header>
 			<ul class="rt-card-grid">
-				{cards.map(c => <CardRow key={c.id} card={c} />)}
+				{items.map(renderItem)}
 			</ul>
 		</section>
 	);
 }
 
-function PreURASection({ cards }: { cards: Card[] }) {
+function PreURASection<T>({ items, renderItem }: { items: T[]; renderItem: (item: T) => any }) {
 	return (
 		<section class="rt-section rt-section-pre" style={{ '--rt-accent': '#555' } as any}>
 			<header class="rt-section-header">
@@ -327,30 +489,20 @@ function PreURASection({ cards }: { cards: Card[] }) {
 				<div class="rt-section-meta">
 					<span>Before 2021-02-24</span>
 					<span class="rt-sep">•</span>
-					<span>{cards.length} card{cards.length === 1 ? '' : 's'}</span>
+					<span>{items.length} item{items.length === 1 ? '' : 's'}</span>
 				</div>
 			</header>
 			<ul class="rt-card-grid">
-				{cards.map(c => <CardRow key={c.id} card={c} />)}
+				{items.map(renderItem)}
 			</ul>
 		</section>
 	);
 }
 
-// --- Chronological (flat) view ---------------------------------------------
-
-function ChronologicalList({ cards }: { cards: Card[] }) {
-	return (
-		<ul class="rt-card-grid rt-card-grid-flat">
-			{cards.map(c => <CardRow key={c.id} card={c} showScenario />)}
-		</ul>
-	);
-}
-
-// --- Card Row --------------------------------------------------------------
+// --- Card Row (support card) -----------------------------------------------
 
 function CardRow({ card, showScenario = false }: { card: Card; showScenario?: boolean }) {
-	const { epithet, chara } = splitName(displayName(card));
+	const { epithet, chara } = splitName(displayCardName(card));
 	const scenarioColor = scenarioColorMap.get(card.scenario) || '#888';
 	return (
 		<li class={`rt-card rt-rarity-${card.rarityLabel}`} style={{ '--rt-card-scenario': scenarioColor } as any}>
@@ -363,12 +515,59 @@ function CardRow({ card, showScenario = false }: { card: Card; showScenario?: bo
 				</div>
 				<div class="rt-card-meta">
 					<span class="rt-card-date">{card.startDate}</span>
-					{!card.nameEn && (
-						<Badge variant="warning" size="sm" outline>JP only</Badge>
-					)}
+					{!card.nameEn && <Badge variant="warning" size="sm" outline>JP only</Badge>}
 					{showScenario && (
 						<span class="rt-card-scenario-tag" style={{ color: scenarioColor }}>
 							{card.scenario}
+						</span>
+					)}
+				</div>
+			</div>
+		</li>
+	);
+}
+
+// --- Uma Card --------------------------------------------------------------
+
+function UmaPortrait({ uma }: { uma: Uma }) {
+	const handleError = (e: h.JSX.TargetedEvent<HTMLImageElement>) => {
+		const img = e.currentTarget as HTMLImageElement;
+		if (img.dataset.fallback === 'true') {
+			img.style.visibility = 'hidden';
+			return;
+		}
+		img.dataset.fallback = 'true';
+		img.src = umaIconFallback(uma);
+	};
+	return (
+		<img
+			class="rt-uma-portrait"
+			src={umaIconUrl(uma)}
+			alt={uma.nameEn}
+			loading="lazy"
+			onError={handleError}
+		/>
+	);
+}
+
+function UmaCard({ uma, showScenario = false }: { uma: Uma; showScenario?: boolean }) {
+	const epithet = umaDisplayEpithet(uma);
+	const scenarioColor = scenarioColorMap.get(uma.scenario) || '#888';
+	return (
+		<li class="rt-card rt-uma-card" style={{ '--rt-card-scenario': scenarioColor } as any}>
+			<UmaPortrait uma={uma} />
+			<div class="rt-card-body">
+				<div class="rt-card-name" title={uma.titleJp || uma.nameJp}>
+					{epithet && <span class="rt-card-epithet">{epithet}</span>}
+					<span class="rt-card-chara">{uma.nameEn}</span>
+				</div>
+				<div class="rt-card-meta">
+					<span class={`rt-uma-rarity rt-uma-rarity-${uma.rarity}`}>{uma.rarityLabel}</span>
+					<span class="rt-card-date">{uma.startDate}</span>
+					{!uma.titleEn && <Badge variant="warning" size="sm" outline>JP only</Badge>}
+					{showScenario && (
+						<span class="rt-card-scenario-tag" style={{ color: scenarioColor }}>
+							{uma.scenario}
 						</span>
 					)}
 				</div>
