@@ -25,6 +25,8 @@ import {
 } from '../umalator-global/v2/components';
 
 import scenariosData from '../docs/jp-scenarios.json';
+import anniversariesData from '../docs/jp-anniversaries.json';
+import cmsData from '../docs/jp-champions-meetings.json';
 import cardsData from '../docs/jp-support-card-releases.json';
 import umasData from '../docs/jp-uma-releases.json';
 
@@ -43,9 +45,51 @@ interface Scenario {
 	isCurrent: boolean;
 }
 
+interface Anniversary {
+	ordinal: string;       // "0", "1", "1.5", "2", ...
+	label: string;         // "1st Anniversary", "1.5 Anniversary", "JP Launch"
+	longLabel: string;
+	date: string;          // YYYY-MM-DD
+	isHalf: boolean;
+	isLaunch: boolean;
+	isPast: boolean;
+}
+
+interface AnniversaryAttribution {
+	anniversary: string | null;
+	anniversaryLabel: string | null;
+	relationToAnniversary: 'with' | 'after' | 'pre-launch';
+	daysFromAnniversary: number | null;
+	anniversaryTag: string;
+	isAnniversaryLaunch: boolean;
+}
+
+interface CmAttribution {
+	firstCmId: number | null;        // smallest CM whose start is at-or-after release date
+	firstCmName: string | null;
+	firstCmStartDate: string | null;
+	daysToFirstCm: number | null;    // days between release and that CM's start
+}
+
+interface ChampionsMeeting {
+	id: number;
+	name: string;
+	nameJp: string;
+	isLoh: boolean;
+	startDate: string;
+	endDate: string;
+	track: string;
+	trackId: number;
+	distance: number;
+	ground: string;
+	condition: string;
+	weather: string;
+	season: string;
+}
+
 type CardType = 'speed' | 'power' | 'guts' | 'stamina' | 'wit' | 'friend' | 'group';
 
-interface Card {
+interface Card extends AnniversaryAttribution, CmAttribution {
 	id: number;
 	charaId: number;
 	rarity: number;
@@ -61,7 +105,7 @@ interface Card {
 	scenario: string;
 }
 
-interface Uma {
+interface Uma extends AnniversaryAttribution, CmAttribution {
 	cardId: number;
 	charaId: number;
 	rarity: number;
@@ -92,6 +136,9 @@ const TYPE_LABELS: Record<CardType, string> = {
 // --- Data ------------------------------------------------------------------
 
 const scenarios = (scenariosData as any).scenarios as Scenario[];
+const anniversaries = (anniversariesData as any).anniversaries as Anniversary[];
+const championsMeetings = (cmsData as any).champions_meetings as ChampionsMeeting[];
+const cmsById = new Map(championsMeetings.map(c => [c.id, c]));
 const allCards = (cardsData as any).cards as Card[];
 const allUmas = (umasData as any).umas as Uma[];
 
@@ -140,6 +187,8 @@ function App() {
 	const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
 	const [umaRarity, setUmaRarity] = useState<UmaRarityFilter>('all');
 	const [scenarioFilter, setScenarioFilter] = useState<string>('all');
+	const [anniversaryFilter, setAnniversaryFilter] = useState<string>('all');  // ordinal or 'all' or 'any-launch'
+	const [cmFilter, setCmFilter] = useState<string>('all');  // 'all' or numeric CM id (entries available in time for that CM)
 	const [showUnlocalized, setShowUnlocalized] = useState(true);
 	const [view, setView] = useState<ViewMode>('scenario');
 
@@ -150,6 +199,12 @@ function App() {
 			if (rarity !== 'all' && c.rarityLabel !== rarity) return false;
 			if (typeFilter !== 'all' && c.type !== typeFilter) return false;
 			if (scenarioFilter !== 'all' && c.scenario !== scenarioFilter) return false;
+			if (anniversaryFilter === 'any-launch' && !c.isAnniversaryLaunch) return false;
+			else if (anniversaryFilter !== 'all' && anniversaryFilter !== 'any-launch' && c.anniversary !== anniversaryFilter) return false;
+			if (cmFilter !== 'all') {
+				const targetCm = cmsById.get(parseInt(cmFilter, 10));
+				if (!targetCm || c.startDate > targetCm.startDate) return false;
+			}
 			if (!showUnlocalized && !c.nameEn) return false;
 			if (q) {
 				const hay = [c.nameJp, c.nameEn || '', c.charaNameEn || ''].join(' ').toLowerCase();
@@ -157,7 +212,7 @@ function App() {
 			}
 			return true;
 		});
-	}, [search, rarity, typeFilter, scenarioFilter, showUnlocalized]);
+	}, [search, rarity, typeFilter, scenarioFilter, anniversaryFilter, cmFilter, showUnlocalized]);
 
 	// --- filter Umas ---
 	const filteredUmas = useMemo(() => {
@@ -165,6 +220,12 @@ function App() {
 		return allUmas.filter(u => {
 			if (umaRarity !== 'all' && String(u.rarity) !== umaRarity) return false;
 			if (scenarioFilter !== 'all' && u.scenario !== scenarioFilter) return false;
+			if (anniversaryFilter === 'any-launch' && !u.isAnniversaryLaunch) return false;
+			else if (anniversaryFilter !== 'all' && anniversaryFilter !== 'any-launch' && u.anniversary !== anniversaryFilter) return false;
+			if (cmFilter !== 'all') {
+				const targetCm = cmsById.get(parseInt(cmFilter, 10));
+				if (!targetCm || u.startDate > targetCm.startDate) return false;
+			}
 			if (!showUnlocalized && !u.titleEn) return false;
 			if (q) {
 				const hay = [u.nameJp, u.nameEn, u.titleJp || '', u.titleEn || ''].join(' ').toLowerCase();
@@ -172,7 +233,7 @@ function App() {
 			}
 			return true;
 		});
-	}, [search, umaRarity, scenarioFilter, showUnlocalized]);
+	}, [search, umaRarity, scenarioFilter, anniversaryFilter, cmFilter, showUnlocalized]);
 
 	const groupedCards = useMemo(() => {
 		const g = new Map<string, Card[]>();
@@ -200,6 +261,27 @@ function App() {
 		})),
 	], []);
 
+	const anniversaryOptions: SelectOption[] = useMemo(() => [
+		{ value: 'all', label: 'Any anniversary' },
+		{ value: 'any-launch', label: '★ Anniversary launches only (±3 days)' },
+		...anniversaries
+			.filter(a => a.isPast)
+			.map(a => ({
+				value: a.ordinal,
+				label: `${a.label} (${a.date})`,
+			})),
+	], []);
+
+	// CM dropdown: select a CM to see only entries available in time for it
+	const cmOptions: SelectOption[] = useMemo(() => [
+		{ value: 'all', label: 'Any CM (no filter)' },
+		// Newest first
+		...[...championsMeetings].reverse().map(c => ({
+			value: String(c.id),
+			label: `Built for #${c.id} ${c.name} — ${c.startDate} (${c.track} ${c.distance}m ${c.ground})`,
+		})),
+	], []);
+
 	const viewTabs: TabItem[] = [
 		{ id: 'scenario', label: 'By Scenario', icon: <ListFilter size={14} /> },
 		{ id: 'chronological', label: 'Chronological', icon: <Calendar size={14} /> },
@@ -210,21 +292,11 @@ function App() {
 		{ id: 'umas', label: `Umas (${allUmas.length})`, icon: <User size={14} /> },
 	];
 
-	const filteredCount = mode === 'cards' ? filteredCards.length : filteredUmas.length;
-	const totalCount = mode === 'cards' ? allCards.length : allUmas.length;
-
 	return (
 		<div class="rt-app">
 			<header class="rt-header">
 				<div class="rt-header-main">
 					<h1 class="rt-title">Uma Musume Release Timeline</h1>
-					<div class="rt-header-stats">
-						<span><strong>{filteredCount}</strong> / {totalCount} {mode === 'cards' ? 'cards' : 'umas'}</span>
-						<span class="rt-sep">•</span>
-						<span><strong>{scenarios.length}</strong> scenarios</span>
-						<span class="rt-sep">•</span>
-						<span>JP server</span>
-					</div>
 				</div>
 				<div class="rt-mode-tabs">
 					<Tabs
@@ -236,6 +308,26 @@ function App() {
 					/>
 				</div>
 			</header>
+
+			<section class="rt-anniv-strip" aria-label="Anniversary milestones">
+				{anniversaries.map(a => {
+					const isActive = anniversaryFilter === a.ordinal;
+					return (
+						<button
+							key={a.ordinal}
+							type="button"
+							disabled={!a.isPast}
+							class={`rt-anniv-chip ${isActive ? 'active' : ''} ${a.isLaunch ? 'launch' : a.isHalf ? 'half' : 'full'} ${!a.isPast ? 'upcoming' : ''}`}
+							onClick={() => setAnniversaryFilter(isActive ? 'all' : a.ordinal)}
+							title={`${a.label} — ${a.date}${a.isPast ? '' : ' (upcoming)'}`}
+						>
+							<span class="rt-anniv-mark" aria-hidden="true">{a.isLaunch ? '★' : a.isHalf ? '·' : '●'}</span>
+							<span class="rt-anniv-label">{a.isLaunch ? 'Launch' : a.label.replace(' Anniversary', '')}</span>
+							<span class="rt-anniv-date">{a.date}</span>
+						</button>
+					);
+				})}
+			</section>
 
 			<section class="rt-scenario-strip" aria-label="Scenario timeline">
 				{scenarios.map(s => {
@@ -300,6 +392,20 @@ function App() {
 							value={scenarioFilter}
 							onChange={(v) => setScenarioFilter(String(v))}
 							options={scenarioOptions}
+						/>
+					</div>
+					<div class="rt-filter-select">
+						<CustomSelect
+							value={anniversaryFilter}
+							onChange={(v) => setAnniversaryFilter(String(v))}
+							options={anniversaryOptions}
+						/>
+					</div>
+					<div class="rt-filter-select rt-filter-select-cm">
+						<CustomSelect
+							value={cmFilter}
+							onChange={(v) => setCmFilter(String(v))}
+							options={cmOptions}
 						/>
 					</div>
 				</div>
@@ -515,6 +621,8 @@ function CardRow({ card, showScenario = false }: { card: Card; showScenario?: bo
 				</div>
 				<div class="rt-card-meta">
 					<span class="rt-card-date">{card.startDate}</span>
+					<AnniversaryTag attr={card} />
+					<CmTag entry={card} />
 					{!card.nameEn && <Badge variant="warning" size="sm" outline>JP only</Badge>}
 					{showScenario && (
 						<span class="rt-card-scenario-tag" style={{ color: scenarioColor }}>
@@ -524,6 +632,35 @@ function CardRow({ card, showScenario = false }: { card: Card; showScenario?: bo
 				</div>
 			</div>
 		</li>
+	);
+}
+
+function CmTag({ entry }: { entry: CmAttribution }) {
+	if (entry.firstCmId === null) return null;
+	const days = entry.daysToFirstCm ?? 0;
+	return (
+		<span
+			class="rt-cm-tag"
+			title={`First CM available for: #${entry.firstCmId} ${entry.firstCmName} on ${entry.firstCmStartDate} (${days}d after release)`}
+		>
+			→ CM#{entry.firstCmId} {entry.firstCmName}
+			<span class="rt-cm-tag-days">+{days}d</span>
+		</span>
+	);
+}
+
+// --- Anniversary tag (shared) ----------------------------------------------
+
+function AnniversaryTag({ attr }: { attr: AnniversaryAttribution }) {
+	if (!attr.anniversaryLabel) return null;
+	if (attr.isAnniversaryLaunch) {
+		return <span class="rt-anniv-tag rt-anniv-tag-launch" title={attr.anniversaryTag}>★ {attr.anniversaryLabel}</span>;
+	}
+	const days = attr.daysFromAnniversary ?? 0;
+	return (
+		<span class="rt-anniv-tag" title={attr.anniversaryTag}>
+			+{days}d {attr.anniversaryLabel}
+		</span>
 	);
 }
 
@@ -564,6 +701,8 @@ function UmaCard({ uma, showScenario = false }: { uma: Uma; showScenario?: boole
 				<div class="rt-card-meta">
 					<span class={`rt-uma-rarity rt-uma-rarity-${uma.rarity}`}>{uma.rarityLabel}</span>
 					<span class="rt-card-date">{uma.startDate}</span>
+					<AnniversaryTag attr={uma} />
+					<CmTag entry={uma} />
 					{!uma.titleEn && <Badge variant="warning" size="sm" outline>JP only</Badge>}
 					{showScenario && (
 						<span class="rt-card-scenario-tag" style={{ color: scenarioColor }}>

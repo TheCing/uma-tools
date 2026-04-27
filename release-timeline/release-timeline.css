@@ -140,6 +140,131 @@ body {
 	font-variant-numeric: tabular-nums;
 }
 
+/* ---------- Anniversary strip ---------- */
+.rt-anniv-strip {
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	padding: 4px 0 var(--space-sm);
+	margin-bottom: var(--space-xs);
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.rt-anniv-chip {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 10px;
+	min-width: 0;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 999px;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 11px;
+	transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.rt-anniv-chip:hover:not(:disabled) {
+	background: var(--color-surface-elevated);
+	color: var(--color-text);
+	border-color: var(--color-border-strong);
+}
+
+.rt-anniv-chip.active {
+	background: var(--color-primary);
+	border-color: var(--color-primary);
+	color: var(--color-primary-text);
+	font-weight: 600;
+}
+
+.rt-anniv-chip.upcoming {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.rt-anniv-chip.launch .rt-anniv-mark {
+	color: #f5c35a;
+}
+
+.rt-anniv-chip.full .rt-anniv-mark {
+	color: var(--color-primary);
+}
+
+.rt-anniv-chip.half .rt-anniv-mark {
+	color: var(--color-text-faint);
+	font-size: 14px;
+	line-height: 0.8;
+}
+
+.rt-anniv-mark {
+	font-size: 12px;
+	line-height: 1;
+}
+
+.rt-anniv-label {
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.rt-anniv-date {
+	font-size: 10px;
+	color: var(--color-text-muted);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.rt-anniv-chip.active .rt-anniv-date,
+.rt-anniv-chip.active .rt-anniv-mark {
+	color: var(--color-primary-text);
+}
+
+/* ---------- CM tag (per card/uma meta) ---------- */
+.rt-cm-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 10px;
+	color: var(--color-text-secondary);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border);
+}
+
+.rt-cm-tag-days {
+	color: var(--color-text-faint);
+	font-weight: 500;
+}
+
+.rt-filter-select-cm {
+	min-width: 320px;
+}
+
+/* ---------- Anniversary tag (per card/uma meta) ---------- */
+.rt-anniv-tag {
+	font-size: 10px;
+	color: var(--color-text-faint);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border-subtle);
+}
+
+.rt-anniv-tag-launch {
+	color: #1f1400;
+	background: linear-gradient(135deg, #f5c35a, #f59038);
+	border-color: transparent;
+	font-weight: 700;
+}
+
 /* ---------- Filters ---------- */
 .rt-filters {
 	display: flex;
@@ -350,9 +475,11 @@ body {
 .rt-card-meta {
 	display: flex;
 	align-items: center;
-	gap: var(--space-xs);
+	flex-wrap: wrap;
+	gap: 4px var(--space-xs);
 	font-size: 10px;
 	color: var(--color-text-muted);
+	min-width: 0;
 }
 
 .rt-card-date {

@@ -50,7 +50,17 @@
 			"urlName": "100101-special-week",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100201,
@@ -65,7 +75,17 @@
 			"urlName": "100201-silence-suzuka",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100301,
@@ -80,7 +100,17 @@
 			"urlName": "100301-tokai-teio",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100401,
@@ -95,7 +125,17 @@
 			"urlName": "100401-maruzensky",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100601,
@@ -110,7 +150,17 @@
 			"urlName": "100601-oguri-cap",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100701,
@@ -125,7 +175,17 @@
 			"urlName": "100701-gold-ship",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100801,
@@ -140,7 +200,17 @@
 			"urlName": "100801-vodka",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 100901,
@@ -155,7 +225,17 @@
 			"urlName": "100901-daiwa-scarlet",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101001,
@@ -170,7 +250,17 @@
 			"urlName": "101001-taiki-shuttle",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101101,
@@ -185,7 +275,17 @@
 			"urlName": "101101-grass-wonder",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101301,
@@ -200,7 +300,17 @@
 			"urlName": "101301-mejiro-mcqueen",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101401,
@@ -215,7 +325,17 @@
 			"urlName": "101401-el-condor-pasa",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101701,
@@ -230,7 +350,17 @@
 			"urlName": "101701-symboli-rudolf",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101801,
@@ -245,7 +375,17 @@
 			"urlName": "101801-air-groove",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 102401,
@@ -260,7 +400,17 @@
 			"urlName": "102401-mayano-top-gun",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 102701,
@@ -275,7 +425,17 @@
 			"urlName": "102701-mejiro-ryan",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 103001,
@@ -290,7 +450,17 @@
 			"urlName": "103001-rice-shower",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 103201,
@@ -305,7 +475,17 @@
 			"urlName": "103201-agnes-tachyon",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 103501,
@@ -320,7 +500,17 @@
 			"urlName": "103501-winning-ticket",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 104101,
@@ -335,7 +525,17 @@
 			"urlName": "104101-sakura-bakushin-o",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 104501,
@@ -350,7 +550,17 @@
 			"urlName": "104501-super-creek",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 105201,
@@ -365,7 +575,17 @@
 			"urlName": "105201-haru-urara",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 105601,
@@ -380,7 +600,17 @@
 			"urlName": "105601-matikanefukukitaru",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 106001,
@@ -395,7 +625,17 @@
 			"urlName": "106001-nice-nature",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 106101,
@@ -410,7 +650,17 @@
 			"urlName": "106101-king-halo",
 			"startDate": "2021-02-24",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with JP Launch",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 79
 		},
 		{
 			"cardId": 101501,
@@ -425,7 +675,17 @@
 			"urlName": "101501-tm-opera-o",
 			"startDate": "2021-03-02",
 			"releaseEn": "2025-06-26",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 6,
+			"anniversaryTag": "6d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 73
 		},
 		{
 			"cardId": 102601,
@@ -440,7 +700,17 @@
 			"urlName": "102601-mihono-bourbon",
 			"startDate": "2021-03-09",
 			"releaseEn": "2025-07-02",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 13,
+			"anniversaryTag": "13d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 66
 		},
 		{
 			"cardId": 102301,
@@ -455,7 +725,17 @@
 			"urlName": "102301-biwa-hayahide",
 			"startDate": "2021-03-18",
 			"releaseEn": "2025-07-10",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 22,
+			"anniversaryTag": "22d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 57
 		},
 		{
 			"cardId": 100302,
@@ -470,7 +750,17 @@
 			"urlName": "100302-tokai-teio",
 			"startDate": "2021-03-30",
 			"releaseEn": "2025-07-16",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 45
 		},
 		{
 			"cardId": 101302,
@@ -485,7 +775,17 @@
 			"urlName": "101302-mejiro-mcqueen",
 			"startDate": "2021-03-30",
 			"releaseEn": "2025-07-16",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 45
 		},
 		{
 			"cardId": 103801,
@@ -500,7 +800,17 @@
 			"urlName": "103801-curren-chan",
 			"startDate": "2021-04-15",
 			"releaseEn": "2025-07-27",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 50,
+			"anniversaryTag": "50d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 29
 		},
 		{
 			"cardId": 105001,
@@ -515,7 +825,17 @@
 			"urlName": "105001-narita-taishin",
 			"startDate": "2021-04-26",
 			"releaseEn": "2025-08-03",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 61,
+			"anniversaryTag": "61d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 104601,
@@ -530,7 +850,17 @@
 			"urlName": "104601-smart-falcon",
 			"startDate": "2021-05-06",
 			"releaseEn": "2025-08-11",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 71,
+			"anniversaryTag": "71d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 1,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2021-05-14",
+			"daysToFirstCm": 8
 		},
 		{
 			"cardId": 101601,
@@ -545,7 +875,17 @@
 			"urlName": "101601-narita-brian",
 			"startDate": "2021-05-17",
 			"releaseEn": "2025-08-20",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 82,
+			"anniversaryTag": "82d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 2,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2021-06-14",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 101802,
@@ -560,7 +900,17 @@
 			"urlName": "101802-air-groove",
 			"startDate": "2021-05-28",
 			"releaseEn": "2025-08-28",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 93,
+			"anniversaryTag": "93d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 2,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2021-06-14",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 102402,
@@ -575,7 +925,17 @@
 			"urlName": "102402-mayano-top-gun",
 			"startDate": "2021-05-28",
 			"releaseEn": "2025-08-28",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 93,
+			"anniversaryTag": "93d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 2,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2021-06-14",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 102001,
@@ -590,7 +950,17 @@
 			"urlName": "102001-seiun-sky",
 			"startDate": "2021-06-10",
 			"releaseEn": "2025-09-07",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 106,
+			"anniversaryTag": "106d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 2,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2021-06-14",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 101201,
@@ -605,7 +975,17 @@
 			"urlName": "101201-hishi-amazon",
 			"startDate": "2021-06-21",
 			"releaseEn": "2025-09-17",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 117,
+			"anniversaryTag": "117d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 3,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2021-07-23",
+			"daysToFirstCm": 32
 		},
 		{
 			"cardId": 101102,
@@ -620,7 +1000,17 @@
 			"urlName": "101102-grass-wonder",
 			"startDate": "2021-06-29",
 			"releaseEn": "2025-09-21",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 3,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2021-07-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 101402,
@@ -635,7 +1025,17 @@
 			"urlName": "101402-el-condor-pasa",
 			"startDate": "2021-06-29",
 			"releaseEn": "2025-09-21",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 3,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2021-07-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 100501,
@@ -650,7 +1050,17 @@
 			"urlName": "100501-fuji-kiseki",
 			"startDate": "2021-07-12",
 			"releaseEn": "2025-10-02",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 138,
+			"anniversaryTag": "138d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 3,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2021-07-23",
+			"daysToFirstCm": 11
 		},
 		{
 			"cardId": 104001,
@@ -665,7 +1075,17 @@
 			"urlName": "104001-gold-city",
 			"startDate": "2021-07-20",
 			"releaseEn": "2025-10-07",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 146,
+			"anniversaryTag": "146d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 3,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2021-07-23",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 100102,
@@ -680,7 +1100,17 @@
 			"urlName": "100102-special-week",
 			"startDate": "2021-07-29",
 			"releaseEn": "2025-10-14",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 155,
+			"anniversaryTag": "155d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 4,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2021-08-24",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 100402,
@@ -695,7 +1125,17 @@
 			"urlName": "100402-maruzensky",
 			"startDate": "2021-07-29",
 			"releaseEn": "2025-10-14",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 155,
+			"anniversaryTag": "155d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 4,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2021-08-24",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 105801,
@@ -710,7 +1150,17 @@
 			"urlName": "105801-meisho-doto",
 			"startDate": "2021-08-11",
 			"releaseEn": "2025-10-21",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 168,
+			"anniversaryTag": "168d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 4,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2021-08-24",
+			"daysToFirstCm": 13
 		},
 		{
 			"cardId": 103701,
@@ -725,7 +1175,17 @@
 			"urlName": "103701-eishin-flash",
 			"startDate": "2021-08-20",
 			"releaseEn": "2025-10-30",
-			"scenario": "URA Finale"
+			"scenario": "URA Finale",
+			"anniversary": "0",
+			"anniversaryLabel": "JP Launch",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 177,
+			"anniversaryTag": "177d after JP Launch",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 4,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2021-08-24",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 105602,
@@ -740,7 +1200,17 @@
 			"urlName": "105602-matikanefukukitaru",
 			"startDate": "2021-08-30",
 			"releaseEn": "2025-11-06",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 6,
+			"anniversaryTag": "6d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 5,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2021-09-21",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 102801,
@@ -755,7 +1225,17 @@
 			"urlName": "102801-hishi-akebono",
 			"startDate": "2021-09-10",
 			"releaseEn": "2025-11-11",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 17,
+			"anniversaryTag": "17d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 5,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2021-09-21",
+			"daysToFirstCm": 11
 		},
 		{
 			"cardId": 101901,
@@ -770,7 +1250,17 @@
 			"urlName": "101901-agnes-digital",
 			"startDate": "2021-09-20",
 			"releaseEn": "2025-11-19",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 27,
+			"anniversaryTag": "27d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 5,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2021-09-21",
+			"daysToFirstCm": 1
 		},
 		{
 			"cardId": 103002,
@@ -785,7 +1275,17 @@
 			"urlName": "103002-rice-shower",
 			"startDate": "2021-09-29",
 			"releaseEn": "2025-11-24",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 6,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2021-10-22",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 104502,
@@ -800,7 +1300,17 @@
 			"urlName": "104502-super-creek",
 			"startDate": "2021-09-29",
 			"releaseEn": "2025-11-24",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 6,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2021-10-22",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 103901,
@@ -815,7 +1325,17 @@
 			"urlName": "103901-kawakami-princess",
 			"startDate": "2021-10-11",
 			"releaseEn": "2025-12-01",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 48,
+			"anniversaryTag": "48d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 6,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2021-10-22",
+			"daysToFirstCm": 11
 		},
 		{
 			"cardId": 102501,
@@ -830,7 +1350,17 @@
 			"urlName": "102501-manhattan-cafe",
 			"startDate": "2021-10-20",
 			"releaseEn": "2025-12-08",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 57,
+			"anniversaryTag": "57d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 6,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2021-10-22",
+			"daysToFirstCm": 2
 		},
 		{
 			"cardId": 101702,
@@ -845,7 +1375,17 @@
 			"urlName": "101702-symboli-rudolf",
 			"startDate": "2021-10-28",
 			"releaseEn": "2025-12-14",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 7,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2021-11-23",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 104002,
@@ -860,7 +1400,17 @@
 			"urlName": "104002-gold-city",
 			"startDate": "2021-10-28",
 			"releaseEn": "2025-12-14",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 7,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2021-11-23",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 104801,
@@ -875,7 +1425,17 @@
 			"urlName": "104801-tosen-jordan",
 			"startDate": "2021-11-08",
 			"releaseEn": "2025-12-18",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 76,
+			"anniversaryTag": "76d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 7,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2021-11-23",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 105901,
@@ -890,7 +1450,17 @@
 			"urlName": "105901-mejiro-dober",
 			"startDate": "2021-11-19",
 			"releaseEn": "2025-12-28",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 87,
+			"anniversaryTag": "87d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 7,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2021-11-23",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 100602,
@@ -905,7 +1475,17 @@
 			"urlName": "100602-oguri-cap",
 			"startDate": "2021-11-29",
 			"releaseEn": "2026-01-05",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 97,
+			"anniversaryTag": "97d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 8,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2021-12-21",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 102302,
@@ -920,7 +1500,17 @@
 			"urlName": "102302-biwa-hayahide",
 			"startDate": "2021-11-29",
 			"releaseEn": "2026-01-05",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 97,
+			"anniversaryTag": "97d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 8,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2021-12-21",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 102201,
@@ -935,7 +1525,17 @@
 			"urlName": "102201-fine-motion",
 			"startDate": "2021-12-14",
 			"releaseEn": "2026-01-15",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 112,
+			"anniversaryTag": "112d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 8,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2021-12-21",
+			"daysToFirstCm": 7
 		},
 		{
 			"cardId": 102101,
@@ -950,7 +1550,17 @@
 			"urlName": "102101-tamamo-cross",
 			"startDate": "2021-12-22",
 			"releaseEn": "2026-01-22",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 120,
+			"anniversaryTag": "120d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 9,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2022-01-22",
+			"daysToFirstCm": 31
 		},
 		{
 			"cardId": 101502,
@@ -965,7 +1575,17 @@
 			"urlName": "101502-tm-opera-o",
 			"startDate": "2021-12-31",
 			"releaseEn": "2026-01-29",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 129,
+			"anniversaryTag": "129d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 9,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2022-01-22",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 105202,
@@ -980,7 +1600,17 @@
 			"urlName": "105202-haru-urara",
 			"startDate": "2021-12-31",
 			"releaseEn": "2026-01-29",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 129,
+			"anniversaryTag": "129d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 9,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2022-01-22",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 106901,
@@ -995,7 +1625,17 @@
 			"urlName": "106901-sakura-chiyono-o",
 			"startDate": "2022-01-20",
 			"releaseEn": "2026-02-11",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 149,
+			"anniversaryTag": "149d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 9,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2022-01-22",
+			"daysToFirstCm": 2
 		},
 		{
 			"cardId": 102602,
@@ -1010,7 +1650,17 @@
 			"urlName": "102602-mihono-bourbon",
 			"startDate": "2022-01-28",
 			"releaseEn": "2026-02-18",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 10,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2022-02-18",
+			"daysToFirstCm": 21
 		},
 		{
 			"cardId": 103702,
@@ -1025,7 +1675,17 @@
 			"urlName": "103702-eishin-flash",
 			"startDate": "2022-01-28",
 			"releaseEn": "2026-02-18",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 10,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2022-02-18",
+			"daysToFirstCm": 21
 		},
 		{
 			"cardId": 107101,
@@ -1040,7 +1700,17 @@
 			"urlName": "107101-mejiro-ardan",
 			"startDate": "2022-02-08",
 			"releaseEn": "2026-02-25",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 168,
+			"anniversaryTag": "168d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 10,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2022-02-18",
+			"daysToFirstCm": 10
 		},
 		{
 			"cardId": 103301,
@@ -1055,7 +1725,17 @@
 			"urlName": "103301-admire-vega",
 			"startDate": "2022-02-16",
 			"releaseEn": "2026-03-05",
-			"scenario": "Aoharu Cup / Unity Cup"
+			"scenario": "Aoharu Cup / Unity Cup",
+			"anniversary": "0.5",
+			"anniversaryLabel": "0.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 176,
+			"anniversaryTag": "176d after 0.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 10,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2022-02-18",
+			"daysToFirstCm": 2
 		},
 		{
 			"cardId": 106201,
@@ -1070,7 +1750,17 @@
 			"urlName": "106201-matikanetannhauser",
 			"startDate": "2022-02-24",
 			"releaseEn": "2026-03-12",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 1st Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 11,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2022-03-22",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 106801,
@@ -1085,7 +1775,17 @@
 			"urlName": "106801-kitasan-black",
 			"startDate": "2022-02-24",
 			"releaseEn": "2026-03-12",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 1st Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 11,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2022-03-22",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 106701,
@@ -1100,7 +1800,17 @@
 			"urlName": "106701-satono-diamond",
 			"startDate": "2022-03-07",
 			"releaseEn": "2026-03-22",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 11,
+			"anniversaryTag": "11d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 11,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2022-03-22",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 107401,
@@ -1115,7 +1825,17 @@
 			"urlName": "107401-mejiro-bright",
 			"startDate": "2022-03-18",
 			"releaseEn": "2026-03-26",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 22,
+			"anniversaryTag": "22d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 11,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2022-03-22",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 100502,
@@ -1130,7 +1850,17 @@
 			"urlName": "100502-fuji-kiseki",
 			"startDate": "2022-03-29",
 			"releaseEn": "2026-04-05",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 33,
+			"anniversaryTag": "33d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 12,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2022-04-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 102002,
@@ -1145,7 +1875,17 @@
 			"urlName": "102002-seiun-sky",
 			"startDate": "2022-03-29",
 			"releaseEn": "2026-04-05",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 33,
+			"anniversaryTag": "33d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 12,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2022-04-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 105101,
@@ -1160,7 +1900,17 @@
 			"urlName": "105101-nishino-flower",
 			"startDate": "2022-04-11",
 			"releaseEn": "2026-04-12",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 46,
+			"anniversaryTag": "46d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 12,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2022-04-22",
+			"daysToFirstCm": 11
 		},
 		{
 			"cardId": 107201,
@@ -1175,7 +1925,17 @@
 			"urlName": "107201-yaeno-muteki",
 			"startDate": "2022-04-19",
 			"releaseEn": "2026-04-20",
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 54,
+			"anniversaryTag": "54d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 12,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2022-04-22",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 106002,
@@ -1190,7 +1950,17 @@
 			"urlName": "106002-nice-nature",
 			"startDate": "2022-04-28",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 63,
+			"anniversaryTag": "63d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 13,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2022-05-24",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 106102,
@@ -1205,7 +1975,17 @@
 			"urlName": "106102-king-halo",
 			"startDate": "2022-04-28",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 63,
+			"anniversaryTag": "63d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 13,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2022-05-24",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 103101,
@@ -1220,7 +2000,17 @@
 			"urlName": "103101-ines-fujin",
 			"startDate": "2022-05-10",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 75,
+			"anniversaryTag": "75d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 13,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2022-05-24",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 106401,
@@ -1235,7 +2025,17 @@
 			"urlName": "106401-mejiro-palmer",
 			"startDate": "2022-05-20",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 85,
+			"anniversaryTag": "85d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 13,
+			"firstCmName": "Taurus Cup",
+			"firstCmStartDate": "2022-05-24",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 102202,
@@ -1250,7 +2050,17 @@
 			"urlName": "102202-fine-motion",
 			"startDate": "2022-05-30",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 95,
+			"anniversaryTag": "95d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 14,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2022-06-14",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 103802,
@@ -1265,7 +2075,17 @@
 			"urlName": "103802-curren-chan",
 			"startDate": "2022-05-30",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 95,
+			"anniversaryTag": "95d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 14,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2022-06-14",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 103401,
@@ -1280,7 +2100,17 @@
 			"urlName": "103401-inari-one",
 			"startDate": "2022-06-10",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 106,
+			"anniversaryTag": "106d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 14,
+			"firstCmName": "Gemini Cup",
+			"firstCmStartDate": "2022-06-14",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 104401,
@@ -1295,7 +2125,17 @@
 			"urlName": "104401-sweep-tosho",
 			"startDate": "2022-06-20",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 116,
+			"anniversaryTag": "116d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 15,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2022-07-14",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 101002,
@@ -1310,7 +2150,17 @@
 			"urlName": "101002-taiki-shuttle",
 			"startDate": "2022-06-30",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 126,
+			"anniversaryTag": "126d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 15,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2022-07-14",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 105902,
@@ -1325,7 +2175,17 @@
 			"urlName": "105902-mejiro-dober",
 			"startDate": "2022-06-30",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 126,
+			"anniversaryTag": "126d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 15,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2022-07-14",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 103601,
@@ -1340,7 +2200,17 @@
 			"urlName": "103601-air-shakur",
 			"startDate": "2022-07-11",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 137,
+			"anniversaryTag": "137d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 15,
+			"firstCmName": "Cancer Cup",
+			"firstCmStartDate": "2022-07-14",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 100103,
@@ -1355,7 +2225,17 @@
 			"urlName": "100103-special-week",
 			"startDate": "2022-07-20",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 146,
+			"anniversaryTag": "146d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 16,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2022-08-13",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 100702,
@@ -1370,7 +2250,17 @@
 			"urlName": "100702-gold-ship",
 			"startDate": "2022-07-29",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 155,
+			"anniversaryTag": "155d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 16,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2022-08-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 101303,
@@ -1385,7 +2275,17 @@
 			"urlName": "101303-mejiro-mcqueen",
 			"startDate": "2022-07-29",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 155,
+			"anniversaryTag": "155d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 16,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2022-08-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 105301,
@@ -1400,7 +2300,17 @@
 			"urlName": "105301-bamboo-memory",
 			"startDate": "2022-08-10",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 167,
+			"anniversaryTag": "167d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 16,
+			"firstCmName": "Leo Cup",
+			"firstCmStartDate": "2022-08-13",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 109801,
@@ -1415,7 +2325,17 @@
 			"urlName": "109801-copano-rickey",
 			"startDate": "2022-08-19",
 			"releaseEn": null,
-			"scenario": "Make a New Track / Climax / Trackblazer"
+			"scenario": "Make a New Track / Climax / Trackblazer",
+			"anniversary": "1",
+			"anniversaryLabel": "1st Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 176,
+			"anniversaryTag": "176d after 1st Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 17,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2022-09-15",
+			"daysToFirstCm": 27
 		},
 		{
 			"cardId": 104602,
@@ -1430,7 +2350,17 @@
 			"urlName": "104602-smart-falcon",
 			"startDate": "2022-08-24",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 1.5 Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 17,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2022-09-15",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 103502,
@@ -1445,7 +2375,17 @@
 			"urlName": "103502-winning-ticket",
 			"startDate": "2022-08-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 5,
+			"anniversaryTag": "5d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 17,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2022-09-15",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 105002,
@@ -1460,7 +2400,17 @@
 			"urlName": "105002-narita-taishin",
 			"startDate": "2022-08-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 5,
+			"anniversaryTag": "5d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 17,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2022-09-15",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 102901,
@@ -1475,7 +2425,17 @@
 			"urlName": "102901-yukino-bijin",
 			"startDate": "2022-09-12",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 19,
+			"anniversaryTag": "19d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 17,
+			"firstCmName": "Virgo Cup",
+			"firstCmStartDate": "2022-09-15",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 104201,
@@ -1490,7 +2450,17 @@
 			"urlName": "104201-seeking-the-pearl",
 			"startDate": "2022-09-20",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 27,
+			"anniversaryTag": "27d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 18,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2022-10-14",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 101902,
@@ -1505,7 +2475,17 @@
 			"urlName": "101902-agnes-digital",
 			"startDate": "2022-09-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 18,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2022-10-14",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 105802,
@@ -1520,7 +2500,17 @@
 			"urlName": "105802-meisho-doto",
 			"startDate": "2022-09-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 18,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2022-10-14",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 108701,
@@ -1535,7 +2525,17 @@
 			"urlName": "108701-aston-machan",
 			"startDate": "2022-10-11",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 48,
+			"anniversaryTag": "48d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 18,
+			"firstCmName": "Libra Cup",
+			"firstCmStartDate": "2022-10-14",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 107801,
@@ -1550,7 +2550,17 @@
 			"urlName": "107801-yamanin-zephyr",
 			"startDate": "2022-10-19",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 56,
+			"anniversaryTag": "56d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 19,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2022-11-13",
+			"daysToFirstCm": 25
 		},
 		{
 			"cardId": 102102,
@@ -1565,7 +2575,17 @@
 			"urlName": "102102-tamamo-cross",
 			"startDate": "2022-10-28",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 19,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2022-11-13",
+			"daysToFirstCm": 16
 		},
 		{
 			"cardId": 103402,
@@ -1580,7 +2600,17 @@
 			"urlName": "103402-inari-one",
 			"startDate": "2022-10-28",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 19,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2022-11-13",
+			"daysToFirstCm": 16
 		},
 		{
 			"cardId": 104901,
@@ -1595,7 +2625,17 @@
 			"urlName": "104901-nakayama-festa",
 			"startDate": "2022-11-09",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 77,
+			"anniversaryTag": "77d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 19,
+			"firstCmName": "Scorpio Cup",
+			"firstCmStartDate": "2022-11-13",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 110001,
@@ -1610,7 +2650,17 @@
 			"urlName": "110001-wonder-acute",
 			"startDate": "2022-11-17",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 85,
+			"anniversaryTag": "85d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 20,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2022-12-15",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 100802,
@@ -1625,7 +2675,17 @@
 			"urlName": "100802-vodka",
 			"startDate": "2022-11-28",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 20,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2022-12-15",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 100902,
@@ -1640,7 +2700,17 @@
 			"urlName": "100902-daiwa-scarlet",
 			"startDate": "2022-11-28",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 20,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2022-12-15",
+			"daysToFirstCm": 17
 		},
 		{
 			"cardId": 104701,
@@ -1655,7 +2725,17 @@
 			"urlName": "104701-zenno-rob-roy",
 			"startDate": "2022-12-12",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 110,
+			"anniversaryTag": "110d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 20,
+			"firstCmName": "Sagittarius Cup",
+			"firstCmStartDate": "2022-12-15",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 101602,
@@ -1670,7 +2750,17 @@
 			"urlName": "101602-narita-brian",
 			"startDate": "2022-12-20",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 118,
+			"anniversaryTag": "118d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 21,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2023-01-14",
+			"daysToFirstCm": 25
 		},
 		{
 			"cardId": 106702,
@@ -1685,7 +2775,17 @@
 			"urlName": "106702-satono-diamond",
 			"startDate": "2022-12-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 127,
+			"anniversaryTag": "127d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 21,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2023-01-14",
+			"daysToFirstCm": 16
 		},
 		{
 			"cardId": 106802,
@@ -1700,7 +2800,17 @@
 			"urlName": "106802-kitasan-black",
 			"startDate": "2022-12-29",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 127,
+			"anniversaryTag": "127d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 21,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2023-01-14",
+			"daysToFirstCm": 16
 		},
 		{
 			"cardId": 109901,
@@ -1715,7 +2825,17 @@
 			"urlName": "109901-hokko-tarumae",
 			"startDate": "2023-01-10",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 139,
+			"anniversaryTag": "139d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 21,
+			"firstCmName": "Capricorn Cup",
+			"firstCmStartDate": "2023-01-14",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 106501,
@@ -1730,7 +2850,17 @@
 			"urlName": "106501-daitaku-helios",
 			"startDate": "2023-01-20",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 149,
+			"anniversaryTag": "149d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 22,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2023-02-17",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 102702,
@@ -1745,7 +2875,17 @@
 			"urlName": "102702-mejiro-ryan",
 			"startDate": "2023-01-30",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 159,
+			"anniversaryTag": "159d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 22,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2023-02-17",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 103102,
@@ -1760,7 +2900,17 @@
 			"urlName": "103102-ines-fujin",
 			"startDate": "2023-01-30",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 159,
+			"anniversaryTag": "159d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 22,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2023-02-17",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 104301,
@@ -1775,7 +2925,17 @@
 			"urlName": "104301-shinko-windy",
 			"startDate": "2023-02-13",
 			"releaseEn": null,
-			"scenario": "Grand Live"
+			"scenario": "Grand Live",
+			"anniversary": "1.5",
+			"anniversaryLabel": "1.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 173,
+			"anniversaryTag": "173d after 1.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 22,
+			"firstCmName": "Aquarius Cup",
+			"firstCmStartDate": "2023-02-17",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 105701,
@@ -1790,7 +2950,17 @@
 			"urlName": "105701-mr-cb",
 			"startDate": "2023-02-24",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 2nd Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 23,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2023-03-14",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 106601,
@@ -1805,7 +2975,17 @@
 			"urlName": "106601-twin-turbo",
 			"startDate": "2023-02-24",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 2nd Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 23,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2023-03-14",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 108501,
@@ -1820,7 +3000,17 @@
 			"urlName": "108501-daiichi-ruby",
 			"startDate": "2023-03-10",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 14,
+			"anniversaryTag": "14d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 23,
+			"firstCmName": "Pisces Cup",
+			"firstCmStartDate": "2023-03-14",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 108301,
@@ -1835,7 +3025,17 @@
 			"urlName": "108301-symboli-kris-s",
 			"startDate": "2023-03-20",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 24,
+			"anniversaryTag": "24d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 24,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2023-04-13",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 106902,
@@ -1850,7 +3050,17 @@
 			"urlName": "106902-sakura-chiyono-o",
 			"startDate": "2023-03-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 33,
+			"anniversaryTag": "33d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 24,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2023-04-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 107102,
@@ -1865,7 +3075,17 @@
 			"urlName": "107102-mejiro-ardan",
 			"startDate": "2023-03-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 33,
+			"anniversaryTag": "33d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 24,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2023-04-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 107601,
@@ -1880,7 +3100,17 @@
 			"urlName": "107601-sakura-laurel",
 			"startDate": "2023-04-10",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 45,
+			"anniversaryTag": "45d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 24,
+			"firstCmName": "Aries Cup",
+			"firstCmStartDate": "2023-04-13",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 110501,
@@ -1895,7 +3125,17 @@
 			"urlName": "110501-neo-universe",
 			"startDate": "2023-04-19",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 54,
+			"anniversaryTag": "54d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 55
 		},
 		{
 			"cardId": 104102,
@@ -1910,7 +3150,17 @@
 			"urlName": "104102-sakura-bakushin-o",
 			"startDate": "2023-04-28",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 63,
+			"anniversaryTag": "63d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 46
 		},
 		{
 			"cardId": 106202,
@@ -1925,7 +3175,17 @@
 			"urlName": "106202-matikanetannhauser",
 			"startDate": "2023-04-28",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 63,
+			"anniversaryTag": "63d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 46
 		},
 		{
 			"cardId": 110601,
@@ -1940,7 +3200,17 @@
 			"urlName": "110601-hishi-miracle",
 			"startDate": "2023-05-10",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 75,
+			"anniversaryTag": "75d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 34
 		},
 		{
 			"cardId": 108401,
@@ -1955,7 +3225,17 @@
 			"urlName": "108401-tanino-gimlet",
 			"startDate": "2023-05-19",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 84,
+			"anniversaryTag": "84d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 25
 		},
 		{
 			"cardId": 101202,
@@ -1970,7 +3250,17 @@
 			"urlName": "101202-hishi-amazon",
 			"startDate": "2023-05-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 94,
+			"anniversaryTag": "94d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 105102,
@@ -1985,7 +3275,17 @@
 			"urlName": "105102-nishino-flower",
 			"startDate": "2023-05-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 94,
+			"anniversaryTag": "94d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 25,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2023-06-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 105501,
@@ -2000,7 +3300,17 @@
 			"urlName": "105501-marvelous-sunday",
 			"startDate": "2023-06-19",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 115,
+			"anniversaryTag": "115d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 60
 		},
 		{
 			"cardId": 104802,
@@ -2015,7 +3325,17 @@
 			"urlName": "104802-tosen-jordan",
 			"startDate": "2023-06-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 50
 		},
 		{
 			"cardId": 105302,
@@ -2030,7 +3350,17 @@
 			"urlName": "105302-bamboo-memory",
 			"startDate": "2023-06-29",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 50
 		},
 		{
 			"cardId": 110401,
@@ -2045,7 +3375,17 @@
 			"urlName": "110401-katsuragi-ace",
 			"startDate": "2023-07-10",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 136,
+			"anniversaryTag": "136d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 39
 		},
 		{
 			"cardId": 107001,
@@ -2060,7 +3400,17 @@
 			"urlName": "107001-sirius-symboli",
 			"startDate": "2023-07-21",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 147,
+			"anniversaryTag": "147d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 100202,
@@ -2075,7 +3425,17 @@
 			"urlName": "100202-silence-suzuka",
 			"startDate": "2023-07-31",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 103202,
@@ -2090,7 +3450,17 @@
 			"urlName": "103202-agnes-tachyon",
 			"startDate": "2023-07-31",
 			"releaseEn": null,
-			"scenario": "Grand Masters"
+			"scenario": "Grand Masters",
+			"anniversary": "2",
+			"anniversaryLabel": "2nd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 2nd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 26,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2023-08-18",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 107701,
@@ -2105,7 +3475,17 @@
 			"urlName": "107701-narita-top-road",
 			"startDate": "2023-08-24",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 2.5 Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 50
 		},
 		{
 			"cardId": 100703,
@@ -2120,7 +3500,17 @@
 			"urlName": "100703-gold-ship",
 			"startDate": "2023-08-31",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 7,
+			"anniversaryTag": "7d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 43
 		},
 		{
 			"cardId": 106703,
@@ -2135,7 +3525,17 @@
 			"urlName": "106703-satono-diamond",
 			"startDate": "2023-09-11",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 18,
+			"anniversaryTag": "18d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 32
 		},
 		{
 			"cardId": 109301,
@@ -2150,7 +3550,17 @@
 			"urlName": "109301-ksmiracle",
 			"startDate": "2023-09-20",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 27,
+			"anniversaryTag": "27d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 103602,
@@ -2165,7 +3575,17 @@
 			"urlName": "103602-air-shakur",
 			"startDate": "2023-09-29",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 108302,
@@ -2180,7 +3600,17 @@
 			"urlName": "108302-symboli-kris-s",
 			"startDate": "2023-09-29",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 27,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2023-10-13",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 108601,
@@ -2195,7 +3625,17 @@
 			"urlName": "108601-mejiro-ramonu",
 			"startDate": "2023-10-19",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 56,
+			"anniversaryTag": "56d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 56
 		},
 		{
 			"cardId": 100303,
@@ -2210,7 +3650,17 @@
 			"urlName": "100303-tokai-teio",
 			"startDate": "2023-10-30",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 67,
+			"anniversaryTag": "67d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 45
 		},
 		{
 			"cardId": 103902,
@@ -2225,7 +3675,17 @@
 			"urlName": "103902-kawakami-princess",
 			"startDate": "2023-10-30",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 67,
+			"anniversaryTag": "67d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 45
 		},
 		{
 			"cardId": 110701,
@@ -2240,7 +3700,17 @@
 			"urlName": "110701-tap-dance-city",
 			"startDate": "2023-11-20",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 88,
+			"anniversaryTag": "88d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 106402,
@@ -2255,7 +3725,17 @@
 			"urlName": "106402-mejiro-palmer",
 			"startDate": "2023-11-30",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 98,
+			"anniversaryTag": "98d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 107402,
@@ -2270,7 +3750,17 @@
 			"urlName": "107402-mejiro-bright",
 			"startDate": "2023-11-30",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 98,
+			"anniversaryTag": "98d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 108801,
@@ -2285,7 +3775,17 @@
 			"urlName": "108801-satono-crown",
 			"startDate": "2023-12-11",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 109,
+			"anniversaryTag": "109d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 28,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2023-12-14",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 108901,
@@ -2300,7 +3800,17 @@
 			"urlName": "108901-cheval-grand",
 			"startDate": "2023-12-20",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 118,
+			"anniversaryTag": "118d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 60
 		},
 		{
 			"cardId": 106803,
@@ -2315,7 +3825,17 @@
 			"urlName": "106803-kitasan-black",
 			"startDate": "2023-12-28",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 126,
+			"anniversaryTag": "126d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 52
 		},
 		{
 			"cardId": 106003,
@@ -2330,7 +3850,17 @@
 			"urlName": "106003-nice-nature",
 			"startDate": "2024-01-09",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 138,
+			"anniversaryTag": "138d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 40
 		},
 		{
 			"cardId": 109101,
@@ -2345,7 +3875,17 @@
 			"urlName": "109101-vivlos",
 			"startDate": "2024-01-19",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 148,
+			"anniversaryTag": "148d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 30
 		},
 		{
 			"cardId": 102502,
@@ -2360,7 +3900,17 @@
 			"urlName": "102502-manhattan-cafe",
 			"startDate": "2024-01-31",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 160,
+			"anniversaryTag": "160d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 102902,
@@ -2375,7 +3925,17 @@
 			"urlName": "102902-yukino-bijin",
 			"startDate": "2024-01-31",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 160,
+			"anniversaryTag": "160d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 18
 		},
 		{
 			"cardId": 105401,
@@ -2390,7 +3950,17 @@
 			"urlName": "105401-biko-pegasus",
 			"startDate": "2024-02-14",
 			"releaseEn": null,
-			"scenario": "Project L'Arc"
+			"scenario": "Project L'Arc",
+			"anniversary": "2.5",
+			"anniversaryLabel": "2.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 174,
+			"anniversaryTag": "174d after 2.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 29,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2024-02-18",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 106301,
@@ -2405,7 +3975,17 @@
 			"urlName": "106301-ikuno-dictus",
 			"startDate": "2024-02-24",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 3rd Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 49
 		},
 		{
 			"cardId": 110801,
@@ -2420,7 +4000,17 @@
 			"urlName": "110801-duramente",
 			"startDate": "2024-02-24",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 3rd Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 49
 		},
 		{
 			"cardId": 108001,
@@ -2435,7 +4025,17 @@
 			"urlName": "108001-transcend",
 			"startDate": "2024-03-12",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 17,
+			"anniversaryTag": "17d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 32
 		},
 		{
 			"cardId": 110901,
@@ -2450,7 +4050,17 @@
 			"urlName": "110901-rhein-kraft",
 			"startDate": "2024-03-21",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 26,
+			"anniversaryTag": "26d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 106502,
@@ -2465,7 +4075,17 @@
 			"urlName": "106502-daitaku-helios",
 			"startDate": "2024-03-29",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 108502,
@@ -2480,7 +4100,17 @@
 			"urlName": "108502-daiichi-ruby",
 			"startDate": "2024-03-29",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 15
 		},
 		{
 			"cardId": 103503,
@@ -2495,7 +4125,17 @@
 			"urlName": "103503-winning-ticket",
 			"startDate": "2024-04-09",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 45,
+			"anniversaryTag": "45d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 30,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2024-04-13",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 110201,
@@ -2510,7 +4150,17 @@
 			"urlName": "110201-sounds-of-earth",
 			"startDate": "2024-04-19",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 55,
+			"anniversaryTag": "55d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 62
 		},
 		{
 			"cardId": 104503,
@@ -2525,7 +4175,17 @@
 			"urlName": "104503-super-creek",
 			"startDate": "2024-04-30",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 66,
+			"anniversaryTag": "66d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 51
 		},
 		{
 			"cardId": 107202,
@@ -2540,7 +4200,17 @@
 			"urlName": "107202-yaeno-muteki",
 			"startDate": "2024-04-30",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 66,
+			"anniversaryTag": "66d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 51
 		},
 		{
 			"cardId": 103203,
@@ -2555,7 +4225,17 @@
 			"urlName": "103203-agnes-tachyon",
 			"startDate": "2024-05-10",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 76,
+			"anniversaryTag": "76d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 41
 		},
 		{
 			"cardId": 108201,
@@ -2570,7 +4250,17 @@
 			"urlName": "108201-north-flight",
 			"startDate": "2024-05-20",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 86,
+			"anniversaryTag": "86d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 31
 		},
 		{
 			"cardId": 104402,
@@ -2585,7 +4275,17 @@
 			"urlName": "104402-sweep-tosho",
 			"startDate": "2024-05-30",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 21
 		},
 		{
 			"cardId": 106103,
@@ -2600,7 +4300,17 @@
 			"urlName": "106103-king-halo",
 			"startDate": "2024-05-30",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 21
 		},
 		{
 			"cardId": 109401,
@@ -2615,7 +4325,17 @@
 			"urlName": "109401-jungle-pocket",
 			"startDate": "2024-06-13",
 			"releaseEn": null,
-			"scenario": "UAF"
+			"scenario": "UAF",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 110,
+			"anniversaryTag": "110d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 31,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-06-20",
+			"daysToFirstCm": 7
 		},
 		{
 			"cardId": 111901,
@@ -2630,7 +4350,17 @@
 			"urlName": "111901-dream-journey",
 			"startDate": "2024-06-26",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 123,
+			"anniversaryTag": "123d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 60
 		},
 		{
 			"cardId": 103003,
@@ -2645,7 +4375,17 @@
 			"urlName": "103003-rice-shower",
 			"startDate": "2024-07-09",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 136,
+			"anniversaryTag": "136d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 47
 		},
 		{
 			"cardId": 112001,
@@ -2660,7 +4400,17 @@
 			"urlName": "112001-calstone-light-o",
 			"startDate": "2024-07-19",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 146,
+			"anniversaryTag": "146d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 37
 		},
 		{
 			"cardId": 103703,
@@ -2675,7 +4425,17 @@
 			"urlName": "103703-eishin-flash",
 			"startDate": "2024-07-29",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 156,
+			"anniversaryTag": "156d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 27
 		},
 		{
 			"cardId": 109902,
@@ -2690,7 +4450,17 @@
 			"urlName": "109902-hokko-tarumae",
 			"startDate": "2024-07-29",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3",
+			"anniversaryLabel": "3rd Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 156,
+			"anniversaryTag": "156d after 3rd Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 27
 		},
 		{
 			"cardId": 111601,
@@ -2705,7 +4475,17 @@
 			"urlName": "111601-gentildonna",
 			"startDate": "2024-08-24",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 3.5 Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 32,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2024-08-25",
+			"daysToFirstCm": 1
 		},
 		{
 			"cardId": 104702,
@@ -2720,7 +4500,17 @@
 			"urlName": "104702-zenno-rob-roy",
 			"startDate": "2024-08-30",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 6,
+			"anniversaryTag": "6d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 54
 		},
 		{
 			"cardId": 110502,
@@ -2735,7 +4525,17 @@
 			"urlName": "110502-neo-universe",
 			"startDate": "2024-08-30",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 6,
+			"anniversaryTag": "6d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 54
 		},
 		{
 			"cardId": 111001,
@@ -2750,7 +4550,17 @@
 			"urlName": "111001-cesario",
 			"startDate": "2024-09-10",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 17,
+			"anniversaryTag": "17d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 43
 		},
 		{
 			"cardId": 112101,
@@ -2765,7 +4575,17 @@
 			"urlName": "112101-durandal",
 			"startDate": "2024-09-20",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 27,
+			"anniversaryTag": "27d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 33
 		},
 		{
 			"cardId": 102403,
@@ -2780,7 +4600,17 @@
 			"urlName": "102403-mayano-top-gun",
 			"startDate": "2024-09-30",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 37,
+			"anniversaryTag": "37d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 104202,
@@ -2795,7 +4625,17 @@
 			"urlName": "104202-seeking-the-pearl",
 			"startDate": "2024-09-30",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 37,
+			"anniversaryTag": "37d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 112401,
@@ -2810,7 +4650,17 @@
 			"urlName": "112401-bubble-gum-fellow",
 			"startDate": "2024-10-11",
 			"releaseEn": null,
-			"scenario": "Dai Housyokusai (Great Food Festival)"
+			"scenario": "Dai Housyokusai (Great Food Festival)",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 48,
+			"anniversaryTag": "48d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 33,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2024-10-23",
+			"daysToFirstCm": 12
 		},
 		{
 			"cardId": 102303,
@@ -2825,7 +4675,17 @@
 			"urlName": "102303-biwa-hayahide",
 			"startDate": "2024-10-29",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 66,
+			"anniversaryTag": "66d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 54
 		},
 		{
 			"cardId": 105003,
@@ -2840,7 +4700,17 @@
 			"urlName": "105003-narita-taishin",
 			"startDate": "2024-11-08",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 76,
+			"anniversaryTag": "76d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 44
 		},
 		{
 			"cardId": 111101,
@@ -2855,7 +4725,17 @@
 			"urlName": "111101-air-messiah",
 			"startDate": "2024-11-18",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 86,
+			"anniversaryTag": "86d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 34
 		},
 		{
 			"cardId": 103302,
@@ -2870,7 +4750,17 @@
 			"urlName": "103302-admire-vega",
 			"startDate": "2024-11-28",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 107702,
@@ -2885,7 +4775,17 @@
 			"urlName": "107702-narita-top-road",
 			"startDate": "2024-11-28",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 111701,
@@ -2900,7 +4800,17 @@
 			"urlName": "111701-win-variation",
 			"startDate": "2024-12-10",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 108,
+			"anniversaryTag": "108d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 12
 		},
 		{
 			"cardId": 101103,
@@ -2915,7 +4825,17 @@
 			"urlName": "101103-grass-wonder",
 			"startDate": "2024-12-19",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 117,
+			"anniversaryTag": "117d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 34,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2024-12-22",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 105702,
@@ -2930,7 +4850,17 @@
 			"urlName": "105702-mr-cb",
 			"startDate": "2024-12-27",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 35,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-01-24",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 110402,
@@ -2945,7 +4875,17 @@
 			"urlName": "110402-katsuragi-ace",
 			"startDate": "2024-12-27",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 125,
+			"anniversaryTag": "125d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 35,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-01-24",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 100403,
@@ -2960,7 +4900,17 @@
 			"urlName": "100403-maruzensky",
 			"startDate": "2025-01-10",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 139,
+			"anniversaryTag": "139d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 35,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-01-24",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 107901,
@@ -2975,7 +4925,17 @@
 			"urlName": "107901-furioso",
 			"startDate": "2025-01-20",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 149,
+			"anniversaryTag": "149d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 35,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-01-24",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 107802,
@@ -2990,7 +4950,17 @@
 			"urlName": "107802-yamanin-zephyr",
 			"startDate": "2025-01-31",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 160,
+			"anniversaryTag": "160d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 53
 		},
 		{
 			"cardId": 108702,
@@ -3005,7 +4975,17 @@
 			"urlName": "108702-aston-machan",
 			"startDate": "2025-01-31",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 160,
+			"anniversaryTag": "160d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 53
 		},
 		{
 			"cardId": 107301,
@@ -3020,7 +5000,17 @@
 			"urlName": "107301-tsurumaru-tsuyoshi",
 			"startDate": "2025-02-14",
 			"releaseEn": null,
-			"scenario": "Run! Mecha Umamusume"
+			"scenario": "Run! Mecha Umamusume",
+			"anniversary": "3.5",
+			"anniversaryLabel": "3.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 174,
+			"anniversaryTag": "174d after 3.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 39
 		},
 		{
 			"cardId": 111501,
@@ -3035,7 +5025,17 @@
 			"urlName": "111501-orfevre",
 			"startDate": "2025-02-24",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 4th Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 29
 		},
 		{
 			"cardId": 113101,
@@ -3050,7 +5050,17 @@
 			"urlName": "113101-gran-alegria",
 			"startDate": "2025-03-11",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 15,
+			"anniversaryTag": "15d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 109601,
@@ -3065,7 +5075,17 @@
 			"urlName": "109601-no-reason",
 			"startDate": "2025-03-21",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 25,
+			"anniversaryTag": "25d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 36,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-03-25",
+			"daysToFirstCm": 4
 		},
 		{
 			"cardId": 108402,
@@ -3080,7 +5100,17 @@
 			"urlName": "108402-tanino-gimlet",
 			"startDate": "2025-03-31",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 35,
+			"anniversaryTag": "35d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 37,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2025-04-23",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 110702,
@@ -3095,7 +5125,17 @@
 			"urlName": "110702-tap-dance-city",
 			"startDate": "2025-03-31",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 35,
+			"anniversaryTag": "35d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 37,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2025-04-23",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 107002,
@@ -3110,7 +5150,17 @@
 			"urlName": "107002-sirius-symboli",
 			"startDate": "2025-04-10",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 45,
+			"anniversaryTag": "45d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 37,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2025-04-23",
+			"daysToFirstCm": 13
 		},
 		{
 			"cardId": 112701,
@@ -3125,7 +5175,17 @@
 			"urlName": "112701-fenomeno",
 			"startDate": "2025-04-21",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 56,
+			"anniversaryTag": "56d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 37,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2025-04-23",
+			"daysToFirstCm": 2
 		},
 		{
 			"cardId": 104603,
@@ -3140,7 +5200,17 @@
 			"urlName": "104603-smart-falcon",
 			"startDate": "2025-04-30",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 52
 		},
 		{
 			"cardId": 109802,
@@ -3155,7 +5225,17 @@
 			"urlName": "109802-copano-rickey",
 			"startDate": "2025-04-30",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 65,
+			"anniversaryTag": "65d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 52
 		},
 		{
 			"cardId": 109001,
@@ -3170,7 +5250,17 @@
 			"urlName": "109001-verxina",
 			"startDate": "2025-05-12",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 77,
+			"anniversaryTag": "77d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 40
 		},
 		{
 			"cardId": 113201,
@@ -3185,7 +5275,17 @@
 			"urlName": "113201-loves-only-you",
 			"startDate": "2025-05-21",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 86,
+			"anniversaryTag": "86d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 31
 		},
 		{
 			"cardId": 108602,
@@ -3200,7 +5300,17 @@
 			"urlName": "108602-mejiro-ramonu",
 			"startDate": "2025-05-30",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 95,
+			"anniversaryTag": "95d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 111002,
@@ -3215,7 +5325,17 @@
 			"urlName": "111002-cesario",
 			"startDate": "2025-05-30",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 95,
+			"anniversaryTag": "95d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 22
 		},
 		{
 			"cardId": 113301,
@@ -3230,7 +5350,17 @@
 			"urlName": "113301-chrono-genesis",
 			"startDate": "2025-06-13",
 			"releaseEn": null,
-			"scenario": "The Twinkle Legends"
+			"scenario": "The Twinkle Legends",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 109,
+			"anniversaryTag": "109d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 38,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-06-21",
+			"daysToFirstCm": 8
 		},
 		{
 			"cardId": 104003,
@@ -3245,7 +5375,17 @@
 			"urlName": "104003-gold-city",
 			"startDate": "2025-06-27",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 123,
+			"anniversaryTag": "123d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 39,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-07-25",
+			"daysToFirstCm": 28
 		},
 		{
 			"cardId": 103103,
@@ -3260,7 +5400,17 @@
 			"urlName": "103103-ines-fujin",
 			"startDate": "2025-07-11",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 137,
+			"anniversaryTag": "137d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 39,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-07-25",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 110902,
@@ -3275,7 +5425,17 @@
 			"urlName": "110902-rhein-kraft",
 			"startDate": "2025-07-22",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 148,
+			"anniversaryTag": "148d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 39,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-07-25",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 111301,
@@ -3290,7 +5450,17 @@
 			"urlName": "111301-fusaichi-pandora",
 			"startDate": "2025-07-22",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 148,
+			"anniversaryTag": "148d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 39,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-07-25",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 108802,
@@ -3305,7 +5475,17 @@
 			"urlName": "108802-satono-crown",
 			"startDate": "2025-07-31",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 53
 		},
 		{
 			"cardId": 108902,
@@ -3320,7 +5500,17 @@
 			"urlName": "108902-cheval-grand",
 			"startDate": "2025-07-31",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 157,
+			"anniversaryTag": "157d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 53
 		},
 		{
 			"cardId": 109102,
@@ -3335,7 +5525,17 @@
 			"urlName": "109102-vivlos",
 			"startDate": "2025-08-14",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4",
+			"anniversaryLabel": "4th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 171,
+			"anniversaryTag": "171d after 4th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 39
 		},
 		{
 			"cardId": 109701,
@@ -3350,7 +5550,17 @@
 			"urlName": "109701-still-in-love",
 			"startDate": "2025-08-24",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 4.5 Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 29
 		},
 		{
 			"cardId": 109302,
@@ -3365,7 +5575,17 @@
 			"urlName": "109302-ksmiracle",
 			"startDate": "2025-08-29",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 5,
+			"anniversaryTag": "5d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 110602,
@@ -3380,7 +5600,17 @@
 			"urlName": "110602-hishi-miracle",
 			"startDate": "2025-08-29",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 5,
+			"anniversaryTag": "5d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 108101,
@@ -3395,7 +5625,17 @@
 			"urlName": "108101-espoir-city",
 			"startDate": "2025-09-09",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 16,
+			"anniversaryTag": "16d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 13
 		},
 		{
 			"cardId": 109501,
@@ -3410,7 +5650,17 @@
 			"urlName": "109501-believe",
 			"startDate": "2025-09-19",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 26,
+			"anniversaryTag": "26d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 40,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2025-09-22",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 102802,
@@ -3425,7 +5675,17 @@
 			"urlName": "102802-hishi-akebono",
 			"startDate": "2025-09-29",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 41,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2025-10-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 105502,
@@ -3440,7 +5700,17 @@
 			"urlName": "105502-marvelous-sunday",
 			"startDate": "2025-09-29",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 36,
+			"anniversaryTag": "36d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 41,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2025-10-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 104803,
@@ -3455,7 +5725,17 @@
 			"urlName": "104803-tosen-jordan",
 			"startDate": "2025-10-10",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 47,
+			"anniversaryTag": "47d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 41,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2025-10-23",
+			"daysToFirstCm": 13
 		},
 		{
 			"cardId": 109201,
@@ -3470,7 +5750,17 @@
 			"urlName": "109201-dantsu-flame",
 			"startDate": "2025-10-18",
 			"releaseEn": null,
-			"scenario": "Welcome to the Uninhabited Island"
+			"scenario": "Welcome to the Uninhabited Island",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 55,
+			"anniversaryTag": "55d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 41,
+			"firstCmName": "SPRINT",
+			"firstCmStartDate": "2025-10-23",
+			"daysToFirstCm": 5
 		},
 		{
 			"cardId": 108002,
@@ -3485,7 +5775,17 @@
 			"urlName": "108002-transcend",
 			"startDate": "2025-10-29",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 66,
+			"anniversaryTag": "66d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 53
 		},
 		{
 			"cardId": 110002,
@@ -3500,7 +5800,17 @@
 			"urlName": "110002-wonder-acute",
 			"startDate": "2025-11-10",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 78,
+			"anniversaryTag": "78d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 41
 		},
 		{
 			"cardId": 111401,
@@ -3515,7 +5825,17 @@
 			"urlName": "111401-buena-vista",
 			"startDate": "2025-11-19",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 87,
+			"anniversaryTag": "87d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 32
 		},
 		{
 			"cardId": 104902,
@@ -3530,7 +5850,17 @@
 			"urlName": "104902-nakayama-festa",
 			"startDate": "2025-11-28",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 111902,
@@ -3545,7 +5875,17 @@
 			"urlName": "111902-dream-journey",
 			"startDate": "2025-11-28",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 96,
+			"anniversaryTag": "96d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 23
 		},
 		{
 			"cardId": 100603,
@@ -3560,7 +5900,17 @@
 			"urlName": "100603-oguri-cap",
 			"startDate": "2025-12-11",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 109,
+			"anniversaryTag": "109d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 10
 		},
 		{
 			"cardId": 113501,
@@ -3575,7 +5925,17 @@
 			"urlName": "113501-stay-gold",
 			"startDate": "2025-12-21",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 119,
+			"anniversaryTag": "119d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 42,
+			"firstCmName": "MILE",
+			"firstCmStartDate": "2025-12-21",
+			"daysToFirstCm": 0
 		},
 		{
 			"cardId": 106302,
@@ -3590,7 +5950,17 @@
 			"urlName": "106302-ikuno-dictus",
 			"startDate": "2025-12-26",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 124,
+			"anniversaryTag": "124d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 43,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2026-01-22",
+			"daysToFirstCm": 27
 		},
 		{
 			"cardId": 107602,
@@ -3605,7 +5975,17 @@
 			"urlName": "107602-sakura-laurel",
 			"startDate": "2025-12-26",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 124,
+			"anniversaryTag": "124d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 43,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2026-01-22",
+			"daysToFirstCm": 27
 		},
 		{
 			"cardId": 112402,
@@ -3620,7 +6000,17 @@
 			"urlName": "112402-bubble-gum-fellow",
 			"startDate": "2026-01-08",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 137,
+			"anniversaryTag": "137d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 43,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2026-01-22",
+			"daysToFirstCm": 14
 		},
 		{
 			"cardId": 113701,
@@ -3635,7 +6025,17 @@
 			"urlName": "113701-kiseki",
 			"startDate": "2026-01-19",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 148,
+			"anniversaryTag": "148d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 43,
+			"firstCmName": "LONG",
+			"firstCmStartDate": "2026-01-22",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 101003,
@@ -3650,7 +6050,17 @@
 			"urlName": "101003-taiki-shuttle",
 			"startDate": "2026-01-30",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 159,
+			"anniversaryTag": "159d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 51
 		},
 		{
 			"cardId": 110202,
@@ -3665,7 +6075,17 @@
 			"urlName": "110202-sounds-of-earth",
 			"startDate": "2026-01-30",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 159,
+			"anniversaryTag": "159d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 51
 		},
 		{
 			"cardId": 110301,
@@ -3680,7 +6100,17 @@
 			"urlName": "110301-royce-and-royce",
 			"startDate": "2026-02-14",
 			"releaseEn": null,
-			"scenario": "Yukoma Hot Spring Village"
+			"scenario": "Yukoma Hot Spring Village",
+			"anniversary": "4.5",
+			"anniversaryLabel": "4.5 Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 174,
+			"anniversaryTag": "174d after 4.5 Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 36
 		},
 		{
 			"cardId": 112901,
@@ -3695,7 +6125,17 @@
 			"urlName": "112901-almond-eye",
 			"startDate": "2026-02-24",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "with",
+			"daysFromAnniversary": 0,
+			"anniversaryTag": "with 5th Anniversary",
+			"isAnniversaryLaunch": true,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 26
 		},
 		{
 			"cardId": 113202,
@@ -3710,7 +6150,17 @@
 			"urlName": "113202-loves-only-you",
 			"startDate": "2026-03-11",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 15,
+			"anniversaryTag": "15d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 11
 		},
 		{
 			"cardId": 114301,
@@ -3725,7 +6175,17 @@
 			"urlName": "114301-victoire-pisa",
 			"startDate": "2026-03-19",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 23,
+			"anniversaryTag": "23d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 44,
+			"firstCmName": "CLASSIC",
+			"firstCmStartDate": "2026-03-22",
+			"daysToFirstCm": 3
 		},
 		{
 			"cardId": 104103,
@@ -3740,7 +6200,17 @@
 			"urlName": "104103-sakura-bakushin-o",
 			"startDate": "2026-03-30",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 45,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2026-04-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 108202,
@@ -3755,7 +6225,17 @@
 			"urlName": "108202-north-flight",
 			"startDate": "2026-03-30",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 34,
+			"anniversaryTag": "34d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 45,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2026-04-23",
+			"daysToFirstCm": 24
 		},
 		{
 			"cardId": 113001,
@@ -3770,7 +6250,17 @@
 			"urlName": "113001-lucky-lilac",
 			"startDate": "2026-04-10",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 45,
+			"anniversaryTag": "45d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 45,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2026-04-23",
+			"daysToFirstCm": 13
 		},
 		{
 			"cardId": 111801,
@@ -3785,7 +6275,17 @@
 			"urlName": "111801-admire-groove",
 			"startDate": "2026-04-20",
 			"releaseEn": null,
-			"scenario": "Beyond Dreams"
+			"scenario": "Beyond Dreams",
+			"anniversary": "5",
+			"anniversaryLabel": "5th Anniversary",
+			"relationToAnniversary": "after",
+			"daysFromAnniversary": 55,
+			"anniversaryTag": "55d after 5th Anniversary",
+			"isAnniversaryLaunch": false,
+			"firstCmId": 45,
+			"firstCmName": "DIRT",
+			"firstCmStartDate": "2026-04-23",
+			"daysToFirstCm": 3
 		}
 	]
 }
