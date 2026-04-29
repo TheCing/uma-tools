@@ -1,1 +1,6418 @@
-{"1000011":["Carnival Bonus"],"1000012":["Carnival Bonus"],"100011":["Shooting Star"],"100021":["The View from the Lead Is Mine!"],"100031":["Sky-High Teio Step"],"100041":["Red Shift/LP1211-M"],"100051":["Lights of Vaudeville"],"100061":["Triumphant Pulse"],"100071":["Anchors Aweigh!"],"100081":["Cut and Drive!"],"100091":["Resplendent Red Ace"],"100101":["Shooting for Victory!"],"100111":["Where There's a Will, There's a Way"],"100121":["You and Me! One-on-One!"],"100131":["The Duty of Dignity Calls"],"100141":["Victoria por plancha ☆"],"100151":["This Dance Is for Vittoria!"],"100161":["Shadow Break"],"100171":["Behold Thine Emperor's Divine Might"],"100181":["Blazing Pride"],"100191":["OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆"],"100201":["Angling and Scheming"],"100211":["White Lightning Comin' Through!"],"100221":["Fairy Tale"],"100231":["∴win Q.E.D."],"100241":["Flashy☆Landing"],"100251":["Chasing After You"],"100261":["G00 1st. F∞;"],"100271":["Let's Pump Some Iron!"],"100281":["YUMMY☆SPEED!"],"100301":["Blue Rose Closer"],"100311":["All Charged! It's Go Time!"],"100321":["U=ma2"],"100331":["Shooting Star of Dioskouroi"],"100341":["Now We're Cruisin'!"],"100351":["Our Ticket to Win!"],"100361":["trigger:BEAT"],"100371":["Schwarzes Schwert"],"100381":["#LookatCurren"],"100391":["A Princess Must Seize Victory!"],"100401":["KEEP IT REAL."],"100411":["Genius x Bakushin = Victory"],"100441":["Victory belongs to me—Strelitzia! ☆"],"100451":["Pure Heart"],"100461":["SPARKLY☆STARDOM"],"100481":["Pop & Polish"],"100501":["Nemesis"],"100511":["Budding Blossom"],"100521":["Super-Duper Climax"],"100561":["I See Victory in My Future!"],"100581":["I Never Goof Up!"],"100591":["Moving Past, and Beyond"],"100601":["Just a Little Farther!"],"100611":["Prideful King"],"100621":["Go, Go, Mun!"],"100631":["Forged From a Hundred Trials"],"100641":["Keep Pushing Ahead"],"100651":["Everybody Put Your Hands Up!"],"100661":["Engine, Full Throttle! Turbo Time!"],"100671":["Eternal Encompassing Shine"],"100681":["Victory Cheer!"],"100691":["Ambition to Surpass the Sakura"],"10071":["Warning Shot!"],"100711":["A Lifelong Dream, A Moment's Flight"],"100721":["Peerless Dance of Flowering Flames"],"100741":["Lovely Spring Breeze"],"10081":["Xceleration"],"10091":["Red Ace"],"10111":["Focused Mind"],"10141":["Corazón ☆ Ardiente"],"10181":["Empress's Pride"],"10241":["1st Place Kiss☆"],"10271":["Feel the Burn!"],"10321":["Introduction to Physiology"],"10351":["V Is for Victory!"],"10411":["Class Rep + Speed = Bakushin"],"10451":["Clear Heart"],"10521":["Super-Duper Stoked"],"10561":["Luck Be with Me!"],"10601":["I Can Win Sometimes, Right?"],"10611":["Call Me King"],"10621":["Ready, Go!"],"1100011":["Feelin' a Bit Silly"],"110011":["Dazzl'n ♪ Diver"],"110031":["Certain Victory"],"110041":["A Kiss for Courage"],"110051":["Ravissant"],"110061":["Festive Miracle"],"110101":["Joyful Voyage!"],"110111":["Superior Heal"],"110131":["Legacy of the Strong"],"110141":["Condor's Fury"],"110151":["Barcarole of Blessings"],"110171":["Arrows Whistle, Shadows Disperse"],"110181":["Eternal Moments"],"110201":["Break It Down!"],"110221":["Best Day Ever"],"110231":["Presents from X"],"110241":["Flowery☆Maneuver"],"110261":["Operation Cacao"],"110301":["Every Rose Has Its Fangs"],"110371":["Guten Appetit ♪"],"110381":["One True Color"],"110401":["Dancing in the Leaves"],"110451":["Give Mummy a Hug ♡"],"110511":["Flowering Dreams"],"110521":["114th Time's the Charm"],"110561":["Bountiful Harvest"],"110591":["Wherever This Wonder Leads"],"110601":["Go☆Go☆Goal!"],"110611":["Louder! Tracen Cheer!"],"1200011":["Medium Race Enthusiast"],"1200021":["Long Race Enthusiast"],"1200031":["Mile Race Enthusiast"],"120011":["Dreams Donned with Pride!"],"200011":["Right-Handed ◎"],"200012":["Right-Handed ○"],"200013":["Right-Handed ×"],"200014":["Right-Handed Demon"],"200021":["Left-Handed ◎"],"200022":["Left-Handed ○"],"200023":["Left-Handed ×"],"200031":["Tokyo Racecourse ◎"],"200032":["Tokyo Racecourse ○"],"200033":["Tokyo Racecourse ×"],"200041":["Nakayama Racecourse ◎"],"200042":["Nakayama Racecourse ○"],"200043":["Nakayama Racecourse ×"],"200051":["Hanshin Racecourse ◎"],"200052":["Hanshin Racecourse ○"],"200053":["Hanshin Racecourse ×"],"200061":["Kyoto Racecourse ◎"],"200062":["Kyoto Racecourse ○"],"200063":["Kyoto Racecourse ×"],"200064":["Yodo Invicta"],"200071":["Chukyo Racecourse ◎"],"200072":["Chukyo Racecourse ○"],"200073":["Chukyo Racecourse ×"],"200081":["Sapporo Racecourse ◎"],"200082":["Sapporo Racecourse ○"],"200083":["Sapporo Racecourse ×"],"200091":["Hakodate Racecourse ◎"],"200092":["Hakodate Racecourse ○"],"200093":["Hakodate Racecourse ×"],"200101":["Fukushima Racecourse ◎"],"200102":["Fukushima Racecourse ○"],"200103":["Fukushima Racecourse ×"],"200111":["Niigata Racecourse ◎"],"200112":["Niigata Racecourse ○"],"200113":["Niigata Racecourse ×"],"200121":["Kokura Racecourse ◎"],"200122":["Kokura Racecourse ○"],"200123":["Kokura Racecourse ×"],"200131":["Standard Distance ◎"],"200132":["Standard Distance ○"],"200133":["Standard Distance ×"],"200141":["Non-Standard Distance ◎"],"200142":["Non-Standard Distance ○"],"200143":["Non-Standard Distance ×"],"200151":["Firm Conditions ◎"],"200152":["Firm Conditions ○"],"200153":["Firm Conditions ×"],"200154":["Firm Course Menace"],"200161":["Wet Conditions ◎"],"200162":["Wet Conditions ○"],"200163":["Wet Conditions ×"],"200171":["Spring Runner ◎"],"200172":["Spring Runner ○"],"200173":["Spring Runner ×"],"200174":["Spring Spectacle"],"200181":["Summer Runner ◎"],"200182":["Summer Runner ○"],"200183":["Summer Runner ×"],"200184":["Summer Gale"],"200191":["Fall Runner ◎"],"200192":["Fall Runner ○"],"200193":["Fall Runner ×"],"200194":["Fall Frenzy"],"200201":["Winter Runner ◎"],"200202":["Winter Runner ○"],"200203":["Winter Runner ×"],"200211":["Sunny Days ◎"],"200212":["Sunny Days ○"],"200221":["Cloudy Days ◎"],"200222":["Cloudy Days ○"],"200231":["Rainy Days ◎"],"200232":["Rainy Days ○"],"200233":["Rainy Days ×"],"200241":["Snowy Days ◎"],"200242":["Snowy Days ○"],"200251":["Inner Post Proficiency ◎"],"200252":["Inner Post Proficiency ○"],"200253":["Inner Post Averseness"],"200261":["Outer Post Proficiency ◎"],"200262":["Outer Post Proficiency ○"],"200263":["Outer Post Averseness"],"200271":["Maverick ◎"],"200272":["Maverick ○"],"200281":["Competitive Spirit ◎"],"200282":["Competitive Spirit ○"],"200283":["Wallflower"],"200291":["Target in Sight ◎"],"200292":["Target in Sight ○"],"200301":["Long Shot ◎"],"200302":["Long Shot ○"],"200311":["G1 Averseness"],"200321":["Paddock Fright"],"200331":["Professor of Curvature"],"200332":["Corner Adept ○"],"200333":["Corner Adept ×"],"200341":["Corner Connoisseur"],"200342":["Corner Acceleration ○"],"200343":["Corner Acceleration ×"],"200351":["Swinging Maestro"],"200352":["Corner Recovery ○"],"200353":["Corner Recovery ×"],"200361":["Beeline Burst"],"200362":["Straightaway Adept"],"200371":["Rushing Gale!"],"200372":["Straightaway Acceleration"],"200381":["Breath of Fresh Air"],"200382":["Straightaway Recovery"],"200391":["Ramp Revulsion"],"200401":["Packphobia"],"200411":["Defeatist"],"200421":["Reckless"],"200431":["Concentration"],"200432":["Focus"],"200433":["Gatekept"],"200441":["Iron Will"],"200442":["Lay Low"],"200451":["Center Stage"],"200452":["Prudent Positioning"],"200461":["It's On!"],"200462":["Ramp Up"],"200471":["Indomitable"],"200472":["Pace Strategy"],"200481":["Unruffled"],"200482":["Calm in a Crowd"],"200491":["No Stopping Me!"],"200492":["Nimble Navigator"],"200501":["Lane Legerdemain"],"200502":["Go with the Flow"],"200511":["In Body and Mind"],"200512":["Homestretch Haste"],"200521":["Running Idle"],"200531":["Taking the Lead"],"200532":["Early Lead"],"200541":["Escape Artist"],"200542":["Fast-Paced"],"200551":["Unrestrained"],"200552":["Final Push"],"200561":["Calm and Collected"],"200562":["Stamina to Spare"],"200571":["Race Planner"],"200572":["Preferred Position"],"200581":["Speed Star"],"200582":["Prepared to Pass"],"200591":["Fast & Furious"],"200592":["Position Pilfer"],"200601":["On Your Left!"],"200602":["Slick Surge"],"200611":["Rising Dragon"],"200612":["Outer Swell"],"200621":["Sleeping Lion"],"200622":["Standing By"],"200631":["Sturm und Drang"],"200632":["Masterful Gambit"],"200641":["Encroaching Shadow"],"200642":["Straightaway Spurt"],"200651":["Turbo Sprint"],"200652":["Sprinting Gear"],"200662":["Wait-and-See"],"200671":["Blinding Flash"],"200672":["Gap Closer"],"200681":["Mile Maven"],"200682":["Productive Plan"],"200691":["Keen Eye"],"200692":["Watchful Eye"],"200701":["Furious Feat"],"200702":["Updrafters"],"200711":["Trackblazer"],"200712":["Rosy Outlook"],"200721":["Killer Tunes"],"200722":["Up-Tempo"],"200731":["Unyielding"],"200732":["Steadfast"],"200741":["Cooldown"],"200742":["Deep Breaths"],"200751":["Innate Experience"],"200752":["Inside Scoop"],"200761":["Adrenaline Rush"],"200762":["Extra Tank"],"200771":["Trick (Front)"],"200772":["Tantalizing Trick"],"200781":["Trick (Rear)"],"200791":["Frenzied Front Runners"],"200801":["Frenzied Pace Chasers"],"200811":["Frenzied Late Surgers"],"200821":["Frenzied End Closers"],"200831":["Subdued Front Runners"],"200841":["Flustered Front Runners"],"200851":["Hesitant Front Runners"],"200861":["Subdued Pace Chasers"],"200871":["Flustered Pace Chasers"],"200881":["Hesitant Pace Chasers"],"200891":["Subdued Late Surgers"],"200901":["Flustered Late Surgers"],"200911":["Hesitant Late Surgers"],"200921":["Subdued End Closers"],"200931":["Flustered End Closers"],"200941":["Hesitant End Closers"],"200951":["Oi Racecourse ◎"],"200952":["Oi Racecourse ○"],"200953":["Oi Racecourse ×"],"200961":["Sprint Straightaways ◎"],"200962":["Sprint Straightaways ○"],"200971":["Sprint Corners ◎"],"200972":["Sprint Corners ○"],"200981":["Staggering Lead"],"200982":["Huge Lead"],"200991":["Plan X"],"200992":["Countermeasure"],"201001":["Perfect Prep!"],"201002":["Meticulous Measures"],"201011":["Adored by All"],"201012":["Intimidate"],"201021":["You've Got No Shot"],"201022":["Stop Right There!"],"201031":["Mile Straightaways ◎"],"201032":["Mile Straightaways ○"],"201041":["Mile Corners ◎"],"201042":["Mile Corners ○"],"201051":["Changing Gears"],"201052":["Shifting Gears"],"201061":["Step on the Gas!"],"201062":["Acceleration"],"201071":["Big-Sisterly"],"201072":["Unyielding Spirit"],"201081":["Greed for Speed"],"201082":["Speed Eater"],"201091":["Battle Formation"],"201092":["Opening Gambit"],"201101":["Medium Straightaways ◎"],"201102":["Medium Straightaways ○"],"201103":["Flash Forward"],"201111":["Medium Corners ◎"],"201112":["Medium Corners ○"],"201113":["Refraction Arc"],"201121":["Clairvoyance"],"201122":["Hawkeye"],"201131":["Lightning Step"],"201132":["Thunderbolt Step"],"201141":["Miraculous Step"],"201142":["Soft Step"],"201151":["Dominator"],"201152":["Tether"],"201161":["Mystifying Murmur"],"201162":["Murmur"],"201171":["Long Straightaways ◎"],"201172":["Long Straightaways ○"],"201173":["Blast Forward"],"201181":["Long Corners ◎"],"201182":["Long Corners ○"],"201191":["Vanguard Spirit"],"201192":["Keeping the Lead"],"201201":["VIP Pass"],"201202":["Passing Pro"],"201211":["Overwhelming Pressure"],"201212":["Pressure"],"201221":["Stamina Siphon"],"201222":["Stamina Eater"],"201231":["Illusionist"],"201232":["Smoke Screen"],"201241":["Front Runner Straightaways ◎"],"201242":["Front Runner Straightaways ○"],"201251":["Front Runner Corners ◎"],"201252":["Front Runner Corners ○"],"201261":["Sixth Sense"],"201262":["Dodging Danger"],"201271":["Top Runner"],"201272":["Leader's Pride"],"201281":["Restless"],"201282":["Moxie"],"201291":["Reignition"],"201292":["Second Wind"],"201302":["Restart"],"201311":["Pace Chaser Straightaways ◎"],"201312":["Pace Chaser Straightaways ○"],"201321":["Pace Chaser Corners ◎"],"201322":["Pace Chaser Corners ○"],"201331":["Technician"],"201332":["Shrewd Step"],"201341":["Determined Descent"],"201342":["Straight Descent"],"201351":["Gourmand"],"201352":["Hydrate"],"201361":["Shatterproof"],"201362":["Tactical Tweak"],"201371":["Dazzling Disorientation"],"201372":["Disorient"],"201381":["Late Surger Straightaways ◎"],"201382":["Late Surger Straightaways ○"],"201383":["Incisive Flash"],"201391":["Late Surger Corners ◎"],"201392":["Late Surger Corners ○"],"201393":["Incisive Slash"],"201401":["Hard Worker"],"201402":["Fighter"],"201411":["15,000,000 CC"],"201412":["1,500,000 CC"],"201421":["Relax"],"201422":["A Small Breather"],"201431":["The Bigger Picture"],"201432":["Studious"],"201441":["All-Seeing Eyes"],"201442":["Sharp Gaze"],"201451":["End Closer Straightaways ◎"],"201452":["End Closer Straightaways ○"],"201453":["Moonlit Flash"],"201461":["End Closer Corners ◎"],"201462":["End Closer Corners ○"],"201471":["The Coast Is Clear!"],"201472":["I Can See Right Through You"],"201481":["Go-Home Specialist"],"201482":["After-School Stroll"],"201491":["Serenity"],"201492":["Levelheaded"],"201501":["Crusader"],"201502":["Strategist"],"201511":["Petrifying Gaze"],"201512":["Intense Gaze"],"201521":["Front Runner Savvy ◎"],"201522":["Front Runner Savvy ○"],"201531":["Pace Chaser Savvy ◎"],"201532":["Pace Chaser Savvy ○"],"201541":["Late Surger Savvy ◎"],"201542":["Late Surger Savvy ○"],"201551":["End Closer Savvy ◎"],"201552":["End Closer Savvy ○"],"201561":["Super Lucky Seven"],"201562":["Lucky Seven"],"201571":["Triple 7s"],"201581":["Highlander"],"201591":["Uma Stan"],"201592":["Superstan"],"201601":["Groundwork"],"201602":["Unshakable Stance"],"201611":["Tail Held High"],"201612":["Tail Nine"],"201621":["Shake It Out"],"201631":["Sympathy"],"201641":["Lone Wolf"],"201651":["Slipstream"],"201652":["In the Right Place!"],"201661":["Playtime's Over!"],"201662":["See Ya Later!"],"201671":["Trending in the Charts!"],"201672":["Top Pick"],"201681":["Lead the Charge!"],"201682":["Forward, March!"],"201691":["Lie in Wait"],"201692":["Be Still"],"201701":["Come What May"],"201702":["All I've Got"],"201801":["♡ 3D Nail Art"],"201901":["Neck and Neck"],"201902":["Head-On"],"202001":["Master of the Sands"],"202002":["Familiar Ground"],"202011":["Headliner"],"202012":["Feature Act"],"202021":["Daring Strike"],"202022":["Early Start"],"202031":["Nothing Ventured"],"202032":["Risky Business"],"202041":["In High Spirits"],"202042":["Light as a Feather"],"202051":["Runaway"],"202061":["Best in Japan"],"202071":["Of Calm Mind"],"202072":["Free-Spirited"],"202081":["From the Brink"],"202082":["Take the Chance"],"202091":["Burning Soul"],"202092":["Fighting Spirit"],"202101":["Elated"],"202102":["Eager"],"202111":["Full of Vigor"],"202112":["Pumped"],"202121":["Dauntless"],"202122":["Fearless"],"202131":["Wild Wind"],"202132":["With All My Soul"],"202141":["You're Not the Boss of Me!"],"202151":["Keep Going!"],"202152":["Full Throttle"],"202161":["Restraint"],"202172":["Downhill Speedster"],"202181":["99 Problems"],"202192":["Faultless"],"202211":["船橋レース場◎","Funabashi Racetrack ◎"],"202212":["船橋レース場○","Funabashi Racetrack ○"],"202213":["船橋レース場×","Funabashi Racetrack ×"],"202231":["ナイター◎","Nocturnal ◎"],"202232":["ナイター○","Nocturnal ○"],"202233":["ナイター×","Nocturnal ×"],"202282":["At Full Speed"],"202301":["Leisurely Dust Bath"],"202302":["砂浴び○","Dust Bath ○"],"202303":["砂浴び×","Dust Bath ×"],"202312":["Full of Zeal"],"202332":["Skillful Step"],"202341":["Mud Master"],"202342":["泥遊び◎","Mud Play ◎"],"202343":["泥遊び○","Mud Play ○"],"202344":["泥遊び×","Mud Play ×"],"202371":["Unstoppable"],"202372":["Attack Stance"],"202382":["Breakthrough Plan"],"202391":["出力1000％！","1000% Output!"],"202392":["Frantic State"],"202401":["Lightning Speed"],"202402":["Mighty Leap"],"202411":["Winds of Change"],"202412":["Ambitions"],"202421":["Lose Yourself"],"202422":["Devil-May-Care"],"202431":["Steady Advance"],"202432":["Firm Step"],"202461":["Untouchable Shadow"],"202471":["Hot Pursuit"],"202472":["Tooth and Tail"],"202481":["Monster"],"202482":["True Worth"],"202491":["Unrivaled Wits"],"202492":["Witful"],"202502":["Rushing in Blind"],"202522":["Mold Breaker"],"202531":["Ascendance"],"202532":["Graceful Step"],"202551":["Divine Speed"],"202552":["Rapid"],"202562":["Lock On"],"202581":["Ahead of the Game"],"202582":["Stay the Course"],"202592":["Great Haste"],"202612":["Overflowing Passion"],"202621":["Blitzing Spirit"],"202622":["On the Move"],"202661":["Surging Beat"],"202662":["Rising Passion"],"202671":["High Voltage"],"202672":["High Hopes"],"202681":["ブチ☆アゲ↑バイブス","Seriously☆Good↑Vibes"],"202682":["バイブス上昇","Up the Vibes"],"210011":["Burning Spirit SPD"],"210012":["Ignited Spirit SPD"],"210021":["Burning Spirit STA"],"210022":["Ignited Spirit STA"],"210031":["Burning Spirit PWR"],"210032":["Ignited Spirit PWR"],"210041":["Burning Spirit GUTS"],"210042":["Ignited Spirit GUTS"],"210051":["Burning Spirit WIT"],"210052":["Ignited Spirit WIT"],"210061":["Radiant Star"],"210062":["Glittering Star"],"300011":["Unquenched Thirst"],"300021":["Unchanging"],"300031":["Towards the Scenery I Seek"],"300041":["Creeping Anxiety"],"300051":["Blatant Fear"],"300061":["Dream Run"],"300071":["Show Me What Lies Beyond!"],"300081":["Hoiya! Have a Good Run!"],"300091":["As a Friend and Rival"],"300101":["Cheers of a Fellow Dreamer"],"300111":["Chin Up, Derby Umamusume!"],"300121":["For the Team"],"300131":["Ruler of Japan"],"300141":["Indomitable"],"9000011":["Carnival Bonus (inherited)"],"9000012":["Carnival Bonus (inherited)"],"900011":["Shooting Star"],"900021":["The View from the Lead Is Mine!"],"900031":["Sky-High Teio Step"],"900041":["Red Shift/LP1211-M"],"900051":["Lights of Vaudeville"],"900061":["Triumphant Pulse"],"900071":["Anchors Aweigh!"],"900081":["Cut and Drive!"],"900091":["Resplendent Red Ace"],"900101":["Shooting for Victory!"],"900111":["Where There's a Will, There's a Way"],"900121":["You and Me! One-on-One!"],"900131":["The Duty of Dignity Calls"],"900141":["Victoria por plancha ☆"],"900151":["This Dance Is for Vittoria!"],"900161":["Shadow Break"],"900171":["Behold Thine Emperor's Divine Might"],"900181":["Blazing Pride"],"900191":["OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆"],"900201":["Angling and Scheming"],"900211":["White Lightning Comin' Through!"],"900221":["Fairy Tale"],"900231":["∴win Q.E.D."],"900241":["Flashy☆Landing"],"900251":["Chasing After You"],"900261":["G00 1st. F∞;"],"900271":["Let's Pump Some Iron!"],"900281":["YUMMY☆SPEED!"],"900301":["Blue Rose Closer"],"900311":["All Charged! It's Go Time!"],"900321":["U=ma2"],"900331":["Shooting Star of Dioskouroi"],"900341":["Now We're Cruisin'!"],"900351":["Our Ticket to Win!"],"900361":["trigger:BEAT"],"900371":["Schwarzes Schwert"],"900381":["#LookatCurren"],"900391":["A Princess Must Seize Victory!"],"900401":["KEEP IT REAL."],"900411":["Genius x Bakushin = Victory"],"900441":["Victory belongs to me—Strelitzia! ☆"],"900451":["Pure Heart"],"900461":["SPARKLY☆STARDOM"],"900481":["Pop & Polish"],"900501":["Nemesis"],"900511":["Budding Blossom"],"900521":["Super-Duper Climax"],"900561":["I See Victory in My Future!"],"900581":["I Never Goof Up!"],"900591":["Moving Past, and Beyond"],"900601":["Just a Little Farther!"],"900611":["Prideful King"],"900621":["Go, Go, Mun!"],"900631":["Forged From a Hundred Trials"],"900641":["Keep Pushing Ahead"],"900651":["Everybody Put Your Hands Up!"],"900661":["Engine, Full Throttle! Turbo Time!"],"900671":["Eternal Encompassing Shine"],"900681":["Victory Cheer!"],"900691":["Ambition to Surpass the Sakura"],"90071":["Warning Shot! (inherited)"],"900711":["A Lifelong Dream, A Moment's Flight"],"900721":["Peerless Dance of Flowering Flames"],"900741":["Lovely Spring Breeze"],"90081":["Xceleration (inherited)"],"90091":["Red Ace (inherited)"],"90111":["Focused Mind (inherited)"],"90141":["Corazón ☆ Ardiente (inherited)"],"90181":["Empress's Pride (inherited)"],"90241":["1st Place Kiss☆ (inherited)"],"90271":["Feel the Burn! (inherited)"],"90321":["Introduction to Physiology (inherited)"],"90351":["V Is for Victory! (inherited)"],"90411":["Class Rep + Speed = Bakushin (inherited)"],"90451":["Clear Heart (inherited)"],"90521":["Super-Duper Stoked (inherited)"],"90561":["Luck Be with Me! (inherited)"],"90601":["I Can Win Sometimes, Right? (inherited)"],"90611":["Call Me King (inherited)"],"90621":["Ready, Go! (inherited)"],"9100011":["Feelin' a Bit Silly (inherited)"],"910011":["Dazzl'n ♪ Diver"],"910031":["Certain Victory"],"910041":["A Kiss for Courage"],"910051":["Ravissant"],"910061":["Festive Miracle"],"910101":["Joyful Voyage!"],"910111":["Superior Heal"],"910131":["Legacy of the Strong"],"910141":["Condor's Fury"],"910151":["Barcarole of Blessings"],"910171":["Arrows Whistle, Shadows Disperse"],"910181":["Eternal Moments"],"910201":["Break It Down!"],"910221":["Best day ever"],"910231":["Presents from X"],"910241":["Flowery☆Maneuver"],"910261":["Operation Cacao"],"910301":["Every Rose Has Its Fangs"],"910371":["Guten Appetit ♪"],"910381":["One True Color"],"910401":["Dancing in the Leaves"],"910451":["Give Mummy a Hug ♡"],"910511":["Flowering Dreams"],"910521":["114th Time's the Charm"],"910561":["Bountiful Harvest"],"910591":["Wherever This Wonder Leads"],"910601":["Go☆Go☆Goal!"],"910611":["Louder! Tracen Cheer!"],"9200011":["Medium Race Enthusiast (inherited)"],"9200021":["Long Race Enthusiast (inherited)"],"9200031":["Mile Race Enthusiast (inherited)"],"920011":["Dreams Donned with Pride!"]}
+{
+  "10071": [
+    "Warning Shot!"
+  ],
+  "10081": [
+    "Xceleration"
+  ],
+  "10091": [
+    "Red Ace"
+  ],
+  "10111": [
+    "Focused Mind"
+  ],
+  "10141": [
+    "Corazón ☆ Ardiente"
+  ],
+  "10181": [
+    "Empress's Pride"
+  ],
+  "10241": [
+    "1st Place Kiss☆"
+  ],
+  "10271": [
+    "Feel the Burn!"
+  ],
+  "10321": [
+    "Introduction to Physiology"
+  ],
+  "10351": [
+    "V Is for Victory!"
+  ],
+  "10411": [
+    "Class Rep + Speed = Bakushin"
+  ],
+  "10451": [
+    "Clear Heart"
+  ],
+  "10521": [
+    "Super-Duper Stoked"
+  ],
+  "10561": [
+    "Luck Be with Me!"
+  ],
+  "10601": [
+    "I Can Win Sometimes, Right?"
+  ],
+  "10611": [
+    "Call Me King"
+  ],
+  "10621": [
+    "Ready, Go!"
+  ],
+  "10661": [
+    "Engine Ignition!"
+  ],
+  "90071": [
+    "Warning Shot! (inherited)"
+  ],
+  "90081": [
+    "Xceleration (inherited)"
+  ],
+  "90091": [
+    "Red Ace (inherited)"
+  ],
+  "90111": [
+    "Focused Mind (inherited)"
+  ],
+  "90141": [
+    "Corazón ☆ Ardiente (inherited)"
+  ],
+  "90181": [
+    "Empress's Pride (inherited)"
+  ],
+  "90241": [
+    "1st Place Kiss☆ (inherited)"
+  ],
+  "90271": [
+    "Feel the Burn! (inherited)"
+  ],
+  "90321": [
+    "Introduction to Physiology (inherited)"
+  ],
+  "90351": [
+    "V Is for Victory! (inherited)"
+  ],
+  "90411": [
+    "Class Rep + Speed = Bakushin (inherited)"
+  ],
+  "90451": [
+    "Clear Heart (inherited)"
+  ],
+  "90521": [
+    "Super-Duper Stoked (inherited)"
+  ],
+  "90541": [
+    "Pegasus Full Power! (inherited)"
+  ],
+  "90561": [
+    "Luck Be with Me! (inherited)"
+  ],
+  "90601": [
+    "I Can Win Sometimes, Right? (inherited)"
+  ],
+  "90611": [
+    "Call Me King (inherited)"
+  ],
+  "90621": [
+    "Ready, Go! (inherited)"
+  ],
+  "90631": [
+    "Strike and Strengthen (inherited)"
+  ],
+  "90661": [
+    "Engine Ignition! (inherited)"
+  ],
+  "90731": [
+    "Steel Your Heart, Tsuyoshi! (inherited)"
+  ],
+  "100011": [
+    "Shooting Star"
+  ],
+  "100021": [
+    "The View from the Lead Is Mine!"
+  ],
+  "100031": [
+    "Sky-High Teio Step"
+  ],
+  "100041": [
+    "Red Shift/LP1211-M"
+  ],
+  "100051": [
+    "Lights of Vaudeville"
+  ],
+  "100061": [
+    "Triumphant Pulse"
+  ],
+  "100071": [
+    "Anchors Aweigh!"
+  ],
+  "100081": [
+    "Cut and Drive!"
+  ],
+  "100091": [
+    "Resplendent Red Ace"
+  ],
+  "100101": [
+    "Shooting for Victory!"
+  ],
+  "100111": [
+    "Where There's a Will, There's a Way"
+  ],
+  "100121": [
+    "You and Me! One-on-One!"
+  ],
+  "100131": [
+    "The Duty of Dignity Calls"
+  ],
+  "100141": [
+    "Victoria por plancha ☆"
+  ],
+  "100151": [
+    "This Dance Is for Vittoria!"
+  ],
+  "100161": [
+    "Shadow Break"
+  ],
+  "100171": [
+    "Behold Thine Emperor's Divine Might"
+  ],
+  "100181": [
+    "Blazing Pride"
+  ],
+  "100191": [
+    "OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆"
+  ],
+  "100201": [
+    "Angling and Scheming"
+  ],
+  "100211": [
+    "White Lightning Comin' Through!"
+  ],
+  "100221": [
+    "Fairy Tale"
+  ],
+  "100231": [
+    "∴win Q.E.D."
+  ],
+  "100241": [
+    "Flashy☆Landing"
+  ],
+  "100251": [
+    "Chasing After You"
+  ],
+  "100261": [
+    "G00 1st. F∞;"
+  ],
+  "100271": [
+    "Let's Pump Some Iron!"
+  ],
+  "100281": [
+    "YUMMY☆SPEED!"
+  ],
+  "100291": [
+    "Chasing the Snowlight"
+  ],
+  "100301": [
+    "Blue Rose Closer"
+  ],
+  "100311": [
+    "All Charged! It's Go Time!"
+  ],
+  "100321": [
+    "U=ma2"
+  ],
+  "100331": [
+    "Shooting Star of Dioskouroi"
+  ],
+  "100341": [
+    "Fast Running, Fast Running!"
+  ],
+  "100351": [
+    "Our Ticket to Win!"
+  ],
+  "100361": [
+    "trigger:BEAT"
+  ],
+  "100371": [
+    "Schwarzes Schwert"
+  ],
+  "100381": [
+    "#LookatCurren"
+  ],
+  "100391": [
+    "A Princess Must Seize Victory!"
+  ],
+  "100401": [
+    "KEEP IT REAL."
+  ],
+  "100411": [
+    "Genius x Bakushin = Victory"
+  ],
+  "100421": [
+    "『I'm Possible』"
+  ],
+  "100431": [
+    "Ding Dong Boo"
+  ],
+  "100441": [
+    "You're Mine ☆ Strelitzia"
+  ],
+  "100451": [
+    "Pure Heart"
+  ],
+  "100461": [
+    "SPARKLY☆STARDOM"
+  ],
+  "100471": [
+    "Raise Thy Soul's Sword!"
+  ],
+  "100481": [
+    "Pop & Polish"
+  ],
+  "100491": [
+    "Laugh in the Face of Danger"
+  ],
+  "100501": [
+    "Nemesis"
+  ],
+  "100511": [
+    "Budding Blossom"
+  ],
+  "100521": [
+    "Super-Duper Climax"
+  ],
+  "100531": [
+    "Hot-Blooded Disciplinary Attack!"
+  ],
+  "100541": [
+    "Blasting Gale Pegasus Dash!"
+  ],
+  "100551": [
+    "Colorful☆Marvelous★World"
+  ],
+  "100561": [
+    "I See Victory in My Future!"
+  ],
+  "100571": [
+    "Lyricism at Journey's End"
+  ],
+  "100581": [
+    "I Never Goof Up!"
+  ],
+  "100591": [
+    "Moving Past, and Beyond"
+  ],
+  "100601": [
+    "Just a Little Farther!"
+  ],
+  "100611": [
+    "Prideful King"
+  ],
+  "100621": [
+    "Go, Go, Mun!"
+  ],
+  "100631": [
+    "Forged From a Hundred Trials"
+  ],
+  "100641": [
+    "Keep Pushing Ahead"
+  ],
+  "100651": [
+    "Everybody Put Your Hands Up!"
+  ],
+  "100661": [
+    "Engine, Full Throttle! Turbo Time!"
+  ],
+  "100671": [
+    "Eternal Encompassing Shine"
+  ],
+  "100681": [
+    "Victory Cheer!"
+  ],
+  "100691": [
+    "Ambition to Surpass the Sakura"
+  ],
+  "100701": [
+    "Seirios"
+  ],
+  "100711": [
+    "A Lifelong Dream, A Moment's Flight"
+  ],
+  "100721": [
+    "Peerless Dance of Flowering Flames"
+  ],
+  "100731": [
+    "Flames of Unyielding Resolve"
+  ],
+  "100741": [
+    "Lovely Spring Breeze"
+  ],
+  "100761": [
+    "Blossoming World"
+  ],
+  "100771": [
+    "Road to Glory"
+  ],
+  "100781": [
+    "A Spring in My Step"
+  ],
+  "100791": [
+    "Funabashi Above All!"
+  ],
+  "100801": [
+    "Info: Acquired"
+  ],
+  "100811": [
+    "Punkish Bite"
+  ],
+  "100821": [
+    "Shining Runway"
+  ],
+  "100831": [
+    "Mission: Triumph"
+  ],
+  "100841": [
+    "Thunderstorm Sublation"
+  ],
+  "100851": [
+    "Reign Supreme"
+  ],
+  "100861": [
+    "Melt in Love's Embrace"
+  ],
+  "100871": [
+    "Silent Letter"
+  ],
+  "100881": [
+    "Reversal Illusion"
+  ],
+  "100891": [
+    "Celeste Oath"
+  ],
+  "100911": [
+    "Deluxe☆Fountain"
+  ],
+  "100981": [
+    "Luck Comes to the Prepared"
+  ],
+  "100991": [
+    "Shine ☆ Tomakomai"
+  ],
+  "101001": [
+    "Never Say Never"
+  ],
+  "110011": [
+    "Dazzl'n ♪ Diver"
+  ],
+  "110021": [
+    "Beyond the Ocean's Infinity"
+  ],
+  "110031": [
+    "Certain Victory"
+  ],
+  "110041": [
+    "A Kiss for Courage"
+  ],
+  "110051": [
+    "Ravissant"
+  ],
+  "110061": [
+    "Festive Miracle"
+  ],
+  "110071": [
+    "Adventure of 564"
+  ],
+  "110081": [
+    "Into High Gear!"
+  ],
+  "110091": [
+    "Queen's Lumination"
+  ],
+  "110101": [
+    "Joyful Voyage!"
+  ],
+  "110111": [
+    "Superior Heal"
+  ],
+  "110121": [
+    "Extra Large First Bite!"
+  ],
+  "110131": [
+    "Legacy of the Strong"
+  ],
+  "110141": [
+    "Condor's Fury"
+  ],
+  "110151": [
+    "Barcarole of Blessings"
+  ],
+  "110161": [
+    "Critical Point: Gray"
+  ],
+  "110171": [
+    "Arrows Whistle, Shadows Disperse"
+  ],
+  "110181": [
+    "Eternal Moments"
+  ],
+  "110191": [
+    "Revived by Moe!"
+  ],
+  "110201": [
+    "Break It Down!"
+  ],
+  "110211": [
+    "Thunderous Firestarter"
+  ],
+  "110221": [
+    "Best Day Ever"
+  ],
+  "110231": [
+    "Presents from X"
+  ],
+  "110241": [
+    "Flowery☆Maneuver"
+  ],
+  "110251": [
+    "Purrfect Hospitality"
+  ],
+  "110261": [
+    "Operation Cacao"
+  ],
+  "110271": [
+    "Latte Art For You"
+  ],
+  "110281": [
+    "Sugar Parade: Start!"
+  ],
+  "110291": [
+    "Have Your Fill!"
+  ],
+  "110301": [
+    "Every Rose Has Its Fangs"
+  ],
+  "110311": [
+    "Fresh ☆ Parlor"
+  ],
+  "110321": [
+    "Summer Halation"
+  ],
+  "110331": [
+    "Crystal Mist"
+  ],
+  "110341": [
+    "Bristling Lights"
+  ],
+  "110351": [
+    "Delivering Beyond the Dreams!"
+  ],
+  "110361": [
+    "...found you."
+  ],
+  "110371": [
+    "Guten Appetit ♪"
+  ],
+  "110381": [
+    "One True Color"
+  ],
+  "110391": [
+    "Invigorating Strength"
+  ],
+  "110401": [
+    "Dancing in the Leaves"
+  ],
+  "110411": [
+    "Cherry☆Scramble"
+  ],
+  "110421": [
+    "Oh!bento-magic☆"
+  ],
+  "110441": [
+    "Special Materialization"
+  ],
+  "110451": [
+    "Give Mummy a Hug ♡"
+  ],
+  "110461": [
+    "α-star*"
+  ],
+  "110471": [
+    "Close Encounters of the Literary Kind"
+  ],
+  "110481": [
+    "GALmem. forever♪"
+  ],
+  "110491": [
+    "[JP] 運否、聖夜の星に賭ける"
+  ],
+  "110501": [
+    "Hephaistos"
+  ],
+  "110511": [
+    "Flowering Dreams"
+  ],
+  "110521": [
+    "114th Time's the Charm"
+  ],
+  "110531": [
+    "Secret Technique: Everlasting Summer!!"
+  ],
+  "110551": [
+    "Bravo ☆ Wonder Doll!"
+  ],
+  "110561": [
+    "Bountiful Harvest"
+  ],
+  "110571": [
+    "Radiant Stride"
+  ],
+  "110581": [
+    "Spooky-Scary-Happy"
+  ],
+  "110591": [
+    "Wherever This Wonder Leads"
+  ],
+  "110601": [
+    "Go☆Go☆Goal!"
+  ],
+  "110611": [
+    "Louder! Tracen Cheer!"
+  ],
+  "110621": [
+    "Rolling Power Drive!"
+  ],
+  "110641": [
+    "Jingle All the Way"
+  ],
+  "110651": [
+    "It's Mashup Time!"
+  ],
+  "110671": [
+    "Arrow of Gold, Break up the Dark Clouds"
+  ],
+  "110681": [
+    "Lavish Feast"
+  ],
+  "110691": [
+    "Bloom! Blossom! Sakura!"
+  ],
+  "110701": [
+    "Driven by Light, the Heavenly Wolf Hunts"
+  ],
+  "110711": [
+    "Danser le Présent"
+  ],
+  "110721": [
+    "Decisive Blade of Blazing Fire"
+  ],
+  "110741": [
+    "Illuminate You"
+  ],
+  "110771": [
+    "Joy to the World"
+  ],
+  "110781": [
+    "Breezy Treat"
+  ],
+  "110801": [
+    "Geothermal Overdrive"
+  ],
+  "110831": [
+    "Immortal Work"
+  ],
+  "110841": [
+    "Terpsichore of the Abyss"
+  ],
+  "110851": [
+    "Sapphire Flame"
+  ],
+  "110861": [
+    "Everlasting Knot"
+  ],
+  "110871": [
+    "Fluffy Fuzzy Hour"
+  ],
+  "110881": [
+    "Summer Thunder Cascade!"
+  ],
+  "110891": [
+    "Tidebreaker"
+  ],
+  "110911": [
+    "Je t'aime ☆ Vacances"
+  ],
+  "110931": [
+    "Miracle, Hopes, Melody"
+  ],
+  "110981": [
+    "Parade of the Five Heavenly Beasts"
+  ],
+  "110991": [
+    "Popping☆Clams"
+  ],
+  "111001": [
+    "Bathkeeper's Heart of Zen"
+  ],
+  "111041": [
+    "Determined Stroke"
+  ],
+  "111051": [
+    "Encounter With U"
+  ],
+  "111061": [
+    "A Small Miracle for You♪"
+  ],
+  "111071": [
+    "Romantic Horizon"
+  ],
+  "111091": [
+    "Shine on Forever"
+  ],
+  "111101": [
+    "Perennial Babbles"
+  ],
+  "111191": [
+    "[JP] 夢寐に見る銀世界"
+  ],
+  "120011": [
+    "Dreams Donned with Pride!"
+  ],
+  "120031": [
+    "Merrymaking Song and Dance"
+  ],
+  "120041": [
+    "Miraculously Tubular Oracle"
+  ],
+  "120071": [
+    "Vive la GOLD"
+  ],
+  "120111": [
+    "Naginata Maiden's Dance"
+  ],
+  "120131": [
+    "The Sea Glitters, but You're Dazzling"
+  ],
+  "120231": [
+    "Accumulative Victory"
+  ],
+  "120241": [
+    "HOP STEP♪LOCK ON!"
+  ],
+  "120301": [
+    "Clear Sky Cooking♪"
+  ],
+  "120311": [
+    "Full-Throttle Cyclone!"
+  ],
+  "120321": [
+    "Tachyon Potential"
+  ],
+  "120351": [
+    "GO! Full-send"
+  ],
+  "120371": [
+    "Geschenk of the Salty Sea Breeze"
+  ],
+  "120401": [
+    "Silent Sunset Gold"
+  ],
+  "120451": [
+    "Ninja Art: Seal of the Smiling Heart"
+  ],
+  "120461": [
+    "Forward March!"
+  ],
+  "120481": [
+    "Sick Moves ☆ Juggle Beat"
+  ],
+  "120501": [
+    "Overdrive Speed"
+  ],
+  "120601": [
+    "Springy Festivities"
+  ],
+  "120611": [
+    "The Winding Road to Ideals"
+  ],
+  "120671": [
+    "Ponte de Diamant"
+  ],
+  "120681": [
+    "Becoming Everyone's Joy!"
+  ],
+  "200011": [
+    "Right-Handed ◎"
+  ],
+  "200012": [
+    "Right-Handed ○"
+  ],
+  "200013": [
+    "Right-Handed ×"
+  ],
+  "200014": [
+    "Right-Handed Demon"
+  ],
+  "200021": [
+    "Left-Handed ◎"
+  ],
+  "200022": [
+    "Left-Handed ○"
+  ],
+  "200023": [
+    "Left-Handed ×"
+  ],
+  "200024": [
+    "Counterclockwise Demon"
+  ],
+  "200031": [
+    "Tokyo Racecourse ◎"
+  ],
+  "200032": [
+    "Tokyo Racecourse ○"
+  ],
+  "200033": [
+    "Tokyo Racecourse ×"
+  ],
+  "200034": [
+    "Child of Fuchu"
+  ],
+  "200041": [
+    "Nakayama Racecourse ◎"
+  ],
+  "200042": [
+    "Nakayama Racecourse ○"
+  ],
+  "200043": [
+    "Nakayama Racecourse ×"
+  ],
+  "200051": [
+    "Hanshin Racecourse ◎"
+  ],
+  "200052": [
+    "Hanshin Racecourse ○"
+  ],
+  "200053": [
+    "Hanshin Racecourse ×"
+  ],
+  "200061": [
+    "Kyoto Racecourse ◎"
+  ],
+  "200062": [
+    "Kyoto Racecourse ○"
+  ],
+  "200063": [
+    "Kyoto Racecourse ×"
+  ],
+  "200064": [
+    "Yodo Invicta"
+  ],
+  "200071": [
+    "Chukyo Racecourse ◎"
+  ],
+  "200072": [
+    "Chukyo Racecourse ○"
+  ],
+  "200073": [
+    "Chukyo Racecourse ×"
+  ],
+  "200081": [
+    "Sapporo Racecourse ◎"
+  ],
+  "200082": [
+    "Sapporo Racecourse ○"
+  ],
+  "200083": [
+    "Sapporo Racecourse ×"
+  ],
+  "200091": [
+    "Hakodate Racecourse ◎"
+  ],
+  "200092": [
+    "Hakodate Racecourse ○"
+  ],
+  "200093": [
+    "Hakodate Racecourse ×"
+  ],
+  "200101": [
+    "Fukushima Racecourse ◎"
+  ],
+  "200102": [
+    "Fukushima Racecourse ○"
+  ],
+  "200103": [
+    "Fukushima Racecourse ×"
+  ],
+  "200111": [
+    "Niigata Racecourse ◎"
+  ],
+  "200112": [
+    "Niigata Racecourse ○"
+  ],
+  "200113": [
+    "Niigata Racecourse ×"
+  ],
+  "200121": [
+    "Kokura Racecourse ◎"
+  ],
+  "200122": [
+    "Kokura Racecourse ○"
+  ],
+  "200123": [
+    "Kokura Racecourse ×"
+  ],
+  "200131": [
+    "Standard Distance ◎"
+  ],
+  "200132": [
+    "Standard Distance ○"
+  ],
+  "200133": [
+    "Standard Distance ×"
+  ],
+  "200141": [
+    "Non-Standard Distance ◎"
+  ],
+  "200142": [
+    "Non-Standard Distance ○"
+  ],
+  "200143": [
+    "Non-Standard Distance ×"
+  ],
+  "200151": [
+    "Firm Conditions ◎"
+  ],
+  "200152": [
+    "Firm Conditions ○"
+  ],
+  "200153": [
+    "Firm Conditions ×"
+  ],
+  "200154": [
+    "Firm Course Menace"
+  ],
+  "200161": [
+    "Wet Conditions ◎"
+  ],
+  "200162": [
+    "Wet Conditions ○"
+  ],
+  "200163": [
+    "Wet Conditions ×"
+  ],
+  "200164": [
+    "Bad Track Demon"
+  ],
+  "200171": [
+    "Spring Runner ◎"
+  ],
+  "200172": [
+    "Spring Runner ○"
+  ],
+  "200173": [
+    "Spring Runner ×"
+  ],
+  "200174": [
+    "Spring Spectacle"
+  ],
+  "200181": [
+    "Summer Runner ◎"
+  ],
+  "200182": [
+    "Summer Runner ○"
+  ],
+  "200183": [
+    "Summer Runner ×"
+  ],
+  "200184": [
+    "Summer Gale"
+  ],
+  "200191": [
+    "Fall Runner ◎"
+  ],
+  "200192": [
+    "Fall Runner ○"
+  ],
+  "200193": [
+    "Fall Runner ×"
+  ],
+  "200194": [
+    "Fall Frenzy"
+  ],
+  "200201": [
+    "Winter Runner ◎"
+  ],
+  "200202": [
+    "Winter Runner ○"
+  ],
+  "200203": [
+    "Winter Runner ×"
+  ],
+  "200204": [
+    "Chilling Wind"
+  ],
+  "200211": [
+    "Sunny Days ◎"
+  ],
+  "200212": [
+    "Sunny Days ○"
+  ],
+  "200221": [
+    "Cloudy Days ◎"
+  ],
+  "200222": [
+    "Cloudy Days ○"
+  ],
+  "200231": [
+    "Rainy Days ◎"
+  ],
+  "200232": [
+    "Rainy Days ○"
+  ],
+  "200233": [
+    "Rainy Days ×"
+  ],
+  "200241": [
+    "Snowy Days ◎"
+  ],
+  "200242": [
+    "Snowy Days ○"
+  ],
+  "200251": [
+    "Inner Post Proficiency ◎"
+  ],
+  "200252": [
+    "Inner Post Proficiency ○"
+  ],
+  "200253": [
+    "Inner Post Averseness"
+  ],
+  "200261": [
+    "Outer Post Proficiency ◎"
+  ],
+  "200262": [
+    "Outer Post Proficiency ○"
+  ],
+  "200263": [
+    "Outer Post Averseness"
+  ],
+  "200271": [
+    "Maverick ◎"
+  ],
+  "200272": [
+    "Maverick ○"
+  ],
+  "200281": [
+    "Competitive Spirit ◎"
+  ],
+  "200282": [
+    "Competitive Spirit ○"
+  ],
+  "200283": [
+    "Wallflower"
+  ],
+  "200291": [
+    "Target in Sight ◎"
+  ],
+  "200292": [
+    "Target in Sight ○"
+  ],
+  "200301": [
+    "Long Shot ◎"
+  ],
+  "200302": [
+    "Long Shot ○"
+  ],
+  "200311": [
+    "G1 Averseness"
+  ],
+  "200321": [
+    "Paddock Fright"
+  ],
+  "200331": [
+    "Professor of Curvature"
+  ],
+  "200332": [
+    "Corner Adept ○"
+  ],
+  "200333": [
+    "Corner Adept ×"
+  ],
+  "200341": [
+    "Corner Connoisseur"
+  ],
+  "200342": [
+    "Corner Acceleration ○"
+  ],
+  "200343": [
+    "Corner Acceleration ×"
+  ],
+  "200351": [
+    "Swinging Maestro"
+  ],
+  "200352": [
+    "Corner Recovery ○"
+  ],
+  "200353": [
+    "Corner Recovery ×"
+  ],
+  "200361": [
+    "Beeline Burst"
+  ],
+  "200362": [
+    "Straightaway Adept"
+  ],
+  "200371": [
+    "Rushing Gale!"
+  ],
+  "200372": [
+    "Straightaway Acceleration"
+  ],
+  "200381": [
+    "Breath of Fresh Air"
+  ],
+  "200382": [
+    "Straightaway Recovery"
+  ],
+  "200391": [
+    "Ramp Revulsion"
+  ],
+  "200401": [
+    "Packphobia"
+  ],
+  "200411": [
+    "Defeatist"
+  ],
+  "200421": [
+    "Reckless"
+  ],
+  "200431": [
+    "Concentration"
+  ],
+  "200432": [
+    "Focus"
+  ],
+  "200433": [
+    "Gatekept"
+  ],
+  "200441": [
+    "Iron Will"
+  ],
+  "200442": [
+    "Lay Low"
+  ],
+  "200451": [
+    "Center Stage"
+  ],
+  "200452": [
+    "Prudent Positioning"
+  ],
+  "200461": [
+    "It's On!"
+  ],
+  "200462": [
+    "Ramp Up"
+  ],
+  "200471": [
+    "Indomitable"
+  ],
+  "200472": [
+    "Pace Strategy"
+  ],
+  "200481": [
+    "Unruffled"
+  ],
+  "200482": [
+    "Calm in a Crowd"
+  ],
+  "200491": [
+    "No Stopping Me!"
+  ],
+  "200492": [
+    "Nimble Navigator"
+  ],
+  "200501": [
+    "Lane Legerdemain"
+  ],
+  "200502": [
+    "Go with the Flow"
+  ],
+  "200511": [
+    "In Body and Mind"
+  ],
+  "200512": [
+    "Homestretch Haste"
+  ],
+  "200521": [
+    "Running Idle"
+  ],
+  "200531": [
+    "Taking the Lead"
+  ],
+  "200532": [
+    "Early Lead"
+  ],
+  "200541": [
+    "Escape Artist"
+  ],
+  "200542": [
+    "Fast-Paced"
+  ],
+  "200551": [
+    "Unrestrained"
+  ],
+  "200552": [
+    "Final Push"
+  ],
+  "200561": [
+    "Calm and Collected"
+  ],
+  "200562": [
+    "Stamina to Spare"
+  ],
+  "200571": [
+    "Race Planner"
+  ],
+  "200572": [
+    "Preferred Position"
+  ],
+  "200581": [
+    "Speed Star"
+  ],
+  "200582": [
+    "Prepared to Pass"
+  ],
+  "200591": [
+    "Fast & Furious"
+  ],
+  "200592": [
+    "Position Pilfer"
+  ],
+  "200601": [
+    "On Your Left!"
+  ],
+  "200602": [
+    "Slick Surge"
+  ],
+  "200611": [
+    "Rising Dragon"
+  ],
+  "200612": [
+    "Outer Swell"
+  ],
+  "200621": [
+    "Sleeping Lion"
+  ],
+  "200622": [
+    "Standing By"
+  ],
+  "200631": [
+    "Sturm und Drang"
+  ],
+  "200632": [
+    "Masterful Gambit"
+  ],
+  "200641": [
+    "Encroaching Shadow"
+  ],
+  "200642": [
+    "Straightaway Spurt"
+  ],
+  "200651": [
+    "Turbo Sprint"
+  ],
+  "200652": [
+    "Sprinting Gear"
+  ],
+  "200662": [
+    "Wait-and-See"
+  ],
+  "200671": [
+    "Blinding Flash"
+  ],
+  "200672": [
+    "Gap Closer"
+  ],
+  "200681": [
+    "Mile Maven"
+  ],
+  "200682": [
+    "Productive Plan"
+  ],
+  "200691": [
+    "Keen Eye"
+  ],
+  "200692": [
+    "Watchful Eye"
+  ],
+  "200701": [
+    "Furious Feat"
+  ],
+  "200702": [
+    "Updrafters"
+  ],
+  "200711": [
+    "Trackblazer"
+  ],
+  "200712": [
+    "Rosy Outlook"
+  ],
+  "200721": [
+    "Killer Tunes"
+  ],
+  "200722": [
+    "Up-Tempo"
+  ],
+  "200731": [
+    "Unyielding"
+  ],
+  "200732": [
+    "Steadfast"
+  ],
+  "200741": [
+    "Cooldown"
+  ],
+  "200742": [
+    "Deep Breaths"
+  ],
+  "200751": [
+    "Innate Experience"
+  ],
+  "200752": [
+    "Inside Scoop"
+  ],
+  "200761": [
+    "Adrenaline Rush"
+  ],
+  "200762": [
+    "Extra Tank"
+  ],
+  "200771": [
+    "Trick (Front)"
+  ],
+  "200772": [
+    "Tantalizing Trick"
+  ],
+  "200781": [
+    "Trick (Rear)"
+  ],
+  "200791": [
+    "Frenzied Front Runners"
+  ],
+  "200801": [
+    "Frenzied Pace Chasers"
+  ],
+  "200811": [
+    "Frenzied Late Surgers"
+  ],
+  "200821": [
+    "Frenzied End Closers"
+  ],
+  "200831": [
+    "Subdued Front Runners"
+  ],
+  "200841": [
+    "Flustered Front Runners"
+  ],
+  "200851": [
+    "Hesitant Front Runners"
+  ],
+  "200861": [
+    "Subdued Pace Chasers"
+  ],
+  "200871": [
+    "Flustered Pace Chasers"
+  ],
+  "200881": [
+    "Hesitant Pace Chasers"
+  ],
+  "200891": [
+    "Subdued Late Surgers"
+  ],
+  "200901": [
+    "Flustered Late Surgers"
+  ],
+  "200911": [
+    "Hesitant Late Surgers"
+  ],
+  "200921": [
+    "Subdued End Closers"
+  ],
+  "200931": [
+    "Flustered End Closers"
+  ],
+  "200941": [
+    "Hesitant End Closers"
+  ],
+  "200951": [
+    "Oi Racecourse ◎"
+  ],
+  "200952": [
+    "Oi Racecourse ○"
+  ],
+  "200953": [
+    "Oi Racecourse ×"
+  ],
+  "200961": [
+    "Sprint Straightaways ◎"
+  ],
+  "200962": [
+    "Sprint Straightaways ○"
+  ],
+  "200963": [
+    "Lightning Flash"
+  ],
+  "200971": [
+    "Sprint Corners ◎"
+  ],
+  "200972": [
+    "Sprint Corners ○"
+  ],
+  "200981": [
+    "Staggering Lead"
+  ],
+  "200982": [
+    "Huge Lead"
+  ],
+  "200991": [
+    "Plan X"
+  ],
+  "200992": [
+    "Countermeasure"
+  ],
+  "201001": [
+    "Perfect Prep!"
+  ],
+  "201002": [
+    "Meticulous Measures"
+  ],
+  "201011": [
+    "Adored by All"
+  ],
+  "201012": [
+    "Intimidate"
+  ],
+  "201021": [
+    "You've Got No Shot"
+  ],
+  "201022": [
+    "Stop Right There!"
+  ],
+  "201031": [
+    "Mile Straightaways ◎"
+  ],
+  "201032": [
+    "Mile Straightaways ○"
+  ],
+  "201041": [
+    "Mile Corners ◎"
+  ],
+  "201042": [
+    "Mile Corners ○"
+  ],
+  "201051": [
+    "Changing Gears"
+  ],
+  "201052": [
+    "Shifting Gears"
+  ],
+  "201061": [
+    "Step on the Gas!"
+  ],
+  "201062": [
+    "Acceleration"
+  ],
+  "201071": [
+    "Big-Sisterly"
+  ],
+  "201072": [
+    "Unyielding Spirit"
+  ],
+  "201081": [
+    "Greed for Speed"
+  ],
+  "201082": [
+    "Speed Eater"
+  ],
+  "201091": [
+    "Battle Formation"
+  ],
+  "201092": [
+    "Opening Gambit"
+  ],
+  "201101": [
+    "Medium Straightaways ◎"
+  ],
+  "201102": [
+    "Medium Straightaways ○"
+  ],
+  "201103": [
+    "Flash Forward"
+  ],
+  "201111": [
+    "Medium Corners ◎"
+  ],
+  "201112": [
+    "Medium Corners ○"
+  ],
+  "201113": [
+    "Refraction Arc"
+  ],
+  "201121": [
+    "Clairvoyance"
+  ],
+  "201122": [
+    "Hawkeye"
+  ],
+  "201131": [
+    "Lightning Step"
+  ],
+  "201132": [
+    "Thunderbolt Step"
+  ],
+  "201141": [
+    "Miraculous Step"
+  ],
+  "201142": [
+    "Soft Step"
+  ],
+  "201151": [
+    "Dominator"
+  ],
+  "201152": [
+    "Tether"
+  ],
+  "201161": [
+    "Mystifying Murmur"
+  ],
+  "201162": [
+    "Murmur"
+  ],
+  "201171": [
+    "Long Straightaways ◎"
+  ],
+  "201172": [
+    "Long Straightaways ○"
+  ],
+  "201173": [
+    "Blast Forward"
+  ],
+  "201181": [
+    "Long Corners ◎"
+  ],
+  "201182": [
+    "Long Corners ○"
+  ],
+  "201191": [
+    "Vanguard Spirit"
+  ],
+  "201192": [
+    "Keeping the Lead"
+  ],
+  "201201": [
+    "VIP Pass"
+  ],
+  "201202": [
+    "Passing Pro"
+  ],
+  "201211": [
+    "Overwhelming Pressure"
+  ],
+  "201212": [
+    "Pressure"
+  ],
+  "201221": [
+    "Stamina Siphon"
+  ],
+  "201222": [
+    "Stamina Eater"
+  ],
+  "201231": [
+    "Illusionist"
+  ],
+  "201232": [
+    "Smoke Screen"
+  ],
+  "201241": [
+    "Front Runner Straightaways ◎"
+  ],
+  "201242": [
+    "Front Runner Straightaways ○"
+  ],
+  "201251": [
+    "Front Runner Corners ◎"
+  ],
+  "201252": [
+    "Front Runner Corners ○"
+  ],
+  "201253": [
+    "Gale Slash"
+  ],
+  "201261": [
+    "Sixth Sense"
+  ],
+  "201262": [
+    "Dodging Danger"
+  ],
+  "201271": [
+    "Top Runner"
+  ],
+  "201272": [
+    "Leader's Pride"
+  ],
+  "201281": [
+    "Restless"
+  ],
+  "201282": [
+    "Moxie"
+  ],
+  "201291": [
+    "Reignition"
+  ],
+  "201292": [
+    "Second Wind"
+  ],
+  "201302": [
+    "Restart"
+  ],
+  "201311": [
+    "Pace Chaser Straightaways ◎"
+  ],
+  "201312": [
+    "Pace Chaser Straightaways ○"
+  ],
+  "201321": [
+    "Pace Chaser Corners ◎"
+  ],
+  "201322": [
+    "Pace Chaser Corners ○"
+  ],
+  "201331": [
+    "Technician"
+  ],
+  "201332": [
+    "Shrewd Step"
+  ],
+  "201341": [
+    "Determined Descent"
+  ],
+  "201342": [
+    "Straight Descent"
+  ],
+  "201351": [
+    "Gourmand"
+  ],
+  "201352": [
+    "Hydrate"
+  ],
+  "201361": [
+    "Shatterproof"
+  ],
+  "201362": [
+    "Tactical Tweak"
+  ],
+  "201371": [
+    "Dazzling Disorientation"
+  ],
+  "201372": [
+    "Disorient"
+  ],
+  "201381": [
+    "Late Surger Straightaways ◎"
+  ],
+  "201382": [
+    "Late Surger Straightaways ○"
+  ],
+  "201383": [
+    "Incisive Flash"
+  ],
+  "201391": [
+    "Late Surger Corners ◎"
+  ],
+  "201392": [
+    "Late Surger Corners ○"
+  ],
+  "201393": [
+    "Incisive Slash"
+  ],
+  "201401": [
+    "Hard Worker"
+  ],
+  "201402": [
+    "Fighter"
+  ],
+  "201411": [
+    "15,000,000 CC"
+  ],
+  "201412": [
+    "1,500,000 CC"
+  ],
+  "201421": [
+    "Relax"
+  ],
+  "201422": [
+    "A Small Breather"
+  ],
+  "201431": [
+    "The Bigger Picture"
+  ],
+  "201432": [
+    "Studious"
+  ],
+  "201441": [
+    "All-Seeing Eyes"
+  ],
+  "201442": [
+    "Sharp Gaze"
+  ],
+  "201451": [
+    "End Closer Straightaways ◎"
+  ],
+  "201452": [
+    "End Closer Straightaways ○"
+  ],
+  "201453": [
+    "Moonlit Flash"
+  ],
+  "201461": [
+    "End Closer Corners ◎"
+  ],
+  "201462": [
+    "End Closer Corners ○"
+  ],
+  "201471": [
+    "The Coast Is Clear!"
+  ],
+  "201472": [
+    "I Can See Right Through You"
+  ],
+  "201481": [
+    "Go-Home Specialist"
+  ],
+  "201482": [
+    "After-School Stroll"
+  ],
+  "201491": [
+    "Serenity"
+  ],
+  "201492": [
+    "Levelheaded"
+  ],
+  "201501": [
+    "Crusader"
+  ],
+  "201502": [
+    "Strategist"
+  ],
+  "201511": [
+    "Petrifying Gaze"
+  ],
+  "201512": [
+    "Intense Gaze"
+  ],
+  "201521": [
+    "Front Runner Savvy ◎"
+  ],
+  "201522": [
+    "Front Runner Savvy ○"
+  ],
+  "201531": [
+    "Pace Chaser Savvy ◎"
+  ],
+  "201532": [
+    "Pace Chaser Savvy ○"
+  ],
+  "201541": [
+    "Late Surger Savvy ◎"
+  ],
+  "201542": [
+    "Late Surger Savvy ○"
+  ],
+  "201551": [
+    "End Closer Savvy ◎"
+  ],
+  "201552": [
+    "End Closer Savvy ○"
+  ],
+  "201561": [
+    "Super Lucky Seven"
+  ],
+  "201562": [
+    "Lucky Seven"
+  ],
+  "201571": [
+    "Triple 7s"
+  ],
+  "201581": [
+    "Highlander"
+  ],
+  "201591": [
+    "Uma Stan"
+  ],
+  "201592": [
+    "Superstan"
+  ],
+  "201601": [
+    "Groundwork"
+  ],
+  "201602": [
+    "Unshakable Stance"
+  ],
+  "201611": [
+    "Tail Held High"
+  ],
+  "201612": [
+    "Tail Nine"
+  ],
+  "201621": [
+    "Shake It Out"
+  ],
+  "201631": [
+    "Sympathy"
+  ],
+  "201641": [
+    "Lone Wolf"
+  ],
+  "201651": [
+    "Slipstream"
+  ],
+  "201652": [
+    "In the Right Place!"
+  ],
+  "201661": [
+    "Playtime's Over!"
+  ],
+  "201662": [
+    "See Ya Later!"
+  ],
+  "201671": [
+    "Trending in the Charts!"
+  ],
+  "201672": [
+    "Top Pick"
+  ],
+  "201681": [
+    "Lead the Charge!"
+  ],
+  "201682": [
+    "Forward, March!"
+  ],
+  "201691": [
+    "Lie in Wait"
+  ],
+  "201692": [
+    "Be Still"
+  ],
+  "201701": [
+    "Come What May"
+  ],
+  "201702": [
+    "All I've Got"
+  ],
+  "201801": [
+    "♡ 3D Nail Art"
+  ],
+  "201901": [
+    "Neck and Neck"
+  ],
+  "201902": [
+    "Head-On"
+  ],
+  "202001": [
+    "Master of the Sands"
+  ],
+  "202002": [
+    "Familiar Ground"
+  ],
+  "202011": [
+    "Headliner"
+  ],
+  "202012": [
+    "Feature Act"
+  ],
+  "202021": [
+    "Daring Strike"
+  ],
+  "202022": [
+    "Early Start"
+  ],
+  "202031": [
+    "Nothing Ventured"
+  ],
+  "202032": [
+    "Risky Business"
+  ],
+  "202041": [
+    "In High Spirits"
+  ],
+  "202042": [
+    "Light as a Feather"
+  ],
+  "202051": [
+    "Runaway"
+  ],
+  "202061": [
+    "Best in Japan"
+  ],
+  "202071": [
+    "Of Calm Mind"
+  ],
+  "202072": [
+    "Free-Spirited"
+  ],
+  "202081": [
+    "From the Brink"
+  ],
+  "202082": [
+    "Take the Chance"
+  ],
+  "202091": [
+    "Burning Soul"
+  ],
+  "202092": [
+    "Fighting Spirit"
+  ],
+  "202101": [
+    "Elated"
+  ],
+  "202102": [
+    "Eager"
+  ],
+  "202111": [
+    "Full of Vigor"
+  ],
+  "202112": [
+    "Pumped"
+  ],
+  "202121": [
+    "Dauntless"
+  ],
+  "202122": [
+    "Fearless"
+  ],
+  "202131": [
+    "Wild Wind"
+  ],
+  "202132": [
+    "With All My Soul"
+  ],
+  "202141": [
+    "You're Not the Boss of Me!"
+  ],
+  "202151": [
+    "Keep Going!"
+  ],
+  "202152": [
+    "Full Throttle"
+  ],
+  "202161": [
+    "Restraint"
+  ],
+  "202171": [
+    "Supreme Downhiller"
+  ],
+  "202172": [
+    "Downhill Speedster"
+  ],
+  "202181": [
+    "99 Problems"
+  ],
+  "202191": [
+    "Single-Minded"
+  ],
+  "202192": [
+    "Faultless"
+  ],
+  "202201": [
+    "Kawasaki Racetrack ◎"
+  ],
+  "202202": [
+    "Kawasaki Racetrack ○"
+  ],
+  "202203": [
+    "Kawasaki Racetrack ×"
+  ],
+  "202211": [
+    "船橋レース場◎",
+    "Funabashi Racetrack ◎"
+  ],
+  "202212": [
+    "船橋レース場○",
+    "Funabashi Racetrack ○"
+  ],
+  "202213": [
+    "船橋レース場×",
+    "Funabashi Racetrack ×"
+  ],
+  "202221": [
+    "Morioka Racetrack ◎"
+  ],
+  "202223": [
+    "Morioka Racetrack ×"
+  ],
+  "202231": [
+    "ナイター◎",
+    "Nocturnal ◎"
+  ],
+  "202232": [
+    "ナイター○",
+    "Nocturnal ○"
+  ],
+  "202233": [
+    "ナイター×",
+    "Nocturnal ×"
+  ],
+  "202241": [
+    "Tight Turns ◎"
+  ],
+  "202243": [
+    "Tight Turns ×"
+  ],
+  "202251": [
+    "Exchange Races ◎"
+  ],
+  "202252": [
+    "Exchange Races ○"
+  ],
+  "202253": [
+    "Exchange Races ×"
+  ],
+  "202261": [
+    "Victory Opportunity"
+  ],
+  "202262": [
+    "Promising Omen"
+  ],
+  "202271": [
+    "Redoubled Efforts"
+  ],
+  "202272": [
+    "Turnaround"
+  ],
+  "202281": [
+    "Full Speed Ahead!"
+  ],
+  "202282": [
+    "At Full Speed"
+  ],
+  "202291": [
+    "Clear and Serene"
+  ],
+  "202292": [
+    "Clear Head"
+  ],
+  "202301": [
+    "Leisurely Dust Bath"
+  ],
+  "202302": [
+    "砂浴び○",
+    "Dust Bath ○"
+  ],
+  "202303": [
+    "砂浴び×",
+    "Dust Bath ×"
+  ],
+  "202311": [
+    "Aim for the Center!"
+  ],
+  "202312": [
+    "Full of Zeal"
+  ],
+  "202321": [
+    "Blast Mode!"
+  ],
+  "202322": [
+    "Rapid Ascent"
+  ],
+  "202331": [
+    "Outstanding Step"
+  ],
+  "202332": [
+    "Skillful Step"
+  ],
+  "202341": [
+    "Mud Master"
+  ],
+  "202342": [
+    "泥遊び◎",
+    "Mud Play ◎"
+  ],
+  "202343": [
+    "泥遊び○",
+    "Mud Play ○"
+  ],
+  "202344": [
+    "泥遊び×",
+    "Mud Play ×"
+  ],
+  "202351": [
+    "Dancer of the Sands"
+  ],
+  "202352": [
+    "Cloud of Dust"
+  ],
+  "202361": [
+    "Don't Let Your Guard Down"
+  ],
+  "202362": [
+    "Pressing Feeling"
+  ],
+  "202371": [
+    "Unstoppable"
+  ],
+  "202372": [
+    "Attack Stance"
+  ],
+  "202381": [
+    "Breakthrough"
+  ],
+  "202382": [
+    "Breakthrough Plan"
+  ],
+  "202391": [
+    "出力1000％！",
+    "1000% Output!"
+  ],
+  "202392": [
+    "Frantic State"
+  ],
+  "202401": [
+    "Lightning Speed"
+  ],
+  "202402": [
+    "Mighty Leap"
+  ],
+  "202411": [
+    "Winds of Change"
+  ],
+  "202412": [
+    "Ambitions"
+  ],
+  "202421": [
+    "Lose Yourself"
+  ],
+  "202422": [
+    "Devil-May-Care"
+  ],
+  "202431": [
+    "Steady Advance"
+  ],
+  "202432": [
+    "Firm Step"
+  ],
+  "202441": [
+    "Gambler"
+  ],
+  "202442": [
+    "Gambling Spirit"
+  ],
+  "202451": [
+    "Top Gear"
+  ],
+  "202452": [
+    "Razor-Sharp Stride"
+  ],
+  "202461": [
+    "Untouchable Shadow"
+  ],
+  "202462": [
+    "Steadfast"
+  ],
+  "202471": [
+    "Hot Pursuit"
+  ],
+  "202472": [
+    "Tooth and Tail"
+  ],
+  "202481": [
+    "Monster"
+  ],
+  "202482": [
+    "True Worth"
+  ],
+  "202491": [
+    "Unrivaled Wits"
+  ],
+  "202492": [
+    "Witful"
+  ],
+  "202501": [
+    "Reckless"
+  ],
+  "202502": [
+    "Rushing in Blind"
+  ],
+  "202511": [
+    "Favorite, For Reals?!"
+  ],
+  "202521": [
+    "Seamless"
+  ],
+  "202522": [
+    "Mold Breaker"
+  ],
+  "202531": [
+    "Ascendance"
+  ],
+  "202532": [
+    "Graceful Step"
+  ],
+  "202551": [
+    "Divine Speed"
+  ],
+  "202552": [
+    "Rapid"
+  ],
+  "202562": [
+    "Lock On"
+  ],
+  "202571": [
+    "Miracle Pathmaker"
+  ],
+  "202581": [
+    "Ahead of the Game"
+  ],
+  "202582": [
+    "Stay the Course"
+  ],
+  "202592": [
+    "Great Haste"
+  ],
+  "202612": [
+    "Overflowing Passion"
+  ],
+  "202621": [
+    "Blitzing Spirit"
+  ],
+  "202622": [
+    "On the Move"
+  ],
+  "202661": [
+    "Surging Beat"
+  ],
+  "202662": [
+    "Rising Passion"
+  ],
+  "202671": [
+    "High Voltage"
+  ],
+  "202672": [
+    "High Hopes"
+  ],
+  "202681": [
+    "ブチ☆アゲ↑バイブス",
+    "Seriously☆Good↑Vibes"
+  ],
+  "202682": [
+    "バイブス上昇",
+    "Up the Vibes"
+  ],
+  "202731": [
+    "Longchamp Racecourse ◎"
+  ],
+  "202733": [
+    "Longchamp Racecourse ×"
+  ],
+  "202734": [
+    "Child of Longchamp"
+  ],
+  "202791": [
+    "Exquisite Timing"
+  ],
+  "202991": [
+    "Straight Course ◎"
+  ],
+  "202992": [
+    "Straight Course ○"
+  ],
+  "202993": [
+    "Straight Course ×"
+  ],
+  "203011": [
+    "Lightning Blitz"
+  ],
+  "203021": [
+    "Wind Rider"
+  ],
+  "203092": [
+    "Dirt Straights ◎"
+  ],
+  "203101": [
+    "Sandstorm Slash"
+  ],
+  "203102": [
+    "Dirt Corners ◎"
+  ],
+  "203281": [
+    "Unconscious Shackles"
+  ],
+  "203311": [
+    "Flash"
+  ],
+  "203691": [
+    "Hyper Excitement"
+  ],
+  "210011": [
+    "Burning Spirit SPD"
+  ],
+  "210012": [
+    "Ignited Spirit SPD"
+  ],
+  "210021": [
+    "Burning Spirit STA"
+  ],
+  "210022": [
+    "Ignited Spirit STA"
+  ],
+  "210031": [
+    "Burning Spirit PWR"
+  ],
+  "210032": [
+    "Ignited Spirit PWR"
+  ],
+  "210041": [
+    "Burning Spirit GUTS"
+  ],
+  "210042": [
+    "Ignited Spirit GUTS"
+  ],
+  "210051": [
+    "Burning Spirit WIT"
+  ],
+  "210052": [
+    "Ignited Spirit WIT"
+  ],
+  "210061": [
+    "Radiant Star"
+  ],
+  "210062": [
+    "Glittering Star"
+  ],
+  "210071": [
+    "I Want to Win With You"
+  ],
+  "210072": [
+    "Halfway to a Dream"
+  ],
+  "210081": [
+    "Beyond the Limits"
+  ],
+  "210111": [
+    "Essence of Racing・Power"
+  ],
+  "210121": [
+    "Essence of Racing・Guts"
+  ],
+  "210131": [
+    "Essence of Racing・Wisdom"
+  ],
+  "210141": [
+    "Essence of Racing・Energy"
+  ],
+  "210261": [
+    "Wisdom of the Sun"
+  ],
+  "210271": [
+    "Wisdom of the Ocean"
+  ],
+  "210281": [
+    "Wisdom of the Land"
+  ],
+  "210282": [
+    "Blessing of the Land"
+  ],
+  "210291": [
+    "Dreaming of the Peak"
+  ],
+  "210292": [
+    "Bearer of Hope"
+  ],
+  "210301": [
+    "Blazing Radiance!"
+  ],
+  "210302": [
+    "Burning Soul"
+  ],
+  "210311": [
+    "Athlete's Spirit"
+  ],
+  "210321": [
+    "The Races We Run"
+  ],
+  "210331": [
+    "Essence of Food"
+  ],
+  "210341": [
+    "For a Fleeting View"
+  ],
+  "210342": [
+    "Reproducing a Dream"
+  ],
+  "210351": [
+    "Forger of Legends"
+  ],
+  "210352": [
+    "Herald of a New Age"
+  ],
+  "210361": [
+    "Guided by Instinct"
+  ],
+  "210362": [
+    "Be Myself"
+  ],
+  "210371": [
+    "Miracle of Recreation"
+  ],
+  "210372": [
+    "Rest and Rise"
+  ],
+  "300011": [
+    "Unquenched Thirst"
+  ],
+  "300021": [
+    "Unchanging"
+  ],
+  "300031": [
+    "Towards the Scenery I Seek"
+  ],
+  "300041": [
+    "Creeping Anxiety"
+  ],
+  "300051": [
+    "Blatant Fear"
+  ],
+  "300061": [
+    "Dream Run"
+  ],
+  "300071": [
+    "Show Me What Lies Beyond!"
+  ],
+  "300081": [
+    "Hoiya! Have a Good Run!"
+  ],
+  "300091": [
+    "As a Friend and Rival"
+  ],
+  "300101": [
+    "Cheers of a Fellow Dreamer"
+  ],
+  "300111": [
+    "Chin Up, Derby Umamusume!"
+  ],
+  "300121": [
+    "For the Team"
+  ],
+  "300131": [
+    "Ruler of Japan"
+  ],
+  "300141": [
+    "Indomitable"
+  ],
+  "300151": [
+    "Oppressive Cage"
+  ],
+  "300161": [
+    "Binding Fog"
+  ],
+  "407011": [
+    "Sparkling Contest"
+  ],
+  "407021": [
+    "Now I'm Fired Up!!"
+  ],
+  "407031": [
+    "Doing My Best!"
+  ],
+  "407041": [
+    "Reckless Passion"
+  ],
+  "407051": [
+    "Unstoppable Muscles"
+  ],
+  "407061": [
+    "Stay Tuned"
+  ],
+  "407071": [
+    "Connecting Elation"
+  ],
+  "408011": [
+    "Respect! Uma Mania!"
+  ],
+  "408021": [
+    "Here You Go!"
+  ],
+  "408031": [
+    "Mid-Meal Seasoning!"
+  ],
+  "408041": [
+    "Three-Star Cornering"
+  ],
+  "408051": [
+    "Cultivation Sprint!"
+  ],
+  "408061": [
+    "Curve Grand Chef"
+  ],
+  "409011": [
+    "Monster Machine"
+  ],
+  "409021": [
+    "Recovery Sequence"
+  ],
+  "409031": [
+    "All Systems Green"
+  ],
+  "409041": [
+    "Limiter Release"
+  ],
+  "409051": [
+    "Lead-Preserving Algorithm"
+  ],
+  "409061": [
+    "Archline Top Scholar"
+  ],
+  "410011": [
+    "Advent of the Legends"
+  ],
+  "410021": [
+    "Ahead of the Gale"
+  ],
+  "410031": [
+    "Crossroads of Revolution"
+  ],
+  "410041": [
+    "Pioneer of Dreams"
+  ],
+  "410051": [
+    "Guidance of Many Moons"
+  ],
+  "410061": [
+    "Soar Above The Clouds"
+  ],
+  "411011": [
+    "Trails of Pioneers"
+  ],
+  "411021": [
+    "Trials into the Unknown"
+  ],
+  "411031": [
+    "Unyielding Survivalist Spirit"
+  ],
+  "411041": [
+    "Earth-Shaking Dash"
+  ],
+  "411051": [
+    "Wild at Heart"
+  ],
+  "411061": [
+    "Nature's Rhythm"
+  ],
+  "412011": [
+    "Hot Spring Dash"
+  ],
+  "412021": [
+    "First in the Bath!"
+  ],
+  "412031": [
+    "Geyser Spirit"
+  ],
+  "412041": [
+    "Bathe in Moderation"
+  ],
+  "412051": [
+    "Secret Onsen Power"
+  ],
+  "900011": [
+    "Shooting Star"
+  ],
+  "900021": [
+    "The View from the Lead Is Mine!"
+  ],
+  "900031": [
+    "Sky-High Teio Step"
+  ],
+  "900041": [
+    "Red Shift/LP1211-M"
+  ],
+  "900051": [
+    "Lights of Vaudeville"
+  ],
+  "900061": [
+    "Triumphant Pulse"
+  ],
+  "900071": [
+    "Anchors Aweigh!"
+  ],
+  "900081": [
+    "Cut and Drive!"
+  ],
+  "900091": [
+    "Resplendent Red Ace"
+  ],
+  "900101": [
+    "Shooting for Victory!"
+  ],
+  "900111": [
+    "Where There's a Will, There's a Way"
+  ],
+  "900121": [
+    "You and Me! One-on-One!"
+  ],
+  "900131": [
+    "The Duty of Dignity Calls"
+  ],
+  "900141": [
+    "Victoria por plancha ☆"
+  ],
+  "900151": [
+    "This Dance Is for Vittoria!"
+  ],
+  "900161": [
+    "Shadow Break"
+  ],
+  "900171": [
+    "Behold Thine Emperor's Divine Might"
+  ],
+  "900181": [
+    "Blazing Pride"
+  ],
+  "900191": [
+    "OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆"
+  ],
+  "900201": [
+    "Angling and Scheming"
+  ],
+  "900211": [
+    "White Lightning Comin' Through!"
+  ],
+  "900221": [
+    "Fairy Tale"
+  ],
+  "900231": [
+    "∴win Q.E.D."
+  ],
+  "900241": [
+    "Flashy☆Landing"
+  ],
+  "900251": [
+    "Chasing After You"
+  ],
+  "900261": [
+    "G00 1st. F∞;"
+  ],
+  "900271": [
+    "Let's Pump Some Iron!"
+  ],
+  "900281": [
+    "YUMMY☆SPEED!"
+  ],
+  "900291": [
+    "Chasing the Snowlight"
+  ],
+  "900301": [
+    "Blue Rose Closer"
+  ],
+  "900311": [
+    "All Charged! It's Go Time!"
+  ],
+  "900321": [
+    "U=ma2"
+  ],
+  "900331": [
+    "Shooting Star of Dioskouroi"
+  ],
+  "900341": [
+    "Fast Running, Fast Running!"
+  ],
+  "900351": [
+    "Our Ticket to Win!"
+  ],
+  "900361": [
+    "trigger:BEAT"
+  ],
+  "900371": [
+    "Schwarzes Schwert"
+  ],
+  "900381": [
+    "#LookatCurren"
+  ],
+  "900391": [
+    "A Princess Must Seize Victory!"
+  ],
+  "900401": [
+    "KEEP IT REAL."
+  ],
+  "900411": [
+    "Genius x Bakushin = Victory"
+  ],
+  "900421": [
+    "『I'm Possible』"
+  ],
+  "900431": [
+    "Ding Dong Boo"
+  ],
+  "900441": [
+    "You're Mine ☆ Strelitzia"
+  ],
+  "900451": [
+    "Pure Heart"
+  ],
+  "900461": [
+    "SPARKLY☆STARDOM"
+  ],
+  "900471": [
+    "Raise Thy Soul's Sword!"
+  ],
+  "900481": [
+    "Pop & Polish"
+  ],
+  "900491": [
+    "Laugh in the Face of Danger"
+  ],
+  "900501": [
+    "Nemesis"
+  ],
+  "900511": [
+    "Budding Blossom"
+  ],
+  "900521": [
+    "Super-Duper Climax"
+  ],
+  "900531": [
+    "Hot-Blooded Disciplinary Attack!"
+  ],
+  "900561": [
+    "I See Victory in My Future!"
+  ],
+  "900571": [
+    "Lyricism at Journey's End"
+  ],
+  "900581": [
+    "I Never Goof Up!"
+  ],
+  "900591": [
+    "Moving Past, and Beyond"
+  ],
+  "900601": [
+    "Just a Little Farther!"
+  ],
+  "900611": [
+    "Prideful King"
+  ],
+  "900621": [
+    "Go, Go, Mun!"
+  ],
+  "900631": [
+    "Forged From a Hundred Trials"
+  ],
+  "900641": [
+    "Keep Pushing Ahead"
+  ],
+  "900651": [
+    "Everybody Put Your Hands Up!"
+  ],
+  "900661": [
+    "Engine, Full Throttle! Turbo Time!"
+  ],
+  "900671": [
+    "Eternal Encompassing Shine"
+  ],
+  "900681": [
+    "Victory Cheer!"
+  ],
+  "900691": [
+    "Ambition to Surpass the Sakura"
+  ],
+  "900711": [
+    "A Lifelong Dream, A Moment's Flight"
+  ],
+  "900721": [
+    "Peerless Dance of Flowering Flames"
+  ],
+  "900741": [
+    "Lovely Spring Breeze"
+  ],
+  "900781": [
+    "A Spring in My Step"
+  ],
+  "900871": [
+    "Silent Letter"
+  ],
+  "900981": [
+    "Luck Comes to the Prepared"
+  ],
+  "900991": [
+    "Shine ☆ Tomakomai"
+  ],
+  "901001": [
+    "Never Say Never"
+  ],
+  "910011": [
+    "Dazzl'n ♪ Diver"
+  ],
+  "910021": [
+    "Beyond the Ocean's Infinity"
+  ],
+  "910031": [
+    "Certain Victory"
+  ],
+  "910041": [
+    "A Kiss for Courage"
+  ],
+  "910051": [
+    "Ravissant"
+  ],
+  "910061": [
+    "Festive Miracle"
+  ],
+  "910071": [
+    "Adventure of 564"
+  ],
+  "910081": [
+    "Into High Gear!"
+  ],
+  "910091": [
+    "Queen's Lumination"
+  ],
+  "910101": [
+    "Joyful Voyage!"
+  ],
+  "910111": [
+    "Superior Heal"
+  ],
+  "910121": [
+    "Extra Large First Bite!"
+  ],
+  "910131": [
+    "Legacy of the Strong"
+  ],
+  "910141": [
+    "Condor's Fury"
+  ],
+  "910151": [
+    "Barcarole of Blessings"
+  ],
+  "910161": [
+    "Critical Point: Gray"
+  ],
+  "910171": [
+    "Arrows Whistle, Shadows Disperse"
+  ],
+  "910181": [
+    "Eternal Moments"
+  ],
+  "910191": [
+    "Revived by Moe!"
+  ],
+  "910201": [
+    "Break It Down!"
+  ],
+  "910211": [
+    "Thunderous Firestarter"
+  ],
+  "910221": [
+    "Best day ever"
+  ],
+  "910231": [
+    "Presents from X"
+  ],
+  "910241": [
+    "Flowery☆Maneuver"
+  ],
+  "910251": [
+    "Purrfect Hospitality"
+  ],
+  "910261": [
+    "Operation Cacao"
+  ],
+  "910271": [
+    "Latte Art For You"
+  ],
+  "910281": [
+    "Sugar Parade: Start!"
+  ],
+  "910291": [
+    "Have Your Fill!"
+  ],
+  "910301": [
+    "Every Rose Has Its Fangs"
+  ],
+  "910311": [
+    "Fresh ☆ Parlor"
+  ],
+  "910321": [
+    "Summer Halation"
+  ],
+  "910331": [
+    "Crystal Mist"
+  ],
+  "910341": [
+    "Bristling Lights"
+  ],
+  "910351": [
+    "Delivering Beyond the Dreams!"
+  ],
+  "910361": [
+    "...found you."
+  ],
+  "910371": [
+    "Guten Appetit ♪"
+  ],
+  "910381": [
+    "One True Color"
+  ],
+  "910391": [
+    "Invigorating Strength"
+  ],
+  "910401": [
+    "Dancing in the Leaves"
+  ],
+  "910411": [
+    "Cherry☆Scramble"
+  ],
+  "910421": [
+    "Oh!bento-magic☆"
+  ],
+  "910441": [
+    "Special Materialization"
+  ],
+  "910451": [
+    "Give Mummy a Hug ♡"
+  ],
+  "910461": [
+    "α-star*"
+  ],
+  "910471": [
+    "Close Encounters of the Literary Kind"
+  ],
+  "910481": [
+    "GALmem. forever♪"
+  ],
+  "910491": [
+    "[JP] 運否、聖夜の星に賭ける"
+  ],
+  "910501": [
+    "Hephaistos"
+  ],
+  "910511": [
+    "Flowering Dreams"
+  ],
+  "910521": [
+    "114th Time's the Charm"
+  ],
+  "910531": [
+    "Secret Technique: Everlasting Summer!!"
+  ],
+  "910551": [
+    "Bravo ☆ Wonder Doll!"
+  ],
+  "910561": [
+    "Bountiful Harvest"
+  ],
+  "910571": [
+    "Radiant Stride"
+  ],
+  "910581": [
+    "Spooky-Scary-Happy"
+  ],
+  "910591": [
+    "Wherever This Wonder Leads"
+  ],
+  "910601": [
+    "Go☆Go☆Goal!"
+  ],
+  "910611": [
+    "Louder! Tracen Cheer!"
+  ],
+  "910621": [
+    "Rolling Power Drive!"
+  ],
+  "910641": [
+    "Jingle All the Way"
+  ],
+  "910651": [
+    "It's Mashup Time!"
+  ],
+  "910671": [
+    "Arrow of Gold, Break up the Dark Clouds"
+  ],
+  "910681": [
+    "Lavish Feast"
+  ],
+  "910691": [
+    "Bloom! Blossom! Sakura!"
+  ],
+  "910701": [
+    "Driven by Light, the Heavenly Wolf Hunts"
+  ],
+  "910711": [
+    "Danser le Présent"
+  ],
+  "910721": [
+    "Decisive Blade of Blazing Fire"
+  ],
+  "910741": [
+    "Illuminate You"
+  ],
+  "910771": [
+    "Joy to the World"
+  ],
+  "910781": [
+    "Breezy Treat"
+  ],
+  "910801": [
+    "Geothermal Overdrive"
+  ],
+  "910831": [
+    "Immortal Work"
+  ],
+  "910841": [
+    "Terpsichore of the Abyss"
+  ],
+  "910851": [
+    "Sapphire Flame"
+  ],
+  "910861": [
+    "Everlasting Knot"
+  ],
+  "910871": [
+    "Fluffy Fuzzy Hour"
+  ],
+  "910881": [
+    "Summer Thunder Cascade!"
+  ],
+  "910891": [
+    "Tidebreaker"
+  ],
+  "910911": [
+    "Je t'aime ☆ Vacances"
+  ],
+  "910931": [
+    "Miracle, Hopes, Melody"
+  ],
+  "910981": [
+    "Parade of the Five Heavenly Beasts"
+  ],
+  "910991": [
+    "Popping☆Clams"
+  ],
+  "911001": [
+    "Bathkeeper's Heart of Zen"
+  ],
+  "911041": [
+    "Determined Stroke"
+  ],
+  "911051": [
+    "Encounter With U"
+  ],
+  "911061": [
+    "A Small Miracle for You♪"
+  ],
+  "911071": [
+    "Romantic Horizon"
+  ],
+  "911091": [
+    "Shine on Forever"
+  ],
+  "911101": [
+    "Perennial Babbles"
+  ],
+  "911191": [
+    "[JP] 夢寐に見る銀世界"
+  ],
+  "920011": [
+    "Dreams Donned with Pride!"
+  ],
+  "920031": [
+    "Merrymaking Song and Dance"
+  ],
+  "920041": [
+    "Miraculously Tubular Oracle"
+  ],
+  "920071": [
+    "Vive la GOLD"
+  ],
+  "920111": [
+    "Naginata Maiden's Dance"
+  ],
+  "920131": [
+    "The Sea Glitters, but You're Dazzling"
+  ],
+  "920231": [
+    "Accumulative Victory"
+  ],
+  "920241": [
+    "HOP STEP♪LOCK ON!"
+  ],
+  "920301": [
+    "Clear Sky Cooking♪"
+  ],
+  "920311": [
+    "Full-Throttle Cyclone!"
+  ],
+  "920321": [
+    "Tachyon Potential"
+  ],
+  "920351": [
+    "GO! Full-send"
+  ],
+  "920371": [
+    "Geschenk of the Salty Sea Breeze"
+  ],
+  "920401": [
+    "Silent Sunset Gold"
+  ],
+  "920451": [
+    "Ninja Art: Seal of the Smiling Heart"
+  ],
+  "920461": [
+    "Forward March!"
+  ],
+  "920481": [
+    "Sick Moves ☆ Juggle Beat"
+  ],
+  "920501": [
+    "Overdrive Speed"
+  ],
+  "920601": [
+    "Springy Festivities"
+  ],
+  "920611": [
+    "The Winding Road to Ideals"
+  ],
+  "920671": [
+    "Ponte de Diamant"
+  ],
+  "920681": [
+    "Becoming Everyone's Joy!"
+  ],
+  "1000011": [
+    "Carnival Bonus"
+  ],
+  "1000012": [
+    "Carnival Bonus"
+  ],
+  "1000013": [
+    "Carnival Bonus (obsolete)"
+  ],
+  "1100011": [
+    "Feelin' a Bit Silly"
+  ],
+  "1200011": [
+    "Medium Race Enthusiast"
+  ],
+  "1200021": [
+    "Long Race Enthusiast"
+  ],
+  "1200031": [
+    "Mile Race Enthusiast"
+  ],
+  "1200041": [
+    "Short-Distance Racing Passion"
+  ],
+  "1200051": [
+    "Dirt Racing Passion"
+  ],
+  "1300011": [
+    "Voltage Hero"
+  ],
+  "1300021": [
+    "Sunrise Hero"
+  ],
+  "1300031": [
+    "Rainy Hero"
+  ],
+  "1300041": [
+    "Inside Hero"
+  ],
+  "1300051": [
+    "Outside Hero"
+  ],
+  "1300061": [
+    "Linkage Hero"
+  ],
+  "1300071": [
+    "Spurt Hero"
+  ],
+  "1400011": [
+    "Master's Drive"
+  ],
+  "1400021": [
+    "Legendary Accel"
+  ],
+  "9000011": [
+    "Carnival Bonus (inherited)"
+  ],
+  "9000012": [
+    "Carnival Bonus (inherited)"
+  ],
+  "9000013": [
+    "Carnival Bonus (obsolete) (inherited)"
+  ],
+  "9000014": [
+    "Carnival Bonus (obsolete) (inherited)"
+  ],
+  "9000015": [
+    "Carnival Bonus (obsolete) (inherited)"
+  ],
+  "9000016": [
+    "Carnival Bonus (obsolete) (inherited)"
+  ],
+  "9000017": [
+    "Carnival Bonus (inherited)"
+  ],
+  "9100011": [
+    "Feelin' a Bit Silly (inherited)"
+  ],
+  "9200011": [
+    "Medium Race Enthusiast (inherited)"
+  ],
+  "9200021": [
+    "Long Race Enthusiast (inherited)"
+  ],
+  "9200031": [
+    "Mile Race Enthusiast (inherited)"
+  ],
+  "9200041": [
+    "Short-Distance Racing Passion (inherited)"
+  ],
+  "9200051": [
+    "Dirt Racing Passion (inherited)"
+  ],
+  "9300011": [
+    "Voltage Hero (inherited)"
+  ],
+  "9300021": [
+    "Sunrise Hero (inherited)"
+  ],
+  "9300031": [
+    "Rainy Hero (inherited)"
+  ],
+  "9300041": [
+    "Inside Hero (inherited)"
+  ],
+  "9300051": [
+    "Outside Hero (inherited)"
+  ],
+  "9300061": [
+    "Linkage Hero (inherited)"
+  ],
+  "9300071": [
+    "Spurt Hero (inherited)"
+  ],
+  "9400011": [
+    "Master's Drive (inherited)"
+  ],
+  "9400021": [
+    "Legendary Accel (inherited)"
+  ],
+  "92111091": [
+    "[JP] ずっとずっと輝いて"
+  ],
+  "100101111": [
+    "Hungry Commander"
+  ],
+  "100101211": [
+    "Dream-fulfilling Sprint"
+  ],
+  "100102111": [
+    "Midsummer Resolution"
+  ],
+  "100102211": [
+    "Midsummer Commander"
+  ],
+  "100103111": [
+    "Tempestuous Attack"
+  ],
+  "100103211": [
+    "Guts of the Rising Sun"
+  ],
+  "100201111": [
+    "Perfect Concentration"
+  ],
+  "100201211": [
+    "Dimensional Runaway"
+  ],
+  "100202111": [
+    "Lapis Lazuli Escape"
+  ],
+  "100202121": [
+    "Crossing the Ocean"
+  ],
+  "100202211": [
+    "Sky-Striding Ráfaga"
+  ],
+  "100301111": [
+    "Genius Technique"
+  ],
+  "100301211": [
+    "Teio Step"
+  ],
+  "100302111": [
+    "Racing Genius"
+  ],
+  "100302211": [
+    "Beyond the Horizon"
+  ],
+  "100303111": [
+    "Gifted Grace"
+  ],
+  "100303211": [
+    "Playful Revelry"
+  ],
+  "100303221": [
+    "Easy, Peasy, Lemon Squeezy"
+  ],
+  "100401111": [
+    "Blasting Off!"
+  ],
+  "100401211": [
+    "Crimson Over-revving"
+  ],
+  "100401221": [
+    "Break Through the Red Zone"
+  ],
+  "100402111": [
+    "Dazzling☆Wild Girl"
+  ],
+  "100402211": [
+    "Ruler of the Stage"
+  ],
+  "100403111": [
+    "Angelic Garment"
+  ],
+  "100403211": [
+    "Shrine Maiden's Dance"
+  ],
+  "100501111": [
+    "Sparkling Top Star"
+  ],
+  "100501211": [
+    "Entertainer"
+  ],
+  "100501221": [
+    "For a Sparkling Miracle"
+  ],
+  "100502111": [
+    "Stunning Trick"
+  ],
+  "100502121": [
+    "Captivating Cornering"
+  ],
+  "100502211": [
+    "Glittering Top Star"
+  ],
+  "100601111": [
+    "Glutton of Kasamatsu"
+  ],
+  "100601121": [
+    "Starved Monster"
+  ],
+  "100601211": [
+    "Monstrous Cornering"
+  ],
+  "100602111": [
+    "Gluttonous Regimen"
+  ],
+  "100602211": [
+    "First-hand Christmas Miracle"
+  ],
+  "100701111": [
+    "Clear View with 564 Eyes!"
+  ],
+  "100701211": [
+    "Extreme After-School Technique"
+  ],
+  "100702111": [
+    "Mysterious Gold Ship Warp!"
+  ],
+  "100702211": [
+    "Squid for a Quid!"
+  ],
+  "100702221": [
+    "It's Getting Exciting!!"
+  ],
+  "100703111": [
+    "Flood of \"Je t'aime\""
+  ],
+  "100703211": [
+    "Golden Ship of the Rough Seas"
+  ],
+  "100801111": [
+    "Flasks Up"
+  ],
+  "100801211": [
+    "Unrivaled Strides"
+  ],
+  "100802111": [
+    "I'll Leave You in the Dust!"
+  ],
+  "100802211": [
+    "Fastest Top Gear"
+  ],
+  "100901111": [
+    "Perfect Tune"
+  ],
+  "100901211": [
+    "This is my win!"
+  ],
+  "100902111": [
+    "Tomboy Queen"
+  ],
+  "100902121": [
+    "Scarlet Radiance"
+  ],
+  "100902211": [
+    "Door of Dreams"
+  ],
+  "101001111": [
+    "Sharpshooting!"
+  ],
+  "101001211": [
+    "Frontier Spirit"
+  ],
+  "101002111": [
+    "Adventure Leader"
+  ],
+  "101002211": [
+    "No Holds Barred!"
+  ],
+  "101101111": [
+    "Yamato Nadeshiko"
+  ],
+  "101101211": [
+    "Conviction"
+  ],
+  "101102111": [
+    "Curely Heal"
+  ],
+  "101102211": [
+    "Conjuring Courage"
+  ],
+  "101103111": [
+    "Piercing Azure"
+  ],
+  "101103211": [
+    "Seizing Victory"
+  ],
+  "101201111": [
+    "Victory Roar"
+  ],
+  "101201121": [
+    "One-On-One Obsession"
+  ],
+  "101201211": [
+    "Tempestuous Pororoca"
+  ],
+  "101202111": [
+    "Passionate Engagement!"
+  ],
+  "101202211": [
+    "Fiery Cake-Cutting!"
+  ],
+  "101202221": [
+    "Strike of an Oath"
+  ],
+  "101301111": [
+    "Mejiro's Wisdom"
+  ],
+  "101301211": [
+    "Star's Composure"
+  ],
+  "101302111": [
+    "Active Rest"
+  ],
+  "101302211": [
+    "End of Sky"
+  ],
+  "101303111": [
+    "Summer Star"
+  ],
+  "101303211": [
+    "Wholehearted Refresher"
+  ],
+  "101401111": [
+    "Falcon Eyes"
+  ],
+  "101401211": [
+    "Flawless Performance"
+  ],
+  "101402111": [
+    "Unparalleled Bravery"
+  ],
+  "101402121": [
+    "Condor Leap"
+  ],
+  "101402211": [
+    "Rising Condor"
+  ],
+  "101501111": [
+    "Centurial Overlord Descends!"
+  ],
+  "101501211": [
+    "March of the Opera King"
+  ],
+  "101502111": [
+    "Waltz Maestro"
+  ],
+  "101502121": [
+    "Opera King's Corner Theatrics"
+  ],
+  "101502211": [
+    "I Won't Fall Behind!"
+  ],
+  "101601111": [
+    "Decisive Cleave"
+  ],
+  "101601211": [
+    "Hungry Wolf's Fang"
+  ],
+  "101602111": [
+    "BLAZING WOLF"
+  ],
+  "101602211": [
+    "Craving Monster"
+  ],
+  "101701111": [
+    "Emperor's Gaze"
+  ],
+  "101701211": [
+    "Hands-Down Victory"
+  ],
+  "101702111": [
+    "Perfect Composure"
+  ],
+  "101702211": [
+    "Noble Hardships"
+  ],
+  "101801111": [
+    "The Empress' Ploy"
+  ],
+  "101801211": [
+    "Moonlit Water, Mirror Flower"
+  ],
+  "101802111": [
+    "The Empress' Pride"
+  ],
+  "101802211": [
+    "Crescent Moon Sommelier"
+  ],
+  "101802221": [
+    "[JP] 未来へ続く放物線"
+  ],
+  "101901111": [
+    "Uma Mania Max"
+  ],
+  "101901211": [
+    "The Front Row Is Non-Negotiable!"
+  ],
+  "101901221": [
+    "Aim for the Front and Center!"
+  ],
+  "101902111": [
+    "Super Express Submission!"
+  ],
+  "101902121": [
+    "Now I'm Hyped!!"
+  ],
+  "101902211": [
+    "Revived For Moe!"
+  ],
+  "102001111": [
+    "Fast Retrieve"
+  ],
+  "102001121": [
+    "Angler's Wisdom"
+  ],
+  "102001211": [
+    "Operation Escape"
+  ],
+  "102002111": [
+    "Run~Away~♪"
+  ],
+  "102002121": [
+    "Surprise~Successful~☆"
+  ],
+  "102002211": [
+    "Record Runner"
+  ],
+  "102101111": [
+    "Stormstrider"
+  ],
+  "102101121": [
+    "Let's Get Cracking!"
+  ],
+  "102101211": [
+    "Tail of Ecstasy"
+  ],
+  "102102111": [
+    "Ode to Our Predecessors"
+  ],
+  "102102211": [
+    "'ight, let's get em!"
+  ],
+  "102102221": [
+    "'kay then, let's get movin'!"
+  ],
+  "102201111": [
+    "Royal Star"
+  ],
+  "102201121": [
+    "Delightful Memory"
+  ],
+  "102201211": [
+    "Sky Drop"
+  ],
+  "102202111": [
+    "Memories Become Power"
+  ],
+  "102202211": [
+    "Morrígan's Spear"
+  ],
+  "102202221": [
+    "Ideal-Seeking Determination"
+  ],
+  "102301111": [
+    "Exactly As Planned"
+  ],
+  "102301211": [
+    "Scheduled Cooldown"
+  ],
+  "102302111": [
+    "VIP Back View"
+  ],
+  "102302211": [
+    "Full Power Santa Claus"
+  ],
+  "102303111": [
+    "Simulation Glasses: ON"
+  ],
+  "102303211": [
+    "Drawing a Neon Trail"
+  ],
+  "102401111": [
+    "You Copy?"
+  ],
+  "102401211": [
+    "I Copy!"
+  ],
+  "102402111": [
+    "Snow White Whisper"
+  ],
+  "102402211": [
+    "Barrel Roll"
+  ],
+  "102403111": [
+    "Going Ahead☆Tailwind"
+  ],
+  "102403211": [
+    "Cockpit Magician"
+  ],
+  "102501111": [
+    "Coffee Break"
+  ],
+  "102501211": [
+    "Don't Leave Me"
+  ],
+  "102502111": [
+    "Imminent Twilight"
+  ],
+  "102502211": [
+    "World of Marvels"
+  ],
+  "102601111": [
+    "Overclocking"
+  ],
+  "102601211": [
+    "Overcomer of Difficulties"
+  ],
+  "102602111": [
+    "Perfect Bugfixing Technique"
+  ],
+  "102602121": [
+    "Slightly Sweet Escape"
+  ],
+  "102602211": [
+    "Perfect Boot"
+  ],
+  "102701111": [
+    "Muscle Anthem"
+  ],
+  "102701211": [
+    "Rising Bulk Up"
+  ],
+  "102702111": [
+    "Granting Dream-fulfilling Determination"
+  ],
+  "102702211": [
+    "Serving Victory Supreme"
+  ],
+  "102702221": [
+    "Behold My Courageous Advance"
+  ],
+  "102801111": [
+    "Flawless Mise en Place!"
+  ],
+  "102801211": [
+    "Bono-style Gluttony"
+  ],
+  "102801221": [
+    "Hakkeyoi!"
+  ],
+  "102802111": [
+    "Beckoning Sugar Lantern"
+  ],
+  "102802211": [
+    "Fuel Up ☆ Pumpkin Power!"
+  ],
+  "102901111": [
+    "Admired City Girl"
+  ],
+  "102901211": [
+    "Seasoned Sledder's Swoop"
+  ],
+  "102901221": [
+    "Steadfast Determination"
+  ],
+  "102902111": [
+    "One More Push!"
+  ],
+  "102902211": [
+    "Snow Fluttering Through the Corner"
+  ],
+  "102902221": [
+    "Winter's Beauty Under the Waning Moon"
+  ],
+  "103001111": [
+    "Determined Hero"
+  ],
+  "103001211": [
+    "Black Assassin"
+  ],
+  "103002111": [
+    "I'll Do My Beeest!"
+  ],
+  "103002211": [
+    "Trick & Treat"
+  ],
+  "103003111": [
+    "Summit Meal"
+  ],
+  "103003211": [
+    "Blessing of Yodo"
+  ],
+  "103101111": [
+    "Wild Onee-chan"
+  ],
+  "103101211": [
+    "Raging Wind God"
+  ],
+  "103102111": [
+    "Perfect Order!"
+  ],
+  "103102211": [
+    "Brilliant Serving"
+  ],
+  "103103111": [
+    "To the Best View!"
+  ],
+  "103103211": [
+    "Let's Meet Under the Blue Sky!"
+  ],
+  "103201111": [
+    "Pupil of Possibility"
+  ],
+  "103201211": [
+    "Efficient Recreation"
+  ],
+  "103202111": [
+    "Laplace's Demon"
+  ],
+  "103202211": [
+    "Dazzling Luxon"
+  ],
+  "103203111": [
+    "FTL Particle"
+  ],
+  "103203211": [
+    "Subject Observation"
+  ],
+  "103301111": [
+    "Silent Oath"
+  ],
+  "103301211": [
+    "Immolated Comet"
+  ],
+  "103302111": [
+    "On Vultur Cadens' Trail"
+  ],
+  "103302211": [
+    "Melting of the Icy Star"
+  ],
+  "103401111": [
+    "Firefighter's Hashigo-nori"
+  ],
+  "103401211": [
+    "Sandstorm Wielder"
+  ],
+  "103401221": [
+    "Stylish and Masterful"
+  ],
+  "103402111": [
+    "Fan Dance"
+  ],
+  "103402211": [
+    "Dramatic Finale"
+  ],
+  "103402221": [
+    "Fleet Foot of Idaten"
+  ],
+  "103501111": [
+    "Tireless Effort"
+  ],
+  "103501211": [
+    "Winning Road"
+  ],
+  "103502111": [
+    "Ten Million Horsepower!!!"
+  ],
+  "103502211": [
+    "You'll fly for sure!"
+  ],
+  "103503111": [
+    "All-Out Excitement!!"
+  ],
+  "103503211": [
+    "Dreamer's Path"
+  ],
+  "103601111": [
+    "Uplifting"
+  ],
+  "103601211": [
+    "Lose Myself"
+  ],
+  "103602111": [
+    "Gluttony's Grip"
+  ],
+  "103602121": [
+    "Noise Cancellation"
+  ],
+  "103602211": [
+    "Torment"
+  ],
+  "103701111": [
+    "Flash Magier"
+  ],
+  "103701211": [
+    "Betting My Pride"
+  ],
+  "103702111": [
+    "Recipe of Victory"
+  ],
+  "103702121": [
+    "Perfect Preparation"
+  ],
+  "103702211": [
+    "Black Flash"
+  ],
+  "103703111": [
+    "Ritter von Fuchu"
+  ],
+  "103703211": [
+    "Flash Torrent"
+  ],
+  "103801111": [
+    "#Cute Perturbation♪"
+  ],
+  "103801211": [
+    "#Go Crazy♪"
+  ],
+  "103802111": [
+    "#WannaGetCurren'd?"
+  ],
+  "103802121": [
+    "Enthralling Glitter"
+  ],
+  "103802211": [
+    "#Beauty Sprint"
+  ],
+  "103901111": [
+    "Non-stop Princess"
+  ],
+  "103901211": [
+    "Raging Dragon"
+  ],
+  "103902111": [
+    "Top Princess!"
+  ],
+  "103902121": [
+    "The Bestest Princess"
+  ],
+  "103902211": [
+    "Fiery Princess☆Sudden Descent!!"
+  ],
+  "104001111": [
+    "Prescience"
+  ],
+  "104001211": [
+    "Star of the Runway"
+  ],
+  "104001221": [
+    "To the Finale's Forefront"
+  ],
+  "104002111": [
+    "Vivid Battle Formation"
+  ],
+  "104002211": [
+    "Eagle-eyed"
+  ],
+  "104003111": [
+    "Wild Runway"
+  ],
+  "104003211": [
+    "Golden Flare"
+  ],
+  "104101111": [
+    "Bakushin Sprint!"
+  ],
+  "104101211": [
+    "Bakushin Lead!"
+  ],
+  "104102111": [
+    "Red-hot Rush! Bakushin Road!"
+  ],
+  "104102211": [
+    "Bakushin! Bakushin! Bakushiiin!"
+  ],
+  "104201111": [
+    "World-wide Supreme Brilliance"
+  ],
+  "104201211": [
+    "Pearl-style Dance Battle"
+  ],
+  "104202111": [
+    "Riding the Mistral"
+  ],
+  "104202211": [
+    "Shining From The Ocean Floor...☆"
+  ],
+  "104301111": [
+    "Full Speed Ahead, Nanoda!"
+  ],
+  "104301211": [
+    "Masterful Prankster"
+  ],
+  "104301221": [
+    "Mud Demon Lord"
+  ],
+  "104401111": [
+    "After-School Magical Girl"
+  ],
+  "104401211": [
+    "Charm Magic"
+  ],
+  "104401221": [
+    "Salvia☆Splendens"
+  ],
+  "104402111": [
+    "Sylphid Magia"
+  ],
+  "104402121": [
+    "Nox Lumina"
+  ],
+  "104402211": [
+    "Emergency Magic Boost"
+  ],
+  "104501111": [
+    "Sweet Bewitching"
+  ],
+  "104501211": [
+    "Healing Maestro"
+  ],
+  "104502111": [
+    "Professional Pamperer"
+  ],
+  "104502211": [
+    "Charming Mummy Whisper"
+  ],
+  "104503111": [
+    "Run as the River Flows"
+  ],
+  "104503211": [
+    "Butterfly Transformation Jutsu"
+  ],
+  "104601111": [
+    "The Dazzling Umadol's Here★"
+  ],
+  "104601121": [
+    "No Looking Away☆"
+  ],
+  "104601211": [
+    "Umadol Power Trend ↑↑"
+  ],
+  "104602111": [
+    "Trending Towards Your Dreams!"
+  ],
+  "104602121": [
+    "To the Ultimate Stage!"
+  ],
+  "104602211": [
+    "Absolute Center!"
+  ],
+  "104603111": [
+    "Taking Center Stage!"
+  ],
+  "104603211": [
+    "Fanservice For You☆"
+  ],
+  "104701111": [
+    "Hero Handbook"
+  ],
+  "104701121": [
+    "Story Weaver"
+  ],
+  "104701211": [
+    "Shining Sword"
+  ],
+  "104702111": [
+    "Heroic Radiance"
+  ],
+  "104702211": [
+    "The Stormforged Hero Advances"
+  ],
+  "104801111": [
+    "Get Those Vibes Up!"
+  ],
+  "104801211": [
+    "Trend Planner"
+  ],
+  "104802111": [
+    "Taking Every Chance!"
+  ],
+  "104802211": [
+    "Can't Top Me!"
+  ],
+  "104802221": [
+    "Simply the Best!"
+  ],
+  "104803111": [
+    "Hop On ☆ Hype Train"
+  ],
+  "104803211": [
+    "Now's the Time to Go Wild!"
+  ],
+  "104901111": [
+    "All or Nothing"
+  ],
+  "104901211": [
+    "Hot-blooded Gambler"
+  ],
+  "104902111": [
+    "[JP] 一点張りでいこう"
+  ],
+  "104902211": [
+    "[JP] 勝負師の才略"
+  ],
+  "105001111": [
+    "Menacing Presence"
+  ],
+  "105001211": [
+    "Spurring Emotions"
+  ],
+  "105002111": [
+    "I'll Show You!"
+  ],
+  "105002211": [
+    "Recovery Output"
+  ],
+  "105003111": [
+    "Zero Latency"
+  ],
+  "105003211": [
+    "Indomitable Limit Breaker"
+  ],
+  "105101111": [
+    "Flurry Dash"
+  ],
+  "105101121": [
+    "A Petal's Bravery"
+  ],
+  "105101211": [
+    "Large-Petaled Resolution"
+  ],
+  "105102111": [
+    "Flower Girl's Blessing"
+  ],
+  "105102211": [
+    "Veil-Swaying Spring Storm"
+  ],
+  "105102221": [
+    "Blooming in Sickness and in Health"
+  ],
+  "105201111": [
+    "Not Done Yet!"
+  ],
+  "105201211": [
+    "I Won't Lose!"
+  ],
+  "105202111": [
+    "Look At Me, Look!"
+  ],
+  "105202121": [
+    "I Really Wanna Win!"
+  ],
+  "105202211": [
+    "Trying My Best!"
+  ],
+  "105301111": [
+    "Gateway To Discipline"
+  ],
+  "105301121": [
+    "Dragon and Tiger's Battle"
+  ],
+  "105301211": [
+    "Osu! I'm Fired Up!"
+  ],
+  "105302111": [
+    "Hot-blooded Riding!"
+  ],
+  "105302211": [
+    "Special Move! Explosive Sprint!"
+  ],
+  "105401111": [
+    "Emergency! Hero on the Scene!"
+  ],
+  "105401211": [
+    "Special Move: Lightning Kiiick!"
+  ],
+  "105501111": [
+    "Exciting☆Marvelous Zone"
+  ],
+  "105501121": [
+    "Marvelous Momentum☆"
+  ],
+  "105501211": [
+    "Marvelous World Plan☆"
+  ],
+  "105502111": [
+    "Sparkle ☆ Dolly Stage"
+  ],
+  "105502211": [
+    "Marvelous Showtime ♪"
+  ],
+  "105601111": [
+    "Lucky Omen!"
+  ],
+  "105601211": [
+    "Seven Heavenly Fortunes"
+  ],
+  "105602111": [
+    "Tempestuous Ultra Luck Power!"
+  ],
+  "105602211": [
+    "First-hand Rising Fortune!"
+  ],
+  "105701111": [
+    "Soaring Step"
+  ],
+  "105701211": [
+    "Supple Land"
+  ],
+  "105702111": [
+    "Mesmerizing Somersault"
+  ],
+  "105702211": [
+    "Step Up and Behold!"
+  ],
+  "105801111": [
+    "Tempestuous Speed"
+  ],
+  "105801211": [
+    "I'm Not Giving Up!"
+  ],
+  "105802111": [
+    "I've Got a Rival After All!"
+  ],
+  "105802121": [
+    "Fervent Determination"
+  ],
+  "105802211": [
+    "Soul Guide"
+  ],
+  "105901111": [
+    "Cool Gaze"
+  ],
+  "105901121": [
+    "Fluttering Towards Glory"
+  ],
+  "105901211": [
+    "Queen of Yodo"
+  ],
+  "105902111": [
+    "I Want To Be More Adventurous!"
+  ],
+  "105902121": [
+    "Step with Confidence"
+  ],
+  "105902211": [
+    "First Step To Recovery"
+  ],
+  "106001111": [
+    "Charming Cynical Girl"
+  ],
+  "106001211": [
+    "Aim for the Leading Role!"
+  ],
+  "106002111": [
+    "Guess I've Gotta Try"
+  ],
+  "106002211": [
+    "Non-stop Cheer"
+  ],
+  "106003111": [
+    "Tasty, Isn't It?"
+  ],
+  "106003211": [
+    "Year-End Cleaning Pro"
+  ],
+  "106003221": [
+    "Pump-Up Pro"
+  ],
+  "106101111": [
+    "Electrifying Sweep"
+  ],
+  "106101211": [
+    "King's Perspective"
+  ],
+  "106102111": [
+    "Like Riding a Dragon's Cloud"
+  ],
+  "106102211": [
+    "As Spring Blooms, the Sakura Dance"
+  ],
+  "106103111": [
+    "Unobstructable"
+  ],
+  "106103211": [
+    "Proof of Indomitability"
+  ],
+  "106103221": [
+    "First-Class Presence"
+  ],
+  "106201111": [
+    "Going My Way"
+  ],
+  "106201211": [
+    "Ei! Ei! Mun!"
+  ],
+  "106202111": [
+    "Positive Smile"
+  ],
+  "106202211": [
+    "Big Comeback"
+  ],
+  "106202221": [
+    "Oopsy-Doopsy"
+  ],
+  "106301111": [
+    "Thorough Planning"
+  ],
+  "106301211": [
+    "Red-Hot Spark"
+  ],
+  "106401111": [
+    "Dope Stuff!"
+  ],
+  "106401211": [
+    "Godly Runner's Wisdom"
+  ],
+  "106401221": [
+    "Pump It Up"
+  ],
+  "106402111": [
+    "North Wind Kick"
+  ],
+  "106402211": [
+    "Merry☆Christmas↑Party"
+  ],
+  "106501111": [
+    "Hella Vibes Up!"
+  ],
+  "106501211": [
+    "Just Do It!"
+  ],
+  "106502111": [
+    "Ahead of the Trend☆"
+  ],
+  "106502211": [
+    "Emergence of the Mile☆God"
+  ],
+  "106601111": [
+    "Ten Million Percent Output!!"
+  ],
+  "106601211": [
+    "Keep Up with Turbo!"
+  ],
+  "106701111": [
+    "Adamantine"
+  ],
+  "106701121": [
+    "Unconcealed Brilliance"
+  ],
+  "106701211": [
+    "Clockwise Rondo"
+  ],
+  "106702111": [
+    "Realm of No-Self"
+  ],
+  "106702211": [
+    "Dawn Always Comes!"
+  ],
+  "106703111": [
+    "Azure Revolution"
+  ],
+  "106703211": [
+    "Danse de L'Epée"
+  ],
+  "106801111": [
+    "Festival Shout!"
+  ],
+  "106801211": [
+    "Blast Flash"
+  ],
+  "106802111": [
+    "Leap Towards The Future!"
+  ],
+  "106802211": [
+    "Preamble of Victory!"
+  ],
+  "106803111": [
+    "Unleash the Dragon"
+  ],
+  "106803211": [
+    "Thousand Mile Cheer!"
+  ],
+  "106901111": [
+    "Pretty Blossoms, Pretty Year!"
+  ],
+  "106901121": [
+    "Rather Run than Worry!"
+  ],
+  "106901211": [
+    "In Ninefold Bloom"
+  ],
+  "106902111": [
+    "Trail of Blooming Sakura"
+  ],
+  "106902211": [
+    "I Don't Want to Lose!"
+  ],
+  "107001111": [
+    "Unwavering Aster"
+  ],
+  "107001211": [
+    "Brightest Star's Arabesque"
+  ],
+  "107001221": [
+    "Reminiscent Träumerei"
+  ],
+  "107002111": [
+    "I Like a Rough Road"
+  ],
+  "107002211": [
+    "Beat the Stars"
+  ],
+  "107101111": [
+    "Eternal Brilliance"
+  ],
+  "107101211": [
+    "Moment's Readiness"
+  ],
+  "107102111": [
+    "Beautiful Phosphorescence"
+  ],
+  "107102121": [
+    "Mystic Flame"
+  ],
+  "107102211": [
+    "Ephemeral Afterglow"
+  ],
+  "107201111": [
+    "Stirring Flame"
+  ],
+  "107201211": [
+    "Layered Determination"
+  ],
+  "107201221": [
+    "Ardent Desire for Victory"
+  ],
+  "107202111": [
+    "General's Swift Strike"
+  ],
+  "107202211": [
+    "Peerless Pursuit"
+  ],
+  "107301111": [
+    "Slash of a Thousand Trials"
+  ],
+  "107301211": [
+    "Surging Crescent Moon"
+  ],
+  "107401111": [
+    "Indomitable Dame"
+  ],
+  "107401211": [
+    "Immovable as Mt. Youtei"
+  ],
+  "107402111": [
+    "Heavenly Road of the Holy Night"
+  ],
+  "107402211": [
+    "Snowflake Pursuit"
+  ],
+  "107601111": [
+    "Advancing Sakura Front!"
+  ],
+  "107601211": [
+    "Let's Bloom in the Moment!"
+  ],
+  "107701111": [
+    "Turf Protagonist"
+  ],
+  "107701211": [
+    "The Right Path"
+  ],
+  "107702111": [
+    "Single-Minded Santa Claus"
+  ],
+  "107702211": [
+    "Leave the Dark Nights to Me!"
+  ],
+  "107801111": [
+    "Wind Shear"
+  ],
+  "107801211": [
+    "Divine Crossing"
+  ],
+  "107801221": [
+    "Heavenly Wind"
+  ],
+  "107802111": [
+    "Dust Devil Manifest"
+  ],
+  "107802211": [
+    "Sylph Spirit"
+  ],
+  "107901111": [
+    "Guidance of the Sea Breeze"
+  ],
+  "107901211": [
+    "Brave Advance"
+  ],
+  "108001111": [
+    "Information Broker"
+  ],
+  "108001211": [
+    "Seeking the Unknown"
+  ],
+  "108002111": [
+    "Victory Path Domination"
+  ],
+  "108002211": [
+    "Not Gonna Miss This Chance☆"
+  ],
+  "108101111": [
+    "Whack Them Silly!"
+  ],
+  "108101211": [
+    "I'll Take Anyone On!"
+  ],
+  "108201111": [
+    "With A Sparkling Heart!"
+  ],
+  "108201211": [
+    "Enjoy the Flight"
+  ],
+  "108301111": [
+    "Ironclad"
+  ],
+  "108301211": [
+    "Revolutionary Presence"
+  ],
+  "108302111": [
+    "Burn Down"
+  ],
+  "108302211": [
+    "Service: Transit"
+  ],
+  "108401111": [
+    "Storm-Calling God of Destruction"
+  ],
+  "108401211": [
+    "Imbibe in Ecstasy, World!"
+  ],
+  "108402111": [
+    "Attack of Ares"
+  ],
+  "108402211": [
+    "Arrow of Artemis"
+  ],
+  "108501111": [
+    "Be Majestic"
+  ],
+  "108501121": [
+    "My Clan's Code of Honor"
+  ],
+  "108501211": [
+    "Pursuing Greater Brilliance"
+  ],
+  "108502111": [
+    "Thunderclap"
+  ],
+  "108502211": [
+    "Until Only Ashes Remain"
+  ],
+  "108601111": [
+    "Pure Love"
+  ],
+  "108601211": [
+    "Enchanting Smile Beyond Reach"
+  ],
+  "108602111": [
+    "Limitless Love"
+  ],
+  "108602211": [
+    "Conqueror of Banquets"
+  ],
+  "108701111": [
+    "Victory Pitch-Up"
+  ],
+  "108701211": [
+    "Unforgettable Step"
+  ],
+  "108702111": [
+    "The Art of Photobombing"
+  ],
+  "108702211": [
+    "Please Remember Me, Okay?"
+  ],
+  "108801111": [
+    "Ambitious Card"
+  ],
+  "108801211": [
+    "Million Card"
+  ],
+  "108802111": [
+    "Dazzling Illusion"
+  ],
+  "108802211": [
+    "Waveriding Finale"
+  ],
+  "108901111": [
+    "Grand Expedition"
+  ],
+  "108901211": [
+    "Full-Power Pitch"
+  ],
+  "108902111": [
+    "Marine Blue Liner"
+  ],
+  "108902211": [
+    "Not My Usual Self!"
+  ],
+  "109001111": [
+    "Indomitable Queen"
+  ],
+  "109001211": [
+    "I'm a Big Sis After All"
+  ],
+  "109101111": [
+    "Heavenly Little Sister"
+  ],
+  "109101211": [
+    "High Society Mentality!"
+  ],
+  "109102111": [
+    "Desert Jewel's Allure"
+  ],
+  "109102211": [
+    "Onward! To the Sea!"
+  ],
+  "109201111": [
+    "I Wanna Win Too!!"
+  ],
+  "109201211": [
+    "Ignite This Stage"
+  ],
+  "109301111": [
+    "K.Speed"
+  ],
+  "109301121": [
+    "[JP] 流れ星の軌跡"
+  ],
+  "109301211": [
+    "Spark of Life"
+  ],
+  "109302111": [
+    "Keep Your Eyes on Me"
+  ],
+  "109302211": [
+    "Comet-Colored Flutter"
+  ],
+  "109401111": [
+    "Fangs of Ferocity"
+  ],
+  "109401211": [
+    "Demon of Tokyo"
+  ],
+  "109401221": [
+    "Unparalleled Bomber Runner"
+  ],
+  "109501111": [
+    "Limitless"
+  ],
+  "109501211": [
+    "Bred in the Bone"
+  ],
+  "109601111": [
+    "Fierce as Fire"
+  ],
+  "109601211": [
+    "Decisive Battle"
+  ],
+  "109701111": [
+    "Crimson Stirring"
+  ],
+  "109701211": [
+    "Untold Vow"
+  ],
+  "109701221": [
+    "Awakened Desire"
+  ],
+  "109801111": [
+    "Copano-style Rising Fortunes!"
+  ],
+  "109801211": [
+    "Surging Ley Lines"
+  ],
+  "109802111": [
+    "The Yellow Dragon Ascends"
+  ],
+  "109802211": [
+    "Lucky Race Charm"
+  ],
+  "109901111": [
+    "Feast of Tomakomai"
+  ],
+  "109901211": [
+    "Tourism Ambassador's Prestige"
+  ],
+  "109901221": [
+    "Give Your All, Star of Tomakomai!"
+  ],
+  "109902111": [
+    "Hometown Medley"
+  ],
+  "109902211": [
+    "Plunge into the Northern Sea"
+  ],
+  "110001111": [
+    "Refueled Fighting Spirit"
+  ],
+  "110001121": [
+    "Veiled Grit"
+  ],
+  "110001211": [
+    "Goddess' Dust Bath"
+  ],
+  "110002111": [
+    "Ground-Shaking Geyser"
+  ],
+  "110002211": [
+    "Follow the Wind, Follow the Water"
+  ],
+  "110201111": [
+    "Caesura"
+  ],
+  "110201211": [
+    "Trionfo"
+  ],
+  "110201221": [
+    "Esplosione"
+  ],
+  "110401111": [
+    "Beat You to It!"
+  ],
+  "110401211": [
+    "Solitary Getaway"
+  ],
+  "110402111": [
+    "Dormant Dragon's Rise"
+  ],
+  "110402211": [
+    "Dawnborne"
+  ],
+  "110501111": [
+    "Beyond the Milky Way With You"
+  ],
+  "110501211": [
+    "Crossing the Sea of Stars"
+  ],
+  "110502111": [
+    "Luminous Spectrum"
+  ],
+  "110502211": [
+    "METI Resonance"
+  ],
+  "110601111": [
+    "Keep Calm, Don't Overthink"
+  ],
+  "110601121": [
+    "I'll Do What I Can~!"
+  ],
+  "110601211": [
+    "Collecting Little Joys"
+  ],
+  "110602111": [
+    "Coming Through♪"
+  ],
+  "110602211": [
+    "Big Comeback Time!?"
+  ],
+  "110701111": [
+    "Breakaway Star"
+  ],
+  "110701211": [
+    "Smooth Sailing!"
+  ],
+  "110702111": [
+    "True Wire-to-Wire!"
+  ],
+  "110702211": [
+    "Easygoing Grand Voyage"
+  ],
+  "110801111": [
+    "Constant Refinement"
+  ],
+  "110801211": [
+    "Blazing Brilliance"
+  ],
+  "110901111": [
+    "Pioneering the Future!"
+  ],
+  "110901211": [
+    "There's No Way I'll Lose!"
+  ],
+  "110902111": [
+    "Hope Comes Around"
+  ],
+  "110902211": [
+    "Tiara Dive!"
+  ],
+  "111001111": [
+    "Become the Foundation"
+  ],
+  "111001211": [
+    "Beautiful Transformation"
+  ],
+  "111002111": [
+    "None Can Block Glory's Advance"
+  ],
+  "111002211": [
+    "Vow of White Cloth"
+  ],
+  "111101111": [
+    "Chasing Mother's Likeness"
+  ],
+  "111101211": [
+    "Steady Stratagem"
+  ],
+  "111301111": [
+    "Love Me ☆ Parade"
+  ],
+  "111301211": [
+    "Let Me Win Pleeease ♥"
+  ],
+  "111401111": [
+    "When Our Promise Comes True"
+  ],
+  "111401211": [
+    "Sincere-Hearted Radiance"
+  ],
+  "111501111": [
+    "My Will is Divine"
+  ],
+  "111501211": [
+    "Sovereign's Dominion"
+  ],
+  "111501221": [
+    "You Shall Kneel in Reverence"
+  ],
+  "111601111": [
+    "Step Aside"
+  ],
+  "111601211": [
+    "Power Am I"
+  ],
+  "111601221": [
+    "A Lady's Domain"
+  ],
+  "111701111": [
+    "Grand Jeté"
+  ],
+  "111701211": [
+    "En l'Air"
+  ],
+  "111901111": [
+    "Starboard Till the End"
+  ],
+  "111901211": [
+    "Trance"
+  ],
+  "111902111": [
+    "[JP] 雪暗れに微笑む"
+  ],
+  "111902211": [
+    "[JP] さて、収めに参りましょう"
+  ],
+  "112001111": [
+    "Flash Dash!"
+  ],
+  "112001211": [
+    "Gale Rush!"
+  ],
+  "112101111": [
+    "Faithful Veillantif"
+  ],
+  "112101211": [
+    "Olifant's Roar"
+  ],
+  "112401111": [
+    "Champion's Composure"
+  ],
+  "112401211": [
+    "Vanguard's Limelight"
+  ],
+  "112701111": [
+    "Anpan and Milk"
+  ],
+  "112701211": [
+    "The Fierce Beast Howls at the Sun"
+  ],
+  "113101111": [
+    "I'll Go the Extra Mile!!"
+  ],
+  "113101211": [
+    "Thousand Mile Shout"
+  ],
+  "113201111": [
+    "Streaming ♡ Rush"
+  ],
+  "113201211": [
+    "Like and Comment!"
+  ],
+  "113301111": [
+    "Forever and Ever"
+  ],
+  "113301211": [
+    "A Page of Creation"
+  ],
+  "900101111": [
+    "Hungry Commander (inherited)"
+  ],
+  "900101211": [
+    "Dream-fulfilling Sprint (inherited)"
+  ],
+  "900102111": [
+    "Midsummer Resolution (inherited)"
+  ],
+  "900102211": [
+    "Midsummer Commander (inherited)"
+  ],
+  "900103111": [
+    "Tempestuous Attack (inherited)"
+  ],
+  "900103211": [
+    "Guts of the Rising Sun (inherited)"
+  ],
+  "900201111": [
+    "Perfect Concentration (inherited)"
+  ],
+  "900201211": [
+    "Dimensional Runaway (inherited)"
+  ],
+  "900202111": [
+    "Lapis Lazuli Escape (inherited)"
+  ],
+  "900202121": [
+    "Crossing the Ocean (inherited)"
+  ],
+  "900202211": [
+    "Sky-Striding Ráfaga (inherited)"
+  ],
+  "900301111": [
+    "Genius Technique (inherited)"
+  ],
+  "900301211": [
+    "Teio Step (inherited)"
+  ],
+  "900302111": [
+    "Racing Genius (inherited)"
+  ],
+  "900302211": [
+    "Beyond the Horizon (inherited)"
+  ],
+  "900303111": [
+    "Gifted Grace (inherited)"
+  ],
+  "900303211": [
+    "Playful Revelry (inherited)"
+  ],
+  "900303221": [
+    "Easy, Peasy, Lemon Squeezy (inherited)"
+  ],
+  "900401111": [
+    "Blasting Off! (inherited)"
+  ],
+  "900401211": [
+    "Crimson Over-revving (inherited)"
+  ],
+  "900401221": [
+    "Break Through the Red Zone (inherited)"
+  ],
+  "900402111": [
+    "Dazzling☆Wild Girl (inherited)"
+  ],
+  "900402211": [
+    "Ruler of the Stage (inherited)"
+  ],
+  "900403111": [
+    "Angelic Garment (inherited)"
+  ],
+  "900403211": [
+    "Shrine Maiden's Dance (inherited)"
+  ],
+  "900501111": [
+    "Sparkling Top Star (inherited)"
+  ],
+  "900501211": [
+    "Entertainer (inherited)"
+  ],
+  "900501221": [
+    "For a Sparkling Miracle (inherited)"
+  ],
+  "900502111": [
+    "Stunning Trick (inherited)"
+  ],
+  "900502121": [
+    "Captivating Cornering (inherited)"
+  ],
+  "900502211": [
+    "Glittering Top Star (inherited)"
+  ],
+  "900601111": [
+    "Glutton of Kasamatsu (inherited)"
+  ],
+  "900601121": [
+    "Starved Monster (inherited)"
+  ],
+  "900601211": [
+    "Monstrous Cornering (inherited)"
+  ],
+  "900602111": [
+    "Gluttonous Regimen (inherited)"
+  ],
+  "900602211": [
+    "First-hand Christmas Miracle (inherited)"
+  ],
+  "900701111": [
+    "Clear View with 564 Eyes! (inherited)"
+  ],
+  "900701211": [
+    "Extreme After-School Technique (inherited)"
+  ],
+  "900702111": [
+    "Mysterious Gold Ship Warp! (inherited)"
+  ],
+  "900702211": [
+    "Squid for a Quid! (inherited)"
+  ],
+  "900702221": [
+    "It's Getting Exciting!! (inherited)"
+  ],
+  "900703111": [
+    "Flood of \"Je t'aime\" (inherited)"
+  ],
+  "900703211": [
+    "Golden Ship of the Rough Seas (inherited)"
+  ],
+  "900801111": [
+    "Flasks Up (inherited)"
+  ],
+  "900801211": [
+    "Unrivaled Strides (inherited)"
+  ],
+  "900802111": [
+    "I'll Leave You in the Dust! (inherited)"
+  ],
+  "900802211": [
+    "Fastest Top Gear (inherited)"
+  ],
+  "900901111": [
+    "Perfect Tune (inherited)"
+  ],
+  "900901211": [
+    "This is my win! (inherited)"
+  ],
+  "900902111": [
+    "Tomboy Queen (inherited)"
+  ],
+  "900902121": [
+    "Scarlet Radiance (inherited)"
+  ],
+  "900902211": [
+    "Door of Dreams (inherited)"
+  ],
+  "901001111": [
+    "Sharpshooting! (inherited)"
+  ],
+  "901001211": [
+    "Frontier Spirit (inherited)"
+  ],
+  "901002111": [
+    "Adventure Leader (inherited)"
+  ],
+  "901002211": [
+    "No Holds Barred! (inherited)"
+  ],
+  "901101111": [
+    "Yamato Nadeshiko (inherited)"
+  ],
+  "901101211": [
+    "Conviction (inherited)"
+  ],
+  "901102111": [
+    "Curely Heal (inherited)"
+  ],
+  "901102211": [
+    "Conjuring Courage (inherited)"
+  ],
+  "901103111": [
+    "Piercing Azure (inherited)"
+  ],
+  "901103211": [
+    "Seizing Victory (inherited)"
+  ],
+  "901201111": [
+    "Victory Roar (inherited)"
+  ],
+  "901201121": [
+    "One-On-One Obsession (inherited)"
+  ],
+  "901201211": [
+    "Tempestuous Pororoca (inherited)"
+  ],
+  "901202111": [
+    "Passionate Engagement! (inherited)"
+  ],
+  "901202211": [
+    "Fiery Cake-Cutting! (inherited)"
+  ],
+  "901202221": [
+    "Strike of an Oath (inherited)"
+  ],
+  "901301111": [
+    "Mejiro's Wisdom (inherited)"
+  ],
+  "901301211": [
+    "Star's Composure (inherited)"
+  ],
+  "901302111": [
+    "Active Rest (inherited)"
+  ],
+  "901302211": [
+    "End of Sky (inherited)"
+  ],
+  "901303111": [
+    "Summer Star (inherited)"
+  ],
+  "901303211": [
+    "Wholehearted Refresher (inherited)"
+  ],
+  "901401111": [
+    "Falcon Eyes (inherited)"
+  ],
+  "901401211": [
+    "Flawless Performance (inherited)"
+  ],
+  "901402111": [
+    "Unparalleled Bravery (inherited)"
+  ],
+  "901402121": [
+    "Condor Leap (inherited)"
+  ],
+  "901402211": [
+    "Rising Condor (inherited)"
+  ],
+  "901501111": [
+    "Centurial Overlord Descends! (inherited)"
+  ],
+  "901501211": [
+    "March of the Opera King (inherited)"
+  ],
+  "901502111": [
+    "Waltz Maestro (inherited)"
+  ],
+  "901502121": [
+    "Opera King's Corner Theatrics (inherited)"
+  ],
+  "901502211": [
+    "I Won't Fall Behind! (inherited)"
+  ],
+  "901601111": [
+    "Decisive Cleave (inherited)"
+  ],
+  "901601211": [
+    "Hungry Wolf's Fang (inherited)"
+  ],
+  "901602111": [
+    "BLAZING WOLF (inherited)"
+  ],
+  "901602211": [
+    "Craving Monster (inherited)"
+  ],
+  "901701111": [
+    "Emperor's Gaze (inherited)"
+  ],
+  "901701211": [
+    "Hands-Down Victory (inherited)"
+  ],
+  "901702111": [
+    "Perfect Composure (inherited)"
+  ],
+  "901702211": [
+    "Noble Hardships (inherited)"
+  ],
+  "901801111": [
+    "The Empress' Ploy (inherited)"
+  ],
+  "901801211": [
+    "Moonlit Water, Mirror Flower (inherited)"
+  ],
+  "901802111": [
+    "The Empress' Pride (inherited)"
+  ],
+  "901802211": [
+    "Crescent Moon Sommelier (inherited)"
+  ],
+  "901802221": [
+    " (inherited)"
+  ],
+  "901901111": [
+    "Uma Mania Max (inherited)"
+  ],
+  "901901211": [
+    "The Front Row Is Non-Negotiable! (inherited)"
+  ],
+  "901901221": [
+    "Aim for the Front and Center! (inherited)"
+  ],
+  "901902111": [
+    "Super Express Submission! (inherited)"
+  ],
+  "901902121": [
+    "Now I'm Hyped!! (inherited)"
+  ],
+  "901902211": [
+    "Revived For Moe! (inherited)"
+  ],
+  "902001111": [
+    "Fast Retrieve (inherited)"
+  ],
+  "902001121": [
+    "Angler's Wisdom (inherited)"
+  ],
+  "902001211": [
+    "Operation Escape (inherited)"
+  ],
+  "902002111": [
+    "Run~Away~♪ (inherited)"
+  ],
+  "902002121": [
+    "Surprise~Successful~☆ (inherited)"
+  ],
+  "902002211": [
+    "Record Runner (inherited)"
+  ],
+  "902101111": [
+    "Stormstrider (inherited)"
+  ],
+  "902101121": [
+    "Let's Get Cracking! (inherited)"
+  ],
+  "902101211": [
+    "Tail of Ecstasy (inherited)"
+  ],
+  "902102111": [
+    "Ode to Our Predecessors (inherited)"
+  ],
+  "902102211": [
+    "'ight, let's get em! (inherited)"
+  ],
+  "902102221": [
+    "'kay then, let's get movin'! (inherited)"
+  ],
+  "902201111": [
+    "Royal Star (inherited)"
+  ],
+  "902201121": [
+    "Delightful Memory (inherited)"
+  ],
+  "902201211": [
+    "Sky Drop (inherited)"
+  ],
+  "902202111": [
+    "Memories Become Power (inherited)"
+  ],
+  "902202211": [
+    "Morrígan's Spear (inherited)"
+  ],
+  "902202221": [
+    "Ideal-Seeking Determination (inherited)"
+  ],
+  "902301111": [
+    "Exactly As Planned (inherited)"
+  ],
+  "902301211": [
+    "Scheduled Cooldown (inherited)"
+  ],
+  "902302111": [
+    "VIP Back View (inherited)"
+  ],
+  "902302211": [
+    "Full Power Santa Claus (inherited)"
+  ],
+  "902303111": [
+    "Simulation Glasses: ON (inherited)"
+  ],
+  "902303211": [
+    "Drawing a Neon Trail (inherited)"
+  ],
+  "902401111": [
+    "You Copy? (inherited)"
+  ],
+  "902401211": [
+    "I Copy! (inherited)"
+  ],
+  "902402111": [
+    "Snow White Whisper (inherited)"
+  ],
+  "902402211": [
+    "Barrel Roll (inherited)"
+  ],
+  "902403111": [
+    "Going Ahead☆Tailwind (inherited)"
+  ],
+  "902403211": [
+    "Cockpit Magician (inherited)"
+  ],
+  "902501111": [
+    "Coffee Break (inherited)"
+  ],
+  "902501211": [
+    "Don't Leave Me (inherited)"
+  ],
+  "902502111": [
+    "Imminent Twilight (inherited)"
+  ],
+  "902502211": [
+    "World of Marvels (inherited)"
+  ],
+  "902601111": [
+    "Overclocking (inherited)"
+  ],
+  "902601211": [
+    "Overcomer of Difficulties (inherited)"
+  ],
+  "902602111": [
+    "Perfect Bugfixing Technique (inherited)"
+  ],
+  "902602121": [
+    "Slightly Sweet Escape (inherited)"
+  ],
+  "902602211": [
+    "Perfect Boot (inherited)"
+  ],
+  "902701111": [
+    "Muscle Anthem (inherited)"
+  ],
+  "902701211": [
+    "Rising Bulk Up (inherited)"
+  ],
+  "902702111": [
+    "Granting Dream-fulfilling Determination (inherited)"
+  ],
+  "902702211": [
+    "Serving Victory Supreme (inherited)"
+  ],
+  "902702221": [
+    "Behold My Courageous Advance (inherited)"
+  ],
+  "902801111": [
+    "Flawless Mise en Place! (inherited)"
+  ],
+  "902801211": [
+    "Bono-style Gluttony (inherited)"
+  ],
+  "902801221": [
+    "Hakkeyoi! (inherited)"
+  ],
+  "902802111": [
+    "Beckoning Sugar Lantern (inherited)"
+  ],
+  "902802211": [
+    "Fuel Up ☆ Pumpkin Power! (inherited)"
+  ],
+  "902901111": [
+    "Admired City Girl (inherited)"
+  ],
+  "902901211": [
+    "Seasoned Sledder's Swoop (inherited)"
+  ],
+  "902901221": [
+    "Steadfast Determination (inherited)"
+  ],
+  "902902111": [
+    "One More Push! (inherited)"
+  ],
+  "902902211": [
+    "Snow Fluttering Through the Corner (inherited)"
+  ],
+  "902902221": [
+    "Winter's Beauty Under the Waning Moon (inherited)"
+  ],
+  "903001111": [
+    "Determined Hero (inherited)"
+  ],
+  "903001211": [
+    "Black Assassin (inherited)"
+  ],
+  "903002111": [
+    "I'll Do My Beeest! (inherited)"
+  ],
+  "903002211": [
+    "Trick & Treat (inherited)"
+  ],
+  "903003111": [
+    "Summit Meal (inherited)"
+  ],
+  "903003211": [
+    "Blessing of Yodo (inherited)"
+  ],
+  "903101111": [
+    "Wild Onee-chan (inherited)"
+  ],
+  "903101211": [
+    "Raging Wind God (inherited)"
+  ],
+  "903102111": [
+    "Perfect Order! (inherited)"
+  ],
+  "903102211": [
+    "Brilliant Serving (inherited)"
+  ],
+  "903103111": [
+    "To the Best View! (inherited)"
+  ],
+  "903103211": [
+    "Let's Meet Under the Blue Sky! (inherited)"
+  ],
+  "903201111": [
+    "Pupil of Possibility (inherited)"
+  ],
+  "903201211": [
+    "Efficient Recreation (inherited)"
+  ],
+  "903202111": [
+    "Laplace's Demon (inherited)"
+  ],
+  "903202211": [
+    "Dazzling Luxon (inherited)"
+  ],
+  "903203111": [
+    "FTL Particle (inherited)"
+  ],
+  "903203211": [
+    "Subject Observation (inherited)"
+  ],
+  "903301111": [
+    "Silent Oath (inherited)"
+  ],
+  "903301211": [
+    "Immolated Comet (inherited)"
+  ],
+  "903302111": [
+    "On Vultur Cadens' Trail (inherited)"
+  ],
+  "903302211": [
+    "Melting of the Icy Star (inherited)"
+  ],
+  "903401111": [
+    "Firefighter's Hashigo-nori (inherited)"
+  ],
+  "903401211": [
+    "Sandstorm Wielder (inherited)"
+  ],
+  "903401221": [
+    "Stylish and Masterful (inherited)"
+  ],
+  "903402111": [
+    "Fan Dance (inherited)"
+  ],
+  "903402211": [
+    "Dramatic Finale (inherited)"
+  ],
+  "903402221": [
+    "Fleet Foot of Idaten (inherited)"
+  ],
+  "903501111": [
+    "Tireless Effort (inherited)"
+  ],
+  "903501211": [
+    "Winning Road (inherited)"
+  ],
+  "903502111": [
+    "Ten Million Horsepower!!! (inherited)"
+  ],
+  "903502211": [
+    "You'll fly for sure! (inherited)"
+  ],
+  "903503111": [
+    "All-Out Excitement!! (inherited)"
+  ],
+  "903503211": [
+    "Dreamer's Path (inherited)"
+  ],
+  "903601111": [
+    "Uplifting (inherited)"
+  ],
+  "903601211": [
+    "Lose Myself (inherited)"
+  ],
+  "903602111": [
+    "Gluttony's Grip (inherited)"
+  ],
+  "903602121": [
+    "Noise Cancellation (inherited)"
+  ],
+  "903602211": [
+    "Torment (inherited)"
+  ],
+  "903701111": [
+    "Flash Magier (inherited)"
+  ],
+  "903701211": [
+    "Betting My Pride (inherited)"
+  ],
+  "903702111": [
+    "Recipe of Victory (inherited)"
+  ],
+  "903702121": [
+    "Perfect Preparation (inherited)"
+  ],
+  "903702211": [
+    "Black Flash (inherited)"
+  ],
+  "903703111": [
+    "Ritter von Fuchu (inherited)"
+  ],
+  "903703211": [
+    "Flash Torrent (inherited)"
+  ],
+  "903801111": [
+    "#Cute Perturbation♪ (inherited)"
+  ],
+  "903801211": [
+    "#Go Crazy♪ (inherited)"
+  ],
+  "903802111": [
+    "#WannaGetCurren'd? (inherited)"
+  ],
+  "903802121": [
+    "Enthralling Glitter (inherited)"
+  ],
+  "903802211": [
+    "#Beauty Sprint (inherited)"
+  ],
+  "903901111": [
+    "Non-stop Princess (inherited)"
+  ],
+  "903901211": [
+    "Raging Dragon (inherited)"
+  ],
+  "903902111": [
+    "Top Princess! (inherited)"
+  ],
+  "903902121": [
+    "The Bestest Princess (inherited)"
+  ],
+  "903902211": [
+    "Fiery Princess☆Sudden Descent!! (inherited)"
+  ],
+  "904001111": [
+    "Prescience (inherited)"
+  ],
+  "904001211": [
+    "Star of the Runway (inherited)"
+  ],
+  "904001221": [
+    "To the Finale's Forefront (inherited)"
+  ],
+  "904002111": [
+    "Vivid Battle Formation (inherited)"
+  ],
+  "904002211": [
+    "Eagle-eyed (inherited)"
+  ],
+  "904003111": [
+    "Wild Runway (inherited)"
+  ],
+  "904003211": [
+    "Golden Flare (inherited)"
+  ],
+  "904101111": [
+    "Bakushin Sprint! (inherited)"
+  ],
+  "904101211": [
+    "Bakushin Lead! (inherited)"
+  ],
+  "904102111": [
+    "Red-hot Rush! Bakushin Road! (inherited)"
+  ],
+  "904102211": [
+    "Bakushin! Bakushin! Bakushiiin! (inherited)"
+  ],
+  "904201111": [
+    "World-wide Supreme Brilliance (inherited)"
+  ],
+  "904201211": [
+    "Pearl-style Dance Battle (inherited)"
+  ],
+  "904202111": [
+    "Riding the Mistral (inherited)"
+  ],
+  "904202211": [
+    "Shining From The Ocean Floor...☆ (inherited)"
+  ],
+  "904301111": [
+    "Full Speed Ahead, Nanoda! (inherited)"
+  ],
+  "904301211": [
+    "Masterful Prankster (inherited)"
+  ],
+  "904301221": [
+    "Mud Demon Lord (inherited)"
+  ],
+  "904401111": [
+    "After-School Magical Girl (inherited)"
+  ],
+  "904401211": [
+    "Charm Magic (inherited)"
+  ],
+  "904401221": [
+    "Salvia☆Splendens (inherited)"
+  ],
+  "904402111": [
+    "Sylphid Magia (inherited)"
+  ],
+  "904402121": [
+    "Nox Lumina (inherited)"
+  ],
+  "904402211": [
+    "Emergency Magic Boost (inherited)"
+  ],
+  "904501111": [
+    "Sweet Bewitching (inherited)"
+  ],
+  "904501211": [
+    "Healing Maestro (inherited)"
+  ],
+  "904502111": [
+    "Professional Pamperer (inherited)"
+  ],
+  "904502211": [
+    "Charming Mummy Whisper (inherited)"
+  ],
+  "904503111": [
+    "Run as the River Flows (inherited)"
+  ],
+  "904503211": [
+    "Butterfly Transformation Jutsu (inherited)"
+  ],
+  "904601111": [
+    "The Dazzling Umadol's Here★ (inherited)"
+  ],
+  "904601121": [
+    "No Looking Away☆ (inherited)"
+  ],
+  "904601211": [
+    "Umadol Power Trend ↑↑ (inherited)"
+  ],
+  "904602111": [
+    "Trending Towards Your Dreams! (inherited)"
+  ],
+  "904602121": [
+    "To the Ultimate Stage! (inherited)"
+  ],
+  "904602211": [
+    "Absolute Center! (inherited)"
+  ],
+  "904603111": [
+    "Taking Center Stage! (inherited)"
+  ],
+  "904603211": [
+    "Fanservice For You☆ (inherited)"
+  ],
+  "904701111": [
+    "Hero Handbook (inherited)"
+  ],
+  "904701121": [
+    "Story Weaver (inherited)"
+  ],
+  "904701211": [
+    "Shining Sword (inherited)"
+  ],
+  "904702111": [
+    "Heroic Radiance (inherited)"
+  ],
+  "904702211": [
+    "The Stormforged Hero Advances (inherited)"
+  ],
+  "904801111": [
+    "Get Those Vibes Up! (inherited)"
+  ],
+  "904801211": [
+    "Trend Planner (inherited)"
+  ],
+  "904802111": [
+    "Taking Every Chance! (inherited)"
+  ],
+  "904802211": [
+    "Can't Top Me! (inherited)"
+  ],
+  "904802221": [
+    "Simply the Best! (inherited)"
+  ],
+  "904803111": [
+    "Hop On ☆ Hype Train (inherited)"
+  ],
+  "904803211": [
+    "Now's the Time to Go Wild! (inherited)"
+  ],
+  "904901111": [
+    "All or Nothing (inherited)"
+  ],
+  "904901211": [
+    "Hot-blooded Gambler (inherited)"
+  ],
+  "904902111": [
+    " (inherited)"
+  ],
+  "904902211": [
+    " (inherited)"
+  ],
+  "905001111": [
+    "Menacing Presence (inherited)"
+  ],
+  "905001211": [
+    "Spurring Emotions (inherited)"
+  ],
+  "905002111": [
+    "I'll Show You! (inherited)"
+  ],
+  "905002211": [
+    "Recovery Output (inherited)"
+  ],
+  "905003111": [
+    "Zero Latency (inherited)"
+  ],
+  "905003211": [
+    "Indomitable Limit Breaker (inherited)"
+  ],
+  "905101111": [
+    "Flurry Dash (inherited)"
+  ],
+  "905101121": [
+    "A Petal's Bravery (inherited)"
+  ],
+  "905101211": [
+    "Large-Petaled Resolution (inherited)"
+  ],
+  "905102111": [
+    "Flower Girl's Blessing (inherited)"
+  ],
+  "905102211": [
+    "Veil-Swaying Spring Storm (inherited)"
+  ],
+  "905102221": [
+    "Blooming in Sickness and in Health (inherited)"
+  ],
+  "905201111": [
+    "Not Done Yet! (inherited)"
+  ],
+  "905201211": [
+    "I Won't Lose! (inherited)"
+  ],
+  "905202111": [
+    "Look At Me, Look! (inherited)"
+  ],
+  "905202121": [
+    "I Really Wanna Win! (inherited)"
+  ],
+  "905202211": [
+    "Trying My Best! (inherited)"
+  ],
+  "905301111": [
+    "Gateway To Discipline (inherited)"
+  ],
+  "905301121": [
+    "Dragon and Tiger's Battle (inherited)"
+  ],
+  "905301211": [
+    "Osu! I'm Fired Up! (inherited)"
+  ],
+  "905302111": [
+    "Hot-blooded Riding! (inherited)"
+  ],
+  "905302211": [
+    "Special Move! Explosive Sprint! (inherited)"
+  ],
+  "905401111": [
+    "Emergency! Hero on the Scene! (inherited)"
+  ],
+  "905401211": [
+    "Special Move: Lightning Kiiick! (inherited)"
+  ],
+  "905501111": [
+    "Exciting☆Marvelous Zone (inherited)"
+  ],
+  "905501121": [
+    "Marvelous Momentum☆ (inherited)"
+  ],
+  "905501211": [
+    "Marvelous World Plan☆ (inherited)"
+  ],
+  "905502111": [
+    "Sparkle ☆ Dolly Stage (inherited)"
+  ],
+  "905502211": [
+    "Marvelous Showtime ♪ (inherited)"
+  ],
+  "905601111": [
+    "Lucky Omen! (inherited)"
+  ],
+  "905601211": [
+    "Seven Heavenly Fortunes (inherited)"
+  ],
+  "905602111": [
+    "Tempestuous Ultra Luck Power! (inherited)"
+  ],
+  "905602211": [
+    "First-hand Rising Fortune! (inherited)"
+  ],
+  "905701111": [
+    "Soaring Step (inherited)"
+  ],
+  "905701211": [
+    "Supple Land (inherited)"
+  ],
+  "905702111": [
+    "Mesmerizing Somersault (inherited)"
+  ],
+  "905702211": [
+    "Step Up and Behold! (inherited)"
+  ],
+  "905801111": [
+    "Tempestuous Speed (inherited)"
+  ],
+  "905801211": [
+    "I'm Not Giving Up! (inherited)"
+  ],
+  "905802111": [
+    "I've Got a Rival After All! (inherited)"
+  ],
+  "905802121": [
+    "Fervent Determination (inherited)"
+  ],
+  "905802211": [
+    "Soul Guide (inherited)"
+  ],
+  "905901111": [
+    "Cool Gaze (inherited)"
+  ],
+  "905901121": [
+    "Fluttering Towards Glory (inherited)"
+  ],
+  "905901211": [
+    "Queen of Yodo (inherited)"
+  ],
+  "905902111": [
+    "I Want To Be More Adventurous! (inherited)"
+  ],
+  "905902121": [
+    "Step with Confidence (inherited)"
+  ],
+  "905902211": [
+    "First Step To Recovery (inherited)"
+  ],
+  "906001111": [
+    "Charming Cynical Girl (inherited)"
+  ],
+  "906001211": [
+    "Aim for the Leading Role! (inherited)"
+  ],
+  "906002111": [
+    "Guess I've Gotta Try (inherited)"
+  ],
+  "906002211": [
+    "Non-stop Cheer (inherited)"
+  ],
+  "906003111": [
+    "Tasty, Isn't It? (inherited)"
+  ],
+  "906003211": [
+    "Year-End Cleaning Pro (inherited)"
+  ],
+  "906003221": [
+    "Pump-Up Pro (inherited)"
+  ],
+  "906101111": [
+    "Electrifying Sweep (inherited)"
+  ],
+  "906101211": [
+    "King's Perspective (inherited)"
+  ],
+  "906102111": [
+    "Like Riding a Dragon's Cloud (inherited)"
+  ],
+  "906102211": [
+    "As Spring Blooms, the Sakura Dance (inherited)"
+  ],
+  "906103111": [
+    "Unobstructable (inherited)"
+  ],
+  "906103211": [
+    "Proof of Indomitability (inherited)"
+  ],
+  "906103221": [
+    "First-Class Presence (inherited)"
+  ],
+  "906201111": [
+    "Going My Way (inherited)"
+  ],
+  "906201211": [
+    "Ei! Ei! Mun! (inherited)"
+  ],
+  "906202111": [
+    "Positive Smile (inherited)"
+  ],
+  "906202211": [
+    "Big Comeback (inherited)"
+  ],
+  "906202221": [
+    "Oopsy-Doopsy (inherited)"
+  ],
+  "906301111": [
+    "Thorough Planning (inherited)"
+  ],
+  "906301211": [
+    "Red-Hot Spark (inherited)"
+  ],
+  "906401111": [
+    "Dope Stuff! (inherited)"
+  ],
+  "906401211": [
+    "Godly Runner's Wisdom (inherited)"
+  ],
+  "906401221": [
+    "Pump It Up (inherited)"
+  ],
+  "906402111": [
+    "North Wind Kick (inherited)"
+  ],
+  "906402211": [
+    "Merry☆Christmas↑Party (inherited)"
+  ],
+  "906501111": [
+    "Hella Vibes Up! (inherited)"
+  ],
+  "906501211": [
+    "Just Do It! (inherited)"
+  ],
+  "906502111": [
+    "Ahead of the Trend☆ (inherited)"
+  ],
+  "906502211": [
+    "Emergence of the Mile☆God (inherited)"
+  ],
+  "906601111": [
+    "Ten Million Percent Output!! (inherited)"
+  ],
+  "906601211": [
+    "Keep Up with Turbo! (inherited)"
+  ],
+  "906701111": [
+    "Adamantine (inherited)"
+  ],
+  "906701121": [
+    "Unconcealed Brilliance (inherited)"
+  ],
+  "906701211": [
+    "Clockwise Rondo (inherited)"
+  ],
+  "906702111": [
+    "Realm of No-Self (inherited)"
+  ],
+  "906702211": [
+    "Dawn Always Comes! (inherited)"
+  ],
+  "906703111": [
+    "Azure Revolution (inherited)"
+  ],
+  "906703211": [
+    "Danse de L'Epée (inherited)"
+  ],
+  "906801111": [
+    "Festival Shout! (inherited)"
+  ],
+  "906801211": [
+    "Blast Flash (inherited)"
+  ],
+  "906802111": [
+    "Leap Towards The Future! (inherited)"
+  ],
+  "906802211": [
+    "Preamble of Victory! (inherited)"
+  ],
+  "906803111": [
+    "Unleash the Dragon (inherited)"
+  ],
+  "906803211": [
+    "Thousand Mile Cheer! (inherited)"
+  ],
+  "906901111": [
+    "Pretty Blossoms, Pretty Year! (inherited)"
+  ],
+  "906901121": [
+    "Rather Run than Worry! (inherited)"
+  ],
+  "906901211": [
+    "In Ninefold Bloom (inherited)"
+  ],
+  "906902111": [
+    "Trail of Blooming Sakura (inherited)"
+  ],
+  "906902211": [
+    "I Don't Want to Lose! (inherited)"
+  ],
+  "907001111": [
+    "Unwavering Aster (inherited)"
+  ],
+  "907001211": [
+    "Brightest Star's Arabesque (inherited)"
+  ],
+  "907001221": [
+    "Reminiscent Träumerei (inherited)"
+  ],
+  "907002111": [
+    "I Like a Rough Road (inherited)"
+  ],
+  "907002211": [
+    "Beat the Stars (inherited)"
+  ],
+  "907101111": [
+    "Eternal Brilliance (inherited)"
+  ],
+  "907101211": [
+    "Moment's Readiness (inherited)"
+  ],
+  "907102111": [
+    "Beautiful Phosphorescence (inherited)"
+  ],
+  "907102121": [
+    "Mystic Flame (inherited)"
+  ],
+  "907102211": [
+    "Ephemeral Afterglow (inherited)"
+  ],
+  "907201111": [
+    "Stirring Flame (inherited)"
+  ],
+  "907201211": [
+    "Layered Determination (inherited)"
+  ],
+  "907201221": [
+    "Ardent Desire for Victory (inherited)"
+  ],
+  "907202111": [
+    "General's Swift Strike (inherited)"
+  ],
+  "907202211": [
+    "Peerless Pursuit (inherited)"
+  ],
+  "907301111": [
+    "Slash of a Thousand Trials (inherited)"
+  ],
+  "907301211": [
+    "Surging Crescent Moon (inherited)"
+  ],
+  "907401111": [
+    "Indomitable Dame (inherited)"
+  ],
+  "907401211": [
+    "Immovable as Mt. Youtei (inherited)"
+  ],
+  "907402111": [
+    "Heavenly Road of the Holy Night (inherited)"
+  ],
+  "907402211": [
+    "Snowflake Pursuit (inherited)"
+  ],
+  "907601111": [
+    "Advancing Sakura Front! (inherited)"
+  ],
+  "907601211": [
+    "Let's Bloom in the Moment! (inherited)"
+  ],
+  "907701111": [
+    "Turf Protagonist (inherited)"
+  ],
+  "907701211": [
+    "The Right Path (inherited)"
+  ],
+  "907702111": [
+    "Single-Minded Santa Claus (inherited)"
+  ],
+  "907702211": [
+    "Leave the Dark Nights to Me! (inherited)"
+  ],
+  "907801111": [
+    "Wind Shear (inherited)"
+  ],
+  "907801211": [
+    "Divine Crossing (inherited)"
+  ],
+  "907801221": [
+    "Heavenly Wind (inherited)"
+  ],
+  "907802111": [
+    "Dust Devil Manifest (inherited)"
+  ],
+  "907802211": [
+    "Sylph Spirit (inherited)"
+  ],
+  "907901111": [
+    "Guidance of the Sea Breeze (inherited)"
+  ],
+  "907901211": [
+    "Brave Advance (inherited)"
+  ],
+  "908001111": [
+    "Information Broker (inherited)"
+  ],
+  "908001211": [
+    "Seeking the Unknown (inherited)"
+  ],
+  "908002111": [
+    "Victory Path Domination (inherited)"
+  ],
+  "908002211": [
+    "Not Gonna Miss This Chance☆ (inherited)"
+  ],
+  "908101111": [
+    "Whack Them Silly! (inherited)"
+  ],
+  "908101211": [
+    "I'll Take Anyone On! (inherited)"
+  ],
+  "908201111": [
+    "With A Sparkling Heart! (inherited)"
+  ],
+  "908201211": [
+    "Enjoy the Flight (inherited)"
+  ],
+  "908301111": [
+    "Ironclad (inherited)"
+  ],
+  "908301211": [
+    "Revolutionary Presence (inherited)"
+  ],
+  "908302111": [
+    "Burn Down (inherited)"
+  ],
+  "908302211": [
+    "Service: Transit (inherited)"
+  ],
+  "908401111": [
+    "Storm-Calling God of Destruction (inherited)"
+  ],
+  "908401211": [
+    "Imbibe in Ecstasy, World! (inherited)"
+  ],
+  "908402111": [
+    "Attack of Ares (inherited)"
+  ],
+  "908402211": [
+    "Arrow of Artemis (inherited)"
+  ],
+  "908501111": [
+    "Be Majestic (inherited)"
+  ],
+  "908501121": [
+    "My Clan's Code of Honor (inherited)"
+  ],
+  "908501211": [
+    "Pursuing Greater Brilliance (inherited)"
+  ],
+  "908502111": [
+    "Thunderclap (inherited)"
+  ],
+  "908502211": [
+    "Until Only Ashes Remain (inherited)"
+  ],
+  "908601111": [
+    "Pure Love (inherited)"
+  ],
+  "908601211": [
+    "Enchanting Smile Beyond Reach (inherited)"
+  ],
+  "908602111": [
+    "Limitless Love (inherited)"
+  ],
+  "908602211": [
+    "Conqueror of Banquets (inherited)"
+  ],
+  "908701111": [
+    "Victory Pitch-Up (inherited)"
+  ],
+  "908701211": [
+    "Unforgettable Step (inherited)"
+  ],
+  "908702111": [
+    "The Art of Photobombing (inherited)"
+  ],
+  "908702211": [
+    "Please Remember Me, Okay? (inherited)"
+  ],
+  "908801111": [
+    "Ambitious Card (inherited)"
+  ],
+  "908801211": [
+    "Million Card (inherited)"
+  ],
+  "908802111": [
+    "Dazzling Illusion (inherited)"
+  ],
+  "908802211": [
+    "Waveriding Finale (inherited)"
+  ],
+  "908901111": [
+    "Grand Expedition (inherited)"
+  ],
+  "908901211": [
+    "Full-Power Pitch (inherited)"
+  ],
+  "908902111": [
+    "Marine Blue Liner (inherited)"
+  ],
+  "908902211": [
+    "Not My Usual Self! (inherited)"
+  ],
+  "909001111": [
+    "Indomitable Queen (inherited)"
+  ],
+  "909001211": [
+    "I'm a Big Sis After All (inherited)"
+  ],
+  "909101111": [
+    "Heavenly Little Sister (inherited)"
+  ],
+  "909101211": [
+    "High Society Mentality! (inherited)"
+  ],
+  "909102111": [
+    "Desert Jewel's Allure (inherited)"
+  ],
+  "909102211": [
+    "Onward! To the Sea! (inherited)"
+  ],
+  "909201111": [
+    "I Wanna Win Too!! (inherited)"
+  ],
+  "909201211": [
+    "Ignite This Stage (inherited)"
+  ],
+  "909301111": [
+    "K.Speed (inherited)"
+  ],
+  "909301121": [
+    " (inherited)"
+  ],
+  "909301211": [
+    "Spark of Life (inherited)"
+  ],
+  "909302111": [
+    "Keep Your Eyes on Me (inherited)"
+  ],
+  "909302211": [
+    "Comet-Colored Flutter (inherited)"
+  ],
+  "909401111": [
+    "Fangs of Ferocity (inherited)"
+  ],
+  "909401211": [
+    "Demon of Tokyo (inherited)"
+  ],
+  "909401221": [
+    "Unparalleled Bomber Runner (inherited)"
+  ],
+  "909501111": [
+    "Limitless (inherited)"
+  ],
+  "909501211": [
+    "Bred in the Bone (inherited)"
+  ],
+  "909601111": [
+    "Fierce as Fire (inherited)"
+  ],
+  "909601211": [
+    "Decisive Battle (inherited)"
+  ],
+  "909701111": [
+    "Crimson Stirring (inherited)"
+  ],
+  "909701211": [
+    "Untold Vow (inherited)"
+  ],
+  "909701221": [
+    "Awakened Desire (inherited)"
+  ],
+  "909801111": [
+    "Copano-style Rising Fortunes! (inherited)"
+  ],
+  "909801211": [
+    "Surging Ley Lines (inherited)"
+  ],
+  "909802111": [
+    "The Yellow Dragon Ascends (inherited)"
+  ],
+  "909802211": [
+    "Lucky Race Charm (inherited)"
+  ],
+  "909901111": [
+    "Feast of Tomakomai (inherited)"
+  ],
+  "909901211": [
+    "Tourism Ambassador's Prestige (inherited)"
+  ],
+  "909901221": [
+    "Give Your All, Star of Tomakomai! (inherited)"
+  ],
+  "909902111": [
+    "Hometown Medley (inherited)"
+  ],
+  "909902211": [
+    "Plunge into the Northern Sea (inherited)"
+  ],
+  "910001111": [
+    "Refueled Fighting Spirit (inherited)"
+  ],
+  "910001121": [
+    "Veiled Grit (inherited)"
+  ],
+  "910001211": [
+    "Goddess' Dust Bath (inherited)"
+  ],
+  "910002111": [
+    "Ground-Shaking Geyser (inherited)"
+  ],
+  "910002211": [
+    "Follow the Wind, Follow the Water (inherited)"
+  ],
+  "910201111": [
+    "Caesura (inherited)"
+  ],
+  "910201211": [
+    "Trionfo (inherited)"
+  ],
+  "910201221": [
+    "Esplosione (inherited)"
+  ],
+  "910401111": [
+    "Beat You to It! (inherited)"
+  ],
+  "910401211": [
+    "Solitary Getaway (inherited)"
+  ],
+  "910402111": [
+    "Dormant Dragon's Rise (inherited)"
+  ],
+  "910402211": [
+    "Dawnborne (inherited)"
+  ],
+  "910501111": [
+    "Beyond the Milky Way With You (inherited)"
+  ],
+  "910501211": [
+    "Crossing the Sea of Stars (inherited)"
+  ],
+  "910502111": [
+    "Luminous Spectrum (inherited)"
+  ],
+  "910502211": [
+    "METI Resonance (inherited)"
+  ],
+  "910601111": [
+    "Keep Calm, Don't Overthink (inherited)"
+  ],
+  "910601121": [
+    "I'll Do What I Can~! (inherited)"
+  ],
+  "910601211": [
+    "Collecting Little Joys (inherited)"
+  ],
+  "910602111": [
+    "Coming Through♪ (inherited)"
+  ],
+  "910602211": [
+    "Big Comeback Time!? (inherited)"
+  ],
+  "910701111": [
+    "Breakaway Star (inherited)"
+  ],
+  "910701211": [
+    "Smooth Sailing! (inherited)"
+  ],
+  "910702111": [
+    "True Wire-to-Wire! (inherited)"
+  ],
+  "910702211": [
+    "Easygoing Grand Voyage (inherited)"
+  ],
+  "910801111": [
+    "Constant Refinement (inherited)"
+  ],
+  "910801211": [
+    "Blazing Brilliance (inherited)"
+  ],
+  "910901111": [
+    "Pioneering the Future! (inherited)"
+  ],
+  "910901211": [
+    "There's No Way I'll Lose! (inherited)"
+  ],
+  "910902111": [
+    "Hope Comes Around (inherited)"
+  ],
+  "910902211": [
+    "Tiara Dive! (inherited)"
+  ],
+  "911001111": [
+    "Become the Foundation (inherited)"
+  ],
+  "911001211": [
+    "Beautiful Transformation (inherited)"
+  ],
+  "911002111": [
+    "None Can Block Glory's Advance (inherited)"
+  ],
+  "911002211": [
+    "Vow of White Cloth (inherited)"
+  ],
+  "911101111": [
+    "Chasing Mother's Likeness (inherited)"
+  ],
+  "911101211": [
+    "Steady Stratagem (inherited)"
+  ],
+  "911301111": [
+    "Love Me ☆ Parade (inherited)"
+  ],
+  "911301211": [
+    "Let Me Win Pleeease ♥ (inherited)"
+  ],
+  "911401111": [
+    "When Our Promise Comes True (inherited)"
+  ],
+  "911401211": [
+    "Sincere-Hearted Radiance (inherited)"
+  ],
+  "911501111": [
+    "My Will is Divine (inherited)"
+  ],
+  "911501211": [
+    "Sovereign's Dominion (inherited)"
+  ],
+  "911501221": [
+    "You Shall Kneel in Reverence (inherited)"
+  ],
+  "911601111": [
+    "Step Aside (inherited)"
+  ],
+  "911601211": [
+    "Power Am I (inherited)"
+  ],
+  "911601221": [
+    "A Lady's Domain (inherited)"
+  ],
+  "911701111": [
+    "Grand Jeté (inherited)"
+  ],
+  "911701211": [
+    "En l'Air (inherited)"
+  ],
+  "911901111": [
+    "Starboard Till the End (inherited)"
+  ],
+  "911901211": [
+    "Trance (inherited)"
+  ],
+  "911902111": [
+    " (inherited)"
+  ],
+  "911902211": [
+    " (inherited)"
+  ],
+  "912001111": [
+    "Flash Dash! (inherited)"
+  ],
+  "912001211": [
+    "Gale Rush! (inherited)"
+  ],
+  "912101111": [
+    "Faithful Veillantif (inherited)"
+  ],
+  "912101211": [
+    "Olifant's Roar (inherited)"
+  ],
+  "912401111": [
+    "Champion's Composure (inherited)"
+  ],
+  "912401211": [
+    "Vanguard's Limelight (inherited)"
+  ],
+  "912701111": [
+    "Anpan and Milk (inherited)"
+  ],
+  "912701211": [
+    "The Fierce Beast Howls at the Sun (inherited)"
+  ],
+  "913101111": [
+    "I'll Go the Extra Mile!! (inherited)"
+  ],
+  "913101211": [
+    "Thousand Mile Shout (inherited)"
+  ],
+  "913201111": [
+    "Streaming ♡ Rush (inherited)"
+  ],
+  "913201211": [
+    "Like and Comment! (inherited)"
+  ],
+  "913301111": [
+    "Forever and Ever (inherited)"
+  ],
+  "913301211": [
+    "A Page of Creation (inherited)"
+  ]
+}
