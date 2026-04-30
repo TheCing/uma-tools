@@ -56,7 +56,8 @@
         "epithet": "[Hopp'n♪Happy Heart]",
         "rarity": 3,
         "strategy": 3
-      }
+      },
+      "100103": "[日之本一の総大将]"
     }
   },
   "1002": {
@@ -364,7 +365,8 @@
         "epithet": "[Red Strife]",
         "rarity": 2,
         "strategy": 4
-      }
+      },
+      "100702": "[RUN！乱！ランチャー！！]"
     }
   },
   "1008": {
@@ -398,7 +400,8 @@
         "epithet": "[Wild Top Gear]",
         "rarity": 2,
         "strategy": 3
-      }
+      },
+      "100802": "[不凍のアクア・ウィタエ]"
     }
   },
   "1009": {
@@ -432,7 +435,8 @@
         "epithet": "[Peak Blue]",
         "rarity": 2,
         "strategy": 2
-      }
+      },
+      "100902": "[緋色のニュイ・エトワレ]"
     }
   },
   "1010": {
@@ -466,7 +470,8 @@
         "epithet": "[Wild Frontier]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "101002": "[Bubblegum☆Memories]"
     }
   },
   "1011": {
@@ -620,7 +625,8 @@
         "epithet": "[End of the Skies]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "101303": "[さざ波フェアレディ]"
     }
   },
   "1014": {
@@ -774,7 +780,8 @@
         "epithet": "[Maverick]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "101602": "[餓狼]"
     }
   },
   "1017": {
@@ -928,7 +935,8 @@
         "epithet": "[Full-Color Fangirling]",
         "rarity": 3,
         "strategy": 3
-      }
+      },
+      "101902": "[愛麗♡キョンシー]"
     }
   },
   "1020": {
@@ -1022,7 +1030,8 @@
         "epithet": "[Fast as Lightning]",
         "rarity": 3,
         "strategy": 4
-      }
+      },
+      "102102": "[猛ル鳴神]"
     }
   },
   "1022": {
@@ -1056,7 +1065,8 @@
         "epithet": "[Noble Seamair]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "102202": "[Titania]"
     }
   },
   "1023": {
@@ -1304,7 +1314,8 @@
         "epithet": "[Down the Line]",
         "rarity": 1,
         "strategy": 3
-      }
+      },
+      "102702": "[マーガレット・ラッテ]"
     }
   },
   "1028": {
@@ -1441,7 +1452,8 @@
         "epithet": "[Always Electrifying]",
         "rarity": 3,
         "strategy": 1
-      }
+      },
+      "103102": "[MELTY GIFT]"
     }
   },
   "1032": {
@@ -1518,7 +1530,8 @@
       "Inari One"
     ],
     "outfits": {
-      "103401": "[稲荷所縁江戸紫]"
+      "103401": "[稲荷所縁江戸紫]",
+      "103402": "[夢ノ金原]"
     }
   },
   "1035": {
@@ -1552,7 +1565,8 @@
         "epithet": "[Get to Winning!]",
         "rarity": 1,
         "strategy": 3
-      }
+      },
+      "103502": "[Dream Deliverer]"
     }
   },
   "1036": {
@@ -1655,7 +1669,8 @@
         "epithet": "[Fille Éclair]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "103802": "[朔月のマ・シェリ]"
     }
   },
   "1039": {
@@ -1904,7 +1919,8 @@
         "epithet": "[LOVE☆4EVER]",
         "rarity": 3,
         "strategy": 1
-      }
+      },
+      "104602": "[黄昏トライアンフ]"
     }
   },
   "1047": {
@@ -1990,7 +2006,8 @@
         "epithet": "[Nevertheless]",
         "rarity": 3,
         "strategy": 4
-      }
+      },
+      "105002": "[ディファレンス・エンジニア]"
     }
   },
   "1051": {
@@ -2196,7 +2213,8 @@
         "epithet": "[Turbulent Blue]",
         "rarity": 3,
         "strategy": 2
-      }
+      },
+      "105802": "[Dot-o'-Lantern]"
     }
   },
   "1059": {
@@ -2230,7 +2248,8 @@
         "epithet": "[Off the Line]",
         "rarity": 3,
         "strategy": 3
-      }
+      },
+      "105902": "[バカンス・サフィール]"
     }
   },
   "1060": {
@@ -2454,7 +2473,8 @@
         "epithet": "[Natural Brilliance]",
         "rarity": 3,
         "strategy": 3
-      }
+      },
+      "106702": "[花形・弥栄之翠]"
     }
   },
   "1068": {
@@ -2488,7 +2508,8 @@
         "epithet": "[Gilded Shrine to Glory]",
         "rarity": 3,
         "strategy": 1
-      }
+      },
+      "106802": "[真打・慶鶴之志]"
     }
   },
   "1069": {
