@@ -28,6 +28,7 @@ import { OCRModal } from './ocr-modal';
 import umas from '../umas.json';
 import icons from '../../icons.json';
 import skilldata from '../skill_data.json';
+import skillmeta from '../../skill_meta.json';
 import notInGame from '../not-in-game.json';
 
 // ============================================
@@ -832,7 +833,10 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 			</CollapsibleSection>
 
 			{/* Skills */}
-			<CollapsibleSection title="Skills" badge={state.skills.length} defaultOpen={true} headerAction={
+			<CollapsibleSection title="Skills" badge={(() => {
+				const sp = state.skills.reduce((sum, id) => sum + ((skillmeta as Record<string, { baseCost?: number }>)[id]?.baseCost ?? 0), 0);
+				return `${state.skills.length} · ${sp.toLocaleString()} SP`;
+			})()} defaultOpen={true} headerAction={
 				<span
 					class="v2-collapsible-layout-toggle"
 					title={wideSkills ? 'Wide layout (2 columns)' : 'Compact layout (3 columns)'}
