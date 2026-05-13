@@ -244,6 +244,20 @@ function App() {
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
+  // Per-strategy dueling activation rates (0-100). Canonical defaults per docs/dueling.md.
+  // Front Runners are excluded by the solver regardless.
+  const [duelingRates, setDuelingRates] = useState<{
+    runaway: number; frontRunner: number; paceChaser: number; lateSurger: number; endCloser: number;
+  }>(() => {
+    const saved = localStorage.getItem('umalator_v2_duelingRates');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return { runaway: 10, frontRunner: 20, paceChaser: 30, lateSurger: 35, endCloser: 35 };
+  });
+  useEffect(() => {
+    localStorage.setItem('umalator_v2_duelingRates', JSON.stringify(duelingRates));
+  }, [duelingRates]);
   const [laneMovement, setLaneMovement] = useState(true);
   const [autoSeed, setAutoSeed] = useState(false);
   const [forceFullSpurt, setForceFullSpurt] = useState(true);
@@ -686,8 +700,10 @@ function App() {
       uma1.strategy,
     );
 
-    // Get list of skills to test (filter to activateable skills only)
-    const baseSkills = getBaseSkillsToTest(uma1);
+    // Get list of skills to test (filter to activateable skills only).
+    // Pre-filter not-in-game skills here so we don't waste sim time on skills
+    // that would be hidden from the chart display anyway.
+    const baseSkills = getBaseSkillsToTest(uma1, hideNotInGame);
     const activateableSkills = getActivateableSkills(
       baseSkills,
       uma1,
@@ -787,6 +803,7 @@ function App() {
             rushedKakari,
             leadCompetition,
             competeFight,
+            duelingRates: competeFight ? duelingRates : undefined,
             laneMovement,
           }),
         },
@@ -818,6 +835,7 @@ function App() {
               rushedKakari,
               leadCompetition,
               competeFight,
+              duelingRates: competeFight ? duelingRates : undefined,
               laneMovement,
             }),
             forceFullSpurt,
@@ -845,6 +863,7 @@ function App() {
     rushedKakari,
     leadCompetition,
     competeFight,
+    duelingRates,
     laneMovement,
     autoSeed,
     handleRunSkillChart,
@@ -1459,6 +1478,8 @@ function App() {
               setLeadCompetition={setLeadCompetition}
               competeFight={competeFight}
               setCompeteFight={setCompeteFight}
+              duelingRates={duelingRates}
+              setDuelingRates={setDuelingRates}
               laneMovement={laneMovement}
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
@@ -2209,6 +2230,8 @@ function App() {
                         setLeadCompetition={setLeadCompetition}
                         competeFight={competeFight}
                         setCompeteFight={setCompeteFight}
+                        duelingRates={duelingRates}
+                        setDuelingRates={setDuelingRates}
                         laneMovement={laneMovement}
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}

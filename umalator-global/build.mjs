@@ -98,61 +98,48 @@ export default function seedrandom(seed) {
 	}
 };
 
-// Generate not-in-game.json by diffing local data against Global master.mdb
-// Falls back to kachi-dev/master if master.mdb is unavailable
+// Regenerate not-in-game.json by diffing local data against Global master.mdb.
+// When master.mdb is absent (e.g. on Cloudflare Pages CI), we leave the
+// committed not-in-game.json alone — it's the source of truth at deploy time.
+// (Previous behavior: fall back to diffing against `kachi-dev/master`, which
+// is a different community fork and not authoritative for Global. That
+// fallback could produce a wrong filter; it has been removed.)
 function generateNotInGame() {
 	const outPath = path.join(dirname, 'not-in-game.json');
 	const masterDb = path.join(root, 'docs', 'master.mdb');
 
-	// Try Global master.mdb first (most accurate)
-	if (fs.existsSync(masterDb)) {
-		try {
-			const dbSkillsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
-			const dbSkills = new Set(dbSkillsRaw.trim().split('\n'));
-			const dbOutfitsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM card_data"`, { encoding: 'utf-8' });
-			const dbOutfits = new Set(dbOutfitsRaw.trim().split('\n'));
-
-			const localSkills = JSON.parse(fs.readFileSync(path.join(dirname, 'skill_data.json'), 'utf-8'));
-			const localUmas = JSON.parse(fs.readFileSync(path.join(dirname, 'umas.json'), 'utf-8'));
-			const localOutfits = Object.keys(localUmas).flatMap(id => Object.keys(localUmas[id].outfits || {}));
-
-			const result = {
-				skills: Object.keys(localSkills).filter(id => !dbSkills.has(id)),
-				outfits: localOutfits.filter(id => !dbOutfits.has(id))
-			};
-
-			fs.writeFileSync(outPath, JSON.stringify(result));
-			console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`);
-			return;
-		} catch (e) {
-			console.warn('Failed to read master.mdb, falling back to kachi-dev');
+	if (!fs.existsSync(masterDb)) {
+		const exists = fs.existsSync(outPath);
+		console.log(
+			`not-in-game.json: master.mdb not present — ${exists
+				? 'leaving committed file alone'
+				: 'no committed file either, writing empty list'}`
+		);
+		if (!exists) {
+			fs.writeFileSync(outPath, JSON.stringify({ skills: [], outfits: [] }));
 		}
+		return;
 	}
 
-	// Fallback: diff against kachi-dev/master
 	try {
-		const kachiSkillRaw = execSync('git show kachi-dev/master:umalator-global/skill_data.json', { cwd: root, encoding: 'utf-8' });
-		const kachiUmaRaw = execSync('git show kachi-dev/master:umalator-global/umas.json', { cwd: root, encoding: 'utf-8' });
-		const kachiSkills = new Set(Object.keys(JSON.parse(kachiSkillRaw)));
-		const kachiUmas = JSON.parse(kachiUmaRaw);
-		const kachiOutfits = new Set(
-			Object.keys(kachiUmas).flatMap(id => Object.keys(kachiUmas[id].outfits || {}))
-		);
+		const dbSkillsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
+		const dbSkills = new Set(dbSkillsRaw.trim().split('\n'));
+		const dbOutfitsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM card_data"`, { encoding: 'utf-8' });
+		const dbOutfits = new Set(dbOutfitsRaw.trim().split('\n'));
 
 		const localSkills = JSON.parse(fs.readFileSync(path.join(dirname, 'skill_data.json'), 'utf-8'));
 		const localUmas = JSON.parse(fs.readFileSync(path.join(dirname, 'umas.json'), 'utf-8'));
 		const localOutfits = Object.keys(localUmas).flatMap(id => Object.keys(localUmas[id].outfits || {}));
 
 		const result = {
-			skills: Object.keys(localSkills).filter(id => !kachiSkills.has(id)),
-			outfits: localOutfits.filter(id => !kachiOutfits.has(id))
+			skills: Object.keys(localSkills).filter(id => !dbSkills.has(id)),
+			outfits: localOutfits.filter(id => !dbOutfits.has(id))
 		};
 
 		fs.writeFileSync(outPath, JSON.stringify(result));
-		console.log(`not-in-game.json (kachi-dev): ${result.skills.length} skills, ${result.outfits.length} outfits`);
+		console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`);
 	} catch (e) {
-		console.warn('Could not generate not-in-game.json, using empty list');
-		fs.writeFileSync(outPath, JSON.stringify({ skills: [], outfits: [] }));
+		console.warn(`Failed to regenerate not-in-game.json: ${e.message}. Leaving existing file in place.`);
 	}
 }
 

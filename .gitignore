@@ -10,7 +10,9 @@ node_modules/
 **/dist/
 /assets/
 /simulator.worker.js
-umalator-global/not-in-game.json
+# umalator-global/not-in-game.json is now committed.
+# It is regenerated locally from docs/master.mdb via `node umalator-global/build.mjs`;
+# deploys read the committed version directly (master.mdb is not deployed).
 
 # Large media files
 videos/

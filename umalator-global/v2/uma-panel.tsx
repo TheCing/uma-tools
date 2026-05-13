@@ -29,6 +29,7 @@ import umas from '../umas.json';
 import icons from '../../icons.json';
 import skilldata from '../skill_data.json';
 import skillmeta from '../../skill_meta.json';
+import { skillGroups } from './skill-chart-utils';
 import notInGame from '../not-in-game.json';
 
 // ============================================
@@ -834,8 +835,38 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 
 			{/* Skills */}
 			<CollapsibleSection title="Skills" badge={(() => {
-				const sp = state.skills.reduce((sum, id) => sum + ((skillmeta as Record<string, { baseCost?: number }>)[id]?.baseCost ?? 0), 0);
-				return `${state.skills.length} · ${sp.toLocaleString()} SP`;
+				// Total SP = sum across each group of (chain cost up to the highest-selected skill).
+				// Mirrors in-game pricing: buying a gold ◎ also charges for the prerequisite ○/×.
+				const meta = skillmeta as Record<string, { baseCost?: number; groupId?: string }>;
+				const selectedByGroup = new Map<string, Set<string>>();
+				let total = 0;
+				for (const id of state.skills) {
+					const m = meta[id];
+					if (!m) continue;
+					const gid = m.groupId;
+					if (!gid) {
+						total += m.baseCost ?? 0;
+						continue;
+					}
+					if (!selectedByGroup.has(gid)) selectedByGroup.set(gid, new Set());
+					selectedByGroup.get(gid)!.add(id);
+				}
+				for (const [gid, selectedInGroup] of selectedByGroup) {
+					const sorted = skillGroups.get(gid);
+					if (!sorted) {
+						for (const id of selectedInGroup) total += meta[id]?.baseCost ?? 0;
+						continue;
+					}
+					let maxPos = -1;
+					for (let i = 0; i < sorted.length; i++) {
+						if (selectedInGroup.has(sorted[i])) maxPos = i;
+					}
+					if (maxPos < 0) continue;
+					for (let i = 0; i <= maxPos; i++) {
+						total += meta[sorted[i]]?.baseCost ?? 0;
+					}
+				}
+				return `${state.skills.length} · ${total.toLocaleString()} SP`;
 			})()} defaultOpen={true} headerAction={
 				<span
 					class="v2-collapsible-layout-toggle"
@@ -849,6 +880,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 					skills={state.skills}
 					onChange={skills => onChange({ skills })}
 					courseDistance={courseDistance}
+					strategy={state.strategy}
 					hideNotInGame={hideNotInGame}
 					wideLayout={wideSkills}
 					forcedSkillPositions={state.forcedSkillPositions}
