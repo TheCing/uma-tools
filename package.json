@@ -12,7 +12,13 @@
     "serve": "npm run build:global && node serve.mjs",
     "dev:v2": "cd umalator-global/v2 && npx vite",
     "build:v2": "cd umalator-global/v2 && npx vite build",
-    "preview:v2": "cd umalator-global/v2 && npx vite preview"
+    "preview:v2": "cd umalator-global/v2 && npx vite preview",
+    "dev:team-trials": "cd team-trials && node build.mjs --serve",
+    "build:team-trials": "cd team-trials && node build.mjs",
+    "preview:team-trials": "cd team-trials && npx vite preview",
+    "dev:release-timeline": "cd release-timeline && node build.mjs --serve",
+    "build:release-timeline": "cd release-timeline && node build.mjs",
+    "preview:release-timeline": "cd release-timeline && npx vite preview"
   },
   "author": "pecan",
   "license": "GPL-3.0-or-later",

@@ -94,6 +94,13 @@ import "./tour/tour.css";
 // Discord webhook for feedback submissions - configure via VITE_DISCORD_WEBHOOK environment variable
 const DISCORD_FEEDBACK_WEBHOOK = import.meta.env.VITE_DISCORD_WEBHOOK || '';
 
+// Feedback drawer feature flag. Defaults to enabled. Set VITE_ENABLE_FEEDBACK=false in
+// .env.local (or the build environment) to hide the drawer + floating toggle entirely.
+// Also auto-hides when no webhook URL is configured — submission would fail anyway.
+const FEEDBACK_ENABLED =
+  import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' &&
+  DISCORD_FEEDBACK_WEBHOOK !== '';
+
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
  * Compares the rendered character against a known missing codepoint.
@@ -244,6 +251,20 @@ function App() {
   const [rushedKakari, setRushedKakari] = useState(true);
   const [leadCompetition, setLeadCompetition] = useState(false);
   const [competeFight, setCompeteFight] = useState(false);
+  // Per-strategy dueling activation rates (0-100). Canonical defaults per docs/dueling.md.
+  // Front Runners are excluded by the solver regardless.
+  const [duelingRates, setDuelingRates] = useState<{
+    runaway: number; frontRunner: number; paceChaser: number; lateSurger: number; endCloser: number;
+  }>(() => {
+    const saved = localStorage.getItem('umalator_v2_duelingRates');
+    if (saved) {
+      try { return JSON.parse(saved); } catch {}
+    }
+    return { runaway: 10, frontRunner: 20, paceChaser: 30, lateSurger: 35, endCloser: 35 };
+  });
+  useEffect(() => {
+    localStorage.setItem('umalator_v2_duelingRates', JSON.stringify(duelingRates));
+  }, [duelingRates]);
   const [laneMovement, setLaneMovement] = useState(true);
   const [autoSeed, setAutoSeed] = useState(false);
   const [forceFullSpurt, setForceFullSpurt] = useState(true);
@@ -686,8 +707,10 @@ function App() {
       uma1.strategy,
     );
 
-    // Get list of skills to test (filter to activateable skills only)
-    const baseSkills = getBaseSkillsToTest(uma1);
+    // Get list of skills to test (filter to activateable skills only).
+    // Pre-filter not-in-game skills here so we don't waste sim time on skills
+    // that would be hidden from the chart display anyway.
+    const baseSkills = getBaseSkillsToTest(uma1, hideNotInGame);
     const activateableSkills = getActivateableSkills(
       baseSkills,
       uma1,
@@ -787,6 +810,7 @@ function App() {
             rushedKakari,
             leadCompetition,
             competeFight,
+            duelingRates: competeFight ? duelingRates : undefined,
             laneMovement,
           }),
         },
@@ -818,6 +842,7 @@ function App() {
               rushedKakari,
               leadCompetition,
               competeFight,
+              duelingRates: competeFight ? duelingRates : undefined,
               laneMovement,
             }),
             forceFullSpurt,
@@ -845,6 +870,7 @@ function App() {
     rushedKakari,
     leadCompetition,
     competeFight,
+    duelingRates,
     laneMovement,
     autoSeed,
     handleRunSkillChart,
@@ -1459,6 +1485,8 @@ function App() {
               setLeadCompetition={setLeadCompetition}
               competeFight={competeFight}
               setCompeteFight={setCompeteFight}
+              duelingRates={duelingRates}
+              setDuelingRates={setDuelingRates}
               laneMovement={laneMovement}
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
@@ -2074,25 +2102,29 @@ function App() {
               </div>
             )}
 
-            {/* Feedback drawer */}
-            <FeedbackDrawer
-              isOpen={feedbackDrawerOpen}
-              onClose={() => {
-                setFeedbackDrawerOpen(false);
-                setMobileView("track");
-              }}
-              webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
-            />
-            {!feedbackDrawerOpen && (
-              <button
-                type="button"
-                class="v2-feedback-toggle"
-                onClick={() => setFeedbackDrawerOpen(true)}
-                aria-label="Send feedback"
-              >
-                <MessageSquare size={18} />
-                <span>Feedback</span>
-              </button>
+            {/* Feedback drawer (gated by VITE_ENABLE_FEEDBACK + webhook presence) */}
+            {FEEDBACK_ENABLED && (
+              <Fragment>
+                <FeedbackDrawer
+                  isOpen={feedbackDrawerOpen}
+                  onClose={() => {
+                    setFeedbackDrawerOpen(false);
+                    setMobileView("track");
+                  }}
+                  webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
+                />
+                {!feedbackDrawerOpen && (
+                  <button
+                    type="button"
+                    class="v2-feedback-toggle"
+                    onClick={() => setFeedbackDrawerOpen(true)}
+                    aria-label="Send feedback"
+                  >
+                    <MessageSquare size={18} />
+                    <span>Feedback</span>
+                  </button>
+                )}
+              </Fragment>
             )}
 
             {/* Mobile bottom navigation */}
@@ -2209,6 +2241,8 @@ function App() {
                         setLeadCompetition={setLeadCompetition}
                         competeFight={competeFight}
                         setCompeteFight={setCompeteFight}
+                        duelingRates={duelingRates}
+                        setDuelingRates={setDuelingRates}
                         laneMovement={laneMovement}
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}

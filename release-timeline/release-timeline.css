@@ -1,0 +1,616 @@
+/**
+ * Release Timeline — feature styles.
+ * Relies on design tokens from umalator-global/v2/v2.css.
+ *
+ * Copyright (c) 2026 TheCing
+ * Licensed under GPL-3.0-or-later
+ */
+
+body {
+	margin: 0;
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.rt-app {
+	max-width: 1400px;
+	margin: 0 auto;
+	padding: var(--space-lg);
+	min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+.rt-header {
+	margin-bottom: var(--space-md);
+	padding-bottom: var(--space-md);
+	border-bottom: 1px solid var(--color-border);
+}
+
+.rt-header-main {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--space-md);
+	flex-wrap: wrap;
+}
+
+.rt-title {
+	margin: 0;
+	font-size: var(--font-2xl);
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.rt-header-stats {
+	display: inline-flex;
+	align-items: baseline;
+	gap: var(--space-xs);
+	font-size: var(--font-sm);
+	color: var(--color-text-muted);
+}
+
+.rt-header-stats strong {
+	color: var(--color-text);
+	font-weight: 600;
+}
+
+.rt-sep {
+	color: var(--color-text-faint);
+}
+
+/* ---------- Scenario chip strip ---------- */
+.rt-scenario-strip {
+	display: flex;
+	gap: var(--space-xs);
+	overflow-x: auto;
+	padding: var(--space-xs) 0 var(--space-md);
+	margin-bottom: var(--space-md);
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.rt-scenario-chip {
+	position: relative;
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 2px;
+	padding: var(--space-xs) var(--space-sm);
+	min-width: 140px;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-top: 3px solid var(--rt-accent, var(--color-border));
+	border-radius: var(--radius-sm);
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+	font-family: inherit;
+	text-align: left;
+}
+
+.rt-scenario-chip:hover {
+	background: var(--color-surface-elevated);
+	color: var(--color-text);
+}
+
+.rt-scenario-chip.active {
+	background: color-mix(in srgb, var(--rt-accent) 18%, var(--color-surface));
+	border-color: var(--rt-accent);
+	color: var(--color-text);
+	box-shadow: 0 0 0 1px var(--rt-accent);
+}
+
+.rt-scenario-chip.current::after {
+	content: 'current';
+	position: absolute;
+	top: -8px;
+	right: -6px;
+	padding: 1px 6px;
+	font-size: 9px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--color-primary-text);
+	background: var(--color-primary);
+	border-radius: 999px;
+}
+
+.rt-scenario-num {
+	font-size: 10px;
+	font-weight: 700;
+	color: var(--rt-accent);
+	letter-spacing: 0.05em;
+}
+
+.rt-scenario-name {
+	font-size: var(--font-xs);
+	font-weight: 600;
+	line-height: 1.2;
+	max-width: 180px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.rt-scenario-dates {
+	font-size: 10px;
+	color: var(--color-text-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Anniversary strip ---------- */
+.rt-anniv-strip {
+	display: flex;
+	gap: 4px;
+	overflow-x: auto;
+	padding: 4px 0 var(--space-sm);
+	margin-bottom: var(--space-xs);
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.rt-anniv-chip {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 10px;
+	min-width: 0;
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 999px;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	font-family: inherit;
+	font-size: 11px;
+	transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.rt-anniv-chip:hover:not(:disabled) {
+	background: var(--color-surface-elevated);
+	color: var(--color-text);
+	border-color: var(--color-border-strong);
+}
+
+.rt-anniv-chip.active {
+	background: var(--color-primary);
+	border-color: var(--color-primary);
+	color: var(--color-primary-text);
+	font-weight: 600;
+}
+
+.rt-anniv-chip.upcoming {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.rt-anniv-chip.launch .rt-anniv-mark {
+	color: #f5c35a;
+}
+
+.rt-anniv-chip.full .rt-anniv-mark {
+	color: var(--color-primary);
+}
+
+.rt-anniv-chip.half .rt-anniv-mark {
+	color: var(--color-text-faint);
+	font-size: 14px;
+	line-height: 0.8;
+}
+
+.rt-anniv-mark {
+	font-size: 12px;
+	line-height: 1;
+}
+
+.rt-anniv-label {
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.rt-anniv-date {
+	font-size: 10px;
+	color: var(--color-text-muted);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.rt-anniv-chip.active .rt-anniv-date,
+.rt-anniv-chip.active .rt-anniv-mark {
+	color: var(--color-primary-text);
+}
+
+/* ---------- CM tag (per card/uma meta) ---------- */
+.rt-cm-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 10px;
+	color: var(--color-text-secondary);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border);
+}
+
+.rt-cm-tag-days {
+	color: var(--color-text-faint);
+	font-weight: 500;
+}
+
+.rt-filter-select-cm {
+	min-width: 320px;
+}
+
+/* ---------- Anniversary tag (per card/uma meta) ---------- */
+.rt-anniv-tag {
+	font-size: 10px;
+	color: var(--color-text-faint);
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border-subtle);
+}
+
+.rt-anniv-tag-launch {
+	color: #1f1400;
+	background: linear-gradient(135deg, #f5c35a, #f59038);
+	border-color: transparent;
+	font-weight: 700;
+}
+
+/* ---------- Filters ---------- */
+.rt-filters {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-sm);
+	margin-bottom: var(--space-lg);
+	padding: var(--space-sm) var(--space-md);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+}
+
+.rt-filters-row {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	flex-wrap: wrap;
+}
+
+.rt-filters-row-2 {
+	justify-content: space-between;
+}
+
+.rt-filter-grow {
+	flex: 1;
+	min-width: 220px;
+}
+
+.rt-filter-select {
+	min-width: 220px;
+}
+
+.rt-view-switch {
+	margin-left: auto;
+}
+
+/* ---------- Results ---------- */
+.rt-results {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-xl);
+}
+
+.rt-empty {
+	padding: var(--space-xl);
+	text-align: center;
+	color: var(--color-text-muted);
+	background: var(--color-surface);
+	border: 1px dashed var(--color-border);
+	border-radius: var(--radius-md);
+}
+
+/* ---------- Scenario Section ---------- */
+.rt-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-sm);
+}
+
+.rt-section-header {
+	padding: var(--space-sm) var(--space-md);
+	background: color-mix(in srgb, var(--rt-accent) 10%, var(--color-surface));
+	border-left: 4px solid var(--rt-accent);
+	border-radius: var(--radius-sm);
+}
+
+.rt-section-title {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	margin-bottom: 4px;
+}
+
+.rt-section-num {
+	font-size: var(--font-sm);
+	font-weight: 700;
+	color: var(--rt-accent);
+	letter-spacing: 0.05em;
+}
+
+.rt-section-name {
+	margin: 0;
+	font-size: var(--font-xl);
+	font-weight: 700;
+	color: var(--color-text);
+}
+
+.rt-section-meta {
+	display: flex;
+	align-items: center;
+	gap: var(--space-xs);
+	font-size: var(--font-xs);
+	color: var(--color-text-muted);
+	font-variant-numeric: tabular-nums;
+	flex-wrap: wrap;
+}
+
+.rt-section-jp {
+	margin: 4px 0 0;
+	font-size: var(--font-xs);
+	color: var(--color-text-faint);
+	font-style: italic;
+}
+
+.rt-rarity-count {
+	font-weight: 600;
+	padding: 1px 6px;
+	border-radius: 999px;
+	background: var(--color-surface-overlay);
+}
+
+.rt-rarity-count.rt-rarity-ssr { color: #f5a623; }
+.rt-rarity-count.rt-rarity-sr  { color: #b69df1; }
+.rt-rarity-count.rt-rarity-r   { color: var(--color-text-secondary); }
+
+/* ---------- Card grid ---------- */
+.rt-card-grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: var(--space-xs);
+}
+
+.rt-card-grid-flat {
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+/* ---------- Card row ---------- */
+.rt-card {
+	display: flex;
+	align-items: center;
+	gap: var(--space-sm);
+	padding: var(--space-xs) var(--space-sm);
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-left: 3px solid var(--rt-card-scenario, var(--color-border));
+	border-radius: var(--radius-sm);
+	min-width: 0;
+	transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.rt-card:hover {
+	background: var(--color-surface-elevated);
+	border-color: var(--color-border-strong);
+}
+
+.rt-card-rarity {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	padding: 2px 0;
+	font-size: 10px;
+	font-weight: 700;
+	border-radius: 999px;
+	letter-spacing: 0.04em;
+}
+
+.rt-card-rarity.rt-rarity-R {
+	color: var(--color-text-secondary);
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border);
+}
+
+.rt-card-rarity.rt-rarity-SR {
+	color: #faf4ff;
+	background: #5b3f85;
+}
+
+.rt-card-rarity.rt-rarity-SSR {
+	color: #1f1400;
+	background: linear-gradient(135deg, #f5c35a, #f59038);
+}
+
+.rt-card-body {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.rt-card-name {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	font-size: var(--font-xs);
+	line-height: 1.35;
+	word-break: break-word;
+	overflow-wrap: anywhere;
+}
+
+.rt-card-epithet {
+	font-size: 10px;
+	font-weight: 500;
+	color: var(--color-text-muted);
+	font-style: italic;
+}
+
+.rt-card-chara {
+	font-weight: 600;
+	color: var(--color-text);
+}
+
+.rt-card-meta {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px var(--space-xs);
+	font-size: 10px;
+	color: var(--color-text-muted);
+	min-width: 0;
+}
+
+.rt-card-date {
+	font-variant-numeric: tabular-nums;
+	flex-shrink: 0;
+}
+
+.rt-card-scenario-tag {
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* ---------- Type colors (canonical in-game palette) ---------- */
+.rt-type-speed    { --rt-type-bg: #1e64a0; --rt-type-fg: #e3f0fb; }
+.rt-type-stamina  { --rt-type-bg: #b33030; --rt-type-fg: #fce6e6; }
+.rt-type-power    { --rt-type-bg: #c46820; --rt-type-fg: #fdeed7; }
+.rt-type-guts     { --rt-type-bg: #c23374; --rt-type-fg: #fde0ee; }
+.rt-type-wit      { --rt-type-bg: #258a52; --rt-type-fg: #deefe4; }
+.rt-type-friend   { --rt-type-bg: #e39b1e; --rt-type-fg: #2a1c00; }
+.rt-type-group    { --rt-type-bg: #7b4cc4; --rt-type-fg: #efe4fc; }
+
+/* ---------- Card type pill ---------- */
+.rt-card-type {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 52px;
+	padding: 2px 8px;
+	font-size: 10px;
+	font-weight: 600;
+	border-radius: 999px;
+	letter-spacing: 0.04em;
+	background: var(--rt-type-bg, var(--color-surface-overlay));
+	color: var(--rt-type-fg, var(--color-text));
+}
+
+/* ---------- Type filter row ---------- */
+.rt-filters-row-types {
+	align-items: center;
+}
+
+.rt-filter-label {
+	font-size: var(--font-xs);
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--color-text-muted);
+	flex-shrink: 0;
+}
+
+/* ---------- Mode tabs (Support Cards / Umas) ---------- */
+.rt-mode-tabs {
+	margin-top: var(--space-sm);
+}
+
+/* ---------- Uma card (portrait + body) ---------- */
+.rt-uma-card {
+	align-items: stretch;
+	padding: var(--space-xs);
+}
+
+.rt-uma-portrait {
+	flex-shrink: 0;
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+	background: var(--color-surface-overlay);
+	display: block;
+}
+
+.rt-uma-rarity {
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1px 6px;
+	font-size: 10px;
+	font-weight: 700;
+	border-radius: 999px;
+	letter-spacing: 0.04em;
+}
+
+.rt-uma-rarity-1 {
+	color: var(--color-text-secondary);
+	background: var(--color-surface-overlay);
+	border: 1px solid var(--color-border);
+}
+
+.rt-uma-rarity-2 {
+	color: #faf4ff;
+	background: #5b3f85;
+}
+
+.rt-uma-rarity-3 {
+	color: #1f1400;
+	background: linear-gradient(135deg, #f5c35a, #f59038);
+}
+
+/* ---------- Footer ---------- */
+.rt-footer {
+	margin-top: var(--space-xl);
+	padding-top: var(--space-md);
+	border-top: 1px solid var(--color-border);
+	text-align: center;
+	font-size: var(--font-xs);
+	color: var(--color-text-faint);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+	.rt-app {
+		padding: var(--space-md);
+	}
+	.rt-filters-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.rt-filter-grow, .rt-filter-select {
+		min-width: 0;
+		width: 100%;
+	}
+	.rt-view-switch {
+		margin-left: 0;
+	}
+	.rt-card-grid, .rt-card-grid-flat {
+		grid-template-columns: 1fr;
+	}
+}

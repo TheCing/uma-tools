@@ -1060,10 +1060,11 @@ export class RaceSolver {
 			return;
 		}
 
-		// Front Runners use Spot Struggle, not Dueling
-		if (StrategyHelpers.strategyMatches(this.posKeepStrategy, Strategy.Nige)) {
-			return;
-		}
+		// Note: Nige (Front Runner) and Oonige (Runaway) used to early-return here on the
+		// rationale that "Front Runners use Spot Struggle, not Dueling." In practice both
+		// strategies can fall back into the pack and engage in late-race duels, and the
+		// downstream rate logic already accounts for them via duelingRates.frontRunner
+		// and duelingRates.runaway. Removing the early-return wires both back in.
 
 		if (this.hp.hpRatioRemaining() < 0.15 || !this.isOnFinalStraight()) {
 			return;

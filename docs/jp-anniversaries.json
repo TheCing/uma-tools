@@ -1,0 +1,124 @@
+{
+	"description": "Uma Musume JP anniversary milestones. Anniversaries land on Feb 24 (game launch). Half-anniversaries on Aug 24. New scenarios historically launch on these milestone days; the cadence tightened from 6 → 4 months in mid-2024 so newer scenarios land between anniversaries instead of on them.",
+	"compiled": "2026-04-26",
+	"launchDate": "2021-02-24",
+	"anniversaries": [
+		{
+			"ordinal": "0",
+			"label": "JP Launch",
+			"longLabel": "JP Launch",
+			"date": "2021-02-24",
+			"isHalf": false,
+			"isLaunch": true,
+			"isPast": true
+		},
+		{
+			"ordinal": "0.5",
+			"label": "0.5 Anniversary",
+			"longLabel": "0.5 anniversary (half)",
+			"date": "2021-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "1",
+			"label": "1st Anniversary",
+			"longLabel": "1st anniversary",
+			"date": "2022-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "1.5",
+			"label": "1.5 Anniversary",
+			"longLabel": "1.5 anniversary (half)",
+			"date": "2022-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "2",
+			"label": "2nd Anniversary",
+			"longLabel": "2nd anniversary",
+			"date": "2023-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "2.5",
+			"label": "2.5 Anniversary",
+			"longLabel": "2.5 anniversary (half)",
+			"date": "2023-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "3",
+			"label": "3rd Anniversary",
+			"longLabel": "3rd anniversary",
+			"date": "2024-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "3.5",
+			"label": "3.5 Anniversary",
+			"longLabel": "3.5 anniversary (half)",
+			"date": "2024-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "4",
+			"label": "4th Anniversary",
+			"longLabel": "4th anniversary",
+			"date": "2025-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "4.5",
+			"label": "4.5 Anniversary",
+			"longLabel": "4.5 anniversary (half)",
+			"date": "2025-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "5",
+			"label": "5th Anniversary",
+			"longLabel": "5th anniversary",
+			"date": "2026-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": true
+		},
+		{
+			"ordinal": "5.5",
+			"label": "5.5 Anniversary",
+			"longLabel": "5.5 anniversary (half)",
+			"date": "2026-08-24",
+			"isHalf": true,
+			"isLaunch": false,
+			"isPast": false
+		},
+		{
+			"ordinal": "6",
+			"label": "6th Anniversary",
+			"longLabel": "6th anniversary",
+			"date": "2027-02-24",
+			"isHalf": false,
+			"isLaunch": false,
+			"isPast": false
+		}
+	]
+}

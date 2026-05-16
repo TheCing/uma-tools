@@ -127,6 +127,14 @@ export function buildRaceParameters(
 /**
  * Simulation options configuration
  */
+export interface DuelingRates {
+	runaway: number;       // % chance an Oonige uma engages in dueling
+	frontRunner: number;   // % chance a Nige uma duels (solver excludes them anyway — kept for completeness)
+	paceChaser: number;    // % chance a Senkou uma duels
+	lateSurger: number;    // % chance a Sashi uma duels
+	endCloser: number;     // % chance an Oikomi uma duels
+}
+
 export interface SimulationOptions {
 	seed: number;
 	syncRng: boolean;
@@ -134,6 +142,7 @@ export interface SimulationOptions {
 	rushedKakari: boolean;
 	leadCompetition: boolean;
 	competeFight: boolean;
+	duelingRates?: DuelingRates;
 	laneMovement: boolean;
 }
 
@@ -150,6 +159,7 @@ export function buildSimulationOptions(options: Partial<SimulationOptions> = {})
 		rushedKakari: options.rushedKakari ?? true,
 		leadCompetition: options.leadCompetition ?? false,
 		competeFight: options.competeFight ?? false,
+		duelingRates: options.duelingRates,
 		laneMovement: options.laneMovement ?? true,
 	};
 }
