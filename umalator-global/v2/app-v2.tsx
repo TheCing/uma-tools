@@ -94,6 +94,13 @@ import "./tour/tour.css";
 // Discord webhook for feedback submissions - configure via VITE_DISCORD_WEBHOOK environment variable
 const DISCORD_FEEDBACK_WEBHOOK = import.meta.env.VITE_DISCORD_WEBHOOK || '';
 
+// Feedback drawer feature flag. Defaults to enabled. Set VITE_ENABLE_FEEDBACK=false in
+// .env.local (or the build environment) to hide the drawer + floating toggle entirely.
+// Also auto-hides when no webhook URL is configured — submission would fail anyway.
+const FEEDBACK_ENABLED =
+  import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' &&
+  DISCORD_FEEDBACK_WEBHOOK !== '';
+
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
  * Compares the rendered character against a known missing codepoint.
@@ -2095,25 +2102,29 @@ function App() {
               </div>
             )}
 
-            {/* Feedback drawer */}
-            <FeedbackDrawer
-              isOpen={feedbackDrawerOpen}
-              onClose={() => {
-                setFeedbackDrawerOpen(false);
-                setMobileView("track");
-              }}
-              webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
-            />
-            {!feedbackDrawerOpen && (
-              <button
-                type="button"
-                class="v2-feedback-toggle"
-                onClick={() => setFeedbackDrawerOpen(true)}
-                aria-label="Send feedback"
-              >
-                <MessageSquare size={18} />
-                <span>Feedback</span>
-              </button>
+            {/* Feedback drawer (gated by VITE_ENABLE_FEEDBACK + webhook presence) */}
+            {FEEDBACK_ENABLED && (
+              <Fragment>
+                <FeedbackDrawer
+                  isOpen={feedbackDrawerOpen}
+                  onClose={() => {
+                    setFeedbackDrawerOpen(false);
+                    setMobileView("track");
+                  }}
+                  webhookUrl={DISCORD_FEEDBACK_WEBHOOK}
+                />
+                {!feedbackDrawerOpen && (
+                  <button
+                    type="button"
+                    class="v2-feedback-toggle"
+                    onClick={() => setFeedbackDrawerOpen(true)}
+                    aria-label="Send feedback"
+                  >
+                    <MessageSquare size={18} />
+                    <span>Feedback</span>
+                  </button>
+                )}
+              </Fragment>
             )}
 
             {/* Mobile bottom navigation */}
