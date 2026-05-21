@@ -1,8 +1,8 @@
 node_modules/
 .DS_Store
 
-# Environment variables (contains secrets)
-.env
+# Environment variables — only *.local files are gitignored (Vite convention).
+# Base .env and per-mode .env.[mode] are committed for shared build defaults.
 .env.local
 .env.*.local
 

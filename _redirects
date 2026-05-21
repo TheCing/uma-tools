@@ -3,6 +3,9 @@
 # Redirect www to non-www (canonical)
 https://www.umalator.app/* https://umalator.app/:splat 301
 
+# canva.umalator.app — static Tachyon Guide embed (rewrite, URL stays)
+https://canva.umalator.app/* /canva/:splat 200
+
 # Backward compat: old v2 URLs → root
 /umalator-global/v2/* /:splat 301
 /v2/* /:splat 301
