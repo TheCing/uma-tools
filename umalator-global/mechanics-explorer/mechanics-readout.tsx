@@ -63,7 +63,7 @@ export function MechanicsReadout({ horse, course, ground }: ReadoutProps) {
 				<Row label="Max HP" value={f(maxHp, 1)} formula="0.8 · hpStrategyCoef · stamina + distance" stat="stamina" />
 				<Row label="Guts HP modifier (phase ≥ 2)" value={f(M.gutsModifier(horse), 4)} formula="1 + 200/√(600·guts)" stat="guts" />
 				<Row label="Ground drain modifier" value={f(M.groundModifier(course, ground), 3)} formula="hpConsumptionGroundModifier[surface][ground]" stat="ground" />
-				<Row label="HP/s — phase 1 @ target" value={f(M.hpPerSecond(horse, course, ground, M.baseTargetSpeed(horse, course, 1), 1), 2)} formula="20·(v − baseSpeed + 12)²/144 · status · ground" stat="—" />
+				<Row label="HP/s — phase 1 @ target" value={f(M.hpPerSecond(horse, course, ground, M.baseTargetSpeed(horse, course, 1), 1), 2)} formula="20·(v − baseSpeed + 12)²/144 · status · ground" />
 				<Row label="HP/s — phase 2 @ spurt" value={f(M.hpPerSecond(horse, course, ground, M.lastSpurtSpeed(horse, course), 2), 2)} formula="20·(v − baseSpeed + 12)²/144 · status · ground · gutsMod" stat="guts" />
 			</CollapsibleSection>
 
