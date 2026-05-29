@@ -1,0 +1,19 @@
+/* Mechanics Explorer — app-specific styles. Reuses v2.css design tokens. */
+.mx-app {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: var(--space-4, 16px);
+}
+.mx-header h1 {
+	font-size: 1.5rem;
+	margin: 0 0 var(--space-3, 12px);
+}
+.mx-layout {
+	display: grid;
+	grid-template-columns: minmax(280px, 360px) 1fr;
+	gap: var(--space-4, 16px);
+	align-items: start;
+}
+@media (max-width: 800px) {
+	.mx-layout { grid-template-columns: 1fr; }
+}
