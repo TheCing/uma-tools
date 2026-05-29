@@ -75,3 +75,42 @@ test('hpPerSecond phase 2 at spurt speed', t => {
 	close(t, M.hpPerSecond(HORSE, COURSE, 1, 21.6, 0), 25.688889, 1e-4);
 	t.end();
 });
+
+test('phase2Start', t => {
+	close(t, M.phase2Start(2000), 1333.3333, 1e-3);
+	t.end();
+});
+
+test('fullSpurtHpNeeded & canFullSpurt', t => {
+	// maxDist = 2000 - 2000*2/3 = 666.6667; spd = lastSpurtSpeed; s=(maxDist-60)/spd
+	const need = M.fullSpurtHpNeeded(HORSE, COURSE, 1);
+	t.ok(need > 0 && need < 5000, `hpNeeded in range (got ${need})`);
+	// maxHp 3424 vs need — assert canFullSpurt matches the maxHp>=need comparison
+	t.equal(M.canFullSpurt(HORSE, COURSE, 1), M.maxHp(HORSE, COURSE) >= need);
+	t.end();
+});
+
+test('subparAcceptChance', t => {
+	// 15 + 0.05*2000
+	t.equal(M.subparAcceptChance(HORSE), 115);
+	t.end();
+});
+
+test('skillActivationChance', t => {
+	// max(100 - 9000/2000, 20) = 95.5
+	t.equal(M.skillActivationChance(HORSE), 95.5);
+	// low wisdom floors at 20
+	t.equal(M.skillActivationChance({ ...HORSE, wisdom: 100 }), 20);
+	t.end();
+});
+
+test('downhillTriggerRate', t => {
+	close(t, M.downhillTriggerRate(HORSE), 0.8, 1e-9);
+	t.end();
+});
+
+test('groundModifier dirt Soft (transcription guard)', t => {
+	// dirt (surface 2) Soft column = 1.01, distinct from turf's 1.02
+	t.equal(M.groundModifier({ distance: 2000, surface: 2 }, 3), 1.01);
+	t.end();
+});

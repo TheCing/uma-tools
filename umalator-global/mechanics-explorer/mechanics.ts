@@ -118,3 +118,39 @@ export function hpPerSecond(
 	return 20.0 * Math.pow(velocity - baseSpeed(c.distance) + 12.0, 2) / 144.0 *
 		statusModifier * groundModifier(c, ground) * guts;
 }
+
+// --- Spurt (HpPolicy.getLastSpurtPair; doc §Last Spurt) ---
+
+/** Position where phase 2 (the spurt zone) begins = CourseHelpers.phaseStart(distance, 2). */
+export function phase2Start(distance: number): number {
+	return distance * 2.0 / 3.0;
+}
+
+/** HP required to hold the max-spurt speed across the whole spurt zone (minus the 60m buffer). */
+export function fullSpurtHpNeeded(h: MechHorse, c: MechCourse, ground: number): number {
+	const maxDist = c.distance - phase2Start(c.distance);
+	const spd = lastSpurtSpeed(h, c);
+	const s = (maxDist - 60) / spd;
+	return hpPerSecond(h, c, ground, spd, 2) * s;
+}
+
+/** True when the horse can spurt at max speed the whole way (the achievedMaxSpurt branch). */
+export function canFullSpurt(h: MechHorse, c: MechCourse, ground: number): boolean {
+	return maxHp(h, c) >= fullSpurtHpNeeded(h, c, ground);
+}
+
+/** Per-candidate acceptance chance (%) for the wisdom-gated fallback spurt roll. Uncapped; clamp for display. */
+export function subparAcceptChance(h: MechHorse): number {
+	return 15.0 + 0.05 * h.wisdom;
+}
+
+// --- Wisdom rolls (doc §Skill Activation Chance; memory skill-activation.md) ---
+
+export function skillActivationChance(h: MechHorse): number {
+	return Math.max(100.0 - 9000.0 / h.wisdom, 20.0);
+}
+
+/** Downhill-mode trigger probability per check. */
+export function downhillTriggerRate(h: MechHorse): number {
+	return h.wisdom * 0.0004;
+}
