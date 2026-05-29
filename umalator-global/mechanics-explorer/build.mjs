@@ -72,17 +72,25 @@ if (options.serve) {
 	};
 
 	http.createServer((req, res) => {
-		let urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
+		const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
 		if (urlPath.includes('..')) { res.writeHead(404); res.end('Not found'); return; }
-		// Production _redirects rewrites /uma-tools/* to the repo root.
-		if (urlPath.startsWith('/uma-tools/')) urlPath = urlPath.slice('/uma-tools'.length);
-		// Serve this app at /mechanics-explorer/.
-		if (urlPath === '/' || urlPath === '/mechanics-explorer' || urlPath === '/mechanics-explorer/') {
-			urlPath = '/umalator-global/mechanics-explorer/index.html';
-		} else if (urlPath.startsWith('/mechanics-explorer/')) {
-			urlPath = '/umalator-global/mechanics-explorer/' + urlPath.slice('/mechanics-explorer/'.length);
+
+		// /uma-tools/* maps to the repo root (matches the production _redirects rewrite,
+		// where shared icons/fonts/data live). Everything else is an app-relative request,
+		// served from this app's own directory so the app works at both `/` and
+		// `/mechanics-explorer/` (relative bundle.js/bundle.css resolve correctly either way).
+		let filePath;
+		if (urlPath.startsWith('/uma-tools/')) {
+			filePath = path.join(rootDir, urlPath.slice('/uma-tools'.length));
+		} else {
+			let p = urlPath;
+			if (p === '/' || p === '/mechanics-explorer' || p === '/mechanics-explorer/') {
+				p = '/index.html';
+			} else if (p.startsWith('/mechanics-explorer/')) {
+				p = '/' + p.slice('/mechanics-explorer/'.length);
+			}
+			filePath = path.join(dirname, p);
 		}
-		const filePath = path.join(rootDir, urlPath);
 		fs.readFile(filePath, (err, data) => {
 			if (err) { res.writeHead(404); res.end('Not found: ' + urlPath); return; }
 			res.writeHead(200, {'Content-Type': mime[path.extname(filePath)] || 'application/octet-stream'});
