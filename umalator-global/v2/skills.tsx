@@ -9,8 +9,8 @@
 import { h } from 'preact';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { X, Search, Plus, ArrowUpDown, ChevronDown } from 'lucide-react';
-import { Dropdown } from './components';
+import { X, Search, Plus, ArrowUpDown, ChevronDown, GitCompare } from 'lucide-react';
+import { Dropdown, SegmentedControl } from './components';
 
 // Import condition matching
 import { getParser } from '../../uma-skill-tools/ConditionParser';
@@ -22,6 +22,25 @@ import skilldata from '../skill_data.json';
 import skillmeta from '../skill_meta.json';
 import skillnames from '../skillnames.json';
 import notInGame from '../not-in-game.json';
+
+// ============================================
+// SKILL DATA SOURCE — abstraction over the static imports so consumers
+// (notably the skill visualizer) can swap in alternate databases (JP) at
+// render time without forking the chip component.
+// ============================================
+
+export interface SkillDataSource {
+	skills:     Record<string, any>;
+	skillnames: Record<string, string[]>;
+	skillmeta:  Record<string, any>;
+}
+
+// Default source = the existing static imports (Global). Backward-compatible.
+const DEFAULT_SOURCE: SkillDataSource = {
+	skills:     skilldata     as Record<string, any>,
+	skillnames: skillnames    as Record<string, string[]>,
+	skillmeta:  skillmeta     as Record<string, any>,
+};
 
 // ============================================
 // CONDITION PARSING FOR FILTERS
@@ -394,15 +413,36 @@ interface SkillChipProps {
 	onLvChange?: (lv: number) => void;
 	minLv?: number;
 	maxLv?: number;
+	// Optional alternate data source. Defaults to Global (DEFAULT_SOURCE).
+	// When provided, name/icon/rarity/details all read from this source.
+	dataSource?: SkillDataSource;
+	// Visualizer-only: render a Global/JP toggle in the chip header.
+	enableVersionToggle?: boolean;
+	activeVersion?: 'global' | 'jp';
+	onVersionChange?: (v: 'global' | 'jp') => void;
+	isVersionLoading?: boolean;
+	// Visualizer-only: render a Compare button in the chip header.
+	onCompare?: () => void;
 }
 
-export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, onPositionChange, lv, onLvChange, minLv, maxLv }: SkillChipProps) {
+export function SkillChip({
+	skillId, onRemove, courseDistance, forcedPosition, onPositionChange,
+	lv, onLvChange, minLv, maxLv,
+	dataSource, enableVersionToggle, activeVersion, onVersionChange, isVersionLoading,
+	onCompare,
+}: SkillChipProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const chipRef = useRef<HTMLDivElement>(null);
-	const name = getSkillName(skillId);
-	const icon = getSkillIcon(skillId);
+	const ds = dataSource ?? DEFAULT_SOURCE;
+	// Header reads name/icon/rarity from the active data source (falls back to
+	// Global helpers if the skill is missing from that source — keeps the
+	// header rendering rather than blanking out).
+	const nameFromSource = ds.skillnames[skillId];
+	const name = (nameFromSource && (nameFromSource[nameFromSource.length - 1] || nameFromSource[0])) || getSkillName(skillId);
+	const iconMeta = ds.skillmeta[skillId];
+	const icon = iconMeta?.iconId ? `/uma-tools/icons/${iconMeta.iconId}.png` : getSkillIcon(skillId);
 	const rarityClass = getSkillRarityClass(skillId);
-	const skill = (skilldata as Record<string, any>)[skillId];
+	const skill = ds.skills[skillId];
 
 	const handleClick = useCallback(() => {
 		setIsExpanded(prev => !prev);
@@ -440,6 +480,32 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 							onInput={e => onLvChange(+(e.target as HTMLInputElement).value)} />
 					</span>
 				)}
+				{enableVersionToggle && onVersionChange && (
+					<span class="v2-skill-version-toggle" onClick={e => e.stopPropagation()}>
+						<SegmentedControl<'global' | 'jp'>
+							value={activeVersion ?? 'global'}
+							onChange={onVersionChange}
+							size="sm"
+							options={[
+								{ value: 'global', label: 'GL' },
+								{ value: 'jp',     label: 'JP' },
+							]}
+							ariaLabel="Skill database version"
+						/>
+						{isVersionLoading && <span class="v2-skill-version-loading" aria-label="Loading">…</span>}
+					</span>
+				)}
+				{onCompare && (
+					<button
+						type="button"
+						class="v2-skill-compare-btn"
+						title="Compare Global vs JP side-by-side"
+						aria-label="Compare Global vs JP"
+						onClick={e => { e.stopPropagation(); onCompare(); }}
+					>
+						<GitCompare size={12} />
+					</button>
+				)}
 				{onRemove && (
 					<button
 						type="button"
@@ -457,104 +523,12 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 			<div class={`v2-skill-details-wrapper ${isExpanded ? 'expanded' : ''}`}>
 				{hasAlternatives && (
 					<div class="v2-skill-details" onClick={e => e.stopPropagation()}>
-						<div class="v2-skill-detail-row">
-							<span class="v2-skill-detail-label">ID:</span>
-							<span class="v2-skill-detail-value">{skillId}</span>
-						</div>
-
-						{/* Activation Type (check all alternatives) */}
-						<div class="v2-skill-detail-row">
-							<span class="v2-skill-detail-label">Activation:</span>
-							<span class="v2-skill-detail-value">
-								{getActivationType(alternatives.map((a: any) => a.condition).join('@'))}
-							</span>
-						</div>
-
-						{/* Alternatives (true multi-trigger when alternatives.length > 1) */}
-						{alternatives.map((alt: any, altIdx: number) => {
-							// @ separates OR conditions within a single alternative (NOT separate triggers)
-							const orConditions = parseCondition(alt.condition);
-							const hasMultipleOrConditions = orConditions.length > 1;
-
-							return (
-								<div key={altIdx} class="v2-skill-alternative-block">
-									{/* Show "Trigger X" header only for true multi-trigger skills */}
-									{hasMultipleAlternatives && (
-										<div class="v2-skill-trigger-header">Trigger {altIdx + 1}</div>
-									)}
-
-									{/* Precondition */}
-									{alt.precondition && (
-										<div class="v2-skill-detail-row">
-											<span class="v2-skill-detail-label">Precondition:</span>
-											<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
-										</div>
-									)}
-
-									{/* Conditions - single code block with all conditions */}
-									<pre class="v2-skill-conditions-block">{
-										orConditions.map((conditions, orIdx) => {
-											const conditionLines = conditions.join('\n');
-											if (hasMultipleOrConditions && orIdx < orConditions.length - 1) {
-												return conditionLines + '\nOR\n';
-											}
-											return conditionLines;
-										}).join('')
-									}</pre>
-
-									{/* Duration */}
-									{alt.baseDuration > 0 && (() => {
-										const baseSec = alt.baseDuration / 10000;
-										const effSec = courseDistance ? baseSec * (courseDistance / 1000) : 0;
-										const ds = alt.durationScaling;
-										return (
-										<div class="v2-skill-detail-row">
-											<span class="v2-skill-detail-label">Duration:</span>
-											<span class="v2-skill-detail-value">
-												{baseSec.toFixed(1)} s
-												{courseDistance && !ds && ` (effective ${effSec.toFixed(1)} s @ ${courseDistance}m)`}
-												{courseDistance && ds === 3 && ` (${effSec.toFixed(1)}–${(effSec * 4).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
-												{courseDistance && ds === 7 && ` (${effSec.toFixed(1)}–${(effSec * 3).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
-												{courseDistance && ds === 2 && ` (${(effSec * 0.8).toFixed(1)}–${(effSec * 1.6).toFixed(1)} s @ ${courseDistance}m, scales with lead gap)`}
-												{courseDistance && ds && ![2,3,7].includes(ds) && ` (${effSec.toFixed(1)} s+ @ ${courseDistance}m, variable duration)`}
-											</span>
-										</div>
-										);
-									})()}
-
-									{/* Effects */}
-									<div class="v2-skill-effects-block">
-										{alt.effects?.map((ef: any, i: number) => {
-									const scaledMod = lv && lv > 1 ? ef.modifier * levelScalingCoef(ef.type, lv) : ef.modifier;
-									return (
-										<div key={i} class="v2-skill-effect-row">
-											<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
-											<span class="v2-skill-effect-text">
-												{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, scaledMod, ef.scaling)})
-											</span>
-										</div>
-									);
-								})}
-									</div>
-
-									{/* OR separator between alternatives */}
-									{hasMultipleAlternatives && altIdx < alternatives.length - 1 && (
-										<div class="v2-skill-alternative-or">OR</div>
-									)}
-								</div>
-							);
-						})}
-
-						{/* GameTora link (once at the end) */}
-						<a
-							href={`https://gametora.com/umamusume/skill-condition-viewer?skill=${skillId}`}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="v2-skill-condition-viewer-link"
-							onClick={e => e.stopPropagation()}
-						>
-							View conditions in GameTora
-						</a>
+						<SkillDetailsBody
+							skillId={skillId}
+							skill={skill}
+							courseDistance={courseDistance}
+							lv={lv}
+						/>
 
 						{onPositionChange && (
 							<div class="v2-skill-detail-row v2-skill-force-position">
@@ -575,6 +549,123 @@ export function SkillChip({ skillId, onRemove, courseDistance, forcedPosition, o
 				)}
 			</div>
 		</div>
+	);
+}
+
+// ============================================
+// SKILL DETAILS BODY — pure data-driven render of a skill's details
+// (ID, activation type, alternatives w/ preconditions + conditions + duration
+// + effects, GameTora link). Extracted from SkillChip so the compare modal
+// can render two instances side-by-side from different data sources.
+// ============================================
+
+interface SkillDetailsBodyProps {
+	skillId: string;
+	skill: any | undefined;          // the skill record from a SkillDataSource (or undefined if missing)
+	courseDistance?: number;
+	lv?: number;                      // Optional level for unique-skill scaling; visualizer modal omits
+}
+
+export function SkillDetailsBody({ skillId, skill, courseDistance, lv }: SkillDetailsBodyProps) {
+	const alternatives = skill?.alternatives;
+	if (!alternatives || alternatives.length === 0) {
+		return <div class="v2-skill-detail-row"><span class="v2-skill-detail-value">No alternatives defined.</span></div>;
+	}
+	const hasMultipleAlternatives = alternatives.length > 1;
+
+	return (
+		<>
+			<div class="v2-skill-detail-row">
+				<span class="v2-skill-detail-label">ID:</span>
+				<span class="v2-skill-detail-value">{skillId}</span>
+			</div>
+
+			{/* Activation Type (check all alternatives) */}
+			<div class="v2-skill-detail-row">
+				<span class="v2-skill-detail-label">Activation:</span>
+				<span class="v2-skill-detail-value">
+					{getActivationType(alternatives.map((a: any) => a.condition).join('@'))}
+				</span>
+			</div>
+
+			{/* Alternatives (true multi-trigger when alternatives.length > 1) */}
+			{alternatives.map((alt: any, altIdx: number) => {
+				const orConditions = parseCondition(alt.condition);
+				const hasMultipleOrConditions = orConditions.length > 1;
+
+				return (
+					<div key={altIdx} class="v2-skill-alternative-block">
+						{hasMultipleAlternatives && (
+							<div class="v2-skill-trigger-header">Trigger {altIdx + 1}</div>
+						)}
+
+						{alt.precondition && (
+							<div class="v2-skill-detail-row">
+								<span class="v2-skill-detail-label">Precondition:</span>
+								<span class="v2-skill-detail-value v2-skill-condition">{alt.precondition}</span>
+							</div>
+						)}
+
+						<pre class="v2-skill-conditions-block">{
+							orConditions.map((conditions, orIdx) => {
+								const conditionLines = conditions.join('\n');
+								if (hasMultipleOrConditions && orIdx < orConditions.length - 1) {
+									return conditionLines + '\nOR\n';
+								}
+								return conditionLines;
+							}).join('')
+						}</pre>
+
+						{alt.baseDuration > 0 && (() => {
+							const baseSec = alt.baseDuration / 10000;
+							const effSec = courseDistance ? baseSec * (courseDistance / 1000) : 0;
+							const ds = alt.durationScaling;
+							return (
+							<div class="v2-skill-detail-row">
+								<span class="v2-skill-detail-label">Duration:</span>
+								<span class="v2-skill-detail-value">
+									{baseSec.toFixed(1)} s
+									{courseDistance && !ds && ` (effective ${effSec.toFixed(1)} s @ ${courseDistance}m)`}
+									{courseDistance && ds === 3 && ` (${effSec.toFixed(1)}–${(effSec * 4).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
+									{courseDistance && ds === 7 && ` (${effSec.toFixed(1)}–${(effSec * 3).toFixed(1)} s @ ${courseDistance}m, scales with HP)`}
+									{courseDistance && ds === 2 && ` (${(effSec * 0.8).toFixed(1)}–${(effSec * 1.6).toFixed(1)} s @ ${courseDistance}m, scales with lead gap)`}
+									{courseDistance && ds && ![2,3,7].includes(ds) && ` (${effSec.toFixed(1)} s+ @ ${courseDistance}m, variable duration)`}
+								</span>
+							</div>
+							);
+						})()}
+
+						<div class="v2-skill-effects-block">
+							{alt.effects?.map((ef: any, i: number) => {
+								const scaledMod = lv && lv > 1 ? ef.modifier * levelScalingCoef(ef.type, lv) : ef.modifier;
+								return (
+									<div key={i} class="v2-skill-effect-row">
+										<span class="v2-skill-detail-label">Effect{alt.effects.length > 1 ? ` ${i + 1}` : ''}:</span>
+										<span class="v2-skill-effect-text">
+											{EFFECT_TYPE_NAMES[ef.type] || `Type ${ef.type}`} ({formatEffectValue(ef.type, scaledMod, ef.scaling)})
+										</span>
+									</div>
+								);
+							})}
+						</div>
+
+						{hasMultipleAlternatives && altIdx < alternatives.length - 1 && (
+							<div class="v2-skill-alternative-or">OR</div>
+						)}
+					</div>
+				);
+			})}
+
+			<a
+				href={`https://gametora.com/umamusume/skill-condition-viewer?skill=${skillId}`}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="v2-skill-condition-viewer-link"
+				onClick={e => e.stopPropagation()}
+			>
+				View conditions in GameTora
+			</a>
+		</>
 	);
 }
 
@@ -951,6 +1042,25 @@ interface SkillsSectionProps {
 	uniqueLv?: number;
 	onUniqueLvChange?: (lv: number) => void;
 	starCount?: number;
+	strategy?: string;
+}
+
+// Mid-leg "◎" skill IDs by running style and distance bucket
+const TEMPLATE_STYLE_SKILLS: Record<string, [string, string]> = {
+	// [Corners ◎, Straightaways ◎]
+	Nige:   ['201251', '201241'],
+	Oonige: ['201251', '201241'],
+	Senkou: ['201321', '201311'],
+	Sasi:   ['201391', '201381'],
+	Oikomi: ['201461', '201451'],
+};
+
+function templateDistanceSkills(distance: number): [string, string] {
+	// Matches make_course_data.pl distance_type buckets
+	if (distance <= 1400) return ['200971', '200961']; // Sprint
+	if (distance <= 1800) return ['201041', '201031']; // Mile
+	if (distance < 2500)  return ['201111', '201101']; // Medium
+	return ['201181', '201171']; // Long
 }
 
 // Sort skills like v1: by skillmeta order, then by ID
@@ -965,7 +1075,7 @@ function skillOrder(a: string, b: string): number {
 	return a < b ? -1 : a > b ? 1 : 0;
 }
 
-export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame, wideLayout, uniqueSkillId, uniqueLv, onUniqueLvChange, starCount }: SkillsSectionProps) {
+export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPositions, onForcedPositionChange, hideNotInGame, wideLayout, uniqueSkillId, uniqueLv, onUniqueLvChange, starCount, strategy }: SkillsSectionProps) {
 	const [isPickerOpen, setIsPickerOpen] = useState(false);
 
 	const handleAddSkill = useCallback((skillId: string) => {
@@ -988,6 +1098,25 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 			}
 		}
 	}, [skills, onChange]);
+
+	const templateIds = useMemo(() => {
+		if (!strategy || !courseDistance) return [] as string[];
+		const styleIds = TEMPLATE_STYLE_SKILLS[strategy];
+		if (!styleIds) return [];
+		return [...styleIds, ...templateDistanceSkills(courseDistance)];
+	}, [strategy, courseDistance]);
+
+	const handleAddTemplate = useCallback(() => {
+		if (templateIds.length === 0) return;
+		const meta = skillmeta as Record<string, { groupId: string }>;
+		let next = [...skills];
+		for (const newId of templateIds) {
+			const newGroupId = meta[newId]?.groupId;
+			next = next.filter(id => meta[id]?.groupId !== newGroupId);
+			next.push(newId);
+		}
+		onChange(next);
+	}, [templateIds, skills, onChange]);
 
 	const handleRemoveSkill = useCallback((skillId: string) => {
 		onChange(skills.filter(id => id !== skillId));
@@ -1026,14 +1155,27 @@ export function SkillsSection({ skills, onChange, courseDistance, forcedSkillPos
 				</div>
 			)}
 
-			<button
-				type="button"
-				class="v2-add-skill-btn"
-				onClick={() => setIsPickerOpen(true)}
-			>
-				<Plus size={14} />
-				Add Skill
-			</button>
+			<div class="v2-add-skill-row">
+				<button
+					type="button"
+					class="v2-add-skill-btn"
+					onClick={() => setIsPickerOpen(true)}
+				>
+					<Plus size={14} />
+					Add Skill
+				</button>
+				{templateIds.length > 0 && (
+					<button
+						type="button"
+						class="v2-add-skill-btn"
+						onClick={handleAddTemplate}
+						title="Add base mid-leg skills (style + distance corners/straightaways ◎)"
+					>
+						<Plus size={14} />
+						Template
+					</button>
+				)}
+			</div>
 
 			<SkillPickerModal
 				isOpen={isPickerOpen}

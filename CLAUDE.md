@@ -12,13 +12,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Live Applications
 
-| Application | Description |
-|------------|-------------|
-| **[/umalator-global](https://umalator.app/umalator-global)** | Global simulator (English) |
-| **[/umalator-global/v2](https://umalator.app/umalator-global/v2)** | V2 experimental UI with modern features |
-| **[/umalator](https://umalator.app/umalator)** | Bilingual JP simulator |
-| **[/hp-calculator](https://umalator.app/hp-calculator)** | HP survival rate calculator |
-| **[/events](https://umalator.app/events)** | Upcoming race tracker with gacha banners |
+| Application | URL | Description |
+|------------|-----|-------------|
+| **V2 simulator (default landing)** | [umalator.app](https://umalator.app/) | V2 modern Global UI — served at the root. Old `/umalator-global/v2` and `/v2` paths 301 here (`_redirects`). |
+| **V1 Global simulator** | [/umalator-global](https://umalator.app/umalator-global) | Original Global simulator (English) |
+| **JP simulator** | [/umalator](https://umalator.app/umalator) | Bilingual JP simulator |
+| **Skill visualizer (v2 — primary)** | [/skill-visualizer](https://umalator.app/skill-visualizer) | Modern Global v2 skill activation visualizer. Rewrite (URL stays) to `/umalator-global/skill-visualizer/v2/` via `_redirects`. |
+| **Skill visualizer (JP — legacy)** | [/skill-visualizer-jp](https://umalator.app/skill-visualizer-jp) | Original JP-data visualizer (was at `/skill-visualizer/` before the v2 reshuffle). |
+| **Skill visualizer (Global v1 — legacy)** | [/umalator-global/skill-visualizer](https://umalator.app/umalator-global/skill-visualizer) | Original Global-data visualizer; unchanged path. |
+| **HP calculator** | [/hp-calculator](https://umalator.app/hp-calculator) | HP survival rate calculator |
+| **Events** | [/events](https://umalator.app/events) | Upcoming race tracker with gacha banners |
+| **Team Trials planner** | [/team-trials](https://umalator.app/team-trials) | Team Stadium lineup planner (5 teams × 3 runners) |
+| **Release timeline** | [/release-timeline](https://umalator.app/release-timeline) | JP support card + uma release timeline browser |
+| **Tachyon Guide** | [canva.umalator.app](https://canva.umalator.app/) | Static Canva embed page on its own subdomain |
 
 ### Project Structure
 

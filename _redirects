@@ -6,6 +6,13 @@ https://www.umalator.app/* https://umalator.app/:splat 301
 # canva.umalator.app — static Tachyon Guide embed (rewrite, URL stays)
 https://canva.umalator.app/* /canva/:splat 200
 
+# Clean URL for the v2 Global skill visualizer (rewrite, URL stays as /skill-visualizer/)
+# Legacy paths remain reachable directly:
+#   - JP visualizer:        /skill-visualizer-jp/
+#   - Global v1 visualizer: /umalator-global/skill-visualizer/
+#   - Global v2 visualizer: /umalator-global/skill-visualizer/v2/ (also served at /skill-visualizer/ via this rule)
+/skill-visualizer/* /umalator-global/skill-visualizer/v2/:splat 200
+
 # Backward compat: old v2 URLs → root
 /umalator-global/v2/* /:splat 301
 /v2/* /:splat 301

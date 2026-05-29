@@ -209,3 +209,155 @@ body {
 		min-width: 0;
 	}
 }
+
+/* ============================================
+   SKILL VERSION TOGGLE + COMPARE BUTTON (in SkillChip header)
+   ============================================ */
+.v2-skill-version-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin-right: 4px;
+}
+
+.v2-skill-version-loading {
+	display: inline-block;
+	min-width: 12px;
+	font-size: 11px;
+	color: var(--color-text-muted);
+	animation: sv2-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes sv2-pulse {
+	0%, 100% { opacity: 0.4; }
+	50%      { opacity: 1; }
+}
+
+.v2-skill-compare-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	background: transparent;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	color: var(--color-text-muted);
+	cursor: pointer;
+	transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.v2-skill-compare-btn:hover {
+	color: var(--color-text);
+	border-color: var(--color-primary);
+	background: var(--color-primary-glow);
+}
+
+/* ============================================
+   COMPARE MODAL — two columns (Global | JP)
+   ============================================ */
+.sv2-compare-modal .v2-modal {
+	max-width: 1100px;
+}
+
+.sv2-compare-columns {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	gap: var(--space-md);
+	align-items: stretch;
+}
+
+.sv2-compare-divider {
+	width: 1px;
+	background: var(--color-border);
+	min-height: 100%;
+}
+
+.sv2-compare-col {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.sv2-compare-col-header {
+	margin-bottom: var(--space-sm);
+	padding-bottom: var(--space-xs);
+	border-bottom: 1px solid var(--color-border);
+}
+
+.sv2-compare-col-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	border-radius: 999px;
+}
+
+.sv2-compare-col-badge-global {
+	background: rgba(110, 231, 24, 0.18);
+	color: var(--color-primary);
+	border: 1px solid var(--color-primary);
+}
+
+.sv2-compare-col-badge-jp {
+	background: rgba(245, 166, 35, 0.18);
+	color: var(--color-accent);
+	border: 1px solid var(--color-accent);
+}
+
+.sv2-compare-col-body {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.sv2-compare-placeholder {
+	padding: var(--space-md);
+	text-align: center;
+	font-size: var(--font-sm);
+	color: var(--color-text-muted);
+	background: var(--color-surface);
+	border: 1px dashed var(--color-border);
+	border-radius: var(--radius-sm);
+	line-height: 1.5;
+}
+
+.sv2-compare-placeholder strong {
+	color: var(--color-text);
+	font-weight: 600;
+}
+
+.sv2-compare-placeholder small {
+	font-size: 11px;
+	color: var(--color-text-faint);
+}
+
+.sv2-compare-placeholder-error {
+	border-color: var(--color-error);
+	background: color-mix(in srgb, var(--color-error) 10%, transparent);
+	color: var(--color-error);
+}
+
+.sv2-compare-placeholder-error code {
+	display: inline-block;
+	margin-top: 4px;
+	padding: 1px 6px;
+	font-size: 10px;
+	background: rgba(0, 0, 0, 0.3);
+	border-radius: 3px;
+}
+
+/* Mobile: stack the two columns vertically */
+@media (max-width: 800px) {
+	.sv2-compare-columns {
+		grid-template-columns: 1fr;
+	}
+	.sv2-compare-divider {
+		width: 100%;
+		height: 1px;
+		min-height: 0;
+	}
+}
