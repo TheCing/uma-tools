@@ -50,6 +50,12 @@ node build.mjs
 cd ../..
 
 echo ""
+echo "Building mechanics-explorer..."
+cd umalator-global/mechanics-explorer
+node build.mjs
+cd ../..
+
+echo ""
 echo "Building team-trials..."
 cd team-trials
 node build.mjs

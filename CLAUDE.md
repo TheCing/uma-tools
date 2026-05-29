@@ -21,6 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | **Skill visualizer (JP — legacy)** | [/skill-visualizer-jp](https://umalator.app/skill-visualizer-jp) | Original JP-data visualizer (was at `/skill-visualizer/` before the v2 reshuffle). |
 | **Skill visualizer (Global v1 — legacy)** | [/umalator-global/skill-visualizer](https://umalator.app/umalator-global/skill-visualizer) | Original Global-data visualizer; unchanged path. |
 | **HP calculator** | [/hp-calculator](https://umalator.app/hp-calculator) | HP survival rate calculator |
+| **Mechanics Explorer** | [/mechanics-explorer](https://umalator.app/mechanics-explorer) | Stat → race-mechanics formula explorer (live readout + stat-sweep charts). Rewrite to `/umalator-global/mechanics-explorer/` via `_redirects`. |
 | **Events** | [/events](https://umalator.app/events) | Upcoming race tracker with gacha banners |
 | **Team Trials planner** | [/team-trials](https://umalator.app/team-trials) | Team Stadium lineup planner (5 teams × 3 runners) |
 | **Release timeline** | [/release-timeline](https://umalator.app/release-timeline) | JP support card + uma release timeline browser |
@@ -38,6 +39,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 │   │   ├── velocity-overlay.tsx
 │   │   ├── results-pane.tsx
 │   │   └── vite.config.ts      # V2 uses Vite
+│   ├── mechanics-explorer/      # Stat → mechanics formula explorer (standalone sub-app)
 │   ├── build.mjs               # Builds both v1 and v2
 │   ├── skill_data.json         # English game data
 │   └── course_data.json

@@ -13,6 +13,9 @@ https://canva.umalator.app/* /canva/:splat 200
 #   - Global v2 visualizer: /umalator-global/skill-visualizer/v2/ (also served at /skill-visualizer/ via this rule)
 /skill-visualizer/* /umalator-global/skill-visualizer/v2/:splat 200
 
+# Clean URL for the Mechanics Explorer (rewrite, URL stays as /mechanics-explorer/)
+/mechanics-explorer/* /umalator-global/mechanics-explorer/:splat 200
+
 # Backward compat: old v2 URLs → root
 /umalator-global/v2/* /:splat 301
 /v2/* /:splat 301
