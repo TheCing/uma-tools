@@ -18,7 +18,10 @@
     "preview:team-trials": "cd team-trials && npx vite preview",
     "dev:release-timeline": "cd release-timeline && node build.mjs --serve",
     "build:release-timeline": "cd release-timeline && node build.mjs",
-    "preview:release-timeline": "cd release-timeline && npx vite preview"
+    "preview:release-timeline": "cd release-timeline && npx vite preview",
+    "dev:mechanics": "cd umalator-global/mechanics-explorer && node build.mjs --serve 3000",
+    "build:mechanics": "cd umalator-global/mechanics-explorer && node build.mjs",
+    "test:mechanics": "npx ts-node umalator-global/mechanics-explorer/mechanics.test.ts"
   },
   "author": "pecan",
   "license": "GPL-3.0-or-later",
