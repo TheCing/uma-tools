@@ -88,3 +88,33 @@ export function baseAccel(h: MechHorse, phase: number, uphill = false): number {
 
 /** Flat acceleration bonus applied during the start dash (RaceSolver.ts:532). */
 export const StartDashAccel = 24.0;
+
+// --- HP (HpPolicy.ts:27-94; doc §HP) ---
+const HpStrategyCoefficient = [0, 0.95, 0.89, 1.0, 0.995, 0.86];
+const HpConsumptionGroundModifier = [
+	[],
+	[0, 1.0, 1.0, 1.02, 1.02], // turf:  [_, Firm, Good, Soft, Heavy]
+	[0, 1.0, 1.0, 1.01, 1.02]  // dirt
+];
+
+export function maxHp(h: MechHorse, c: MechCourse): number {
+	return 0.8 * HpStrategyCoefficient[h.strategy] * h.stamina + c.distance;
+}
+
+/** Guts-based HP-drain multiplier; applies in phase >= 2. */
+export function gutsModifier(h: MechHorse): number {
+	return 1.0 + 200.0 / Math.sqrt(600.0 * h.guts);
+}
+
+export function groundModifier(c: MechCourse, ground: number): number {
+	return HpConsumptionGroundModifier[c.surface][ground];
+}
+
+export function hpPerSecond(
+	h: MechHorse, c: MechCourse, ground: number,
+	velocity: number, phase: number, statusModifier = 1.0
+): number {
+	const guts = phase >= 2 ? gutsModifier(h) : 1.0;
+	return 20.0 * Math.pow(velocity - baseSpeed(c.distance) + 12.0, 2) / 144.0 *
+		statusModifier * groundModifier(c, ground) * guts;
+}
