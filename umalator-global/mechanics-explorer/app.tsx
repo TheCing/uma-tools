@@ -42,8 +42,8 @@ function App() {
 
 	// Canonical adjusted-stats pipeline (same as the simulator).
 	const horse: MechHorse = useMemo(() => {
-		const base = buildBaseStats(uma as any, uma.mood as any);
-		const adj = buildAdjustedStats(base, course, ground as any);
+		const base = buildBaseStats(uma, uma.mood);
+		const adj = buildAdjustedStats(base, course, ground as any);  // number → GroundCondition (enum not imported)
 		return {
 			speed: adj.speed, stamina: adj.stamina, power: adj.power,
 			guts: adj.guts, wisdom: adj.wisdom,
