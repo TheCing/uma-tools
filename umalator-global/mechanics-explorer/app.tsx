@@ -12,6 +12,7 @@ import { useState, useMemo, useCallback } from 'preact/hooks';
 import { V2UmaPanel, UmaState, defaultUmaState } from '../v2/uma-panel';
 import { V2TrackSelect } from '../v2/track-select';
 import { SegmentedControl } from '../v2/components';
+import { MechanicsReadout } from './mechanics-readout';
 import { buildBaseStats, buildAdjustedStats } from '../../uma-skill-tools/RaceSolverBuilder';
 import { CourseHelpers } from '../../uma-skill-tools/CourseData';
 import type { MechHorse, MechCourse } from './mechanics';
@@ -86,7 +87,7 @@ function App() {
 							/>
 						</div>
 					</div>
-					<pre class="mx-debug">{JSON.stringify({ horse, distance: mechCourse.distance, surface: mechCourse.surface, ground }, null, 2)}</pre>
+					<MechanicsReadout horse={horse} course={mechCourse} ground={ground} />
 				</div>
 			</div>
 		</div>
