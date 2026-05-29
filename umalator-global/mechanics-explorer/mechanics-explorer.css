@@ -62,3 +62,18 @@
 	min-width: 6ch;
 	text-align: right;
 }
+
+.mx-sweep {
+	margin-top: var(--space-4, 16px);
+	background: var(--color-surface-2, #161616);
+	border: 1px solid var(--color-border, #2a2a2a);
+	border-radius: 8px;
+	padding: var(--space-3, 12px);
+}
+.mx-sweep-title { font-weight: 600; margin-bottom: var(--space-2, 8px); }
+.mx-sweep-line { stroke: var(--color-primary, #4ea1ff); stroke-width: 2; }
+.mx-sweep-marker { stroke: var(--color-text-muted, #888); stroke-dasharray: 4 3; stroke-width: 1; }
+.mx-sweep-dot { fill: var(--color-primary, #4ea1ff); stroke: #fff; stroke-width: 1; }
+.mx-sweep-axes text { fill: var(--color-text-muted, #999); font-size: 10px; }
+.mx-sweep-axes path, .mx-sweep-axes line { stroke: var(--color-border, #333); }
+.mx-sweep-xlabel, .mx-sweep-ylabel { fill: var(--color-text-muted, #999); font-size: 11px; }
