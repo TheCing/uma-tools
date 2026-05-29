@@ -146,6 +146,7 @@ export function subparAcceptChance(h: MechHorse): number {
 
 // --- Wisdom rolls (doc §Skill Activation Chance; memory skill-activation.md) ---
 
+/** Per-skill activation chance (%). The 20% floor also absorbs the wisdom→0 edge (9000/0 → ∞ → clamped). */
 export function skillActivationChance(h: MechHorse): number {
 	return Math.max(100.0 - 9000.0 / h.wisdom, 20.0);
 }
