@@ -25,7 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | **Events** | [/events](https://umalator.app/events) | Upcoming race tracker with gacha banners |
 | **Team Trials planner** | [/team-trials](https://umalator.app/team-trials) | Team Stadium lineup planner (5 teams × 3 runners) |
 | **Release timeline** | [/release-timeline](https://umalator.app/release-timeline) | JP support card + uma release timeline browser |
-| **Tachyon Guide** | [canva.umalator.app](https://canva.umalator.app/) | Static Canva embed page on its own subdomain |
+| **Canva guides** | [canva.umalator.app](https://canva.umalator.app/) | Dynamic Canva guide registry by numbered slug (e.g. `/14-yasuda`) on its own subdomain. Routing + registry in `functions/[[catchall]].ts`. |
 
 ### Project Structure
 
@@ -721,7 +721,7 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 **Custom Domains:**
 - `umalator.app` (primary)
 - `dev.umalator.app` (dev branch)
-- `canva.umalator.app` (Tachyon Guide — see below)
+- `canva.umalator.app` (Canva guides — see below)
 - `www.umalator.app` (301s to apex via the Pages Function)
 
 ### Branch Deployment
@@ -731,35 +731,34 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 
 **Note**: Dev branch includes MooCoins easter egg. Master has only the visual cow.
 
-### Tachyon Guide (Canva embed) — `canva.umalator.app`
+### Canva guides — `canva.umalator.app`
 
-The Tachyon Guide is a single static page (`canva/index.html`) that embeds a Canva
-design in a full-viewport iframe, served on its own subdomain.
+Community guides are Canva embeds addressed by a numbered slug, reachable at both
+`canva.umalator.app/<slug>` and `umalator.app/canva/<slug>`:
 
-**Routing (important):** the subdomain is routed in **`functions/[[catchall]].ts`**,
-NOT `_redirects`. Cloudflare Pages `_redirects` matches on the request **path only**,
-so hostname-scoped rules there (`https://<host>/...`) are silently ignored. The Pages
-Function rewrites page navigations on `canva.umalator.app` to the `/canva/` asset (and
-also performs the `www.umalator.app` → apex 301). **Do not** add `https://<host>/...`
-rules to `_redirects` — they will not fire.
+- `/14-yasuda`, `/15-takarazuka`, … (`<number>-<name>`)
+- bare root (`canva.umalator.app/` or `umalator.app/canva/`) → 302 to the
+  highest-numbered (newest) guide
+- number-only (`/14`) → 302 to the full slug
 
-**Updating the embedded Canva design:** the Canva share URL appears in **three** places
-in `canva/index.html`, all using the same design ID + view token (currently
-`DAHKQU64nsg` / `BvXGiL0N1rLjUgNRP5KQPw`):
-1. The `<iframe src>` — `https://www.canva.com/design/<ID>/<TOKEN>/view?embed`
-2. The `.fallback` "Open on Canva ↗" link (`href`, with `utm_*` params)
-3. The `<noscript>` fallback link
+**Routing + registry live in `functions/[[catchall]].ts`** (a Pages Function),
+NOT `_redirects` — Cloudflare Pages `_redirects` matches on the request path only,
+so hostname-scoped rules there are silently ignored. The function renders each
+guide page from the `EMBEDS` array.
 
-To point at a new/updated design, in Canva use **Share › More › Embed** (copy the
-iframe `src` for #1) and **Share › Public view link** (for #2/#3), then replace the ID
-and token in all three spots. A guiding comment above the iframe in `canva/index.html`
-marks them. The `preconnect`/`dns-prefetch` lines reference only `www.canva.com` and
-never change.
+**To add a guide:** add one entry to the `EMBEDS` array near the top of
+`functions/[[catchall]].ts`:
 
-Note: *editing* an existing Canva design auto-updates what the live embed shows — you
-only touch `index.html` when the **share link itself** changes (new design, or Canva
-issues a new token). `canva.umalator.app` maps to the **master** deployment, so an
-`index.html` change must be merged `dev` → master to go live.
+```ts
+{ slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
+  canvaId: 'XXXX', viewToken: 'YYYY' },
+```
+
+Get `canvaId` + `viewToken` from Canva › Share › More › Embed — the embed URL is
+`https://www.canva.com/design/<canvaId>/<viewToken>/view?embed`. The newest entry
+automatically becomes the root redirect target. Changes ship with `master`
+(`canva.umalator.app` maps to the production deployment), so merge `dev` → master
+to publish.
 
 ## Credits
 
