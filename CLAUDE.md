@@ -25,7 +25,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | **Events** | [/events](https://umalator.app/events) | Upcoming race tracker with gacha banners |
 | **Team Trials planner** | [/team-trials](https://umalator.app/team-trials) | Team Stadium lineup planner (5 teams × 3 runners) |
 | **Release timeline** | [/release-timeline](https://umalator.app/release-timeline) | JP support card + uma release timeline browser |
-| **Tachyon Guide** | [canva.umalator.app](https://canva.umalator.app/) | Static Canva embed page on its own subdomain |
+| **Canva guides** | [canva.umalator.app](https://canva.umalator.app/) | Dynamic Canva guide registry by numbered slug (e.g. `/14-yasuda`) on its own subdomain. Routing + registry in `functions/[[catchall]].ts`. |
 
 ### Project Structure
 
@@ -721,7 +721,7 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 **Custom Domains:**
 - `umalator.app` (primary)
 - `dev.umalator.app` (dev branch)
-- `canva.umalator.app` (Tachyon Guide — see below)
+- `canva.umalator.app` (Canva guides — see below)
 - `www.umalator.app` (301s to apex via the Pages Function)
 
 ### Branch Deployment
