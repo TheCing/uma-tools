@@ -18,6 +18,161 @@ const CANVA_HOST = 'canva.umalator.app';
 const WWW_HOST = 'www.umalator.app';
 const APEX_HOST = 'umalator.app';
 
+// ─── ACTIVE CANVA GUIDES ──────────────────────────────────────────────────
+// Each guide is a Canva embed addressed by a "<number>-<name>" slug, reachable
+// at canva.umalator.app/<slug> and umalator.app/canva/<slug>. The bare root
+// redirects to the highest-numbered (newest) guide.
+//
+// To ADD a guide: copy a line below, bump the slug number + name, and paste the
+// Canva design ID + view token from Canva › Share › More › Embed (the embed URL
+// looks like https://www.canva.com/design/<canvaId>/<viewToken>/view?embed).
+interface CanvaEmbed {
+  slug: string;       // "14-yasuda"
+  title: string;      // "CM 14 Guide — Yasuda Kinen"
+  canvaId: string;    // "DAHKQU64nsg"
+  viewToken: string;  // "BvXGiL0N1rLjUgNRP5KQPw"
+}
+
+const EMBEDS: CanvaEmbed[] = [
+  { slug: '14-yasuda', title: 'CM 14 Guide — Yasuda Kinen',
+    canvaId: 'DAHKQU64nsg', viewToken: 'BvXGiL0N1rLjUgNRP5KQPw' },
+  // { slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
+  //   canvaId: 'XXXX', viewToken: 'YYYY' },
+];
+
+function slugNumber(slug: string): number {
+  return parseInt(slug, 10);
+}
+
+function newestEmbed(): CanvaEmbed {
+  return EMBEDS.reduce((a, b) => (slugNumber(b.slug) > slugNumber(a.slug) ? b : a));
+}
+
+function canvaUrls(e: CanvaEmbed) {
+  const base = `https://www.canva.com/design/${e.canvaId}/${e.viewToken}/view`;
+  return {
+    embed: `${base}?embed`,
+    share: `${base}?utm_content=${e.canvaId}&utm_campaign=designshare&utm_medium=embeds&utm_source=link`,
+    view: base,
+  };
+}
+
+function renderEmbedPage(e: CanvaEmbed): string {
+  const title = escapeHtml(e.title);
+  const desc = escapeHtml(`${e.title} — Uma Musume guide, hosted on Canva.`);
+  const ogUrl = escapeHtml(`https://${CANVA_HOST}/${e.slug}`);
+  const u = canvaUrls(e);
+  const embedSrc = escapeHtml(u.embed);
+  const shareHref = escapeHtml(u.share);
+  const viewHref = escapeHtml(u.view);
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1a1a1a" />
+    <title>${title}</title>
+    <meta name="description" content="${desc}" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Uma Musume Tools" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${desc}" />
+    <meta property="og:url" content="${ogUrl}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="${title}" />
+    <meta name="twitter:description" content="${desc}" />
+
+    <link rel="icon" type="image/svg+xml" href="/uma-tools/umalator-global/favicon.svg" />
+    <link rel="preconnect" href="https://www.canva.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.canva.com" />
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 100vw; height: 100vh; overflow: hidden;
+        background: #1a1a1a; color: #d0d0d0;
+        font-family: system-ui, -apple-system, "DM Sans", sans-serif;
+      }
+      .loading-hint {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem; color: #666; letter-spacing: 0.04em; pointer-events: none;
+        z-index: 0; animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+      iframe {
+        position: fixed; inset: 0; width: 100%; height: 100%;
+        border: 0; background: transparent; z-index: 1;
+      }
+      .fallback {
+        position: fixed; top: 0.5rem; right: 0.75rem; z-index: 2;
+        font-size: 0.72rem; color: rgba(255, 255, 255, 0.55);
+        background: rgba(0, 0, 0, 0.35); padding: 4px 8px; border-radius: 4px;
+        text-decoration: none; transition: color 120ms ease, background 120ms ease;
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      }
+      .fallback:hover, .fallback:focus-visible {
+        color: rgba(255, 255, 255, 0.95); background: rgba(0, 0, 0, 0.6); outline: none;
+      }
+      .no-js {
+        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+        padding: 2rem; text-align: center; font-size: 1rem; color: #aaa; z-index: 3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading-hint" aria-hidden="true">Loading ${title}…</div>
+
+    <iframe
+      src="${embedSrc}"
+      title="${title}"
+      loading="lazy"
+      allowfullscreen
+      allow="fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+
+    <a class="fallback" href="${shareHref}" target="_blank" rel="noopener">Open on Canva ↗</a>
+
+    <noscript>
+      <div class="no-js">
+        This guide embed requires JavaScript.<br />
+        Open it directly at
+        <a href="${viewHref}" target="_blank" rel="noopener" style="color: #7fbf7e">canva.com</a>.
+      </div>
+    </noscript>
+  </body>
+</html>`;
+}
+
+function renderCanva404(prefix: string): string {
+  const newest = newestEmbed();
+  const href = escapeHtml(`${prefix}/${newest.slug}`);
+  const name = escapeHtml(newest.title);
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guide not found</title>
+    <style>
+      body {
+        margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 1rem; padding: 2rem;
+        background: #1a1a1a; color: #d0d0d0; text-align: center;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      h1 { font-size: 1.5rem; margin: 0; }
+      a { color: #7fbf7e; }
+    </style>
+  </head>
+  <body>
+    <h1>Guide not found</h1>
+    <p>That guide doesn't exist. <a href="${href}">Go to the latest → ${name}</a></p>
+  </body>
+</html>`;
+}
+
 // April Fools: check if it's April 1st in any timezone that's currently April 1st
 // (generous window: UTC Mar 31 12:00 through UTC Apr 2 12:00 to cover all timezones)
 function isAprilFools(): boolean {
@@ -274,7 +429,12 @@ function build404(): string {
 }
 
 function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 export const onRequest: PagesFunction = async (context) => {
@@ -287,20 +447,49 @@ export const onRequest: PagesFunction = async (context) => {
     return Response.redirect(dest.toString(), 301);
   }
 
-  // canva.umalator.app → serve the static Tachyon Guide at /canva/ for page
-  // navigations. Asset requests (e.g. the favicon under /uma-tools/*) and direct
-  // /canva/* hits pass through untouched so they resolve normally.
-  if (url.hostname === CANVA_HOST) {
-    const accept = context.request.headers.get('Accept') || '';
-    const isNavigation =
-      context.request.headers.get('Sec-Fetch-Mode') === 'navigate' ||
-      accept.includes('text/html');
-    if (isNavigation && !url.pathname.startsWith('/canva/')) {
-      const guide = new URL(url);
-      guide.pathname = '/canva/';
-      return context.next(new Request(guide.toString(), context.request));
+  // Canva guides — multi-embed by slug (see EMBEDS above). Served on the
+  // canva.umalator.app subdomain (slug at root) and at umalator.app/canva/<slug>.
+  {
+    const isCanvaHost = url.hostname === CANVA_HOST;
+    const isCanvaPath = url.pathname === '/canva' || url.pathname.startsWith('/canva/');
+    if (isCanvaHost || isCanvaPath) {
+      // On the subdomain, let non-navigation asset requests (the favicon under
+      // /uma-tools/*, etc.) fall through to normal asset handling.
+      if (isCanvaHost) {
+        const accept = context.request.headers.get('Accept') || '';
+        const isNavigation =
+          context.request.headers.get('Sec-Fetch-Mode') === 'navigate' ||
+          accept.includes('text/html');
+        if (!isNavigation) return context.next();
+      }
+
+      const prefix = isCanvaHost ? '' : '/canva';
+      const rawPath = isCanvaHost ? url.pathname : url.pathname.replace(/^\/canva/, '');
+      const slug = decodeURIComponent(rawPath.replace(/^\/+|\/+$/g, '')).split('/')[0];
+
+      if (EMBEDS.length === 0) {
+        return new Response('No guides configured.', { status: 404 });
+      }
+      if (slug === '') {
+        return Response.redirect(new URL(`${prefix}/${newestEmbed().slug}`, url).toString(), 302);
+      }
+      const bySlug = EMBEDS.find((e) => e.slug === slug);
+      if (bySlug) {
+        return new Response(renderEmbedPage(bySlug), {
+          headers: { 'Content-Type': 'text/html;charset=UTF-8', 'Cache-Control': 'public, max-age=300' },
+        });
+      }
+      if (/^\d+$/.test(slug)) {
+        const byNum = EMBEDS.find((e) => slugNumber(e.slug) === parseInt(slug, 10));
+        if (byNum) {
+          return Response.redirect(new URL(`${prefix}/${byNum.slug}`, url).toString(), 302);
+        }
+      }
+      return new Response(renderCanva404(prefix), {
+        status: 404,
+        headers: { 'Content-Type': 'text/html;charset=UTF-8' },
+      });
     }
-    return context.next();
   }
 
   if (url.hostname !== REDIRECT_HOST) {
