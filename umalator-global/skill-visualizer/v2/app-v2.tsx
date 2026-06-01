@@ -14,11 +14,22 @@ import { Map as IMap } from 'immutable';
 import { RaceTrack, RegionDisplayType } from '../../../components/RaceTrack';
 import { Language } from '../../../components/Language';
 import { V2TrackSelect } from '../../v2/track-select';
-import { SkillChip, SkillPickerModal } from '../../v2/skills';
+import { SkillChip, SkillPickerModal, type SkillDataSource } from '../../v2/skills';
+import { CompareModal } from './compare-modal';
+import { loadJpSkillData } from './jp-data-loader';
 
 import skills from '../../../uma-skill-tools/data/skill_data.json';
 import skillnames from '../../../uma-skill-tools/data/skillnames.json';
 import skillmeta from '../../../skill_meta.json';
+
+// Bundled imports are Global data (via the redirectData esbuild plugin in
+// build.mjs). This is the source used for the default per-card view and for
+// the "Global" column of the compare modal.
+const GLOBAL_SOURCE: SkillDataSource = {
+	skills:     skills     as Record<string, any>,
+	skillnames: skillnames as Record<string, string[]>,
+	skillmeta:  skillmeta  as Record<string, any>,
+};
 
 import { Region, RegionList } from '../../../uma-skill-tools/Region';
 import { CourseData, CourseHelpers } from '../../../uma-skill-tools/CourseData';
@@ -122,6 +133,54 @@ function App() {
 	});
 	const [skillsOpen, setSkillsOpen] = useState(false);
 
+	// Per-card data source choice. Default to 'global' on first add (no entry).
+	const [cardVersions, setCardVersions] = useState<IMap<string, 'global' | 'jp'>>(IMap());
+	// Per-card "JP load in progress" indicator (for spinner during first fetch).
+	const [loadingVersions, setLoadingVersions] = useState<IMap<string, boolean>>(IMap());
+	// JP source, populated lazily on first need.
+	const [jpSource, setJpSource] = useState<SkillDataSource | null>(null);
+	const [jpLoadError, setJpLoadError] = useState<string | null>(null);
+	// Compare modal target.
+	const [compareSkillId, setCompareSkillId] = useState<string | null>(null);
+
+	// Lazy-load JP data on first need. Subsequent calls reuse the cached Promise.
+	const ensureJpLoaded = useCallback(async () => {
+		if (jpSource) return jpSource;
+		try {
+			const src = await loadJpSkillData();
+			setJpSource(src);
+			setJpLoadError(null);
+			return src;
+		} catch (e: any) {
+			const msg = e?.message ?? String(e);
+			setJpLoadError(msg);
+			throw e;
+		}
+	}, [jpSource]);
+
+	const handleVersionChange = useCallback(async (skillId: string, version: 'global' | 'jp') => {
+		// Optimistically update the toggle state immediately
+		setCardVersions(prev => prev.set(skillId, version));
+		if (version === 'jp' && !jpSource) {
+			setLoadingVersions(prev => prev.set(skillId, true));
+			try {
+				await ensureJpLoaded();
+			} catch {
+				// On failure, revert toggle to global; jpLoadError state surfaces the cause
+				setCardVersions(prev => prev.set(skillId, 'global'));
+			} finally {
+				setLoadingVersions(prev => prev.delete(skillId));
+			}
+		}
+	}, [jpSource, ensureJpLoaded]);
+
+	const handleCompare = useCallback(async (skillId: string) => {
+		setCompareSkillId(skillId);
+		if (!jpSource) {
+			try { await ensureJpLoaded(); } catch { /* error displayed inside the modal column */ }
+		}
+	}, [jpSource, ensureJpLoaded]);
+
 	const addSkill = useCallback((skillId: string) => {
 		const groupId = skillmeta[skillId]?.groupId ?? skillId;
 		setSelectedSkills(prev => prev.set(groupId, skillId));
@@ -169,6 +228,11 @@ function App() {
 							const hasError = regions[i].err;
 							const dna = !hasError && doesNotActivate(regions[i]);
 							const hasNotice = hasError || dna;
+							const version = cardVersions.get(id) ?? 'global';
+							const isLoading = !!loadingVersions.get(id);
+							const activeSource = version === 'jp'
+								? (jpSource ?? GLOBAL_SOURCE)  // fall back to Global if JP isn't loaded yet
+								: GLOBAL_SOURCE;
 							return (
 								<div class={`sv2-skill-card${hasNotice ? ' has-notice' : ''}`} key={id}>
 									<div class="sv2-skill-card-color" style={`background:${colors[i % colors.length].stroke}`} />
@@ -178,6 +242,12 @@ function App() {
 										skillId={id}
 										onRemove={() => removeSkill(id)}
 										courseDistance={course.distance}
+										dataSource={activeSource}
+										enableVersionToggle
+										activeVersion={version}
+										onVersionChange={v => handleVersionChange(id, v)}
+										isVersionLoading={isLoading}
+										onCompare={() => handleCompare(id)}
 									/>
 								</div>
 							);
@@ -193,6 +263,15 @@ function App() {
 						onSelect={addSkill}
 						selectedSkills={skillIds}
 						hideNotInGame={false}
+					/>
+
+					<CompareModal
+						skillId={compareSkillId}
+						globalSource={GLOBAL_SOURCE}
+						jpSource={jpSource}
+						jpLoadError={jpLoadError}
+						courseDistance={course.distance}
+						onClose={() => setCompareSkillId(null)}
 					/>
 				</div>
 			</IntlProvider>

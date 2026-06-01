@@ -12,13 +12,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Live Applications
 
-| Application | Description |
-|------------|-------------|
-| **[/umalator-global](https://umalator.app/umalator-global)** | Global simulator (English) |
-| **[/umalator-global/v2](https://umalator.app/umalator-global/v2)** | V2 experimental UI with modern features |
-| **[/umalator](https://umalator.app/umalator)** | Bilingual JP simulator |
-| **[/hp-calculator](https://umalator.app/hp-calculator)** | HP survival rate calculator |
-| **[/events](https://umalator.app/events)** | Upcoming race tracker with gacha banners |
+| Application | URL | Description |
+|------------|-----|-------------|
+| **V2 simulator (default landing)** | [umalator.app](https://umalator.app/) | V2 modern Global UI — served at the root. Old `/umalator-global/v2` and `/v2` paths 301 here (`_redirects`). |
+| **V1 Global simulator** | [/umalator-global](https://umalator.app/umalator-global) | Original Global simulator (English) |
+| **JP simulator** | [/umalator](https://umalator.app/umalator) | Bilingual JP simulator |
+| **Skill visualizer (v2 — primary)** | [/skill-visualizer](https://umalator.app/skill-visualizer) | Modern Global v2 skill activation visualizer. Rewrite (URL stays) to `/umalator-global/skill-visualizer/v2/` via `_redirects`. |
+| **Skill visualizer (JP — legacy)** | [/skill-visualizer-jp](https://umalator.app/skill-visualizer-jp) | Original JP-data visualizer (was at `/skill-visualizer/` before the v2 reshuffle). |
+| **Skill visualizer (Global v1 — legacy)** | [/umalator-global/skill-visualizer](https://umalator.app/umalator-global/skill-visualizer) | Original Global-data visualizer; unchanged path. |
+| **HP calculator** | [/hp-calculator](https://umalator.app/hp-calculator) | HP survival rate calculator |
+| **Mechanics Explorer** | [/mechanics-explorer](https://umalator.app/mechanics-explorer) | Stat → race-mechanics formula explorer (live readout + stat-sweep charts). Rewrite to `/umalator-global/mechanics-explorer/` via `_redirects`. |
+| **Events** | [/events](https://umalator.app/events) | Upcoming race tracker with gacha banners |
+| **Team Trials planner** | [/team-trials](https://umalator.app/team-trials) | Team Stadium lineup planner (5 teams × 3 runners) |
+| **Release timeline** | [/release-timeline](https://umalator.app/release-timeline) | JP support card + uma release timeline browser |
+| **Tachyon Guide** | [canva.umalator.app](https://canva.umalator.app/) | Static Canva embed page on its own subdomain |
 
 ### Project Structure
 
@@ -32,6 +39,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 │   │   ├── velocity-overlay.tsx
 │   │   ├── results-pane.tsx
 │   │   └── vite.config.ts      # V2 uses Vite
+│   ├── mechanics-explorer/      # Stat → mechanics formula explorer (standalone sub-app)
 │   ├── build.mjs               # Builds both v1 and v2
 │   ├── skill_data.json         # English game data
 │   └── course_data.json
@@ -713,6 +721,8 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 **Custom Domains:**
 - `umalator.app` (primary)
 - `dev.umalator.app` (dev branch)
+- `canva.umalator.app` (Tachyon Guide — see below)
+- `www.umalator.app` (301s to apex via the Pages Function)
 
 ### Branch Deployment
 
@@ -720,6 +730,36 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 - **dev**: Development preview (`dev.umalator.app`)
 
 **Note**: Dev branch includes MooCoins easter egg. Master has only the visual cow.
+
+### Tachyon Guide (Canva embed) — `canva.umalator.app`
+
+The Tachyon Guide is a single static page (`canva/index.html`) that embeds a Canva
+design in a full-viewport iframe, served on its own subdomain.
+
+**Routing (important):** the subdomain is routed in **`functions/[[catchall]].ts`**,
+NOT `_redirects`. Cloudflare Pages `_redirects` matches on the request **path only**,
+so hostname-scoped rules there (`https://<host>/...`) are silently ignored. The Pages
+Function rewrites page navigations on `canva.umalator.app` to the `/canva/` asset (and
+also performs the `www.umalator.app` → apex 301). **Do not** add `https://<host>/...`
+rules to `_redirects` — they will not fire.
+
+**Updating the embedded Canva design:** the Canva share URL appears in **three** places
+in `canva/index.html`, all using the same design ID + view token (currently
+`DAHKQU64nsg` / `BvXGiL0N1rLjUgNRP5KQPw`):
+1. The `<iframe src>` — `https://www.canva.com/design/<ID>/<TOKEN>/view?embed`
+2. The `.fallback` "Open on Canva ↗" link (`href`, with `utm_*` params)
+3. The `<noscript>` fallback link
+
+To point at a new/updated design, in Canva use **Share › More › Embed** (copy the
+iframe `src` for #1) and **Share › Public view link** (for #2/#3), then replace the ID
+and token in all three spots. A guiding comment above the iframe in `canva/index.html`
+marks them. The `preconnect`/`dns-prefetch` lines reference only `www.canva.com` and
+never change.
+
+Note: *editing* an existing Canva design auto-updates what the live embed shows — you
+only touch `index.html` when the **share link itself** changes (new design, or Canva
+issues a new token). `canva.umalator.app` maps to the **master** deployment, so an
+`index.html` change must be merged `dev` → master to go live.
 
 ## Credits
 

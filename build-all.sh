@@ -34,14 +34,24 @@ node build.mjs
 cd ..
 
 echo ""
-echo "Building skill-visualizer..."
-cd skill-visualizer
+echo "Building skill-visualizer (JP) → /skill-visualizer-jp/..."
+cd skill-visualizer-jp
 node build.mjs
 cd ..
 
+# Builds both Global v1 (/umalator-global/skill-visualizer/) and v2
+# (/umalator-global/skill-visualizer/v2/).
+# The v2 build is also surfaced at the clean URL /skill-visualizer/ via the
+# _redirects rewrite at repo root.
 echo ""
-echo "Building skill-visualizer (global)..."
+echo "Building skill-visualizer (Global v1 + v2)..."
 cd umalator-global/skill-visualizer
+node build.mjs
+cd ../..
+
+echo ""
+echo "Building mechanics-explorer..."
+cd umalator-global/mechanics-explorer
 node build.mjs
 cd ../..
 

@@ -1,0 +1,73 @@
+/* Mechanics Explorer — app-specific styles. Reuses v2.css design tokens. */
+.mx-app {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: var(--space-4, 16px);
+}
+.mx-header h1 {
+	font-size: 1.5rem;
+	margin: 0 0 var(--space-3, 12px);
+}
+.mx-layout {
+	display: grid;
+	grid-template-columns: minmax(280px, 360px) 1fr;
+	gap: var(--space-4, 16px);
+	align-items: start;
+}
+@media (max-width: 800px) {
+	.mx-layout { grid-template-columns: 1fr; }
+}
+.mx-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-4, 16px);
+	margin-bottom: var(--space-4, 16px);
+}
+.mx-control { display: flex; flex-direction: column; gap: var(--space-1, 4px); }
+.mx-control-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--color-text-muted, #888);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.mx-row {
+	display: flex;
+	align-items: center;
+	gap: var(--space-2, 8px);
+	padding: var(--space-2, 8px) 0;
+	border-bottom: 1px solid var(--color-border, #2a2a2a);
+}
+.mx-row:last-child { border-bottom: none; }
+.mx-row-label {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: var(--space-1, 4px);
+	font-size: 0.875rem;
+}
+.mx-row-info { cursor: help; opacity: 0.5; font-size: 0.8em; }
+.mx-row-value {
+	font-variant-numeric: tabular-nums;
+	font-weight: 600;
+	min-width: 6ch;
+	text-align: right;
+}
+
+.mx-sweep {
+	margin-top: var(--space-4, 16px);
+	background: var(--color-surface-2, #161616);
+	border: 1px solid var(--color-border, #2a2a2a);
+	border-radius: 8px;
+	padding: var(--space-3, 12px);
+}
+.mx-sweep-title { font-weight: 600; margin-bottom: var(--space-2, 8px); }
+.mx-sweep-line { stroke: var(--color-primary, #4ea1ff); stroke-width: 2; }
+.mx-sweep-marker { stroke: var(--color-text-muted, #888); stroke-dasharray: 4 3; stroke-width: 1; }
+.mx-sweep-dot { fill: var(--color-primary, #4ea1ff); stroke: #fff; stroke-width: 1; }
+.mx-sweep-axes text { fill: var(--color-text-muted, #999); font-size: 10px; }
+.mx-sweep-axes path, .mx-sweep-axes line { stroke: var(--color-border, #333); }
+.mx-sweep-xlabel, .mx-sweep-ylabel { fill: var(--color-text-muted, #999); font-size: 11px; }
+
+.mx-sweep-panel { margin-top: var(--space-5, 24px); }
+.mx-sweep-controls { display: flex; flex-wrap: wrap; gap: var(--space-4, 16px); }

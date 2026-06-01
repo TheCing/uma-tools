@@ -94,7 +94,7 @@
       /* Fixed fallback link — mirrors functions/[[catchall]].ts .attr pattern */
       .fallback {
         position: fixed;
-        bottom: 0.5rem;
+        top: 0.5rem;
         right: 0.75rem;
         z-index: 2;
         font-size: 0.72rem;
@@ -133,6 +133,16 @@
   <body>
     <div class="loading-hint" aria-hidden="true">Loading Tachyon Guide…</div>
 
+    <!--
+      ━━ UPDATING THE CANVA EMBED ━━
+      The design ID + view token (DAHKQU64nsg / BvXGiL0N1rLjUgNRP5KQPw) appear in
+      THREE places below: this iframe src, the .fallback "Open on Canva ↗" link,
+      and the <noscript> link. Replace all three when pointing at a new design.
+      • iframe src → Canva: Share › More › Embed  (the …/view?embed URL)
+      • the links  → Canva: Share › Public view link
+      Leave the preconnect/dns-prefetch lines — they reference only www.canva.com.
+      Full procedure: CLAUDE.md › "Tachyon Guide (Canva embed)".
+    -->
     <iframe
       src="https://www.canva.com/design/DAHKQU64nsg/BvXGiL0N1rLjUgNRP5KQPw/view?embed"
       title="Tachyon Guide"

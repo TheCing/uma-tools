@@ -9,6 +9,7 @@ import { program, Option } from 'commander';
 
 program
 	.option('--debug')
+	.option('--dry-run-umas', 'preview umas.json localization changes without writing')
 	.addOption(new Option('--serve [port]', 'run development server on [port]').preset(8000).implies({debug: true}));
 
 program.parse();
@@ -144,6 +145,83 @@ function generateNotInGame() {
 }
 
 generateNotInGame();
+
+// Sync character/outfit names in umas.json from Global master.mdb.
+// Outfits/charas not yet in the Global DB keep their existing (JP) strings;
+// once they release on Global, the localized epithet replaces the JP one on
+// the next build. Pass --dry-run-umas to preview without writing.
+function syncUmaLocalizations() {
+	const masterDb = path.join(root, 'docs', 'master.mdb');
+	if (!fs.existsSync(masterDb)) {
+		console.log('umas.json sync: master.mdb not present, skipping');
+		return;
+	}
+
+	const dryRun = process.argv.includes('--dry-run-umas');
+	const umasPath = path.join(dirname, 'umas.json');
+	const umas = JSON.parse(fs.readFileSync(umasPath, 'utf-8'));
+
+	// text_data category 5 = outfit epithet (e.g. "[Edomurasaki]")
+	// text_data category 170 = character name (e.g. "Inari One")
+	const epithetsRaw = execSync(
+		`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 5"`,
+		{ encoding: 'utf-8' }
+	);
+	const epithets = new Map(
+		epithetsRaw.trim().split('\n').filter(Boolean).map(line => {
+			const tab = line.indexOf('\t');
+			return [line.slice(0, tab), line.slice(tab + 1)];
+		})
+	);
+
+	const namesRaw = execSync(
+		`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 170"`,
+		{ encoding: 'utf-8' }
+	);
+	const names = new Map(
+		namesRaw.trim().split('\n').filter(Boolean).map(line => {
+			const tab = line.indexOf('\t');
+			return [line.slice(0, tab), line.slice(tab + 1)];
+		})
+	);
+
+	const changes = [];
+	for (const [charaId, chara] of Object.entries(umas)) {
+		const globalName = names.get(charaId);
+		if (globalName && Array.isArray(chara.name) && chara.name[1] !== globalName) {
+			changes.push(`${charaId} name: "${chara.name[1]}" → "${globalName}"`);
+			chara.name[1] = globalName;
+		}
+		for (const [outfitId, current] of Object.entries(chara.outfits || {})) {
+			const globalEpithet = epithets.get(outfitId);
+			if (!globalEpithet) continue;
+			// Outfits are stored either as the bare epithet string (fast-forwarded
+			// chars) or as a full object with an `epithet` field (proper entries).
+			if (typeof current === 'string') {
+				if (current !== globalEpithet) {
+					changes.push(`${outfitId}: "${current}" → "${globalEpithet}"`);
+					chara.outfits[outfitId] = globalEpithet;
+				}
+			} else if (current && typeof current === 'object') {
+				if (current.epithet !== globalEpithet) {
+					changes.push(`${outfitId}: "${current.epithet}" → "${globalEpithet}"`);
+					current.epithet = globalEpithet;
+				}
+			}
+		}
+	}
+
+	if (changes.length === 0) {
+		console.log('umas.json sync: no changes');
+		return;
+	}
+
+	console.log(`umas.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
+	for (const c of changes) console.log(`  ${c}`);
+	if (!dryRun) fs.writeFileSync(umasPath, JSON.stringify(umas, null, 2) + '\n');
+}
+
+syncUmaLocalizations();
 
 const buildOptions = {
 	entryPoints: [{in: '../umalator/app.tsx', out: 'bundle'}, '../umalator/simulator.worker.ts'],
