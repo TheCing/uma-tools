@@ -1,0 +1,76 @@
+name: Promote dev → master
+
+# Weekly automated promotion of `dev` to `master` (production).
+#
+# Cloudflare Pages deploys production from `master`, so a successful run here
+# ships whatever is on `dev` to umalator.app. Dev-only features (MooCoins,
+# "Still In Love") stay hidden because production builds with CC_DEV=false —
+# the build flag decides, not the branch, so merging the source is safe.
+#
+# Model: direct merge, no PR. A merge conflict FAILS the job (and notifies via
+# the normal Actions failure email) rather than force-pushing. The model stays
+# clean only if every fix lands on `dev` first — a direct commit to `master`
+# will make the next run conflict.
+#
+# BOOTSTRAP: scheduled workflows only run from the file on the default branch
+# (`master`). This file must reach `master` once (via your next manual
+# dev → master merge) before the weekly schedule / "Run workflow" button
+# become active.
+#
+# PREREQS:
+#   - Settings › Actions › General › Workflow permissions = "Read and write"
+#   - `master` branch protection (if any) must allow pushes from Actions
+
+on:
+  schedule:
+    # Mondays 14:00 UTC (~09:00–10:00 US Eastern). Adjust to taste.
+    - cron: '0 14 * * 1'
+  workflow_dispatch: {}      # manual run from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: promote-dev-to-master
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+          # default GITHUB_TOKEN is persisted, so the push below is authenticated
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge dev into master
+        run: |
+          set -euo pipefail
+          git fetch origin dev master
+
+          ahead=$(git rev-list --count origin/master..origin/dev)
+          echo "dev is ${ahead} commit(s) ahead of master"
+          if [ "${ahead}" -eq 0 ]; then
+            echo "Nothing to promote — master already matches dev."
+            echo "Nothing to promote — master already matches dev." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Align local master to the remote, then merge dev with an explicit
+          # merge commit (matches the existing "Merge branch 'dev'" history).
+          git checkout -B master origin/master
+          if ! git merge --no-ff origin/dev -m "Merge branch 'dev'"; then
+            echo "::error::Merge conflict promoting dev → master. Aborting — resolve manually."
+            git merge --abort || true
+            exit 1
+          fi
+
+          git push origin master
+          echo "✅ Promoted ${ahead} commit(s): dev → master." >> "$GITHUB_STEP_SUMMARY"
