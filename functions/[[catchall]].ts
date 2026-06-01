@@ -38,8 +38,8 @@ interface CanvaEmbed {
 const EMBEDS: CanvaEmbed[] = [
   { slug: '14-yasuda', title: 'CM 14 Guide — Yasuda Kinen',
     canvaId: 'DAHKQU64nsg', viewToken: 'BvXGiL0N1rLjUgNRP5KQPw' },
-  // { slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
-  //   canvaId: 'XXXX', viewToken: 'YYYY' },
+  { slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
+    canvaId: 'DAHLSXaH3go', viewToken: '0PTH2KUGR4-hcAtbV1RhJw' },
 ];
 
 function slugNumber(slug: string): number {
