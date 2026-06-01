@@ -721,6 +721,8 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 **Custom Domains:**
 - `umalator.app` (primary)
 - `dev.umalator.app` (dev branch)
+- `canva.umalator.app` (Tachyon Guide — see below)
+- `www.umalator.app` (301s to apex via the Pages Function)
 
 ### Branch Deployment
 
@@ -728,6 +730,36 @@ V1 uses manual version query parameters for cache busting. When deploying signif
 - **dev**: Development preview (`dev.umalator.app`)
 
 **Note**: Dev branch includes MooCoins easter egg. Master has only the visual cow.
+
+### Tachyon Guide (Canva embed) — `canva.umalator.app`
+
+The Tachyon Guide is a single static page (`canva/index.html`) that embeds a Canva
+design in a full-viewport iframe, served on its own subdomain.
+
+**Routing (important):** the subdomain is routed in **`functions/[[catchall]].ts`**,
+NOT `_redirects`. Cloudflare Pages `_redirects` matches on the request **path only**,
+so hostname-scoped rules there (`https://<host>/...`) are silently ignored. The Pages
+Function rewrites page navigations on `canva.umalator.app` to the `/canva/` asset (and
+also performs the `www.umalator.app` → apex 301). **Do not** add `https://<host>/...`
+rules to `_redirects` — they will not fire.
+
+**Updating the embedded Canva design:** the Canva share URL appears in **three** places
+in `canva/index.html`, all using the same design ID + view token (currently
+`DAHKQU64nsg` / `BvXGiL0N1rLjUgNRP5KQPw`):
+1. The `<iframe src>` — `https://www.canva.com/design/<ID>/<TOKEN>/view?embed`
+2. The `.fallback` "Open on Canva ↗" link (`href`, with `utm_*` params)
+3. The `<noscript>` fallback link
+
+To point at a new/updated design, in Canva use **Share › More › Embed** (copy the
+iframe `src` for #1) and **Share › Public view link** (for #2/#3), then replace the ID
+and token in all three spots. A guiding comment above the iframe in `canva/index.html`
+marks them. The `preconnect`/`dns-prefetch` lines reference only `www.canva.com` and
+never change.
+
+Note: *editing* an existing Canva design auto-updates what the live embed shows — you
+only touch `index.html` when the **share link itself** changes (new design, or Canva
+issues a new token). `canva.umalator.app` maps to the **master** deployment, so an
+`index.html` change must be merged `dev` → master to go live.
 
 ## Credits
 
