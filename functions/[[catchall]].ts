@@ -1,11 +1,13 @@
 /**
- * Cloudflare Pages Function: "Does Red Shift?"
+ * Cloudflare Pages Function: edge routing for special hostnames + paths.
  *
- * Handles does.redshift.work/[id] requests.
- * Shows whether the skill Red Shift is viable for a given CM preset.
- * All other hostnames pass through to the static site.
- *
- * April Fools 2026: Maruzensky takeover
+ * Handles, before the request reaches the static site:
+ *  - does.redshift.work/[id] — "Does Red Shift?" CM-preset viability pages
+ *    (April Fools 2026: Maruzensky takeover)
+ *  - www.umalator.app/*       — canonical 301 to the apex
+ *  - Canva guides             — multi-embed slug routing on canva.umalator.app
+ *    and umalator.app/canva/* (see the EMBEDS registry below)
+ * All other requests pass through to the static site.
  */
 
 const REDIRECT_HOST = 'does.redshift.work';

@@ -1,7 +1,7 @@
 # Cloudflare Pages redirect rules
 
 # NOTE: hostname-based routing — the www → apex canonical 301 and the
-# canva.umalator.app → /canva/ Tachyon Guide rewrite — is handled in
+# canva.umalator.app slug routing (the EMBEDS guide registry) — is handled in
 # functions/[[catchall]].ts. Cloudflare Pages _redirects matches on the request
 # PATH only, so any rule whose `from` includes a scheme/host is silently ignored.
 # Don't re-add www/canva rules here; they will not work.
