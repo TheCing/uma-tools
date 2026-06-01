@@ -1,10 +1,10 @@
 # Cloudflare Pages redirect rules
 
-# Redirect www to non-www (canonical)
-https://www.umalator.app/* https://umalator.app/:splat 301
-
-# canva.umalator.app — static Tachyon Guide embed (rewrite, URL stays)
-https://canva.umalator.app/* /canva/:splat 200
+# NOTE: hostname-based routing — the www → apex canonical 301 and the
+# canva.umalator.app → /canva/ Tachyon Guide rewrite — is handled in
+# functions/[[catchall]].ts. Cloudflare Pages _redirects matches on the request
+# PATH only, so any rule whose `from` includes a scheme/host is silently ignored.
+# Don't re-add www/canva rules here; they will not work.
 
 # Clean URL for the v2 Global skill visualizer (rewrite, URL stays as /skill-visualizer/)
 # Legacy paths remain reachable directly:

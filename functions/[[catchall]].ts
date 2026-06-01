@@ -11,6 +11,13 @@
 const REDIRECT_HOST = 'does.redshift.work';
 const ASSETS_HOST = 'https://umalator.app';
 
+// Hostname routing handled below. Cloudflare Pages `_redirects` matches on the
+// request PATH only — rules whose `from` includes a scheme/host are silently
+// ignored — so per-subdomain routing must live here in the Function.
+const CANVA_HOST = 'canva.umalator.app';
+const WWW_HOST = 'www.umalator.app';
+const APEX_HOST = 'umalator.app';
+
 // April Fools: check if it's April 1st in any timezone that's currently April 1st
 // (generous window: UTC Mar 31 12:00 through UTC Apr 2 12:00 to cover all timezones)
 function isAprilFools(): boolean {
@@ -272,6 +279,29 @@ function escapeHtml(s: string): string {
 
 export const onRequest: PagesFunction = async (context) => {
   const url = new URL(context.request.url);
+
+  // www.umalator.app → apex (canonical), preserving path + query.
+  if (url.hostname === WWW_HOST) {
+    const dest = new URL(url);
+    dest.hostname = APEX_HOST;
+    return Response.redirect(dest.toString(), 301);
+  }
+
+  // canva.umalator.app → serve the static Tachyon Guide at /canva/ for page
+  // navigations. Asset requests (e.g. the favicon under /uma-tools/*) and direct
+  // /canva/* hits pass through untouched so they resolve normally.
+  if (url.hostname === CANVA_HOST) {
+    const accept = context.request.headers.get('Accept') || '';
+    const isNavigation =
+      context.request.headers.get('Sec-Fetch-Mode') === 'navigate' ||
+      accept.includes('text/html');
+    if (isNavigation && !url.pathname.startsWith('/canva/')) {
+      const guide = new URL(url);
+      guide.pathname = '/canva/';
+      return context.next(new Request(guide.toString(), context.request));
+    }
+    return context.next();
+  }
 
   if (url.hostname !== REDIRECT_HOST) {
     return context.next();
