@@ -159,6 +159,8 @@ function syncUmaLocalizations() {
 
 	const dryRun = process.argv.includes('--dry-run-umas');
 	const umasPath = path.join(dirname, 'umas.json');
+
+	try {
 	const umas = JSON.parse(fs.readFileSync(umasPath, 'utf-8'));
 
 	// text_data category 5 = outfit epithet (e.g. "[Edomurasaki]")
@@ -219,6 +221,12 @@ function syncUmaLocalizations() {
 	console.log(`umas.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
 	for (const c of changes) console.log(`  ${c}`);
 	if (!dryRun) fs.writeFileSync(umasPath, JSON.stringify(umas, null, 2) + '\n');
+	} catch (e) {
+		// e.g. sqlite3 CLI not installed (Cloudflare build image) or a DB read
+		// error. Non-fatal: keep the committed umas.json strings as-is, like
+		// generateNotInGame() does for not-in-game.json.
+		console.warn(`umas.json sync skipped: ${e.message}. Leaving existing file in place.`);
+	}
 }
 
 syncUmaLocalizations();
