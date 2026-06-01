@@ -43,9 +43,11 @@ const mockAssert = {
 	}
 };
 
-// Build v1 (reuses skill-visualizer/app.tsx source with global data)
+// Build v1 (reuses skill-visualizer-jp/app.tsx source with global data — dir
+// was renamed from skill-visualizer/ to skill-visualizer-jp/ when v2 took over
+// the clean /skill-visualizer/ URL)
 await esbuild.build({
-	entryPoints: [{in: '../../skill-visualizer/app.tsx', out: 'bundle'}],
+	entryPoints: [{in: '../../skill-visualizer-jp/app.tsx', out: 'bundle'}],
 	bundle: true,
 	minify: !debug,
 	outdir: '.',
