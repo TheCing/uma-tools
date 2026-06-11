@@ -263,15 +263,3 @@ The final Throne Recreation restores Energy, raises Mood, *and* enters the Pure 
 | Skill hints | **Fighting Spirit** +1 · **Prudent Positioning** +1 · **Full Throttle** +1 · **Nakayama Racecourse ○** +1 · **Refraction Arc** +1 |
 
 *Original article: [altema.jp/umamusume/gyokuza](https://altema.jp/umamusume/gyokuza) by the Altema strategy team — all credit to the original authors.*
-
----
-
-## Translator's Notes & Flags
-
-Skill names are **confirmed Global names** (verified against our Global data files), matching the [Labo review translation](throne-guide.md). Items flagged **†**:
-
-1. **Bad-condition names** — なまけ癖 → "Slacker", 太り気味 → "Overweight", 肌あれ → "Skin Outbreak". These are my best recollection of the Global condition names; verify against in-game strings.
-2. **"Sparks"** (因子) — Global's term for inheritance factors; "Climax-scenario sparks" renders クライマックス因子 (the scenario factor from the Climax/Make a New Track!! scenario).
-3. **Source garble** — one sentence in the Sprint-to-Mile section is corrupted in the original (叶せな, almost certainly 可能性); translated by intent and footnoted inline.
-4. **Stat totals differ from the Labo article by design** — Altema's table counts only the five Recreation events (Speed +54, Wit +102, Skill Pt +60); the Labo table also includes the unlock/Classic-January/end-of-run events (Speed +96, Wit +186, Skill Pt +102). Both are correct for what they count.
-5. The source title says 玉座**を**集いし者たち (a typo for 玉座**に**); the correct card name is used throughout.
