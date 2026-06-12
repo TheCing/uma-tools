@@ -4010,7 +4010,7 @@
     "alternatives": [
       {
         "baseDuration": 60000,
-        "condition": "is_last_straight==1&order_rate>=40&order_rate<=70&popularity>=4",
+        "condition": "is_finalcorner==1&corner==0&order_rate>=40&order_rate<=70&popularity>=4",
         "effects": [
           {
             "modifier": 3500,
@@ -4022,7 +4022,7 @@
       },
       {
         "baseDuration": 50000,
-        "condition": "is_last_straight==1&order_rate>=40&order_rate<=70&popularity<4",
+        "condition": "is_finalcorner==1&corner==0&order_rate>=40&order_rate<=70&popularity<4",
         "effects": [
           {
             "modifier": 3500,
@@ -4039,7 +4039,7 @@
     "alternatives": [
       {
         "baseDuration": 40000,
-        "condition": "is_last_straight==1",
+        "condition": "is_finalcorner==1&corner==0",
         "effects": [
           {
             "modifier": 4000,
@@ -12640,7 +12640,7 @@
     "alternatives": [
       {
         "baseDuration": 18000,
-        "condition": "running_style==2&phase_firsthalf_random==2&order_rate<=50",
+        "condition": "running_style==2&phase_random==2&order_rate<=50",
         "effects": [
           {
             "modifier": 4000,
@@ -12960,8 +12960,8 @@
   "202081": {
     "alternatives": [
       {
-        "baseDuration": 18000,
-        "condition": "distance_type==3&phase_firsthalf_random==2&order_rate>=40",
+        "baseDuration": 12000,
+        "condition": "distance_type==3&phase_random==2&order_rate>=50",
         "effects": [
           {
             "modifier": 4000,
@@ -12977,8 +12977,8 @@
   "202082": {
     "alternatives": [
       {
-        "baseDuration": 18000,
-        "condition": "distance_type==3&phase_firsthalf_random==2&order_rate>=40",
+        "baseDuration": 12000,
+        "condition": "distance_type==3&phase_random==2&order_rate>=50",
         "effects": [
           {
             "modifier": 2000,
@@ -12994,11 +12994,11 @@
   "202091": {
     "alternatives": [
       {
-        "baseDuration": 24000,
-        "condition": "distance_type==3&phase==1&order_rate<=80&order_rate>=30&blocked_side_continuetime>=2",
+        "baseDuration": 18000,
+        "condition": "distance_type==3&phase==1&order_rate<=70&order_rate>=40&blocked_side_continuetime>=2",
         "effects": [
           {
-            "modifier": 3500,
+            "modifier": 2500,
             "target": 1,
             "type": 27
           },
@@ -13016,8 +13016,8 @@
   "202092": {
     "alternatives": [
       {
-        "baseDuration": 24000,
-        "condition": "distance_type==3&phase==1&order_rate<=80&order_rate>=30&blocked_side_continuetime>=2",
+        "baseDuration": 18000,
+        "condition": "distance_type==3&phase==1&order_rate<=70&order_rate>=40&blocked_side_continuetime>=2",
         "effects": [
           {
             "modifier": 1500,
@@ -13106,8 +13106,8 @@
   "202121": {
     "alternatives": [
       {
-        "baseDuration": 24000,
-        "condition": "running_style==3&distance_rate_after_random==50&order_rate>=30&order_rate<=80",
+        "baseDuration": 18000,
+        "condition": "running_style==3&distance_rate_after_random==50&order_rate>=40&order_rate<=70",
         "effects": [
           {
             "modifier": 3500,
@@ -13128,8 +13128,8 @@
   "202122": {
     "alternatives": [
       {
-        "baseDuration": 24000,
-        "condition": "running_style==3&distance_rate_after_random==50&order_rate>=30&order_rate<=80",
+        "baseDuration": 18000,
+        "condition": "running_style==3&distance_rate_after_random==50&order_rate>=40&order_rate<=70",
         "effects": [
           {
             "modifier": 1500,
@@ -13225,7 +13225,7 @@
             "type": 27
           },
           {
-            "modifier": -200,
+            "modifier": -400,
             "target": 1,
             "type": 9
           }
@@ -13247,7 +13247,7 @@
             "type": 27
           },
           {
-            "modifier": -200,
+            "modifier": -400,
             "target": 1,
             "type": 9
           }
@@ -15349,10 +15349,10 @@
         "condition": "phase_random==1",
         "effects": [
           {
-            "modifier": 3500,
-            "scaling": 3,
+            "modifier": 4200,
             "target": 1,
-            "type": 27
+            "type": 27,
+            "scaling": 3
           }
         ],
         "precondition": ""
@@ -15368,10 +15368,10 @@
         "condition": "phase_random==1",
         "effects": [
           {
-            "modifier": 1500,
-            "scaling": 3,
+            "modifier": 1800,
             "target": 1,
-            "type": 27
+            "type": 27,
+            "scaling": 3
           }
         ],
         "precondition": ""
@@ -15387,10 +15387,10 @@
         "condition": "phase_random==1",
         "effects": [
           {
-            "modifier": 550,
-            "scaling": 4,
+            "modifier": 660,
             "target": 1,
-            "type": 9
+            "type": 9,
+            "scaling": 4
           }
         ],
         "precondition": ""
@@ -15406,10 +15406,10 @@
         "condition": "phase_random==1",
         "effects": [
           {
-            "modifier": 150,
-            "scaling": 4,
+            "modifier": 180,
             "target": 1,
-            "type": 9
+            "type": 9,
+            "scaling": 4
           }
         ],
         "precondition": ""
@@ -15425,10 +15425,10 @@
         "condition": "phase_random==2",
         "effects": [
           {
-            "modifier": 4000,
-            "scaling": 5,
+            "modifier": 4800,
             "target": 1,
-            "type": 31
+            "type": 31,
+            "scaling": 5
           }
         ],
         "precondition": ""
@@ -15444,10 +15444,10 @@
         "condition": "phase_random==2",
         "effects": [
           {
-            "modifier": 2000,
-            "scaling": 5,
+            "modifier": 2400,
             "target": 1,
-            "type": 31
+            "type": 31,
+            "scaling": 5
           }
         ],
         "precondition": ""
@@ -15463,16 +15463,16 @@
         "condition": "phase_random==2",
         "effects": [
           {
-            "modifier": 2500,
-            "scaling": 6,
+            "modifier": 3000,
             "target": 1,
-            "type": 27
+            "type": 27,
+            "scaling": 6
           },
           {
-            "modifier": 3000,
-            "scaling": 6,
+            "modifier": 3600,
             "target": 1,
-            "type": 31
+            "type": 31,
+            "scaling": 6
           }
         ],
         "precondition": ""
@@ -15488,16 +15488,16 @@
         "condition": "phase_random==2",
         "effects": [
           {
-            "modifier": 500,
-            "scaling": 6,
+            "modifier": 600,
             "target": 1,
-            "type": 27
+            "type": 27,
+            "scaling": 6
           },
           {
-            "modifier": 1000,
-            "scaling": 6,
+            "modifier": 1200,
             "target": 1,
-            "type": 31
+            "type": 31,
+            "scaling": 6
           }
         ],
         "precondition": ""
@@ -15513,16 +15513,16 @@
         "condition": "phase_random==0",
         "effects": [
           {
-            "modifier": 350,
-            "scaling": 7,
+            "modifier": 420,
             "target": 1,
-            "type": 28
+            "type": 28,
+            "scaling": 7
           },
           {
-            "modifier": 150000,
-            "scaling": 7,
+            "modifier": 180000,
             "target": 1,
-            "type": 8
+            "type": 8,
+            "scaling": 7
           }
         ],
         "precondition": ""
@@ -15538,16 +15538,16 @@
         "condition": "phase_random==0",
         "effects": [
           {
-            "modifier": 150,
-            "scaling": 7,
+            "modifier": 180,
             "target": 1,
-            "type": 28
+            "type": 28,
+            "scaling": 7
           },
           {
-            "modifier": 50000,
-            "scaling": 7,
+            "modifier": 60000,
             "target": 1,
-            "type": 8
+            "type": 8,
+            "scaling": 7
           }
         ],
         "precondition": ""
@@ -15563,22 +15563,22 @@
         "condition": "distance_rate_after_random==50",
         "effects": [
           {
-            "modifier": 2500,
-            "scaling": 10,
-            "target": 1,
-            "type": 27
-          },
-          {
             "modifier": 3000,
-            "scaling": 10,
             "target": 1,
-            "type": 31
+            "type": 27,
+            "scaling": 10
           },
           {
-            "modifier": 350,
-            "scaling": 10,
+            "modifier": 3600,
             "target": 1,
-            "type": 9
+            "type": 31,
+            "scaling": 10
+          },
+          {
+            "modifier": 420,
+            "target": 1,
+            "type": 9,
+            "scaling": 10
           }
         ],
         "precondition": ""
@@ -15594,22 +15594,22 @@
         "condition": "distance_rate_after_random==50",
         "effects": [
           {
-            "modifier": 500,
-            "scaling": 10,
+            "modifier": 600,
             "target": 1,
-            "type": 27
+            "type": 27,
+            "scaling": 10
           },
           {
-            "modifier": 1000,
-            "scaling": 10,
+            "modifier": 1200,
             "target": 1,
-            "type": 31
+            "type": 31,
+            "scaling": 10
           },
           {
-            "modifier": 50,
-            "scaling": 10,
+            "modifier": 60,
             "target": 1,
-            "type": 9
+            "type": 9,
+            "scaling": 10
           }
         ],
         "precondition": ""
@@ -19946,7 +19946,7 @@
     "alternatives": [
       {
         "baseDuration": 36000,
-        "condition": "is_last_straight==1&order_rate>=40&order_rate<=70&popularity>=4",
+        "condition": "is_finalcorner==1&corner==0&order_rate>=40&order_rate<=70&popularity>=4",
         "effects": [
           {
             "modifier": 1500,
@@ -19958,7 +19958,7 @@
       },
       {
         "baseDuration": 30000,
-        "condition": "is_last_straight==1&order_rate>=40&order_rate<=70&popularity<4",
+        "condition": "is_finalcorner==1&corner==0&order_rate>=40&order_rate<=70&popularity<4",
         "effects": [
           {
             "modifier": 1500,
@@ -19975,7 +19975,7 @@
     "alternatives": [
       {
         "baseDuration": 24000,
-        "condition": "is_last_straight==1",
+        "condition": "is_finalcorner==1&corner==0",
         "effects": [
           {
             "modifier": 2000,
