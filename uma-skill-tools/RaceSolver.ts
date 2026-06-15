@@ -1484,7 +1484,11 @@ export class RaceSolver {
 				});
 				break;
 			case SkillType.Recovery:
-				if (s.perspective == Perspective.Self) ++this.activateCountHeal;
+				// Only real heals count toward activate_count_heal. Some skills carry a
+				// negative type-9 effect (a stamina *cost*, e.g. Full Throttle's -2%);
+				// those must not satisfy recovery-reward uniques (Festive Miracle,
+				// A Kiss for Courage, …). The drain itself still applies via recover().
+				if (s.perspective == Perspective.Self && modifier > 0) ++this.activateCountHeal;
 				this.hp.recover(modifier);
 				if (this.phase >= 2 && !this.isLastSpurt) {
 					this.updateLastSpurtState(true);
