@@ -3,15 +3,19 @@
  *
  * Routes:
  *   POST /         - Discord webhook proxy (feedback submissions)
- *   POST /gemini   - Gemini OCR proxy (screenshot parsing)
+ *   POST /gemini/* - Gemini OCR reverse proxy (model-agnostic; injects server key)
  */
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+const GEMINI_BASE = 'https://generativelanguage.googleapis.com';
+
+// Only allow the (stream)generateContent inference paths through the proxy, so the
+// server key can't be used to hit arbitrary Google API endpoints.
+const ALLOWED_GEMINI_PATH = /^\/v1(beta)?\/models\/[^/]+:(streamGenerateContent|generateContent)$/;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, x-goog-api-key',
 };
 
 export default {
@@ -20,46 +24,53 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405, headers: corsHeaders });
-    }
-
     const url = new URL(request.url);
 
-    if (url.pathname === '/gemini') {
-      return handleGemini(request, env);
+    // /gemini/* — transparent reverse proxy to the Gemini API (model-agnostic).
+    // The @google/genai SDK is configured with baseUrl = <worker>/gemini and
+    // appends /v1beta/models/<model>:generateContent itself.
+    if (url.pathname === '/gemini' || url.pathname.startsWith('/gemini/')) {
+      return handleGemini(request, env, url);
+    }
+
+    if (request.method !== 'POST') {
+      return new Response('Method not allowed', { status: 405, headers: corsHeaders });
     }
 
     return handleWebhook(request, env);
   },
 };
 
-async function handleGemini(request, env) {
+async function handleGemini(request, env, url) {
+  if (request.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+  }
   if (!env.GEMINI_API_KEY) {
     return new Response('Gemini API key not configured', { status: 503, headers: corsHeaders });
   }
 
+  // Strip the /gemini prefix to recover the upstream Gemini path.
+  const upstreamPath = url.pathname.replace(/^\/gemini/, '');
+  if (!ALLOWED_GEMINI_PATH.test(upstreamPath)) {
+    return new Response('Not found', { status: 404, headers: corsHeaders });
+  }
+
   try {
-    const body = await request.json();
-
-    if (!body.contents || !Array.isArray(body.contents)) {
-      return new Response('Invalid payload', { status: 400, headers: corsHeaders });
-    }
-
-    const geminiResponse = await fetch(`${GEMINI_API_URL}?key=${env.GEMINI_API_KEY}`, {
+    const body = await request.text();
+    const geminiResponse = await fetch(`${GEMINI_BASE}${upstreamPath}${url.search}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        // Inject the server key; ignore any key the client sent.
+        'x-goog-api-key': env.GEMINI_API_KEY,
+      },
+      body,
     });
 
     const responseBody = await geminiResponse.text();
-
     return new Response(responseBody, {
       status: geminiResponse.status,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json',
-      },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (err) {
     console.error('Gemini proxy error:', err);
