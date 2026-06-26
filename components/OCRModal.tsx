@@ -13,8 +13,10 @@ import {
 	getStoredApiKey,
 	storeApiKey,
 	clearStoredApiKey,
+	OCR_PROXY_URL,
 	OCRHorseData
 } from './GeminiOCR';
+import { getTurnstileToken } from './turnstile';
 
 import './OCRModal.css';
 
@@ -127,7 +129,7 @@ export function OCRModal({ open, onClose, onConfirm }: OCRModalProps) {
 			return;
 		}
 
-		if (!apiKey.trim()) {
+		if (!OCR_PROXY_URL && !apiKey.trim()) {
 			setError('Please enter your Gemini API key');
 			return;
 		}
@@ -137,7 +139,8 @@ export function OCRModal({ open, onClose, onConfirm }: OCRModalProps) {
 
 		try {
 			const { base64, mimeType } = await fileToBase64(imageFile);
-			const result = await extractHorseDataFromImage(base64, mimeType, apiKey.trim());
+			const turnstileToken = await getTurnstileToken();
+			const result = await extractHorseDataFromImage(base64, mimeType, apiKey.trim(), turnstileToken);
 
 			if (result.success && result.data) {
 				// Save API key if checkbox is checked

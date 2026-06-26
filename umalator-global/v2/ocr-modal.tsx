@@ -23,6 +23,7 @@ import {
 	OCR_PROXY_URL,
 	OCRHorseData
 } from '../../components/GeminiOCR';
+import { getTurnstileToken } from '../../components/turnstile';
 
 import type { UmaState } from './uma-panel';
 
@@ -188,7 +189,8 @@ export function OCRModal({ isOpen, onClose, onConfirm }: OCRModalProps) {
 
 		try {
 			const { base64, mimeType } = await fileToBase64(imageFile);
-			const result = await extractHorseDataFromImage(base64, mimeType, apiKey.trim());
+			const turnstileToken = await getTurnstileToken();
+			const result = await extractHorseDataFromImage(base64, mimeType, apiKey.trim(), turnstileToken);
 
 			if (result.success && result.data) {
 				// Save API key if checkbox is checked

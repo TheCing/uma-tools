@@ -3,6 +3,17 @@ name = "uma-tools-webhook-proxy"
 main = "webhook-proxy.js"
 compatibility_date = "2024-01-01"
 
+# Custom domain on the umalator.app Cloudflare zone — avoids the free *.workers.dev
+# 100k/day limit (Cloudflare error 1027). wrangler provisions the DNS record + cert
+# on deploy. The OCR client (OCR_PROXY_URL) and Discord feedback both point here.
+# Keep workers.dev enabled so the old URL still works during cutover (it's the
+# 100k/day-limited one; retire it by setting workers_dev = false once the Pages
+# env vars OCR_PROXY_URL + VITE_DISCORD_WEBHOOK point at proxy.umalator.app).
+workers_dev = true
+routes = [
+  { pattern = "proxy.umalator.app", custom_domain = true }
+]
+
 # Cloudflare account info (set via wrangler login)
 # account_id will be auto-detected or set via CLI
 

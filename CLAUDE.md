@@ -321,6 +321,18 @@ saved to `localStorage`). `OCR_PROXY_URL` is provided to the build via the
 `CC_OCR_PROXY` esbuild/vite define (from `OCR_PROXY_URL` in `.env.local`). After
 deploying the worker, set the secret with `wrangler secret put GEMINI_API_KEY`.
 
+**Abuse protection:** the `/gemini` proxy is gated so only the real apps can spend the
+server key. The worker enforces (1) an **Origin allowlist** (`umalator.app`,
+`dev.umalator.app`, `localhost`) and (2) a **Cloudflare Turnstile** token — the browser
+gets a single-use token from `components/turnstile.ts` (a hidden Managed-mode widget) and
+sends it as the `X-Turnstile-Token` header; the worker verifies it via Turnstile
+`siteverify` before proxying. No token / failed check → `403` → the client's user-key
+fallback. Setup: create a Turnstile widget in the Cloudflare dashboard, put its **sitekey**
+in the Pages build env `TURNSTILE_SITEKEY` (public; baked in via `CC_TURNSTILE_SITEKEY`)
+and its **secret** in the worker via `wrangler secret put TURNSTILE_SECRET`. The worker
+fails closed (`503`) until `TURNSTILE_SECRET` is set. Local dev: Cloudflare's always-pass
+test pair (sitekey `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA`).
+
 **To change the model:** edit the `MODEL` constant in the two files above (and confirm
 the new model has a free tier if you rely on the proxy).
 
@@ -777,24 +789,32 @@ Community guides are Canva embeds addressed by a numbered slug, reachable at bot
   highest-numbered (newest) guide
 - number-only (`/14`) → 302 to the full slug
 
-**Routing + registry live in `functions/[[catchall]].ts`** (a Pages Function),
-NOT `_redirects` — Cloudflare Pages `_redirects` matches on the request path only,
-so hostname-scoped rules there are silently ignored. The function renders each
-guide page from the `EMBEDS` array.
+**Registry lives in `canva-embeds.json`** (single source of truth, repo root).
 
-**To add a guide:** add one entry to the `EMBEDS` array near the top of
-`functions/[[catchall]].ts`:
+**`umalator.app/canva/<slug>` is served by STATIC pages**, not the Function. Cloudflare
+Pages Functions are not currently executing on the production project (the
+`functions/[[catchall]].ts` canva routing — and the events OG function, and the
+`www`→apex redirect — never run in prod; everything falls through to static). So
+`tools/gen-canva-static.mjs` reads `canva-embeds.json` and writes static
+`canva/<slug>/index.html` wrapper pages (+ `canva/index.html` = newest) on every build
+(wired into `build-all.sh`). These are plain static assets and always serve. The
+`functions/[[catchall]].ts` still reads the same `canva-embeds.json` and would serve the
+`canva.umalator.app` subdomain (and number-only slugs) **if/when Functions are revived**
+— that requires a Cloudflare dashboard fix (Functions enablement / compatibility date),
+not a repo change. The subdomain + number-slug `/14`→`/14-yasuda` redirects are currently
+inactive in prod as a result.
 
-```ts
-{ slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
-  canvaId: 'XXXX', viewToken: 'YYYY' },
+**To add a guide:** add one entry to `canva-embeds.json`:
+
+```json
+{ "slug": "16-sprinters", "title": "CM 16 Guide — Sprinters",
+  "canvaId": "XXXX", "viewToken": "YYYY" }
 ```
 
 Get `canvaId` + `viewToken` from Canva › Share › More › Embed — the embed URL is
-`https://www.canva.com/design/<canvaId>/<viewToken>/view?embed`. The newest entry
-automatically becomes the root redirect target. Changes ship with `master`
-(`canva.umalator.app` maps to the production deployment), so merge `dev` → master
-to publish.
+`https://www.canva.com/design/<canvaId>/<viewToken>/view?embed`. The highest-numbered
+entry automatically becomes `canva/index.html` (the bare-`/canva` target). Changes ship
+with `master` — merge `dev` → master to publish.
 
 ## Credits
 
