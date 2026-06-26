@@ -5,7 +5,13 @@ Cloudflare Worker that acts as a secure proxy for Discord webhook submissions fr
 ### Routes
 
 - `POST /` — Discord webhook proxy (feedback submissions). Adds IP/location/browser metadata, forwards to `env.DISCORD_WEBHOOK`.
-- `POST /gemini/*` — **Gemini OCR reverse proxy.** Forwards `/gemini/v1beta/models/<model>:generateContent` to `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`, injecting the `env.GEMINI_API_KEY` secret as the `x-goog-api-key` header (any client-sent key is ignored). Model-agnostic — only the `:generateContent` / `:streamGenerateContent` inference paths are allowed. The `@google/genai` SDK is pointed here via `httpOptions.baseUrl = <worker-url>/gemini`. CORS is open (`*`) and allows the `Content-Type` and `x-goog-api-key` headers.
+- `POST /gemini/*` — **Gemini OCR reverse proxy.** Forwards `/gemini/v1beta/models/<model>:generateContent` to `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`, injecting the `env.GEMINI_API_KEY` secret as the `x-goog-api-key` header (any client-sent key is ignored). Model-agnostic — only the `:generateContent` / `:streamGenerateContent` inference paths are allowed. The `@google/genai` SDK is pointed here via `httpOptions.baseUrl = <worker-url>/gemini`. CORS allows the `Content-Type`, `x-goog-api-key`, and `X-Turnstile-Token` headers, restricted to the Origin allowlist below.
+
+  The `/gemini` route is gated: requests must carry an allowed `Origin`
+  (`umalator.app` / `dev.umalator.app` / `localhost`) and a valid Cloudflare Turnstile
+  token in the `X-Turnstile-Token` header (verified server-side via `siteverify` using the
+  `TURNSTILE_SECRET` secret). Missing/invalid → `403`; missing `TURNSTILE_SECRET` → `503`.
+  Set it with `npx wrangler secret put TURNSTILE_SECRET`.
 
 Set the OCR secret with: `wrangler secret put GEMINI_API_KEY`
 

@@ -321,6 +321,18 @@ saved to `localStorage`). `OCR_PROXY_URL` is provided to the build via the
 `CC_OCR_PROXY` esbuild/vite define (from `OCR_PROXY_URL` in `.env.local`). After
 deploying the worker, set the secret with `wrangler secret put GEMINI_API_KEY`.
 
+**Abuse protection:** the `/gemini` proxy is gated so only the real apps can spend the
+server key. The worker enforces (1) an **Origin allowlist** (`umalator.app`,
+`dev.umalator.app`, `localhost`) and (2) a **Cloudflare Turnstile** token — the browser
+gets a single-use token from `components/turnstile.ts` (a hidden Managed-mode widget) and
+sends it as the `X-Turnstile-Token` header; the worker verifies it via Turnstile
+`siteverify` before proxying. No token / failed check → `403` → the client's user-key
+fallback. Setup: create a Turnstile widget in the Cloudflare dashboard, put its **sitekey**
+in the Pages build env `TURNSTILE_SITEKEY` (public; baked in via `CC_TURNSTILE_SITEKEY`)
+and its **secret** in the worker via `wrangler secret put TURNSTILE_SECRET`. The worker
+fails closed (`503`) until `TURNSTILE_SECRET` is set. Local dev: Cloudflare's always-pass
+test pair (sitekey `1x00000000000000000000AA`, secret `1x0000000000000000000000000000000AA`).
+
 **To change the model:** edit the `MODEL` constant in the two files above (and confirm
 the new model has a free tier if you rely on the proxy).
 
