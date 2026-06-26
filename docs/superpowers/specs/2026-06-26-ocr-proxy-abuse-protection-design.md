@@ -92,18 +92,31 @@ model-agnostic. New secret required: `TURNSTILE_SECRET`.
 - Add a build define `CC_TURNSTILE_SITEKEY` (public sitekey) alongside the existing
   `CC_OCR_PROXY`, surfaced as an exported `TURNSTILE_SITEKEY` constant for the modal.
 
-### 3. Turnstile widget — `components/OCRModal.tsx` (shared by v1 + v2)
+### 3. Turnstile helper + the two OCR modals
 
-- Lazy-load the Turnstile script (`https://challenges.cloudflare.com/turnstile/v0/api.js`)
-  once when the modal mounts (guard against double-injection).
-- Render a **Managed**-appearance widget bound to `TURNSTILE_SITEKEY`. Store the token
-  from its success callback in modal state.
-- **Token lifecycle:** tokens are single-use + ~300s TTL. After each extraction call,
-  `turnstile.reset(widgetId)` to mint a fresh token; wire `expired-callback` to reset
-  too. Pass the current token into `extractHorseDataFromImage(...)`.
-- If the script fails to load or no token is produced, the modal still calls
-  `extractHorseDataFromImage` with `undefined` → proxy skipped → user-key fallback.
+There are **two** OCR modals, both calling `extractHorseDataFromImage`:
+`components/OCRModal.tsx` (v1/shared) and `umalator-global/v2/ocr-modal.tsx` (v2).
+To stay DRY, the Turnstile widget logic lives in a **shared helper**, not duplicated
+per modal.
+
+**`components/turnstile.ts` (new):**
+- Exposes `TURNSTILE_SITEKEY` (from the `CC_TURNSTILE_SITEKEY` define) and an async
+  `getTurnstileToken(): Promise<string | undefined>`.
+- Lazy-loads the Turnstile script (`…/api.js?render=explicit`) once; renders a single
+  hidden widget in **execute** mode (Managed appearance — invisible unless a challenge
+  is needed, in which case Turnstile shows its own centered overlay).
+- Each call does `turnstile.reset()` + `turnstile.execute()` and resolves with the fresh
+  single-use token via the success callback; resolves `undefined` on error/expiry/timeout
+  (30s) or when `TURNSTILE_SITEKEY` is unset. Never throws.
+
+**Both modals' extract handlers:**
+- Call `const token = await getTurnstileToken();` and pass it as the new 4th arg to
+  `extractHorseDataFromImage(base64, mimeType, apiKey.trim(), token)`.
+- `undefined` token (helper failed / not configured) → proxy skipped → user-key fallback.
   Do not hard-block the UI on Turnstile.
+- Align v1 `components/OCRModal.tsx`'s pre-extract gate to v2's proxy-aware form
+  (`if (!OCR_PROXY_URL && !apiKey.trim())`) so the keyless proxy path is reachable there
+  too (v2 already does this).
 
 ### 4. Build wiring
 
@@ -154,7 +167,8 @@ No automated harness for the browser/live-API path (matches repo pattern). Verif
 2. **Builds:** `cd umalator-global && node build.mjs` (v1 esbuild) and
    `cd umalator-global/v2 && npx vite build` (v2) succeed with `CC_TURNSTILE_SITEKEY`
    defined; no resolution errors.
-3. **Manual OCR smoke (dev preview):** real screenshot through the modal — Managed widget
+3. **Manual OCR smoke (dev preview):** real screenshot through **both** modals (v1
+   `components/OCRModal.tsx`, v2 `umalator-global/v2/ocr-modal.tsx`) — Managed widget
    passes invisibly, OCR populates. Then force the fallback (block the token) and confirm
    the user-key path still works.
 4. Existing `uma-skill-tools` tests still pass (unaffected sanity check).
