@@ -1142,7 +1142,7 @@
     "alternatives": [
       {
         "baseDuration": 50000,
-        "condition": "is_last_straight==1",
+        "condition": "is_finalcorner==1&corner==0",
         "effects": [
           {
             "modifier": 3500,
@@ -17623,7 +17623,7 @@
     "alternatives": [
       {
         "baseDuration": 30000,
-        "condition": "is_last_straight==1",
+        "condition": "is_finalcorner==1&corner==0",
         "effects": [
           {
             "modifier": 1500,

@@ -11,8 +11,43 @@
 import skillnames from '../umalator-global/skillnames.json';
 import skills from '../umalator-global/skill_data.json';
 import umas from '../umalator-global/umas.json';
+import { GoogleGenAI, Type } from '@google/genai';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+// gemini-2.5-flash: current GA model with a free tier (gemini-flash-latest / 2.0-flash
+// have no guaranteed free tier). To change the model, edit this constant here and in
+// uma-tools-bot/src/gemini-ocr.ts.
+const MODEL = 'gemini-2.5-flash';
+
+// Structured-output schema → Gemini returns guaranteed-valid JSON (no markdown fences).
+const RESPONSE_SCHEMA = {
+	type: Type.OBJECT,
+	properties: {
+		name:             { type: Type.STRING },
+		outfit:           { type: Type.STRING },
+		speed:            { type: Type.INTEGER },
+		stamina:          { type: Type.INTEGER },
+		power:            { type: Type.INTEGER },
+		guts:             { type: Type.INTEGER },
+		wisdom:           { type: Type.INTEGER },
+		surfaceAptitude:  { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
+		distanceAptitude: { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
+		strategyAptitude: { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
+		strategy:         { type: Type.STRING, enum: ['Nige','Senkou','Sasi','Oikomi'] },
+		skills:           { type: Type.ARRAY, items: { type: Type.STRING } },
+	},
+	required: ['speed','stamina','power','guts','wisdom','skills'],
+	propertyOrdering: ['name','outfit','speed','stamina','power','guts','wisdom',
+		'surfaceAptitude','distanceAptitude','strategyAptitude','strategy','skills'],
+};
+
+const GENERATION_CONFIG = {
+	temperature: 0.1,
+	topK: 1,
+	topP: 0.8,
+	maxOutputTokens: 4096,
+	responseMimeType: 'application/json',
+	responseSchema: RESPONSE_SCHEMA,
+};
 
 // OCR proxy URL set via esbuild define (CC_OCR_PROXY)
 declare const CC_OCR_PROXY: string;
@@ -241,115 +276,73 @@ export interface OCRResult {
 	rawResponse?: string;
 }
 
-const EXTRACTION_PROMPT = `Analyze this Uma Musume game screenshot and extract the horse's data.
+const EXTRACTION_PROMPT = `Analyze this Uma Musume game screenshot and extract the horse's data into the provided JSON schema.
 
-Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
-{
-  "name": "character name (e.g., 'El Condor Pasa', 'Taiki Shuttle')",
-  "outfit": "outfit name in brackets (e.g., '[El☆Número 1]', '[Wild Frontier]')",
-  "speed": <number - the Speed stat value>,
-  "stamina": <number - the Stamina stat value>,
-  "power": <number - the Power stat value>,
-  "guts": <number - the Guts stat value>,
-  "wisdom": <number - the Wit/Wisdom stat value>,
-  "surfaceAptitude": "<letter grade for Turf: S, A, B, C, D, E, F, or G>",
-  "distanceAptitude": "<letter grade - use the BEST grade among Sprint/Mile/Medium/Long>",
-  "strategyAptitude": "<letter grade - use the BEST grade among Front/Pace/Late/End styles>",
-  "strategy": "<style name with the best grade: 'Nige' for Front, 'Senkou' for Pace, 'Sasi' for Late, 'Oikomi' for End>",
-  "skills": ["skill name 1", "skill name 2", ...]
-}
+Field guidance:
+- name: character name (e.g., 'El Condor Pasa', 'Taiki Shuttle')
+- outfit: outfit name in brackets (e.g., '[El☆Número 1]', '[Wild Frontier]')
+- speed / stamina / power / guts / wisdom: the numeric stat values (wisdom = the Wit stat)
+- surfaceAptitude: the letter grade for Turf (S–G)
+- distanceAptitude: the BEST grade among Sprint / Mile / Medium / Long
+- strategyAptitude: the BEST grade among Front / Pace / Late / End styles
+- strategy: the style name with the best grade, mapped as:
+    Front / Front Runner = "Nige"
+    Pace / Pace Chaser = "Senkou"
+    Late / Late Surger = "Sasi"
+    End / End Closer = "Oikomi"
 
-Important mappings:
-- Style "Front" or "Front Runner" = strategy "Nige"
-- Style "Pace" or "Pace Chaser" = strategy "Senkou"
-- Style "Late" or "Late Surger" = strategy "Sasi"
-- Style "End" or "End Closer" = strategy "Oikomi"
-
-Extract ALL visible skill names from the Skills tab. Include the skill names exactly as shown, including:
-- Any circle symbols (○, ◎, ×) that appear after the skill name - these are part of the skill name indicating skill grade
-- The level indicator (Lvl 1, Lvl 2, Lvl 3, Lvl 4) if present - this is CRITICAL for distinguishing unique skills (which SHOW level) from inherited skills (which do NOT show level)
-
-IMPORTANT: UNIQUE skills DISPLAY a level indicator (usually Lvl 4). INHERITED skills do NOT show "Lvl X" - just the skill name.
+Extract ALL visible skill names from the Skills tab, exactly as shown, including:
+- Any circle/cross symbols (○, ◎, ×) after the name — these indicate the skill grade and are part of the name.
+- The level indicator (Lvl 1–4) if present — CRITICAL for telling UNIQUE skills (which DISPLAY "Lvl X", usually Lvl 4) apart from INHERITED skills (which do NOT show a level).
 
 Examples:
 - "Dancing in the Leaves Lvl 4" (HAS level) = unique skill
 - "Dancing in the Leaves" (NO level) = inherited skill`;
 
-function buildRequestBody(imageBase64: string, mimeType: string) {
-	return {
-		contents: [{
-			parts: [
-				{ inline_data: { mime_type: mimeType, data: imageBase64 } },
-				{ text: EXTRACTION_PROMPT }
-			]
-		}],
-		generationConfig: {
-			temperature: 0.1,
-			topK: 1,
-			topP: 0.8,
-			maxOutputTokens: 4096,
-		}
-	};
+// SDK baseUrl for the proxy path. The SDK appends /v1beta/models/<model>:generateContent.
+function proxyBaseUrl(): string {
+	const base = OCR_PROXY_URL.replace(/\/+$/, '');
+	return base.endsWith('/gemini') ? base : base + '/gemini';
 }
 
-function parseGeminiResponse(result: any): OCRResult {
-	const textContent = result.candidates?.[0]?.content?.parts?.[0]?.text;
+function buildContents(imageBase64: string, mimeType: string) {
+	return [{
+		role: 'user',
+		parts: [
+			{ inlineData: { mimeType, data: imageBase64 } },
+			{ text: EXTRACTION_PROMPT },
+		],
+	}];
+}
 
-	if (!textContent) {
-		throw new Error('No response content from Gemini API');
+async function runExtraction(ai: GoogleGenAI, imageBase64: string, mimeType: string): Promise<OCRResult> {
+	const resp = await ai.models.generateContent({
+		model: MODEL,
+		contents: buildContents(imageBase64, mimeType),
+		config: GENERATION_CONFIG,
+	});
+
+	const text = resp.text;
+	if (!text) {
+		throw new Error('No response content from Gemini');
 	}
 
-	let jsonStr = textContent.trim();
-
-	if (jsonStr.startsWith('```json')) {
-		jsonStr = jsonStr.slice(7);
-	} else if (jsonStr.startsWith('```')) {
-		jsonStr = jsonStr.slice(3);
-	}
-	if (jsonStr.endsWith('```')) {
-		jsonStr = jsonStr.slice(0, -3);
-	}
-	jsonStr = jsonStr.trim();
-
-	if (!jsonStr.endsWith('}')) {
-		console.error('Truncated JSON response:', jsonStr);
-		throw new Error(`AI response appears truncated (doesn't end with }). This may be due to token limits or API issues.\n\nReceived ${jsonStr.length} characters. Response ends with: "${jsonStr.slice(-50)}"`);
-	}
-
-	let horseData: OCRHorseData;
+	let data: OCRHorseData;
 	try {
-		horseData = JSON.parse(jsonStr);
+		data = JSON.parse(text);
 	} catch (parseError) {
-		console.error('Failed to parse JSON response:', jsonStr);
-		throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}\n\nRaw response (first 200 chars):\n${jsonStr.slice(0, 200)}...`);
+		throw new Error(`Invalid JSON from AI: ${parseError instanceof Error ? parseError.message : 'Parse error'}`);
 	}
 
-	if (typeof horseData.speed !== 'number' ||
-		typeof horseData.stamina !== 'number' ||
-		typeof horseData.power !== 'number' ||
-		typeof horseData.guts !== 'number' ||
-		typeof horseData.wisdom !== 'number') {
+	if (typeof data.speed !== 'number' ||
+		typeof data.stamina !== 'number' ||
+		typeof data.power !== 'number' ||
+		typeof data.guts !== 'number' ||
+		typeof data.wisdom !== 'number') {
 		throw new Error('Invalid stat values in response');
 	}
 
-	return { success: true, data: horseData, rawResponse: textContent };
-}
-
-async function callGeminiDirect(requestBody: any, apiKey: string): Promise<Response> {
-	return fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(requestBody),
-	});
-}
-
-async function callGeminiProxy(requestBody: any): Promise<Response> {
-	const url = OCR_PROXY_URL.endsWith('/gemini') ? OCR_PROXY_URL : OCR_PROXY_URL.replace(/\/?$/, '/gemini');
-	return fetch(url, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(requestBody),
-	});
+	return { success: true, data, rawResponse: text };
 }
 
 export async function extractHorseDataFromImage(
@@ -357,23 +350,18 @@ export async function extractHorseDataFromImage(
 	mimeType: string,
 	apiKey: string
 ): Promise<OCRResult> {
-	const requestBody = buildRequestBody(imageBase64, mimeType);
-
-	// Try server proxy first (no user key needed)
+	// Try the server proxy first (no user key needed). 'proxy' is a placeholder the
+	// worker ignores — it injects the real server key.
 	if (OCR_PROXY_URL) {
 		try {
-			const response = await callGeminiProxy(requestBody);
-			if (response.ok) {
-				return parseGeminiResponse(await response.json());
-			}
-			// Proxy failed (rate limit, misconfigured, etc.) — fall through to direct
-			console.warn('OCR proxy returned', response.status, '— falling back to user key');
+			const ai = new GoogleGenAI({ apiKey: 'proxy', httpOptions: { baseUrl: proxyBaseUrl() } });
+			return await runExtraction(ai, imageBase64, mimeType);
 		} catch (err) {
-			console.warn('OCR proxy unreachable — falling back to user key');
+			console.warn('OCR proxy failed — falling back to user key:', err instanceof Error ? err.message : err);
 		}
 	}
 
-	// Fall back to direct API call with user's key
+	// Fall back to a direct call with the user's key.
 	if (!apiKey) {
 		return {
 			success: false,
@@ -384,19 +372,12 @@ export async function extractHorseDataFromImage(
 	}
 
 	try {
-		const response = await callGeminiDirect(requestBody, apiKey);
-
-		if (!response.ok) {
-			const errorData = await response.json().catch(() => ({}));
-			throw new Error((errorData as any).error?.message || `API request failed with status ${response.status}`);
-		}
-
-		return parseGeminiResponse(await response.json());
+		const ai = new GoogleGenAI({ apiKey });
+		return await runExtraction(ai, imageBase64, mimeType);
 	} catch (error) {
 		return {
 			success: false,
 			error: error instanceof Error ? error.message : 'Unknown error occurred',
-			rawResponse: undefined
 		};
 	}
 }

@@ -288,6 +288,42 @@ v2/
 - Review screen allows editing before loading
 - API key stored in localStorage (optional)
 
+### OCR Pipeline (screenshot → uma)
+
+Imports a uma from a game screenshot via Google Gemini. Three consumers share the
+flow across two environments:
+
+| Consumer | File | Env | Auth |
+|---|---|---|---|
+| v2 + v1 web modals | `components/GeminiOCR.ts` (shared lib) | Browser | Proxy (no key) → user-key fallback |
+| OCR proxy | `uma-tools-worker/webhook-proxy.js` | Cloudflare Worker | Server `GEMINI_API_KEY` secret |
+| Discord bot | `uma-tools-bot/src/gemini-ocr.ts` | Node | Server key |
+
+**SDK + model:** uses the unified **`@google/genai`** SDK against **`gemini-2.5-flash`**
+— a GA model with a **free tier**. Do **not** use `gemini-flash-latest` (floating alias,
+no guaranteed free tier) or `gemini-2.0-flash*` (shut down 2026-06-01). The model is a
+`MODEL` constant in `components/GeminiOCR.ts` and `uma-tools-bot/src/gemini-ocr.ts`
+(2 places); the worker is model-agnostic.
+
+**Structured output:** the call sets `responseMimeType: 'application/json'` +
+`responseSchema` (the `OCRHorseData` shape, with `enum`s for aptitude/strategy), so
+Gemini returns guaranteed-valid JSON — no markdown-fence stripping needed. The strategy
+enum is the four on-screen styles (Nige/Senkou/Sasi/Oikomi); Oonige isn't screenshot-
+derivable, so the user sets it manually after import if needed.
+
+**Proxy:** the browser points the SDK at the worker via
+`httpOptions.baseUrl = OCR_PROXY_URL + '/gemini'`. The worker's `/gemini/*` route is a
+transparent reverse proxy: it forwards `/v1beta/models/<model>:generateContent` to
+Google, injecting `env.GEMINI_API_KEY` as `x-goog-api-key` (only inference paths are
+allowed; any client-sent key is ignored). Most users never need a key; if the proxy
+fails, the client falls back to a user-supplied key (entered in the modal, optionally
+saved to `localStorage`). `OCR_PROXY_URL` is provided to the build via the
+`CC_OCR_PROXY` esbuild/vite define (from `OCR_PROXY_URL` in `.env.local`). After
+deploying the worker, set the secret with `wrangler secret put GEMINI_API_KEY`.
+
+**To change the model:** edit the `MODEL` constant in the two files above (and confirm
+the new model has a free tier if you rely on the proxy).
+
 ### URL State Features (V2)
 
 **Hash-based State Serialization:**

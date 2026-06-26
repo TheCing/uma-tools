@@ -2,6 +2,13 @@
 
 Cloudflare Worker that acts as a secure proxy for Discord webhook submissions from Uma Tools v2.
 
+### Routes
+
+- `POST /` — Discord webhook proxy (feedback submissions). Adds IP/location/browser metadata, forwards to `env.DISCORD_WEBHOOK`.
+- `POST /gemini/*` — **Gemini OCR reverse proxy.** Forwards `/gemini/v1beta/models/<model>:generateContent` to `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent`, injecting the `env.GEMINI_API_KEY` secret as the `x-goog-api-key` header (any client-sent key is ignored). Model-agnostic — only the `:generateContent` / `:streamGenerateContent` inference paths are allowed. The `@google/genai` SDK is pointed here via `httpOptions.baseUrl = <worker-url>/gemini`. CORS is open (`*`) and allows the `Content-Type` and `x-goog-api-key` headers.
+
+Set the OCR secret with: `wrangler secret put GEMINI_API_KEY`
+
 ## Why Use This?
 
 - **Security**: Hides the real Discord webhook URL from client-side code
