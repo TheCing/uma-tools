@@ -789,24 +789,32 @@ Community guides are Canva embeds addressed by a numbered slug, reachable at bot
   highest-numbered (newest) guide
 - number-only (`/14`) → 302 to the full slug
 
-**Routing + registry live in `functions/[[catchall]].ts`** (a Pages Function),
-NOT `_redirects` — Cloudflare Pages `_redirects` matches on the request path only,
-so hostname-scoped rules there are silently ignored. The function renders each
-guide page from the `EMBEDS` array.
+**Registry lives in `canva-embeds.json`** (single source of truth, repo root).
 
-**To add a guide:** add one entry to the `EMBEDS` array near the top of
-`functions/[[catchall]].ts`:
+**`umalator.app/canva/<slug>` is served by STATIC pages**, not the Function. Cloudflare
+Pages Functions are not currently executing on the production project (the
+`functions/[[catchall]].ts` canva routing — and the events OG function, and the
+`www`→apex redirect — never run in prod; everything falls through to static). So
+`tools/gen-canva-static.mjs` reads `canva-embeds.json` and writes static
+`canva/<slug>/index.html` wrapper pages (+ `canva/index.html` = newest) on every build
+(wired into `build-all.sh`). These are plain static assets and always serve. The
+`functions/[[catchall]].ts` still reads the same `canva-embeds.json` and would serve the
+`canva.umalator.app` subdomain (and number-only slugs) **if/when Functions are revived**
+— that requires a Cloudflare dashboard fix (Functions enablement / compatibility date),
+not a repo change. The subdomain + number-slug `/14`→`/14-yasuda` redirects are currently
+inactive in prod as a result.
 
-```ts
-{ slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
-  canvaId: 'XXXX', viewToken: 'YYYY' },
+**To add a guide:** add one entry to `canva-embeds.json`:
+
+```json
+{ "slug": "16-sprinters", "title": "CM 16 Guide — Sprinters",
+  "canvaId": "XXXX", "viewToken": "YYYY" }
 ```
 
 Get `canvaId` + `viewToken` from Canva › Share › More › Embed — the embed URL is
-`https://www.canva.com/design/<canvaId>/<viewToken>/view?embed`. The newest entry
-automatically becomes the root redirect target. Changes ship with `master`
-(`canva.umalator.app` maps to the production deployment), so merge `dev` → master
-to publish.
+`https://www.canva.com/design/<canvaId>/<viewToken>/view?embed`. The highest-numbered
+entry automatically becomes `canva/index.html` (the bare-`/canva` target). Changes ship
+with `master` — merge `dev` → master to publish.
 
 ## Credits
 

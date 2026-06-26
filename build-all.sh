@@ -8,6 +8,10 @@ echo "Building uma-tools applications..."
 echo "========================================="
 
 echo ""
+echo "Generating static Canva guide pages (canva/<slug>/index.html)..."
+node tools/gen-canva-static.mjs
+
+echo ""
 echo "Building umalator-global..."
 cd umalator-global
 node build.mjs

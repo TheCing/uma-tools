@@ -1,45 +1,35 @@
+#!/usr/bin/env node
 /**
- * Shared Canva guide registry + renderers.
+ * Generate STATIC Canva guide pages from the canva-embeds.json registry.
  *
- * Imported by BOTH Pages Functions that serve guides:
- *   - functions/[[catchall]].ts        — canva.umalator.app/<slug> (subdomain) + www/does.redshift.work
- *   - functions/canva/[[path]].ts      — umalator.app/canva/<slug> (apex path, dedicated route)
+ * Why static? Cloudflare Pages Functions are not currently executing on the
+ * production project (the [[catchall]] canva routing never runs in prod — see the
+ * Canva section in CLAUDE.md). Static HTML files are always served, so this
+ * guarantees umalator.app/canva/<slug> works regardless of Functions.
  *
- * Keeping the EMBEDS registry + renderers here means a new guide is added in ONE place.
+ * Writes (at the repo root, which is the Pages build output dir):
+ *   canva/<slug>/index.html   — the embed wrapper for each guide
+ *   canva/index.html          — the newest guide (so bare /canva works)
  *
- * Each guide is a Canva embed addressed by a "<number>-<name>" slug. The bare root
- * redirects to the highest-numbered (newest) guide.
- *
- * To ADD a guide: copy a line in EMBEDS, bump the slug number + name, and paste the
- * Canva design ID + view token from Canva › Share › More › Embed (the embed URL
- * looks like https://www.canva.com/design/<canvaId>/<viewToken>/view?embed).
+ * Run by build-all.sh on every deploy. Single source of truth: canva-embeds.json
+ * (the [[catchall]] Function reads the same file).
  */
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 
-const CANVA_HOST = 'canva.umalator.app';
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const EMBEDS = JSON.parse(readFileSync(join(ROOT, 'canva-embeds.json'), 'utf8'));
 
-export interface CanvaEmbed {
-  slug: string;       // "14-yasuda"
-  title: string;      // "CM 14 Guide — Yasuda Kinen"
-  canvaId: string;    // "DAHKQU64nsg"
-  viewToken: string;  // "BvXGiL0N1rLjUgNRP5KQPw"
-}
+const escapeHtml = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
-export const EMBEDS: CanvaEmbed[] = [
-  { slug: '14-yasuda', title: 'CM 14 Guide — Yasuda Kinen',
-    canvaId: 'DAHKQU64nsg', viewToken: 'BvXGiL0N1rLjUgNRP5KQPw' },
-  { slug: '15-takarazuka', title: 'CM 15 Guide — Takarazuka Kinen',
-    canvaId: 'DAHLSXaH3go', viewToken: '0PTH2KUGR4-hcAtbV1RhJw' },
-];
-
-export function slugNumber(slug: string): number {
-  return parseInt(slug, 10);
-}
-
-export function newestEmbed(): CanvaEmbed {
-  return EMBEDS.reduce((a, b) => (slugNumber(b.slug) > slugNumber(a.slug) ? b : a));
-}
-
-function canvaUrls(e: CanvaEmbed) {
+function canvaUrls(e) {
   const base = `https://www.canva.com/design/${e.canvaId}/${e.viewToken}/view`;
   return {
     embed: `${base}?embed`,
@@ -48,19 +38,10 @@ function canvaUrls(e: CanvaEmbed) {
   };
 }
 
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-export function renderEmbedPage(e: CanvaEmbed): string {
+function renderEmbedPage(e) {
   const title = escapeHtml(e.title);
   const desc = escapeHtml(`${e.title} — Uma Musume guide, hosted on Canva.`);
-  const ogUrl = escapeHtml(`https://${CANVA_HOST}/${e.slug}`);
+  const ogUrl = escapeHtml(`https://umalator.app/canva/${e.slug}`);
   const u = canvaUrls(e);
   const embedSrc = escapeHtml(u.embed);
   const shareHref = escapeHtml(u.share);
@@ -145,30 +126,24 @@ export function renderEmbedPage(e: CanvaEmbed): string {
 </html>`;
 }
 
-export function renderCanva404(prefix: string): string {
-  const newest = newestEmbed();
-  const href = escapeHtml(`${prefix}/${newest.slug}`);
-  const name = escapeHtml(newest.title);
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guide not found</title>
-    <style>
-      body {
-        margin: 0; min-height: 100vh; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; gap: 1rem; padding: 2rem;
-        background: #1a1a1a; color: #d0d0d0; text-align: center;
-        font-family: system-ui, -apple-system, sans-serif;
-      }
-      h1 { font-size: 1.5rem; margin: 0; }
-      a { color: #7fbf7e; }
-    </style>
-  </head>
-  <body>
-    <h1>Guide not found</h1>
-    <p>That guide doesn't exist. <a href="${href}">Go to the latest → ${name}</a></p>
-  </body>
-</html>`;
+if (!Array.isArray(EMBEDS) || EMBEDS.length === 0) {
+  console.error('gen-canva-static: canva-embeds.json is empty');
+  process.exit(1);
 }
+
+const slugNumber = (slug) => parseInt(slug, 10);
+const newest = EMBEDS.reduce((a, b) => (slugNumber(b.slug) > slugNumber(a.slug) ? b : a));
+
+// Clean previous output so removed guides don't linger.
+rmSync(join(ROOT, 'canva'), { recursive: true, force: true });
+
+for (const e of EMBEDS) {
+  const dir = join(ROOT, 'canva', e.slug);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, 'index.html'), renderEmbedPage(e));
+}
+// Bare /canva → newest guide.
+mkdirSync(join(ROOT, 'canva'), { recursive: true });
+writeFileSync(join(ROOT, 'canva', 'index.html'), renderEmbedPage(newest));
+
+console.log(`gen-canva-static: wrote ${EMBEDS.length} guide page(s) + canva/index.html (newest: ${newest.slug})`);
