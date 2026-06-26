@@ -32,7 +32,7 @@ const RESPONSE_SCHEMA = {
 		surfaceAptitude:  { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
 		distanceAptitude: { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
 		strategyAptitude: { type: Type.STRING, enum: ['S','A','B','C','D','E','F','G'] },
-		strategy:         { type: Type.STRING, enum: ['Nige','Senkou','Sasi','Oikomi','Oonige'] },
+		strategy:         { type: Type.STRING, enum: ['Nige','Senkou','Sasi','Oikomi'] },
 		skills:           { type: Type.ARRAY, items: { type: Type.STRING } },
 	},
 	required: ['speed','stamina','power','guts','wisdom','skills'],
@@ -301,7 +301,8 @@ Examples:
 
 // SDK baseUrl for the proxy path. The SDK appends /v1beta/models/<model>:generateContent.
 function proxyBaseUrl(): string {
-	return OCR_PROXY_URL.replace(/\/+$/, '') + '/gemini';
+	const base = OCR_PROXY_URL.replace(/\/+$/, '');
+	return base.endsWith('/gemini') ? base : base + '/gemini';
 }
 
 function buildContents(imageBase64: string, mimeType: string) {
