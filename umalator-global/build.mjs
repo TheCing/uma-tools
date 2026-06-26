@@ -231,13 +231,106 @@ function syncUmaLocalizations() {
 
 syncUmaLocalizations();
 
+// Generate v2/cm-presets.generated.json — Champions Meeting presets for Global.
+// Global CM N replays JP CM N exactly (course + season/weather/ground/time),
+// verified 1:1 against the shipped Global schedule. So:
+//   - race conditions come from the JP DB (docs/master(1).mdb), available far ahead
+//   - run dates come from the Global DB (authoritative) for CMs the client knows,
+//     falling back to the hand/MANT-maintained v2/cm-dates.json for future CMs
+//   - CM names are derived from the zodiac cycle (CM 1 = Taurus)
+// A CM is only emitted once a Global date is resolvable; undated future CMs are
+// skipped until their date is known.
+function generateCMPresets() {
+	const outPath = path.join(dirname, 'v2', 'cm-presets.generated.json');
+	const jpDb = path.join(root, 'docs', 'master(1).mdb');
+	const globalDb = path.join(root, 'docs', 'master.mdb');
+	const datesPath = path.join(dirname, 'v2', 'cm-dates.json');
+
+	if (!fs.existsSync(jpDb)) {
+		const exists = fs.existsSync(outPath);
+		console.log(
+			`cm-presets: JP master.mdb (docs/master(1).mdb) not present — ${exists
+				? 'leaving committed file alone'
+				: 'no committed file either, skipping'}`
+		);
+		return;
+	}
+
+	try {
+		// JP conditions per CM number (round 0 is representative; all rounds share conditions)
+		const jpRaw = execSync(
+			`sqlite3 -separator '|' "${jpDb}" "` +
+			`SELECT cs.id, r.course_set, rc.season, rc.weather, rc.ground, ri.time ` +
+			`FROM champions_schedule cs ` +
+			`JOIN champions_race_condition crc ON crc.champions_id = cs.id AND crc.round_id = 0 ` +
+			`JOIN race_instance ri ON ri.id = crc.race_instance_id ` +
+			`JOIN race r ON r.id = ri.race_id ` +
+			`JOIN race_condition rc ON rc.id = crc.race_condition_id ` +
+			`ORDER BY cs.id"`,
+			{ encoding: 'utf-8' }
+		);
+		const jp = new Map();
+		for (const line of jpRaw.trim().split('\n').filter(Boolean)) {
+			const [id, course, season, weather, ground, time] = line.split('|').map(Number);
+			jp.set(id, { courseId: course, season, weather, ground, time });
+		}
+
+		// Authoritative Global run dates per CM number (when the client knows them)
+		const globalDates = new Map();
+		if (fs.existsSync(globalDb)) {
+			const gRaw = execSync(
+				`sqlite3 -separator '|' "${globalDb}" "SELECT id, strftime('%Y-%m-%d', start_date, 'unixepoch') FROM champions_schedule"`,
+				{ encoding: 'utf-8' }
+			);
+			for (const line of gRaw.trim().split('\n').filter(Boolean)) {
+				const [id, date] = line.split('|');
+				globalDates.set(Number(id), date);
+			}
+		}
+
+		// Hand/MANT date map for CMs beyond the Global client horizon
+		let handDates = {};
+		if (fs.existsSync(datesPath)) handDates = JSON.parse(fs.readFileSync(datesPath, 'utf-8'));
+
+		const ZODIAC = ['Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra',
+			'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces', 'Aries'];
+
+		const out = [];
+		for (const [id, cond] of jp) {
+			const confirmed = globalDates.has(id);
+			const date = globalDates.get(id) ?? handDates[id];
+			if (!date) continue;  // no Global date known yet — can't place this event
+			out.push({
+				id,
+				type: 0,  // EventType.CM
+				name: `${ZODIAC[(id - 1) % 12]} Cup`,
+				date,
+				courseId: cond.courseId,
+				season: cond.season,
+				ground: cond.ground,
+				weather: cond.weather,
+				time: cond.time,
+				confirmed,
+			});
+		}
+		out.sort((a, b) => a.id - b.id);
+		fs.writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
+		const nConfirmed = out.filter(p => p.confirmed).length;
+		console.log(`cm-presets.generated.json: ${out.length} presets (${nConfirmed} confirmed, ${out.length - nConfirmed} from hand map)`);
+	} catch (e) {
+		console.warn(`Failed to regenerate cm-presets.generated.json: ${e.message}. Leaving existing file in place.`);
+	}
+}
+
+generateCMPresets();
+
 const buildOptions = {
 	entryPoints: [{in: '../umalator/app.tsx', out: 'bundle'}, '../umalator/simulator.worker.ts'],
 	bundle: true,
 	minify: !debug,
 	outdir: '.',
 	write: !serve,
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_TURNSTILE_SITEKEY: JSON.stringify(process.env.TURNSTILE_SITEKEY || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
 	external: ['*.ttf'],
 	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin],
 };
@@ -252,7 +345,7 @@ const buildOptionsV2 = {
 	outdir: '.',
 	write: !serve,
 	format: 'esm',  // v2 uses import.meta (env vars, worker URLs) — legal only in ESM output
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
+	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_TURNSTILE_SITEKEY: JSON.stringify(process.env.TURNSTILE_SITEKEY || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
 	external: ['*.ttf'],
 	plugins: [redirectData, mockAssert, seedrandomPlugin],  // No redirectTable - use npm packages
 };
