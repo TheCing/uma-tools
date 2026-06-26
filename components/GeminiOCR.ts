@@ -348,13 +348,21 @@ async function runExtraction(ai: GoogleGenAI, imageBase64: string, mimeType: str
 export async function extractHorseDataFromImage(
 	imageBase64: string,
 	mimeType: string,
-	apiKey: string
+	apiKey: string,
+	turnstileToken?: string
 ): Promise<OCRResult> {
 	// Try the server proxy first (no user key needed). 'proxy' is a placeholder the
-	// worker ignores — it injects the real server key.
-	if (OCR_PROXY_URL) {
+	// worker ignores — it injects the real server key. The proxy requires a Turnstile
+	// token; without one the worker would 403, so skip straight to the user-key path.
+	if (OCR_PROXY_URL && turnstileToken) {
 		try {
-			const ai = new GoogleGenAI({ apiKey: 'proxy', httpOptions: { baseUrl: proxyBaseUrl() } });
+			const ai = new GoogleGenAI({
+				apiKey: 'proxy',
+				httpOptions: {
+					baseUrl: proxyBaseUrl(),
+					headers: { 'X-Turnstile-Token': turnstileToken },
+				},
+			});
 			return await runExtraction(ai, imageBase64, mimeType);
 		} catch (err) {
 			console.warn('OCR proxy failed — falling back to user key:', err instanceof Error ? err.message : err);
