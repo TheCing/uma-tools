@@ -67,11 +67,26 @@ function ensureWidget(): Promise<void> {
 	return widgetReady;
 }
 
+// Serialize token requests: the single hidden widget + `pending` resolver can only
+// service one challenge at a time. Without this, an overlapping call would reset() the
+// in-flight challenge and orphan the first promise until its 30s timeout.
+let chain: Promise<unknown> = Promise.resolve();
+
+/**
+ * Resolve to a fresh single-use Turnstile token, or undefined if Turnstile is
+ * unconfigured/unavailable/challenged-out. Never rejects. Calls are serialized.
+ */
+export function getTurnstileToken(): Promise<string | undefined> {
+	const next = chain.then(acquireToken, acquireToken);
+	chain = next.catch(() => undefined);
+	return next;
+}
+
 /**
  * Resolve to a fresh single-use Turnstile token, or undefined if Turnstile is
  * unconfigured/unavailable/challenged-out. Never rejects.
  */
-export async function getTurnstileToken(): Promise<string | undefined> {
+async function acquireToken(): Promise<string | undefined> {
 	if (!TURNSTILE_SITEKEY || typeof window === 'undefined') return undefined;
 	try {
 		await loadScript();
