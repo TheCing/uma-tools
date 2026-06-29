@@ -17,10 +17,12 @@ import {
 	loadHorseSlot,
 	deleteHorseSlot,
 	downloadHorseJson,
-	importHorseJson,
+	importHorseJsonMulti,
 	copyHorseToClipboard,
 	pasteHorseFromClipboard,
 } from './storage';
+import type { ImportCandidate } from './storage';
+import { ImportPickerModal } from './import-picker';
 import { ChevronRight, Save, Upload, Download, Copy, Clipboard, Trash2, RotateCcw, Camera, LayoutGrid, Columns2 } from 'lucide-react';
 import { OCRModal } from './ocr-modal';
 
@@ -560,6 +562,7 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 	const [saveModalName, setSaveModalName] = useState('');
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [deleteSlotName, setDeleteSlotName] = useState('');
+	const [pickerCandidates, setPickerCandidates] = useState<ImportCandidate[] | null>(null);
 
 	// Refresh saved slots list
 	const refreshSlots = useCallback(() => {
@@ -659,10 +662,16 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 	}, [onLoad]);
 
 	const handleImportJson = useCallback(async () => {
-		const imported = await importHorseJson();
-		if (imported && onLoad) {
-			onLoad(imported);
+		const { candidates, skipped } = await importHorseJsonMulti();
+		if (skipped.length > 0) {
+			alert(`Skipped ${skipped.length} file(s) that weren't valid uma JSON:\n${skipped.join('\n')}`);
 		}
+		if (candidates.length === 0) return;
+		if (candidates.length === 1) {
+			onLoad?.(candidates[0].data);
+			return;
+		}
+		setPickerCandidates(candidates);
 	}, [onLoad]);
 
 	const handlePasteFromClipboard = useCallback(async () => {
@@ -906,6 +915,15 @@ export function V2UmaPanel({ state, onChange, onLoad, onReset, onResetAll, title
 				onClose={() => setIsOCRModalOpen(false)}
 				onConfirm={handleOCRConfirm}
 			/>
+
+			{/* Import picker (multi-file) */}
+			{pickerCandidates && (
+				<ImportPickerModal
+					candidates={pickerCandidates}
+					onPick={(data) => { onLoad?.(data); setPickerCandidates(null); }}
+					onClose={() => setPickerCandidates(null)}
+				/>
+			)}
 
 			{/* Save Modal */}
 			<Modal
