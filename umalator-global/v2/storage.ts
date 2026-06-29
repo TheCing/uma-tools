@@ -421,6 +421,60 @@ export function importHorseJson(): Promise<UmaState | null> {
 }
 
 /**
+ * A parsed import candidate: one uma from one uploaded file.
+ */
+export interface ImportCandidate {
+	name: string;     // source file name (display + fallback)
+	data: UmaState;   // parsed + validated
+}
+
+/**
+ * Open a MULTI-select JSON file picker, parse each file (one uma per file), and
+ * return all valid candidates plus the names of files that failed to parse.
+ * Never rejects; invalid files are skipped.
+ */
+export function importHorseJsonMulti(): Promise<{ candidates: ImportCandidate[]; skipped: string[] }> {
+	return new Promise((resolve) => {
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.json,application/json';
+		input.multiple = true;
+
+		input.onchange = async (e) => {
+			const files = Array.from((e.target as HTMLInputElement).files || []);
+			if (files.length === 0) {
+				resolve({ candidates: [], skipped: [] });
+				return;
+			}
+
+			const candidates: ImportCandidate[] = [];
+			const skipped: string[] = [];
+
+			for (const file of files) {
+				try {
+					const text = await file.text();
+					const json = tryParseImportText(text);
+					const parsed = json ? validateAndParseUmaJson(json) : null;
+					if (parsed) {
+						candidates.push({ name: file.name, data: parsed });
+					} else {
+						skipped.push(file.name);
+					}
+				} catch (err) {
+					console.error('Failed to parse JSON file:', file.name, err);
+					skipped.push(file.name);
+				}
+			}
+
+			resolve({ candidates, skipped });
+		};
+
+		input.oncancel = () => resolve({ candidates: [], skipped: [] });
+		input.click();
+	});
+}
+
+/**
  * Copy horse state to clipboard as JSON
  */
 export async function copyHorseToClipboard(horse: UmaState): Promise<boolean> {
