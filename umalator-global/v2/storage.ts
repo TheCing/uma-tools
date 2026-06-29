@@ -388,39 +388,6 @@ export function downloadHorseJson(horse: UmaState): void {
 }
 
 /**
- * Import horse state from JSON file
- * Returns a promise that resolves to the parsed UmaState or null
- */
-export function importHorseJson(): Promise<UmaState | null> {
-	return new Promise((resolve) => {
-		const input = document.createElement('input');
-		input.type = 'file';
-		input.accept = '.json,application/json';
-
-		input.onchange = async (e) => {
-			const file = (e.target as HTMLInputElement).files?.[0];
-			if (!file) {
-				resolve(null);
-				return;
-			}
-
-			try {
-				const text = await file.text();
-				const json = tryParseImportText(text);
-				const parsed = json ? validateAndParseUmaJson(json) : null;
-				resolve(parsed);
-			} catch (err) {
-				console.error('Failed to parse JSON file:', err);
-				resolve(null);
-			}
-		};
-
-		input.oncancel = () => resolve(null);
-		input.click();
-	});
-}
-
-/**
  * A parsed import candidate: one uma from one uploaded file.
  */
 export interface ImportCandidate {
