@@ -25,10 +25,10 @@ import {
 	moveSlotToFolder,
 	toggleFolderCollapsed,
 } from './storage';
+import { TraineeCardPreview } from './trainee-card-preview';
 import type { UmaState } from './uma-panel';
 
 import umas from '../umas.json';
-import icons from '../../icons.json';
 
 // ============================================
 // SAVE TRAINEE MODAL
@@ -180,25 +180,9 @@ interface TraineeCardProps {
 	folders: TraineeFolder[];
 }
 
-// Random mob portrait for empty outfitId
-const randomMobIcon = `/uma-tools/icons/mob/trained_mob_chr_icon_${8000 + Math.floor(Math.random() * 624)}_000001_01.png`;
-
 function TraineeCard({ slot, onLoadToUma1, onLoadToUma2, onDelete, onMoveToFolder, showUma2Button, folders }: TraineeCardProps) {
 	const [memo, setMemo] = useState(slot.memo || '');
 	const memoTimeoutRef = useRef<number | null>(null);
-
-	// Get portrait icon
-	const portraitIcon = useMemo(() => {
-		if (!slot.data.outfitId) return randomMobIcon;
-		return (icons as Record<string, string>)[slot.data.outfitId] || randomMobIcon;
-	}, [slot.data.outfitId]);
-
-	// Get character name
-	const characterName = useMemo(() => {
-		if (!slot.data.outfitId) return slot.name;
-		const uma = (umas as any)[slot.data.outfitId.slice(0, 4)];
-		return uma?.name?.[1] || slot.name;
-	}, [slot.data.outfitId, slot.name]);
 
 	// Debounced memo save
 	const handleMemoChange = useCallback((value: string) => {
@@ -229,57 +213,17 @@ function TraineeCard({ slot, onLoadToUma1, onLoadToUma2, onDelete, onMoveToFolde
 		}
 	}, [slot.name, onDelete]);
 
-	const { speed, stamina, power, guts, wisdom } = slot.data;
-
 	return (
 		<div class="v2-trainee-card">
-			<div class="v2-trainee-card-content">
-				{/* Portrait */}
-				<img
-					src={portraitIcon}
-					alt={characterName}
-					class="v2-trainee-portrait"
-					loading="lazy"
+			<TraineeCardPreview data={slot.data} name={slot.name}>
+				<textarea
+					class="v2-trainee-memo"
+					placeholder="Add notes..."
+					value={memo}
+					onInput={(e) => handleMemoChange((e.target as HTMLTextAreaElement).value)}
+					rows={1}
 				/>
-
-				{/* Info section */}
-				<div class="v2-trainee-info">
-					<div class="v2-trainee-name" title={slot.name}>{slot.name}</div>
-
-					{/* Editable memo */}
-					<textarea
-						class="v2-trainee-memo"
-						placeholder="Add notes..."
-						value={memo}
-						onInput={(e) => handleMemoChange((e.target as HTMLTextAreaElement).value)}
-						rows={1}
-					/>
-
-					{/* Compact stats preview */}
-					<div class="v2-trainee-stats-preview">
-						<span class="v2-trainee-stat">
-							<img src="/uma-tools/icons/status_00.png" alt="SPD" class="v2-trainee-stat-icon" />
-							{speed}
-						</span>
-						<span class="v2-trainee-stat">
-							<img src="/uma-tools/icons/status_01.png" alt="STA" class="v2-trainee-stat-icon" />
-							{stamina}
-						</span>
-						<span class="v2-trainee-stat">
-							<img src="/uma-tools/icons/status_02.png" alt="POW" class="v2-trainee-stat-icon" />
-							{power}
-						</span>
-						<span class="v2-trainee-stat">
-							<img src="/uma-tools/icons/status_03.png" alt="GUT" class="v2-trainee-stat-icon" />
-							{guts}
-						</span>
-						<span class="v2-trainee-stat">
-							<img src="/uma-tools/icons/status_04.png" alt="WIS" class="v2-trainee-stat-icon" />
-							{wisdom}
-						</span>
-					</div>
-				</div>
-			</div>
+			</TraineeCardPreview>
 
 			{/* Actions */}
 			<div class="v2-trainee-actions">
