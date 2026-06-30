@@ -7653,3 +7653,30 @@ tr:hover .v2-skill-hide-btn {
 	color: var(--color-text-faint);
 	line-height: 1.35;
 }
+
+/* Multi-file import picker */
+.v2-import-picker-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 12px;
+	max-height: 60vh;
+	overflow-y: auto;
+	padding: 4px;
+}
+.v2-import-picker-card {
+	display: block;
+	width: 100%;
+	text-align: left;
+	background: var(--v2-card-bg, rgba(255, 255, 255, 0.04));
+	border: 1px solid var(--v2-border, rgba(255, 255, 255, 0.12));
+	border-radius: 8px;
+	padding: 8px;
+	cursor: pointer;
+	transition: border-color 120ms ease, background 120ms ease;
+}
+.v2-import-picker-card:hover,
+.v2-import-picker-card:focus-visible {
+	border-color: var(--v2-accent, #7fbf7e);
+	background: var(--v2-card-bg-hover, rgba(255, 255, 255, 0.08));
+	outline: none;
+}
