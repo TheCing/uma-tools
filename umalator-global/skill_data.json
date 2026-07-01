@@ -15679,6 +15679,62 @@
     ],
     "rarity": 2
   },
+  "210082": {
+    "alternatives": [
+      {
+        "baseDuration": 24000,
+        "condition": "is_lastspurt==1&phase_random==3",
+        "effects": [
+          {
+            "modifier": 1800,
+            "target": 1,
+            "type": 27
+          }
+        ],
+        "precondition": ""
+      }
+    ],
+    "rarity": 1
+  },
+  "210091": {
+    "alternatives": [
+      {
+        "baseDuration": 20000,
+        "condition": "phase_laterhalf_random==1",
+        "effects": [
+          {
+            "modifier": 1500,
+            "target": 1,
+            "type": 27
+          }
+        ],
+        "precondition": ""
+      }
+    ],
+    "rarity": 1
+  },
+  "210101": {
+    "alternatives": [
+      {
+        "baseDuration": 30000,
+        "condition": "phase_random==3&hp_per>=2&is_lastspurt==1",
+        "effects": [
+          {
+            "modifier": 2500,
+            "target": 1,
+            "type": 27
+          },
+          {
+            "modifier": -200,
+            "target": 1,
+            "type": 9
+          }
+        ],
+        "precondition": ""
+      }
+    ],
+    "rarity": 1
+  },
   "210111": {
     "alternatives": [
       {
