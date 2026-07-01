@@ -10,6 +10,7 @@ import { program, Option } from 'commander';
 program
 	.option('--debug')
 	.option('--dry-run-umas', 'preview umas.json localization changes without writing')
+	.option('--dry-run-skillnames', 'preview skillnames.json official-name sync without writing')
 	.addOption(new Option('--serve [port]', 'run development server on [port]').preset(8000).implies({debug: true}));
 
 program.parse();
@@ -230,6 +231,68 @@ function syncUmaLocalizations() {
 }
 
 syncUmaLocalizations();
+
+// Sync skill names in skillnames.json from Global master.mdb.
+// Fast-forwarded (not-yet-Global) skills keep their community names; once a skill
+// releases on Global, its official localized name (text_data category 47) replaces
+// the community one on the next build. Only skills present in the Global DB's
+// skill_data (i.e. in-game) are touched. Pass --dry-run-skillnames to preview.
+function syncSkillNames() {
+	const masterDb = path.join(root, 'docs', 'master.mdb');
+	if (!fs.existsSync(masterDb)) {
+		console.log('skillnames.json sync: master.mdb not present, skipping');
+		return;
+	}
+
+	const dryRun = process.argv.includes('--dry-run-skillnames');
+	const namesPath = path.join(dirname, 'skillnames.json');
+
+	try {
+		const skillnames = JSON.parse(fs.readFileSync(namesPath, 'utf-8'));
+
+		// In-game skill IDs (present in the Global DB).
+		const inGameRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
+		const inGame = new Set(inGameRaw.trim().split('\n').filter(Boolean));
+
+		// Official English skill names (text_data category 47), keyed by skill id.
+		const officialRaw = execSync(
+			`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 47"`,
+			{ encoding: 'utf-8' }
+		);
+		const official = new Map(
+			officialRaw.trim().split('\n').filter(Boolean).map(line => {
+				const tab = line.indexOf('\t');
+				return [line.slice(0, tab), line.slice(tab + 1)];
+			})
+		);
+
+		const changes = [];
+		for (const id of inGame) {
+			const off = official.get(id);
+			if (!off) continue;
+			const cur = skillnames[id];
+			if (Array.isArray(cur) && cur[0] !== off) {
+				changes.push(`${id}: "${cur[0]}" → "${off}"`);
+				cur[0] = off;
+			}
+		}
+
+		if (changes.length === 0) {
+			console.log('skillnames.json sync: no changes');
+			return;
+		}
+
+		console.log(`skillnames.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
+		for (const c of changes) console.log(`  ${c}`);
+		if (!dryRun) fs.writeFileSync(namesPath, JSON.stringify(skillnames, null, 2) + '\n');
+	} catch (e) {
+		// e.g. sqlite3 CLI absent on the Cloudflare build image, or a DB read error.
+		// Non-fatal: keep the committed skillnames.json as-is, like the other syncs.
+		console.warn(`skillnames.json sync skipped: ${e.message}. Leaving existing file in place.`);
+	}
+}
+
+syncSkillNames();
 
 // Generate v2/cm-presets.generated.json — Champions Meeting presets for Global.
 // Global CM N replays JP CM N exactly (course + season/weather/ground/time),
