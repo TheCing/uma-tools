@@ -9,6 +9,15 @@ class ParseError extends Error {
 	}
 }
 
+// Thrown when a skill references a condition the engine doesn't implement. Distinct from
+// ParseError so callers (buildSkillData) can skip the skill gracefully instead of crashing
+// the whole sim — while genuine syntax errors (data corruption) still propagate.
+export class UnknownConditionError extends ParseError {
+	constructor(readonly conditionName: string) {
+		super('unknown condition: ' + conditionName);
+	}
+}
+
 function isId(c: number) {
 	return ('a'.charCodeAt(0) <= c && c <= 'z'.charCodeAt(0)) || ('0'.charCodeAt(0) <= c && c <= '9'.charCodeAt(0)) || c == '_'.charCodeAt(0);
 }
@@ -82,7 +91,9 @@ export function getParser<ConditionT = Condition, OperatorT = Operator>(
 		}
 
 		nud(state: ParserState<ConditionT,OperatorT>) {
-			return {type: NodeType.Cond, cond: conditions[this.value as keyof typeof conditions]} as Node<ConditionT,OperatorT>;
+			const cond = conditions[this.value as keyof typeof conditions];
+			if (cond === undefined) throw new UnknownConditionError(this.value);
+			return {type: NodeType.Cond, cond} as Node<ConditionT,OperatorT>;
 		}
 	}
 

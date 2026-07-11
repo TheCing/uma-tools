@@ -647,6 +647,20 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 			return [regions, (s: RaceState) => s.usedSkills.has(extra.skillId)] as [RegionList, DynamicCondition];
 		}
 	}),
+	is_activate_any_skill: immediate({
+		filterEq(regions: RegionList, one: number, _0: CourseData, _1: HorseParameters, _2: RaceParameters) {
+			assert(one == 1, 'must be is_activate_any_skill==1');
+			return [regions, (s: RaceState) => s.usedSkills.size > 0] as [RegionList, DynamicCondition];
+		}
+	}),
+	// Single-uma sim doesn't model opponents, so treat "another character activated an advantage
+	// skill" as assumed-fulfilled (like order/opponent conditions) rather than never — otherwise
+	// skills gated on it would be permanently inert. The compared count is intentionally ignored.
+	is_other_character_activate_advantage_skill: immediate({
+		filterEq(regions: RegionList, _n: number, _0: CourseData, _1: HorseParameters, _2: RaceParameters) {
+			return [regions, (_s: RaceState) => true] as [RegionList, DynamicCondition];
+		}
+	}),
 	is_basis_distance: immediate({
 		filterEq(regions: RegionList, flag: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
 			assert(flag == 0 || flag == 1, 'must be is_basis_distance==0 or is_basis_distance==1');
@@ -1003,6 +1017,19 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 		filterEq(regions: RegionList, one: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
 			assert(one == 1, 'must be straight_random==1');
 			return regions.rmap(r => course.straights.map(s => r.intersect(s)));
+		},
+		filterNeq: notSupported,
+		filterLt: notSupported,
+		filterLte: notSupported,
+		filterGt: notSupported,
+		filterGte: notSupported
+	},
+	last_straight_random: {
+		samplePolicy: StraightRandomPolicy,
+		filterEq(regions: RegionList, one: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			assert(one == 1, 'must be last_straight_random==1');
+			const lastStraight = course.straights[course.straights.length - 1];
+			return regions.rmap(r => [r.intersect(lastStraight)]);
 		},
 		filterNeq: notSupported,
 		filterLt: notSupported,

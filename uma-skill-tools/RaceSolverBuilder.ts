@@ -4,7 +4,7 @@ import { Region, RegionList } from './Region';
 import { PRNG, Rule30CARng, SeededRng } from './Random';
 import { Conditions, random, immediate, noopRandom } from './ActivationConditions';
 import { ActivationSamplePolicy, ImmediatePolicy, createFixedPositionPolicy } from './ActivationSamplePolicy';
-import { getParser } from './ConditionParser';
+import { getParser, UnknownConditionError } from './ConditionParser';
 import { RaceSolver, RaceState, PendingSkill, DynamicCondition, SkillType, SkillRarity, SkillEffect, Perspective, PosKeepMode } from './RaceSolver';
 import { Mood, GroundCondition, Weather, Season, Time, Grade, RaceParameters } from './RaceParameters';
 import { HpPolicy, GameHpPolicy, NoopHpPolicy } from './HpPolicy';
@@ -289,19 +289,30 @@ export function buildSkillData(horse: HorseParameters, raceParams: PartialRacePa
 		const skill = alternatives[i];
 		let full = new RegionList();
 		wholeCourse.forEach(r => full.push(r));
-		if (skill.precondition) {
-			const pre = parser.parse(parser.tokenize(skill.precondition));
-			const preRegions = pre.apply(wholeCourse, course, horse, extra)[0];
-			if (preRegions.length == 0) {
-				continue;
-			} else {
-				const bounds = new Region(preRegions[0].start, wholeCourse[wholeCourse.length-1].end);
-				full = full.rmap(r => r.intersect(bounds));
+		let op, regions, extraCondition;
+		try {
+			if (skill.precondition) {
+				const pre = parser.parse(parser.tokenize(skill.precondition));
+				const preRegions = pre.apply(wholeCourse, course, horse, extra)[0];
+				if (preRegions.length == 0) {
+					continue;
+				} else {
+					const bounds = new Region(preRegions[0].start, wholeCourse[wholeCourse.length-1].end);
+					full = full.rmap(r => r.intersect(bounds));
+				}
 			}
-		}
 
-		const op = parser.parse(parser.tokenize(skill.condition));
-		const [regions, extraCondition] = op.apply(full, course, horse, extra);
+			op = parser.parse(parser.tokenize(skill.condition));
+			[regions, extraCondition] = op.apply(full, course, horse, extra);
+		} catch (e) {
+			// A skill referencing a condition the engine doesn't implement shouldn't crash
+			// the whole sim — skip this activation and warn. Genuine parse errors still throw.
+			if (e instanceof UnknownConditionError) {
+				console.warn(`buildSkillData: skill ${skillId} uses unsupported condition "${e.conditionName}"; skipping this activation.`);
+				continue;
+			}
+			throw e;
+		}
 		if (regions.length == 0) {
 			continue;
 		}
