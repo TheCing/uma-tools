@@ -637,6 +637,7 @@ export interface ShareableState {
 	samples: number;
 	uma1: UmaState;
 	uma2: UmaState;
+	skillHints?: Record<string, number>;  // skill id → hint level; only non-zero saved. Optional for backward compat with older links.
 }
 
 /**
@@ -705,6 +706,7 @@ export async function deserializeStateFromHash(hash: string): Promise<ShareableS
 			samples: typeof parsed.samples === 'number' ? parsed.samples : 500,
 			uma1,
 			uma2,
+			skillHints: (parsed.skillHints && typeof parsed.skillHints === 'object') ? parsed.skillHints : {},
 		};
 	} catch (e) {
 		console.error('Failed to deserialize state from hash:', e);

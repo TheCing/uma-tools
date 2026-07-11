@@ -62,7 +62,7 @@ import {
 } from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
-import { presets, DEFAULT_PRESET } from "./presets";
+import { presets, visiblePresets, DEFAULT_PRESET } from "./presets";
 import { V2UmaPanel, UmaState, defaultUmaState } from "./uma-panel";
 import { TraineesTab } from "./trainees-tab";
 import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
@@ -548,6 +548,12 @@ function App() {
           setSamples(state.samples);
           setUma1(state.uma1);
           setUma2(state.uma2);
+          // Restore hint levels (older links omit this → empty map = all zero).
+          setSkillHints(
+            state.skillHints
+              ? new Map(Object.entries(state.skillHints))
+              : new Map(),
+          );
           setSelectedPresetId(null);
         }
       }
@@ -1234,7 +1240,19 @@ function App() {
                   onChange={(val) => handlePresetSelect(val as number | null)}
                   options={[
                     { value: null, label: "Custom" },
-                    ...presets.map((p) => ({
+                    // Dropdown is windowed to the current CM ± 5; any other CM
+                    // is still loadable via ?preset=. If the active selection is
+                    // outside the window (e.g. loaded from a URL), surface it too.
+                    ...(selectedPresetId != null &&
+                    !visiblePresets.some((p) => p.id === selectedPresetId)
+                      ? presets
+                          .filter((p) => p.id === selectedPresetId)
+                          .map((p) => ({
+                            value: p.id,
+                            label: `CM ${p.id} - ${p.name}`,
+                          }))
+                      : []),
+                    ...visiblePresets.map((p) => ({
                       value: p.id,
                       label: `CM ${p.id} - ${p.name}`,
                     })),
@@ -1414,6 +1432,10 @@ function App() {
                           samples,
                           uma1,
                           uma2,
+                          // Only persist non-zero hint levels to keep the link compact.
+                          skillHints: Object.fromEntries(
+                            [...skillHints].filter(([, v]) => v > 0),
+                          ),
                         });
                       },
                     },
