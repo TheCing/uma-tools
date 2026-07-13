@@ -575,8 +575,16 @@ export function SkillList(props) {
 		// debuffs)
 		let newSelected;
 		if (isDebuffSkill(id)) {
-			const ndebuffs = props.selected.count(isDebuffSkill);
-			newSelected = props.selected.set(groupId + '-' + ndebuffs, id);
+			// Assign a unique per-group suffix (groupId-N) so multiple copies of the same
+			// debuff can coexist. Use the max existing suffix + 1 for THIS groupId — not the
+			// global debuff count, which collides when a debuff is removed then re-added
+			// (upstream alpha123 09ccfe0). Immutable Map keys aren't insertion-ordered, so
+			// take the max rather than the last match.
+			const nThisDebuff = props.selected.keySeq().reduce((n, gid) => {
+				const p = gid.split('-');
+				return p[0] == groupId ? Math.max(n, +p[1] + 1) : n;
+			}, 0);
+			newSelected = props.selected.set(groupId + '-' + nThisDebuff, id);
 		} else {
 			newSelected = props.selected.set(groupId, id);
 		}

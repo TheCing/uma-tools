@@ -7,7 +7,7 @@ import { Region, RegionList } from '../Region';
 import { PRNG } from '../Random';
 import { ActivationSamplePolicy, ImmediatePolicy } from '../ActivationSamplePolicy';
 import { Conditions } from '../ActivationConditions';
-import { getParser } from '../ConditionParser';
+import { getParser, UnknownConditionError } from '../ConditionParser';
 import { RaceSolver, DynamicCondition, SkillType, SkillRarity, SkillEffect } from '../RaceSolver';
 import { NoopHpPolicy } from '../HpPolicy';
 
@@ -89,18 +89,29 @@ export function buildSkillData(horse: HorseParameters, course: CourseData, whole
 		const skill = alternatives[i];
 		let full = new RegionList();
 		wholeCourse.forEach(r => full.push(r));
-		if (skill.precondition) {
-			const pre = parse(tokenize(skill.precondition));
-			const preRegions = pre.apply(wholeCourse, course, horse, {} as any)[0];
-			if (preRegions.length == 0) {
-				continue;
-			} else {
-				const bounds = new Region(preRegions[0].start, wholeCourse[wholeCourse.length-1].end);
-				full = full.rmap(r => r.intersect(bounds));
+		let op, regions, extraCondition;
+		try {
+			if (skill.precondition) {
+				const pre = parse(tokenize(skill.precondition));
+				const preRegions = pre.apply(wholeCourse, course, horse, {} as any)[0];
+				if (preRegions.length == 0) {
+					continue;
+				} else {
+					const bounds = new Region(preRegions[0].start, wholeCourse[wholeCourse.length-1].end);
+					full = full.rmap(r => r.intersect(bounds));
+				}
 			}
+			op = parse(tokenize(skill.condition));
+			[regions, extraCondition] = op.apply(full, course, horse, {} as any);
+		} catch (e) {
+			// Skip activations gated on conditions the engine doesn't implement rather than
+			// crashing the whole run. Genuine parse errors still propagate.
+			if (e instanceof UnknownConditionError) {
+				console.warn(`buildSkillData: skill ${skillId} uses unsupported condition "${e.conditionName}"; skipping this activation.`);
+				continue;
+			}
+			throw e;
 		}
-		const op = parse(tokenize(skill.condition));
-		const [regions, extraCondition] = op.apply(full, course, horse, {} as any);
 		if (regions.length == 0) {
 			continue;
 		}

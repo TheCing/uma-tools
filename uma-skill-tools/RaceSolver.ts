@@ -117,6 +117,7 @@ export interface RaceState {
 	readonly accumulatetime: Readonly<Timer>
 	readonly activateCount: readonly number[]
 	readonly activateCountHeal: number
+	readonly activateCountLaterHalf: number
 	readonly currentSpeed: number
 	readonly isLastSpurt: boolean
 	readonly lastSpurtSpeed: number
@@ -279,6 +280,7 @@ export class RaceSolver {
 	hillEnd: number[]
 	activateCount: number[]
 	activateCountHeal: number
+	activateCountLaterHalf: number
 	onSkillActivate: (s: RaceSolver, skillId: string, perspective: Perspective) => void
 	onSkillDeactivate: (s: RaceSolver, skillId: string, perspective: Perspective) => void
 	sectionLength: number
@@ -433,6 +435,7 @@ export class RaceSolver {
 		this.activeChangeLaneSkills = [];
 		this.activateCount = [0,0,0];
 		this.activateCountHeal = 0;
+		this.activateCountLaterHalf = 0;
 		this.onSkillActivate = params.onSkillActivate || noop;
 		this.onSkillDeactivate = params.onSkillDeactivate || noop;
 		this.sectionLength = this.course.distance / 24.0;
@@ -1505,7 +1508,13 @@ export class RaceSolver {
 				break;
 			}
 		});
-		if (s.perspective == Perspective.Self) ++this.activateCount[this.phase];
+		if (s.perspective == Perspective.Self) {
+			++this.activateCount[this.phase];
+			// "later half" = past the 50% distance mark (distance_rate >= 50). Tracked
+			// separately because it doesn't align with phase boundaries. Used by the
+			// activate_count_later_half condition (e.g. Racing Spirit: Wit).
+			if (this.pos >= this.course.distance / 2) ++this.activateCountLaterHalf;
+		}
 		this.usedSkills.add(s.skillId);
 		this.onSkillActivate(this, s.skillId, s.perspective);
 	}

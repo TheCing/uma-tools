@@ -383,7 +383,7 @@ function orderOutFilter(rate: number) {
 }
 
 /*
-	accumulatetime, activate_count_all, activate_count_end_after, activate_count_heal, activate_count_middle, activate_count_start,
+	accumulatetime, activate_count_all, activate_count_end_after, activate_count_heal, activate_count_later_half, activate_count_middle, activate_count_start,
 	all_corner_random, always, bashin_diff_behind, bashin_diff_infront, behind_near_lane_time, behind_near_lane_time_set1, blocked_all_continuetime,
 	blocked_front, blocked_front_continuetime, blocked_side_continuetime, change_order_onetime, change_order_up_end_after,
 	change_order_up_finalcorner_after, compete_fight_count, corner, corner_random, distance_diff_rate, distance_diff_top, distance_rate,
@@ -432,6 +432,11 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 	activate_count_heal: immediate({
 		filterGte(regions: RegionList, n: number, _0: CourseData, _1: HorseParameters, extra: RaceParameters) {
 			return [regions, (s: RaceState) => s.activateCountHeal >= n] as [RegionList, DynamicCondition];
+		}
+	}),
+	activate_count_later_half: immediate({
+		filterGte(regions: RegionList, n: number, _0: CourseData, _1: HorseParameters, extra: RaceParameters) {
+			return [regions, (s: RaceState) => s.activateCountLaterHalf >= n] as [RegionList, DynamicCondition];
 		}
 	}),
 	activate_count_middle: immediate({
@@ -640,6 +645,20 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 		filterEq(regions: RegionList, one: number, _0: CourseData, _1: HorseParameters, extra: RaceParameters) {
 			assert(one == 1, 'must be is_activate_other_skill_detail==1');
 			return [regions, (s: RaceState) => s.usedSkills.has(extra.skillId)] as [RegionList, DynamicCondition];
+		}
+	}),
+	is_activate_any_skill: immediate({
+		filterEq(regions: RegionList, one: number, _0: CourseData, _1: HorseParameters, _2: RaceParameters) {
+			assert(one == 1, 'must be is_activate_any_skill==1');
+			return [regions, (s: RaceState) => s.usedSkills.size > 0] as [RegionList, DynamicCondition];
+		}
+	}),
+	// Single-uma sim doesn't model opponents, so treat "another character activated an advantage
+	// skill" as assumed-fulfilled (like order/opponent conditions) rather than never — otherwise
+	// skills gated on it would be permanently inert. The compared count is intentionally ignored.
+	is_other_character_activate_advantage_skill: immediate({
+		filterEq(regions: RegionList, _n: number, _0: CourseData, _1: HorseParameters, _2: RaceParameters) {
+			return [regions, (_s: RaceState) => true] as [RegionList, DynamicCondition];
 		}
 	}),
 	is_basis_distance: immediate({
@@ -998,6 +1017,19 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 		filterEq(regions: RegionList, one: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
 			assert(one == 1, 'must be straight_random==1');
 			return regions.rmap(r => course.straights.map(s => r.intersect(s)));
+		},
+		filterNeq: notSupported,
+		filterLt: notSupported,
+		filterLte: notSupported,
+		filterGt: notSupported,
+		filterGte: notSupported
+	},
+	last_straight_random: {
+		samplePolicy: StraightRandomPolicy,
+		filterEq(regions: RegionList, one: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			assert(one == 1, 'must be last_straight_random==1');
+			const lastStraight = course.straights[course.straights.length - 1];
+			return regions.rmap(r => [r.intersect(lastStraight)]);
 		},
 		filterNeq: notSupported,
 		filterLt: notSupported,
