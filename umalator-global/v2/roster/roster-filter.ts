@@ -62,13 +62,20 @@ function sortValue(uma: DecodedUma, key: Exclude<SortKey, 'recency'>): number {
 }
 
 export function sortUmas(all: DecodedUma[], s: SortState): DecodedUma[] {
-	// 'recency' sorts on POSITION, not a field: the v4 share code carries no timestamp, but
-	// uma.guide emits the roster in training order (oldest -> newest). Verified against a
-	// real 249-uma roster: rank_score correlates r=0.71 with array position and rises
-	// monotonically across quartiles. filterUmas preserves relative order, so reversing the
-	// (filtered) list yields newest-first.
 	if (s.key === 'recency') {
-		return s.dir === 'desc' ? all.slice().reverse() : all.slice();
+		// data.json carries a real create_time; the bit-packed share code carries none at all,
+		// so fall back to array position there (uma.guide exports oldest->newest; verified
+		// against a real roster: rank_score correlates r=0.71 with position, and the file's own
+		// create_time order confirms it). Require ALL records to have a date before trusting
+		// dates, otherwise a mixed list would order the undated ones arbitrarily.
+		const dated = all.length > 0 && all.every(u => !!u.create_time);
+		if (!dated) return s.dir === 'desc' ? all.slice().reverse() : all.slice();
+		// create_time is "YYYY-MM-DD HH:MM:SS", fixed-width and zero-padded, so lexicographic
+		// order IS chronological. Never Date.parse it: that format is not ISO 8601 and parsing
+		// it is implementation-defined.
+		const dir = s.dir === 'asc' ? 1 : -1;
+		return all.slice().sort((a, b) =>
+			(a.create_time! < b.create_time! ? -1 : a.create_time! > b.create_time! ? 1 : 0) * dir);
 	}
 	const key = s.key;
 	const dir = s.dir === 'asc' ? 1 : -1;

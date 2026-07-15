@@ -502,3 +502,37 @@ test('parseRosterJson: primitive records are skipped, not fatal', t => {
 	t.equal(r[0].card_id, 100101);
 	t.end();
 });
+
+test('sortUmas: recency uses real create_time when present', t => {
+	// Deliberately store them out of chronological order, so array order and date order differ.
+	const older = { ...UMA, card_id: 100101, create_time: '2025-11-02 08:12:37' };
+	const newer = { ...UMA, card_id: 100201, create_time: '2026-07-15 00:55:58' };
+	const roster = [newer, older]; // newest FIRST in the array — the opposite of the fallback
+	const desc = sortUmas(roster, { key: 'recency', dir: 'desc' });
+	t.equal(desc[0].card_id, 100201, 'newest by DATE first, not by array position');
+	const asc = sortUmas(roster, { key: 'recency', dir: 'asc' });
+	t.equal(asc[0].card_id, 100101, 'oldest by date first');
+	t.deepEqual(roster, [newer, older], 'input not mutated');
+	t.end();
+});
+
+test('sortUmas: recency falls back to array order when dates are absent', t => {
+	// A share-code import has no timestamps; today's behaviour must be preserved exactly.
+	const first = { ...UMA, card_id: 100101 };
+	const last = { ...UMA, card_id: 100201 };
+	const roster = [first, last];
+	t.equal(sortUmas(roster, { key: 'recency', dir: 'desc' })[0].card_id, 100201,
+		'no dates => reverse array order (uma.guide exports oldest->newest)');
+	t.equal(sortUmas(roster, { key: 'recency', dir: 'asc' })[0].card_id, 100101);
+	t.end();
+});
+
+test('sortUmas: recency falls back if only SOME records have dates', t => {
+	// Mixed input would sort undefined dates arbitrarily; prefer the consistent fallback.
+	const dated = { ...UMA, card_id: 100101, create_time: '2026-07-15 00:55:58' };
+	const undated = { ...UMA, card_id: 100201 };
+	const r = sortUmas([dated, undated], { key: 'recency', dir: 'desc' });
+	t.equal(r.length, 2, 'still returns everything');
+	t.equal(r[0].card_id, 100201, 'falls back to reversed array order');
+	t.end();
+});
