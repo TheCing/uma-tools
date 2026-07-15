@@ -23,7 +23,7 @@
 		"build:mechanics": "cd umalator-global/mechanics-explorer && node build.mjs",
 		"test:mechanics": "npx ts-node umalator-global/mechanics-explorer/mechanics.test.ts",
 		"test:roster": "npx ts-node --transpile-only --compiler-options \"{\\\"moduleResolution\\\":\\\"node\\\",\\\"module\\\":\\\"commonjs\\\"}\" umalator-global/v2/roster/roster.test.ts",
-		"typecheck:roster": "tsc --noEmit --skipLibCheck --jsx react --jsxFactory h --jsxFragmentFactory Fragment --moduleResolution bundler --module esnext --target es2018 --lib es2018,dom --resolveJsonModule --esModuleInterop umalator-global/v2/roster/*.ts* 2>&1 | grep -E 'roster/' && exit 1 || echo 'roster typecheck clean'"
+		"typecheck:roster": "tsc --noEmit --skipLibCheck --jsx react --jsxFactory h --jsxFragmentFactory Fragment --moduleResolution bundler --module esnext --target es2018 --lib es2018,dom --resolveJsonModule --esModuleInterop umalator-global/v2/roster/*.ts* umalator-global/v2/app-v2.tsx 2>&1 | grep -E 'roster/|app-v2\\.tsx' && exit 1 || echo 'roster typecheck clean'"
 	},
 	"author": "pecan",
 	"license": "GPL-3.0-or-later",

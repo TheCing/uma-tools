@@ -203,7 +203,7 @@ test('storage: a corrupt payload reads as empty rather than throwing', async t =
 	t.end();
 });
 
-import { aptToLetter, bestStrategyKey, decodedUmaToUmaState, RosterCourse } from './roster-mapping';
+import { aptToLetter, bestStrategyKey, decodedUmaToUmaState, getCharInfo, RosterCourse } from './roster-mapping';
 
 const TURF_SPRINT: RosterCourse = { surface: 1, distanceType: 1 }; // Turf, Short
 const DIRT_LONG: RosterCourse   = { surface: 2, distanceType: 4 }; // Dirt, Long
@@ -359,5 +359,13 @@ test('sortUmas: sp descending puts the higher-SP uma first', t => {
 	const r = sortUmas([UMA, OTHER], { key: 'sp', dir: 'desc' });
 	t.equal(r.length, 2);
 	t.ok(r[0].card_id === 100101 || r[0].card_id === 100201, 'returns both, ordered');
+	t.end();
+});
+
+test('getCharInfo: an unknown card_id degrades to a label instead of throwing', t => {
+	const info = getCharInfo(999999);
+	t.equal(info.charName, 'Unknown (9999)', 'falls back to a readable label');
+	t.equal(info.outfitName, '', 'no outfit name for an unknown card');
+	t.ok(info.iconSrc.length > 0, 'still yields a usable icon src');
 	t.end();
 });

@@ -1951,7 +1951,7 @@ function App() {
                       onLoadToUma1={(s) => { handleUma1Load(s); setActiveUmaTab(1); }}
                       onLoadToUma2={(s) => { handleUma2Load(s); setActiveUmaTab(2); }}
                       currentMode={mode}
-                      course={courseData[String(courseId)]}
+                      course={courseData[courseId]}
                     />
                   )}
                 </div>

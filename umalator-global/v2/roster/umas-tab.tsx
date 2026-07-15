@@ -96,6 +96,18 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 		[roster, filters, sort]
 	);
 
+	// A stale or unknown courseId — e.g. from an old shared link or a saved session whose
+	// course no longer exists in course_data.json — leaves this undefined. Without a guard,
+	// decodedUmaToUmaState would throw on course.surface, and v2 has no error boundary, so
+	// it would white-screen the whole app rather than just this tab.
+	if (!course) {
+		return (
+			<div class="rosterTab">
+				<div class="rosterEmpty">Select a valid track and course to browse your roster.</div>
+			</div>
+		);
+	}
+
 	return (
 		<div class="rosterTab">
 			<div class="rosterImportBar">
