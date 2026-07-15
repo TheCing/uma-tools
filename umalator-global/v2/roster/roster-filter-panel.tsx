@@ -56,7 +56,10 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 
 	return (
 		<div class="rosterFilters">
-			<div class="rosterFilterRow">
+			<div
+				class="rosterFilterRow"
+				title="Your roster code has no timestamps, so 'Newest' uses the order uma.guide exports (training order, oldest to newest)."
+			>
 				<span class="rosterFilterLabel">Sort</span>
 				<CustomSelect
 					className="rosterSortSelect"

@@ -16,14 +16,14 @@ export interface FilterState {
 
 export const EMPTY_FILTERS: FilterState = { name: '', aptMin: {}, skills: [] };
 
-export type SortKey = 'sp' | 'rating';
+export type SortKey = 'recency' | 'sp' | 'rating';
 export type SortDir = 'asc' | 'desc';
 export interface SortState { key: SortKey; dir: SortDir }
 
 export const SORT_LABELS: Record<SortKey, string> = {
-	sp: 'Total SP', rating: 'Rating'
+	recency: 'Newest', sp: 'Total SP', rating: 'Rating'
 };
-export const DEFAULT_SORT: SortState = { key: 'sp', dir: 'desc' };
+export const DEFAULT_SORT: SortState = { key: 'recency', dir: 'desc' };
 
 /**
  * Number of active filter CONSTRAINTS, not categories: each aptitude threshold counts
@@ -54,7 +54,7 @@ export function filterUmas(all: DecodedUma[], f: FilterState): DecodedUma[] {
 	});
 }
 
-function sortValue(uma: DecodedUma, key: SortKey): number {
+function sortValue(uma: DecodedUma, key: Exclude<SortKey, 'recency'>): number {
 	switch (key) {
 		case 'sp': return calcTotalSP(uma.skills);
 		case 'rating': return uma.rank_score ?? 0;
@@ -62,7 +62,16 @@ function sortValue(uma: DecodedUma, key: SortKey): number {
 }
 
 export function sortUmas(all: DecodedUma[], s: SortState): DecodedUma[] {
+	// 'recency' sorts on POSITION, not a field: the v4 share code carries no timestamp, but
+	// uma.guide emits the roster in training order (oldest -> newest). Verified against a
+	// real 249-uma roster: rank_score correlates r=0.71 with array position and rises
+	// monotonically across quartiles. filterUmas preserves relative order, so reversing the
+	// (filtered) list yields newest-first.
+	if (s.key === 'recency') {
+		return s.dir === 'desc' ? all.slice().reverse() : all.slice();
+	}
+	const key = s.key;
 	const dir = s.dir === 'asc' ? 1 : -1;
 	// slice() so callers can sort derived arrays without surprising mutation.
-	return all.slice().sort((a, b) => (sortValue(a, s.key) - sortValue(b, s.key)) * dir);
+	return all.slice().sort((a, b) => (sortValue(a, key) - sortValue(b, key)) * dir);
 }

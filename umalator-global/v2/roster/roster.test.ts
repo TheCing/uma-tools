@@ -372,6 +372,26 @@ test('sortUmas: sp descending puts the higher-SP uma first', t => {
 	t.end();
 });
 
+test('sortUmas: recency desc reverses roster order (newest first)', t => {
+	// The share code has no timestamp; uma.guide emits oldest->newest, so newest-first is
+	// simply the reversed roster order.
+	const oldest = { ...UMA, card_id: 100101 };
+	const newest = { ...UMA, card_id: 100201 };
+	const roster = [oldest, newest];
+	const desc = sortUmas(roster, { key: 'recency', dir: 'desc' });
+	t.equal(desc[0].card_id, 100201, 'newest (last in the roster) comes first');
+	const asc = sortUmas(roster, { key: 'recency', dir: 'asc' });
+	t.equal(asc[0].card_id, 100101, 'oldest first when ascending');
+	t.deepEqual(roster, [oldest, newest], 'input is not mutated');
+	t.end();
+});
+
+test('sortUmas: recency is the default sort', t => {
+	t.equal(DEFAULT_SORT.key, 'recency');
+	t.equal(DEFAULT_SORT.dir, 'desc', 'newest first by default');
+	t.end();
+});
+
 test('getCharInfo: an unknown card_id degrades to a label instead of throwing', t => {
 	const info = getCharInfo(999999);
 	t.equal(info.charName, 'Unknown (9999)', 'falls back to a readable label');
