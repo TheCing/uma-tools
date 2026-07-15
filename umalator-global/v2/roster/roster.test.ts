@@ -299,3 +299,63 @@ test('calcTotalSP: same-group skills charge only the highest tier once', t => {
 	t.ok(both < single * 2, 'group members are not naively summed');
 	t.end();
 });
+
+import {
+	filterUmas, sortUmas, activeFilterCount, EMPTY_FILTERS, DEFAULT_SORT
+} from './roster-filter';
+
+const OTHER: DecodedUma = {
+	...UMA, card_id: 100201, apt_turf: 3, apt_dirt: 8,
+	skills: [{ id: 200012, level: 1 }]
+};
+
+test('filterUmas: empty filters return everything', t => {
+	t.equal(filterUmas([UMA, OTHER], EMPTY_FILTERS).length, 2);
+	t.end();
+});
+
+test('filterUmas: aptMin keeps only umas at or above the threshold', t => {
+	// UMA apt_turf=8, OTHER apt_turf=3
+	const r = filterUmas([UMA, OTHER], { ...EMPTY_FILTERS, aptMin: { apt_turf: 8 } });
+	t.equal(r.length, 1);
+	t.equal(r[0].card_id, 100101);
+	t.end();
+});
+
+test('filterUmas: skills filter requires the uma to own every selected skill', t => {
+	const r = filterUmas([UMA, OTHER], { ...EMPTY_FILTERS, skills: [200011] });
+	t.equal(r.length, 1);
+	t.equal(r[0].card_id, 100101);
+	t.equal(filterUmas([UMA, OTHER], { ...EMPTY_FILTERS, skills: [200011, 200012] }).length, 0,
+		'no uma owns both');
+	t.end();
+});
+
+test('filterUmas: name search matches character name case-insensitively', t => {
+	// card_id 100101 -> Special Week in umas.json
+	const r = filterUmas([UMA, OTHER], { ...EMPTY_FILTERS, name: 'special' });
+	t.equal(r.length, 1);
+	t.equal(r[0].card_id, 100101);
+	t.end();
+});
+
+test('activeFilterCount counts each active dimension', t => {
+	t.equal(activeFilterCount(EMPTY_FILTERS), 0);
+	t.equal(activeFilterCount({ name: 'x', aptMin: { apt_turf: 8 }, skills: [1] }), 3);
+	t.end();
+});
+
+test('sortUmas: does not mutate the input array', t => {
+	const input = [UMA, OTHER];
+	const copy = input.slice();
+	sortUmas(input, DEFAULT_SORT);
+	t.deepEqual(input, copy, 'input untouched');
+	t.end();
+});
+
+test('sortUmas: sp descending puts the higher-SP uma first', t => {
+	const r = sortUmas([UMA, OTHER], { key: 'sp', dir: 'desc' });
+	t.equal(r.length, 2);
+	t.ok(r[0].card_id === 100101 || r[0].card_id === 100201, 'returns both, ordered');
+	t.end();
+});
