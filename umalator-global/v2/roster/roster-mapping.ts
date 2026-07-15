@@ -55,7 +55,7 @@ function canonicalStrategyKey(card_id: number): StratKey | null {
 
 // data.json's running_style: 1=nige, 2=senko, 3=sashi, 4=oikomi. Verified against a real
 // export: each style's mean aptitude for its own style is ~7, and it disagrees with the
-// best-aptitude guess for 49 of 249 umas — which is exactly why we prefer it.
+// best-aptitude guess for 54 of 249 umas — which is exactly why we prefer it.
 const RUNNING_STYLE_KEY: Record<number, StratKey> = {
 	1: 'apt_nige', 2: 'apt_senko', 3: 'apt_sashi', 4: 'apt_oikomi'
 };

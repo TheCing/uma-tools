@@ -5,7 +5,7 @@
  * Why this exists: the share code is a lossy transport. It carries no `create_time` at all
  * (its v4 fixed prefix is exactly V4_MIN_BITS with no room for one), and no `running_style`
  * — so strategy has to be inferred from the best style aptitude, which measured wrong for
- * 49 of 249 umas (20%) on a real roster. This file reads both for real.
+ * 54 of 249 umas (22%) on a real roster. This file reads both for real.
  *
  * PRIVACY: this is a WHITELIST. The source record has 51 fields including account
  * identifiers (viewer_id, owner_viewer_id, trained_chara_id, nickname_id) and ~1.8MB of

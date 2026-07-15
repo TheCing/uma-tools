@@ -540,7 +540,7 @@ test('sortUmas: recency falls back if only SOME records have dates', t => {
 test('decodedUmaToUmaState: uses the real running_style over the aptitude guess', t => {
 	// UMA's best style aptitude is senko (8) => the guess says Senkou. But this uma is
 	// actually run as Oikomi. The real value must win: measured on a real roster, the guess
-	// disagrees with running_style for 49 of 249 umas.
+	// disagrees with running_style for 54 of 249 umas.
 	const s = decodedUmaToUmaState({ ...UMA, running_style: 4 }, TURF_SPRINT);
 	t.equal(s.strategy, 'Oikomi', 'real running_style wins over best-aptitude inference');
 	t.equal(s.strategyAptitude, 'D', "strategyAptitude follows the CHOSEN style (oikomi=4 => 'D')");

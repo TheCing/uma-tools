@@ -127,6 +127,10 @@ export interface DecodedUma {
 	apt_senko: number;
 	apt_sashi: number;
 	apt_oikomi: number;
+	/** NOTE: `level` is NOT uniform across transports. The v4 share code encodes it in a
+	 *  single bit, so it is only ever 1 or 2; an UmaExtractor data.json import carries the
+	 *  game's real value (1..6 observed). Nothing reads `level` today — calcTotalSP and
+	 *  decodedUmaToUmaState both use only `id` — but do not assume the two agree. */
 	skills: Array<{ id: number; level: number }>;
 }
 

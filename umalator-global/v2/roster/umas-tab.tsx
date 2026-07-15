@@ -235,7 +235,7 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 			)}
 
 			{roster.length === 0 ? (
-				<div class="rosterEmpty">No roster imported yet. Paste your share link above to browse your umas.</div>
+				<div class="rosterEmpty">No roster imported yet. Import your UmaExtractor data.json above to browse your umas.</div>
 			) : visible.length === 0 ? (
 				<div class="rosterEmpty">No umas match these filters.</div>
 			) : (
