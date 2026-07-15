@@ -399,3 +399,89 @@ test('getCharInfo: an unknown card_id degrades to a label instead of throwing', 
 	t.ok(info.iconSrc.length > 0, 'still yields a usable icon src');
 	t.end();
 });
+
+import { parseRosterJson } from './roster-json';
+
+// One UmaExtractor record, trimmed to the fields we read. Real shape: 51 fields, of which we
+// deliberately keep only these — see roster-json.ts.
+const JSON_UMA = {
+	card_id: 100101,
+	create_time: '2025-11-02 08:12:37',
+	rank_score: 21000,
+	talent_level: 5,
+	running_style: 2,
+	speed: 1200, stamina: 1100, power: 900, guts: 400, wiz: 500,
+	proper_distance_short: 2, proper_distance_mile: 5, proper_distance_middle: 8, proper_distance_long: 7,
+	proper_ground_turf: 8, proper_ground_dirt: 1,
+	proper_running_style_nige: 3, proper_running_style_senko: 8,
+	proper_running_style_sashi: 6, proper_running_style_oikomi: 4,
+	skill_array: [{ skill_id: 200011, level: 1 }, { skill_id: 200012, level: 2 }],
+	// Fields we must DROP:
+	viewer_id: 123456789,
+	owner_viewer_id: 123456789,
+	trained_chara_id: 987654321,
+	nickname_id: 42,
+	race_result_list: [{ big: 'payload' }],
+	succession_chara_array: [{ big: 'payload' }]
+};
+
+test('parseRosterJson: maps an UmaExtractor record onto DecodedUma', t => {
+	const [u] = parseRosterJson(JSON.stringify([JSON_UMA]));
+	t.equal(u.card_id, 100101);
+	t.equal(u.create_time, '2025-11-02 08:12:37', 'real timestamp is carried through verbatim');
+	t.equal(u.running_style, 2, 'the actual running style is carried through');
+	t.equal(u.rank_score, 21000);
+	t.equal(u.talent_level, 5);
+	t.equal(u.speed, 1200);
+	t.equal(u.wisdom, 500, "data.json calls it 'wiz'; DecodedUma calls it 'wisdom'");
+	t.equal(u.apt_short, 2);
+	t.equal(u.apt_mile, 5);
+	t.equal(u.apt_middle, 8);
+	t.equal(u.apt_long, 7);
+	t.equal(u.apt_turf, 8);
+	t.equal(u.apt_dirt, 1);
+	t.equal(u.apt_nige, 3);
+	t.equal(u.apt_senko, 8);
+	t.equal(u.apt_sashi, 6);
+	t.equal(u.apt_oikomi, 4);
+	t.deepEqual(u.skills, [{ id: 200011, level: 1 }, { id: 200012, level: 2 }]);
+	t.end();
+});
+
+test('parseRosterJson: drops identifying and bulk fields (whitelist, not blacklist)', t => {
+	const [u] = parseRosterJson(JSON.stringify([JSON_UMA]));
+	// These must never reach memory/localStorage/a shared URL.
+	for (const k of ['viewer_id', 'owner_viewer_id', 'trained_chara_id', 'nickname_id',
+	                 'race_result_list', 'succession_chara_array']) {
+		t.equal((u as any)[k], undefined, `${k} is dropped`);
+	}
+	t.end();
+});
+
+test('parseRosterJson: garbage in, [] out — never throws', t => {
+	t.deepEqual(parseRosterJson('not json'), []);
+	t.deepEqual(parseRosterJson(''), []);
+	t.deepEqual(parseRosterJson('{}'), [], 'a bare object is not a roster');
+	t.deepEqual(parseRosterJson('[]'), []);
+	t.deepEqual(parseRosterJson('[{"nope":1}]'), [], 'records without a card_id are skipped');
+	t.end();
+});
+
+test('parseRosterJson: skips unusable records but keeps the good ones', t => {
+	const r = parseRosterJson(JSON.stringify([JSON_UMA, { nope: 1 }, { ...JSON_UMA, card_id: 100201 }]));
+	t.equal(r.length, 2, 'the junk record is skipped, the valid ones survive');
+	t.equal(r[0].card_id, 100101);
+	t.equal(r[1].card_id, 100201);
+	t.end();
+});
+
+test('parseRosterJson: tolerates a missing optional field', t => {
+	const noStyle: any = { ...JSON_UMA };
+	delete noStyle.running_style;
+	delete noStyle.create_time;
+	const [u] = parseRosterJson(JSON.stringify([noStyle]));
+	t.equal(u.card_id, 100101, 'still parses');
+	t.equal(u.running_style, undefined, 'absent style stays undefined (caller infers)');
+	t.equal(u.create_time, undefined, 'absent timestamp stays undefined (caller falls back)');
+	t.end();
+});

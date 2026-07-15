@@ -107,6 +107,10 @@ export interface DecodedUma {
 	talent_level?: number;
 	rank_score?: number;
 	create_time?: string;
+	/** The uma's actual running style (1=nige, 2=senko, 3=sashi, 4=oikomi). Present only from
+	 *  an UmaExtractor data.json import — the bit-packed share code does not encode it, so it
+	 *  stays undefined there and callers fall back to inferring from aptitudes. */
+	running_style?: number;
 	speed: number;
 	stamina: number;
 	power: number;
