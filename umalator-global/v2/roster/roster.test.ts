@@ -202,3 +202,66 @@ test('storage: a corrupt payload reads as empty rather than throwing', async t =
 	t.deepEqual(await readRosterFromStorage(), []);
 	t.end();
 });
+
+import { aptToLetter, bestStrategyKey, decodedUmaToUmaState, RosterCourse } from './roster-mapping';
+
+const TURF_SPRINT: RosterCourse = { surface: 1, distanceType: 1 }; // Turf, Short
+const DIRT_LONG: RosterCourse   = { surface: 2, distanceType: 4 }; // Dirt, Long
+
+test('aptToLetter: roster encodes 1=G .. 8=S (guards the S<->G flip)', t => {
+	t.equal(aptToLetter(1), 'G', '1 => G');
+	t.equal(aptToLetter(2), 'F');
+	t.equal(aptToLetter(3), 'E');
+	t.equal(aptToLetter(4), 'D');
+	t.equal(aptToLetter(5), 'C');
+	t.equal(aptToLetter(6), 'B');
+	t.equal(aptToLetter(7), 'A');
+	t.equal(aptToLetter(8), 'S', '8 => S');
+	// v1/v2 encode 0-9 and must clamp to the same ends
+	t.equal(aptToLetter(0), 'G', 'v1/v2 low end clamps to G');
+	t.equal(aptToLetter(9), 'S', 'v1/v2 high end clamps to S');
+	t.end();
+});
+
+test('decodedUmaToUmaState: picks the aptitude matching the COURSE, not the best', t => {
+	// UMA has apt_turf=8 (S) / apt_dirt=1 (G); apt_short=2 (F) / apt_long=7 (A)
+	const dirt = decodedUmaToUmaState(UMA, DIRT_LONG);
+	t.equal(dirt.surfaceAptitude, 'G', 'dirt course uses apt_dirt (G), NOT max(turf,dirt)=S');
+	t.equal(dirt.distanceAptitude, 'A', 'long course uses apt_long (A)');
+
+	const turf = decodedUmaToUmaState(UMA, TURF_SPRINT);
+	t.equal(turf.surfaceAptitude, 'S', 'turf course uses apt_turf (S)');
+	t.equal(turf.distanceAptitude, 'F', 'sprint course uses apt_short (F), NOT max=S');
+	t.end();
+});
+
+test('decodedUmaToUmaState: strategy = best strategy aptitude', t => {
+	// UMA: nige=3, senko=8, sashi=6, oikomi=4 -> Senkou wins
+	t.equal(bestStrategyKey(UMA), 'apt_senko');
+	const s = decodedUmaToUmaState(UMA, TURF_SPRINT);
+	t.equal(s.strategy, 'Senkou');
+	t.equal(s.strategyAptitude, 'S', 'strategyAptitude matches the chosen strategy (senko=8=S)');
+	t.end();
+});
+
+test('decodedUmaToUmaState: ties break to the outfit canonical strategy, not Oikomi', t => {
+	// card_id 100101 (Special Week) is strategy 3 (Sashi) in umas.json.
+	// Upstream's `>=` reduce would pick Oikomi here; we must pick Sasi.
+	const tied: DecodedUma = { ...UMA, apt_nige: 7, apt_senko: 7, apt_sashi: 7, apt_oikomi: 7 };
+	t.equal(decodedUmaToUmaState(tied, TURF_SPRINT).strategy, 'Sasi');
+	t.end();
+});
+
+test('decodedUmaToUmaState: maps stats, talent level and skills', t => {
+	const s = decodedUmaToUmaState(UMA, TURF_SPRINT);
+	t.equal(s.outfitId, '100101');
+	t.equal(s.speed, 1200);
+	t.equal(s.stamina, 1100);
+	t.equal(s.power, 900);
+	t.equal(s.guts, 400);
+	t.equal(s.wisdom, 500);
+	t.equal(s.uniqueLv, 3, 'uniqueLv comes from talent_level');
+	t.equal(s.mood, 2, 'mood defaults to Great, matching upstream');
+	t.ok(Array.isArray(s.skills), 'skills is an array of string ids');
+	t.end();
+});
