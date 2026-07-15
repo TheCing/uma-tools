@@ -35,7 +35,12 @@ const num = (v: unknown, fallback = 0): number => (typeof v === 'number' && isFi
 const optNum = (v: unknown): number | undefined => (typeof v === 'number' && isFinite(v) ? v : undefined);
 const optStr = (v: unknown): string | undefined => (typeof v === 'string' && v.length > 0 ? v : undefined);
 
-function readRecord(raw: RawTrainedChara): DecodedUma | null {
+function readRecord(rawInput: unknown): DecodedUma | null {
+	// A null/primitive array element must be skipped, not throw: one malformed record must
+	// never abort the whole import. (typeof null === 'object', hence the explicit null check.)
+	if (rawInput === null || typeof rawInput !== 'object') return null;
+	const raw = rawInput as RawTrainedChara;
+
 	const card_id = optNum(raw.card_id);
 	if (card_id === undefined) return null; // not a trained-uma record
 
@@ -84,7 +89,7 @@ export function parseRosterJson(text: string): DecodedUma[] {
 	}
 	if (!Array.isArray(parsed)) return [];
 	return parsed.reduce((acc: DecodedUma[], raw) => {
-		const uma = readRecord(raw as RawTrainedChara);
+		const uma = readRecord(raw);
 		if (uma) acc.push(uma);
 		return acc;
 	}, []);

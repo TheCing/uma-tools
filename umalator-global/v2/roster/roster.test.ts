@@ -485,3 +485,20 @@ test('parseRosterJson: tolerates a missing optional field', t => {
 	t.equal(u.create_time, undefined, 'absent timestamp stays undefined (caller falls back)');
 	t.end();
 });
+
+test('parseRosterJson: a null record is skipped, not fatal', t => {
+	// Regression: readRecord used to dereference raw.card_id unguarded, so one null element
+	// threw and aborted the whole import — taking valid records down with it.
+	t.deepEqual(parseRosterJson('[null]'), [], 'a lone null yields []');
+	const r = parseRosterJson(JSON.stringify([null, JSON_UMA, null]));
+	t.equal(r.length, 1, 'nulls are skipped and the valid record survives');
+	t.equal(r[0].card_id, 100101);
+	t.end();
+});
+
+test('parseRosterJson: primitive records are skipped, not fatal', t => {
+	const r = parseRosterJson(JSON.stringify([1, 'nope', true, JSON_UMA]));
+	t.equal(r.length, 1, 'primitives are skipped and the valid record survives');
+	t.equal(r[0].card_id, 100101);
+	t.end();
+});
