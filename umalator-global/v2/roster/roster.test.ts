@@ -536,3 +536,35 @@ test('sortUmas: recency falls back if only SOME records have dates', t => {
 	t.equal(r[0].card_id, 100201, 'falls back to reversed array order');
 	t.end();
 });
+
+test('decodedUmaToUmaState: uses the real running_style over the aptitude guess', t => {
+	// UMA's best style aptitude is senko (8) => the guess says Senkou. But this uma is
+	// actually run as Oikomi. The real value must win: measured on a real roster, the guess
+	// disagrees with running_style for 49 of 249 umas.
+	const s = decodedUmaToUmaState({ ...UMA, running_style: 4 }, TURF_SPRINT);
+	t.equal(s.strategy, 'Oikomi', 'real running_style wins over best-aptitude inference');
+	t.equal(s.strategyAptitude, 'D', "strategyAptitude follows the CHOSEN style (oikomi=4 => 'D')");
+	t.end();
+});
+
+test('decodedUmaToUmaState: maps every running_style value', t => {
+	const cases: Array<[number, string]> = [[1, 'Nige'], [2, 'Senkou'], [3, 'Sasi'], [4, 'Oikomi']];
+	for (const [rs, strat] of cases) {
+		t.equal(decodedUmaToUmaState({ ...UMA, running_style: rs }, TURF_SPRINT).strategy, strat,
+			`running_style ${rs} => ${strat}`);
+	}
+	t.end();
+});
+
+test('decodedUmaToUmaState: falls back to inference when running_style is absent', t => {
+	// Share-code imports have no running_style; today's behaviour must be preserved.
+	const s = decodedUmaToUmaState(UMA, TURF_SPRINT);
+	t.equal(s.strategy, 'Senkou', 'best style aptitude (senko=8) still wins when nothing better exists');
+	t.end();
+});
+
+test('decodedUmaToUmaState: ignores an out-of-range running_style', t => {
+	const s = decodedUmaToUmaState({ ...UMA, running_style: 9 }, TURF_SPRINT);
+	t.equal(s.strategy, 'Senkou', 'garbage style falls back to the inference rather than breaking');
+	t.end();
+});

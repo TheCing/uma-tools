@@ -53,13 +53,24 @@ function canonicalStrategyKey(card_id: number): StratKey | null {
 	return outfit ? (CANONICAL_STRATEGY_KEY[outfit.strategy] ?? null) : null;
 }
 
+// data.json's running_style: 1=nige, 2=senko, 3=sashi, 4=oikomi. Verified against a real
+// export: each style's mean aptitude for its own style is ~7, and it disagrees with the
+// best-aptitude guess for 49 of 249 umas — which is exactly why we prefer it.
+const RUNNING_STYLE_KEY: Record<number, StratKey> = {
+	1: 'apt_nige', 2: 'apt_senko', 3: 'apt_sashi', 4: 'apt_oikomi'
+};
+
 /**
- * The roster does not record which style the uma actually runs, so use the best strategy
- * aptitude. Upstream's `>=` reduce silently resolves ties to Oikomi (common: all-equal
- * aptitudes); we break ties toward the outfit's canonical strategy from umas.json, else
- * the first best in Nige -> Senkou -> Sasi -> Oikomi order.
+ * Which strategy to load the uma as.
+ *
+ * A data.json import knows the uma's ACTUAL running_style, so use it. A share code doesn't
+ * carry one, so fall back to the best style aptitude (ties broken toward the outfit's
+ * canonical strategy, since upstream's `>=` reduce silently resolved every tie to Oikomi).
  */
 export function bestStrategyKey(uma: DecodedUma): StratKey {
+	const real = uma.running_style !== undefined ? RUNNING_STYLE_KEY[uma.running_style] : undefined;
+	if (real) return real;
+
 	const best = Math.max(uma.apt_nige, uma.apt_senko, uma.apt_sashi, uma.apt_oikomi);
 	const tied = STRATEGIES.filter(s => uma[s.key] === best);
 	if (tied.length === 1) return tied[0].key;
