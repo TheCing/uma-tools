@@ -188,6 +188,7 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 						placeholder="Paste your roster share link or code…"
 						value={code}
 						onInput={setCode}
+						onKeyDown={e => { if ((e as KeyboardEvent).key === 'Enter') handleImport(); }}
 					/>
 					<Button variant="secondary" onClick={handleImport} disabled={busy || !code.trim()}>
 						{busy ? 'Decoding…' : 'Import'}
