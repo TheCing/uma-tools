@@ -26,7 +26,14 @@ Confirmed scope from brainstorming:
   JSON import is out of scope.
 - **Full parity + v2 polish** (see §5).
 - **Course-aware aptitude collapsing** — deliberately fixes an upstream bug (§4).
-- **Approach A**: port the pure logic verbatim, rebuild the UI on v2 primitives. We do
+- **Decoder is our code, not vendored** (decided 2026-07-15). Port the decoder's logic but
+  clean it up to our rubric: named bit-width constants, no `as any`, shared `readStats`/
+  `readAptitudes` helpers. The three version readers stay separate — they are three wire
+  formats, not duplication. The **bit layouts are frozen** (dictated by uma.guide), so the
+  port lands verbatim first and is only cleaned up once a synthetic encoder pins v1/v2/v4
+  decoding. Accepted trade: the file diverges from upstream, so a future upstream format is
+  a manual port rather than a clean diff.
+- **Approach A**: port the pure logic, rebuild the UI on v2 primitives. We do
   **not** copy `UmasTab.tsx`/`UmasTab.css`, which carry `preact-i18n`, JP data paths, a
   rival 961-line stylesheet, and duplicate SP math we already own.
 
@@ -63,7 +70,7 @@ rather than growing `v2.css` (already ~167KB).
 
 ```
 umalator-global/v2/roster/
-├── roster-decoder.ts        ~300  ported VERBATIM from kachi (pure, no UI/JP coupling)
+├── roster-decoder.ts        ~300  ported from kachi + cleaned (layout frozen; pure)
 ├── roster-storage.ts         ~40  gzip+base64 persistence to localStorage
 ├── roster-mapping.ts         ~60  DecodedUma → UmaState (course-aware); char/icon lookup
 ├── roster-sp.ts              ~40  calcTotalSP aggregation over calculateSkillCost

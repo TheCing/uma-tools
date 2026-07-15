@@ -6,10 +6,19 @@
 [uma.guide roster viewer](https://uma.guide/roster-viewer/) share code, browses their real
 in-game roster as a filterable card grid, and loads any uma into Uma 1 / Uma 2.
 
-**Architecture:** Port kachi-dev's pure bit-packed roster decoder verbatim, then rebuild the
-UI on v2 primitives. Pure logic (decoder, mapping, SP, filter) lives in separate modules
-under `umalator-global/v2/roster/` and is unit-tested with `tape` + `ts-node`; the UI is
-Preact components styled with v2 design tokens in their own `roster.css`.
+**Architecture:** Port kachi-dev's pure bit-packed roster decoder — keeping its **wire
+format exactly**, but cleaning it up to our standards — then rebuild the UI on v2
+primitives. Pure logic (decoder, mapping, SP, filter) lives in separate modules under
+`umalator-global/v2/roster/` and is unit-tested with `tape` + `ts-node`; the UI is Preact
+components styled with v2 design tokens in their own `roster.css`.
+
+**Decoder policy (decided 2026-07-15):** the decoder is **our code, held to the normal
+rubric** — not vendored. Name the magic bit-lengths, drop the `as any` casts, and share the
+primitives the three version readers genuinely have in common. The file will therefore
+diverge from upstream, so re-syncing a future upstream format (a v5) becomes a manual
+port rather than a clean diff — that is the accepted trade. **The bit layouts are the one
+thing that must not change**, which is why Task 1 lands a synthetic encoder and golden
+decode fixtures for v1/v2/v4 *before* any cleanup.
 
 **Tech Stack:** Preact (`h`, hooks), TypeScript, Vite (v2 build), `tape` + `ts-node` (tests),
 `DecompressionStream`/`CompressionStream` (gzip), lucide-react icons.
@@ -35,12 +44,15 @@ Preact components styled with v2 design tokens in their own `roster.css`.
   to the enum in this feature.
 - **Local preview:** `npx vite` from `umalator-global/v2` (NOT `build.mjs --serve`, which
   cannot transpile the `.tsx` entry). See memory `v2-dev-preview`.
+- **Wire format is frozen.** The decoder's bit layouts, field order, bit widths and
+  `+1` offsets are dictated by the producer (uma.guide) and must match upstream exactly.
+  Clean up *style*, never *layout*. Any layout change is a bug, not a refactor.
 
 ## File Structure
 
 | File | Responsibility |
 |---|---|
-| `umalator-global/v2/roster/roster-decoder.ts` | **Verbatim port.** Bit-packed v1/v2/v4 → `DecodedUma[]`; `saveRoster`/`loadRoster` (gzip+b64 string codec). Zero imports. |
+| `umalator-global/v2/roster/roster-decoder.ts` | **Cleaned port** (layout-identical to upstream). Bit-packed v1/v2/v4 → `DecodedUma[]`; `saveRoster`/`loadRoster` (gzip+b64 string codec). Zero imports. |
 | `umalator-global/v2/roster/roster-storage.ts` | localStorage wrapper around `saveRoster`/`loadRoster` + quota handling. |
 | `umalator-global/v2/roster/roster-mapping.ts` | `DecodedUma` → `UmaState`, course-aware. Char/outfit/icon lookup. **The crux.** |
 | `umalator-global/v2/roster/roster-sp.ts` | `calcTotalSP` aggregation on top of `calculateSkillCost`. |
@@ -57,7 +69,7 @@ Tasks 1–4 are pure logic and land test-first. Tasks 5–7 are UI. Task 8 wires
 
 ---
 
-### Task 1: Port the roster decoder + storage + test harness
+### Task 1: Port + clean up the roster decoder, storage, test harness
 
 **Files:**
 - Create: `umalator-global/v2/roster/roster-decoder.ts`
@@ -75,9 +87,22 @@ Tasks 1–4 are pure logic and land test-first. Tasks 5–7 are UI. Task 8 wires
   - `writeRosterToStorage(umas: DecodedUma[]): Promise<{ ok: true } | { ok: false; reason: string }>`
   - `clearRosterStorage(): void`
 
-- [ ] **Step 1: Copy the decoder verbatim**
+**Sequencing — read this first.** The decoder is a wire-format parser whose bit layouts are
+dictated by uma.guide and must not change, but whose *style* we are cleaning up. So this
+task refactors under test, in this order:
 
-The upstream file has **zero imports** and no JP/UI coupling, so it is a literal copy:
+1. Land upstream's file verbatim as a **scaffold** (a known-good starting implementation).
+2. Write golden decode fixtures using a synthetic bit **encoder** written from upstream's
+   layout, and get them green against the scaffold. Green here proves the fixtures encode
+   the *real* layout rather than repeating a misreading — this is the whole safety net.
+3. Only then clean the decoder up, re-running the fixtures to prove behaviour is unchanged.
+
+Do not reorder these. Cleaning first, then writing tests against the cleaned code, would
+happily pin whatever bug the cleanup introduced.
+
+- [ ] **Step 1: Land the upstream decoder as a scaffold**
+
+The upstream file has **zero imports** and no JP/UI coupling, so it drops straight in:
 
 ```bash
 cd /Users/jptyndalljr/Dev/uma-tools-1
@@ -85,21 +110,9 @@ mkdir -p umalator-global/v2/roster
 git show kachi-dev/master:umalator/rosterDecoder.ts > umalator-global/v2/roster/roster-decoder.ts
 ```
 
-Then make exactly one edit to the copied file — add this 6-line header comment at the very
-top, and change nothing else (the file must stay byte-identical to upstream below the
-header so it remains diffable):
-```ts
-/**
- * Roster decoder — ported verbatim from kachi-dev/master:umalator/rosterDecoder.ts
- * Decodes the bit-packed roster share code produced by https://uma.guide/roster-viewer/
- * (versions 1, 2 and 4). Pure: no imports, no UI, no region coupling. Keep it that way so
- * it stays diffable against upstream.
- */
-```
-
-Verify it is unmodified apart from the header:
+Do not edit it yet — Step 5 rewrites it. Confirm it landed intact:
 ```bash
-diff <(git show kachi-dev/master:umalator/rosterDecoder.ts) <(tail -n +7 umalator-global/v2/roster/roster-decoder.ts)
+diff <(git show kachi-dev/master:umalator/rosterDecoder.ts) umalator-global/v2/roster/roster-decoder.ts
 ```
 Expected: no output (identical).
 
@@ -140,10 +153,148 @@ export const UMA: DecodedUma = {
 	skills: [{ id: 200011, level: 1 }]
 };
 
+// ── Synthetic bit encoder ────────────────────────────────────────────────────
+// Mirrors the layouts in upstream's readV4Uma/readV2Uma/readV1Uma so we can pin the
+// decoder's wire format. BitVector.fromBase64 consumes 6 bits per base64 char (MSB first),
+// so we emit the same way. This is test-only — the app never encodes.
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+class BitWriter {
+	private bits: number[] = [];
+	write(value: number, n: number): this {
+		for (let i = n - 1; i >= 0; i--) this.bits.push((value >> i) & 1);
+		return this;
+	}
+	toBase64(): string {
+		let out = '';
+		for (let i = 0; i < this.bits.length; i += 6) {
+			let v = 0;
+			for (let j = 0; j < 6; j++) v = (v << 1) | (this.bits[i + j] ?? 0);
+			out += B64[v];
+		}
+		return out;
+	}
+}
+
+const APT_ORDER = [
+	'apt_short', 'apt_mile', 'apt_middle', 'apt_long',
+	'apt_turf', 'apt_dirt',
+	'apt_nige', 'apt_senko', 'apt_sashi', 'apt_oikomi'
+] as const;
+
+/** v4: apts are stored as value-1 (3 bits), skill level is 1 bit, multi-uma. */
+function encodeV4(umas: DecodedUma[]): string {
+	const w = new BitWriter().write(4, 8);
+	for (const u of umas) {
+		w.write(u.card_id, 20);
+		w.write((u.talent_level ?? 1) - 1, 3);
+		if (u.rank_score != null) w.write(1, 1).write(u.rank_score, 15); else w.write(0, 1);
+		w.write(u.speed, 11).write(u.stamina, 11).write(u.power, 11).write(u.guts, 11).write(u.wisdom, 11);
+		for (const k of APT_ORDER) w.write((u as any)[k] - 1, 3);
+		w.write(0, 4);                       // factor_count
+		w.write(u.skills.length, 6);
+		for (const s of u.skills) w.write(s.id, 20).write(s.level === 1 ? 0 : 1, 1);
+		w.write(0, 2);                       // parent_count
+	}
+	return w.toBase64();
+}
+
+/** v2: apts are raw 4-bit values, has create_time, skill level is 4 bits stored as level-1. */
+function encodeV2(u: DecodedUma, createdEpoch: number): string {
+	const w = new BitWriter().write(2, 8);
+	w.write(u.card_id, 20);
+	w.write(u.speed, 11).write(u.stamina, 11).write(u.power, 11).write(u.guts, 11).write(u.wisdom, 11);
+	for (const k of APT_ORDER) w.write((u as any)[k], 4);
+	w.write(createdEpoch, 32);
+	if (u.rank_score != null) w.write(1, 1).write(u.rank_score, 15); else w.write(0, 1);
+	w.write(u.skills.length, 6);
+	for (const s of u.skills) w.write(s.id, 20).write(s.level - 1, 4);
+	return w.toBase64();
+}
+
+/** v1: like v2 but no create_time and no rank. */
+function encodeV1(u: DecodedUma): string {
+	const w = new BitWriter().write(1, 8);
+	w.write(u.card_id, 20);
+	w.write(u.speed, 11).write(u.stamina, 11).write(u.power, 11).write(u.guts, 11).write(u.wisdom, 11);
+	for (const k of APT_ORDER) w.write((u as any)[k], 4);
+	w.write(u.skills.length, 6);
+	for (const s of u.skills) w.write(s.id, 20).write(s.level - 1, 4);
+	return w.toBase64();
+}
+
+// ── Tests ───────────────────────────────────────────────────────────────────
+
 test('decodeRoster: garbage input returns [] and does not throw', async t => {
 	t.deepEqual(await decodeRoster('not a real code'), []);
 	t.deepEqual(await decodeRoster(''), []);
 	t.deepEqual(await decodeRoster('#'), []);
+	t.deepEqual(await decodeRoster('AAAA'), [], 'unknown version byte yields []');
+	t.end();
+});
+
+test('decodeRoster v4: round-trips a single uma through the real bit layout', async t => {
+	const [got] = await decodeRoster(encodeV4([UMA]));
+	t.ok(got, 'decoded one uma');
+	t.equal(got.card_id, UMA.card_id);
+	t.equal(got.talent_level, UMA.talent_level);
+	t.equal(got.speed, UMA.speed);
+	t.equal(got.stamina, UMA.stamina);
+	t.equal(got.power, UMA.power);
+	t.equal(got.guts, UMA.guts);
+	t.equal(got.wisdom, UMA.wisdom);
+	for (const k of APT_ORDER) t.equal((got as any)[k], (UMA as any)[k], `${k} survives`);
+	t.deepEqual(got.skills, UMA.skills);
+	t.end();
+});
+
+test('decodeRoster v4: decodes every uma in a multi-uma roster', async t => {
+	const second: DecodedUma = { ...UMA, card_id: 100201, speed: 999, apt_turf: 1, apt_dirt: 8 };
+	const got = await decodeRoster(encodeV4([UMA, second]));
+	t.equal(got.length, 2, 'both umas decoded');
+	t.equal(got[0].card_id, 100101);
+	t.equal(got[1].card_id, 100201);
+	t.equal(got[1].speed, 999);
+	t.equal(got[1].apt_dirt, 8, 'second uma aptitudes are not bled from the first');
+	t.end();
+});
+
+test('decodeRoster v4: optional rank_score is read only when present', async t => {
+	const [withRank] = await decodeRoster(encodeV4([{ ...UMA, rank_score: 21000 }]));
+	t.equal(withRank.rank_score, 21000);
+	const [withoutRank] = await decodeRoster(encodeV4([UMA]));
+	t.equal(withoutRank.rank_score, undefined, 'absent rank leaves the field undefined');
+	t.equal(withoutRank.card_id, UMA.card_id, 'and does not desync the rest of the stream');
+	t.end();
+});
+
+test('decodeRoster v2: raw 4-bit aptitudes, create_time and 4-bit skill levels', async t => {
+	// v1/v2 encode aptitudes raw (0-9), unlike v4's value-1.
+	const v2uma: DecodedUma = { ...UMA, apt_short: 0, apt_turf: 9, skills: [{ id: 200011, level: 3 }] };
+	const [got] = await decodeRoster(encodeV2(v2uma, 1700000000));
+	t.equal(got.card_id, v2uma.card_id);
+	t.equal(got.apt_short, 0, 'raw low end preserved');
+	t.equal(got.apt_turf, 9, 'raw high end preserved');
+	t.equal(got.create_time, '2023-11-14 22:13:20', 'epoch 1700000000 formats as UTC');
+	t.deepEqual(got.skills, [{ id: 200011, level: 3 }], '4-bit level round-trips');
+	t.end();
+});
+
+test('decodeRoster v1: raw aptitudes, no create_time', async t => {
+	const v1uma: DecodedUma = { ...UMA, apt_short: 0, apt_turf: 9, skills: [{ id: 200011, level: 2 }] };
+	const [got] = await decodeRoster(encodeV1(v1uma));
+	t.equal(got.card_id, v1uma.card_id);
+	t.equal(got.wisdom, v1uma.wisdom);
+	t.equal(got.apt_turf, 9);
+	t.equal(got.create_time, undefined, 'v1 carries no created timestamp');
+	t.deepEqual(got.skills, [{ id: 200011, level: 2 }]);
+	t.end();
+});
+
+test('decodeRoster: accepts a full share URL, not just the bare code', async t => {
+	const code = encodeV4([UMA]);
+	const [got] = await decodeRoster(`https://uma.guide/roster-viewer/#${code}`);
+	t.equal(got.card_id, UMA.card_id, 'everything before # is stripped');
 	t.end();
 });
 
@@ -189,13 +340,17 @@ In `package.json`, add to `"scripts"` (next to the existing `test:mechanics`):
 "test:roster": "npx ts-node umalator-global/v2/roster/roster.test.ts"
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [ ] **Step 4: Run the tests — storage red, decoder fixtures green**
 
 Run: `npm run test:roster`
 Expected: FAIL with `Cannot find module './roster-storage'` — that module arrives in Step 5.
 
-(The decoder tests would already pass on their own, since Step 1 copied that file wholesale;
-they are a port-fidelity check. The genuine red here is the storage module.)
+Once Step 5 lands, **every decoder fixture must be green against the untouched scaffold**.
+That is the gate for this whole task: green here proves the synthetic encoder reproduces
+upstream's real layout, which is what makes the Step 6 cleanup safe. If a fixture is red
+while the decoder is still upstream's verbatim code, **the test is wrong, not the decoder** —
+fix the encoder against `git show kachi-dev/master:umalator/rosterDecoder.ts` until it is
+green, and do not touch `roster-decoder.ts`.
 
 Note: `DecompressionStream`/`CompressionStream` require Node 18+. Verify with `node -v`.
 
@@ -245,21 +400,154 @@ export function clearRosterStorage(): void {
 }
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [ ] **Step 6: Run the tests — everything green against the scaffold**
 
 Run: `npm run test:roster`
-Expected: PASS — all 5 tests green (`# fail 0`), covering decode-garbage, save/load
-round-trip, storage round-trip, quota failure, and corrupt-payload recovery.
+Expected: PASS, `# fail 0`. All decoder fixtures (v4 single/multi/rank, v2, v1, share-URL,
+garbage), the save/load round-trip, and the three storage tests.
 
-- [ ] **Step 7: Commit**
+**Do not proceed to Step 7 until this is green.** It is the safety net for the cleanup.
+
+- [ ] **Step 7: Clean up the decoder, re-running the tests after each change**
+
+Now — and only now — rewrite `umalator-global/v2/roster/roster-decoder.ts` to our standards.
+Re-run `npm run test:roster` after each change; it must stay `# fail 0` throughout. If a
+test goes red, you changed the layout — revert that change.
+
+Add this header:
+
+```ts
+/**
+ * Roster decoder — decodes the bit-packed roster share code produced by
+ * https://uma.guide/roster-viewer/ (formats v1, v2, v4).
+ *
+ * Ported from kachi-dev/master:umalator/rosterDecoder.ts and then cleaned up, so this file
+ * intentionally diverges from upstream; a future upstream format is a manual port.
+ *
+ * The BIT LAYOUTS ARE THE WIRE FORMAT and are dictated by the producer: field order, bit
+ * widths and the +1 offsets must not change. roster.test.ts pins them with a synthetic
+ * encoder. Style is ours; layout is not.
+ *
+ * Pure: no imports, no UI, no region coupling.
+ */
+```
+
+Required changes:
+
+1. **Name the bit-lengths.** Replace the bare `109` / `162` / `129` guards and inline widths:
+```ts
+// Minimum bits a record occupies, used to decide whether another one follows.
+const V4_MIN_BITS = 109;
+const V2_MIN_BITS = 162;
+const V1_MIN_BITS = 129;
+
+// Field widths (bits). Dictated by the producer — do not change.
+const CARD_ID_BITS = 20;
+const STAT_BITS = 11;
+const TALENT_BITS = 3;
+const RANK_BITS = 15;
+const APT_BITS_V4 = 3;   // stored as value-1
+const APT_BITS_V12 = 4;  // stored raw
+const SKILL_ID_BITS = 20;
+const SKILL_COUNT_BITS = 6;
+const SKILL_LEVEL_BITS_V12 = 4;
+const FACTOR_COUNT_BITS = 4;
+const FACTOR_BITS = 24;
+const PARENT_COUNT_BITS = 2;
+const CREATE_TIME_BITS = 32;
+```
+
+2. **Drop the `as any` casts** in `gzip`/`gunzip`. `Blob` accepts a `Uint8Array` as a
+   `BlobPart`, and `Blob.stream()` returns a `ReadableStream<Uint8Array>`:
+```ts
+async function gunzip(data: Uint8Array): Promise<Uint8Array> {
+	const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('gzip'));
+	return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function gzip(text: string): Promise<Uint8Array> {
+	const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
+	return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+```
+If TypeScript rejects `DecompressionStream`/`CompressionStream` as undefined names, add
+`"dom"` lib types rather than reinstating `as any`; if that is not available in this
+tsconfig, declare them once at the top of the file:
+```ts
+declare const DecompressionStream: { new (format: string): GenericTransformStream };
+declare const CompressionStream: { new (format: string): GenericTransformStream };
+```
+
+3. **Extract the one block all three readers genuinely share** — the five 11-bit stats:
+```ts
+type Stats = Pick<DecodedUma, 'speed' | 'stamina' | 'power' | 'guts' | 'wisdom'>;
+
+function readStats(bv: BitVector): Stats {
+	return {
+		speed:   bv.read(STAT_BITS),
+		stamina: bv.read(STAT_BITS),
+		power:   bv.read(STAT_BITS),
+		guts:    bv.read(STAT_BITS),
+		wisdom:  bv.read(STAT_BITS)
+	};
+}
+```
+and the aptitude block, which v1 and v2 share (v4 needs its own because of the width and
+the +1):
+```ts
+type Aptitudes = Pick<DecodedUma,
+	'apt_short' | 'apt_mile' | 'apt_middle' | 'apt_long' |
+	'apt_turf' | 'apt_dirt' |
+	'apt_nige' | 'apt_senko' | 'apt_sashi' | 'apt_oikomi'>;
+
+/** width = bits per aptitude; offset = added to each raw value (v4 stores value-1). */
+function readAptitudes(bv: BitVector, width: number, offset: number): Aptitudes {
+	const r = () => bv.read(width) + offset;
+	// Order is part of the wire format.
+	return {
+		apt_short: r(), apt_mile: r(), apt_middle: r(), apt_long: r(),
+		apt_turf: r(), apt_dirt: r(),
+		apt_nige: r(), apt_senko: r(), apt_sashi: r(), apt_oikomi: r()
+	};
+}
+```
+v4 calls `readAptitudes(bv, APT_BITS_V4, 1)`; v1/v2 call `readAptitudes(bv, APT_BITS_V12, 0)`.
+
+**Keep `readV1Uma`, `readV2Uma` and `readV4Uma` as three separate functions.** They are three
+different wire formats, not duplication — merging them would couple formats that are free to
+diverge, and is explicitly not wanted.
+
+4. **Type the exports properly** — no `any` in the public surface. `DecodedUma` already
+   exists; keep it exported unchanged (Tasks 2–5 import it).
+
+- [ ] **Step 8: Run the tests to verify the cleanup changed nothing**
+
+Run: `npm run test:roster`
+Expected: PASS, `# fail 0` — identical to Step 6. Same fixtures, cleaned implementation.
+
+Then confirm no `as any` survives in the decoder:
+```bash
+grep -n "as any" umalator-global/v2/roster/roster-decoder.ts || echo "clean"
+```
+Expected: `clean`.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add umalator-global/v2/roster/roster-decoder.ts umalator-global/v2/roster/roster-storage.ts umalator-global/v2/roster/roster.test.ts package.json
-git commit -m "v2 roster: port bit-packed roster decoder + storage
+git commit -m "v2 roster: bit-packed roster decoder + storage
 
-Verbatim port of kachi-dev/master:umalator/rosterDecoder.ts (zero imports, pure).
-Adds a v2-namespaced localStorage wrapper (v2_umas_roster) with quota handling,
-and a tape/ts-node test harness (npm run test:roster)."
+Ports kachi-dev's rosterDecoder and cleans it up to our standards: named bit-width
+constants instead of magic numbers, no 'as any' casts, shared readStats/readAptitudes
+helpers. The three version readers stay separate — they are three wire formats, not
+duplication.
+
+The bit layouts are the wire format and are unchanged. roster.test.ts pins them with a
+synthetic encoder covering v1/v2/v4, so the cleanup is verified behaviour-preserving
+rather than assumed.
+
+Also adds a v2-namespaced localStorage wrapper (v2_umas_roster) with quota handling and
+a tape/ts-node harness (npm run test:roster)."
 ```
 
 ---
