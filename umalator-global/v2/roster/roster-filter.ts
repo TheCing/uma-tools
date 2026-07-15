@@ -25,6 +25,11 @@ export const SORT_LABELS: Record<SortKey, string> = {
 };
 export const DEFAULT_SORT: SortState = { key: 'time', dir: 'desc' };
 
+/**
+ * Number of active filter CONSTRAINTS, not categories: each aptitude threshold counts
+ * separately, so setting turf>=S and dirt>=A counts 2, not 1. Drives the "N filters active"
+ * badge in the filter panel.
+ */
 export function activeFilterCount(f: FilterState): number {
 	return (f.name.trim() ? 1 : 0) + Object.keys(f.aptMin).length + (f.skills.length ? 1 : 0);
 }

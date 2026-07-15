@@ -339,9 +339,11 @@ test('filterUmas: name search matches character name case-insensitively', t => {
 	t.end();
 });
 
-test('activeFilterCount counts each active dimension', t => {
+test('activeFilterCount counts each active constraint (aptitude keys count separately)', t => {
 	t.equal(activeFilterCount(EMPTY_FILTERS), 0);
 	t.equal(activeFilterCount({ name: 'x', aptMin: { apt_turf: 8 }, skills: [1] }), 3);
+	t.equal(activeFilterCount({ name: '', aptMin: { apt_turf: 8, apt_dirt: 7 }, skills: [] }), 2,
+		'two aptitude thresholds count as two constraints, not one');
 	t.end();
 });
 
