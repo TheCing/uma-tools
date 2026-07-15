@@ -2,13 +2,12 @@ import { h } from 'preact';
 import { useState, useEffect, useMemo, useCallback } from 'preact/hooks';
 import { DecodedUma, decodeRoster } from './roster-decoder';
 import { readRosterFromStorage, writeRosterToStorage, clearRosterStorage } from './roster-storage';
-import { decodedUmaToUmaState, RosterCourse } from './roster-mapping';
+import { decodedUmaToUmaState, RosterCourse, getCharInfo } from './roster-mapping';
 import { filterUmas, sortUmas, EMPTY_FILTERS, DEFAULT_SORT, FilterState, SortState } from './roster-filter';
 import { RosterUmaCard } from './roster-uma-card';
 import { RosterFilterPanel } from './roster-filter-panel';
 import { UmaState } from '../uma-panel';
-import { saveHorseSlot } from '../storage';
-import { getCharInfo } from './roster-mapping';
+import { saveHorseSlot, getHorseSlots } from '../storage';
 import skillnames from '../../skillnames.json';
 import './roster.css';
 
@@ -63,13 +62,22 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 		clearRosterStorage();
 		setNotice('');
 		setError('');
+		// Otherwise a stale filter silently hides the next roster that gets imported.
+		setFilters(EMPTY_FILTERS);
+		setSort(DEFAULT_SORT);
+		setFiltersOpen(false);
 	}, []);
 
 	const handlePromote = useCallback((uma: DecodedUma) => {
 		const state = decodedUmaToUmaState(uma, course);
 		const { charName, outfitName } = getCharInfo(uma.card_id);
-		// saveHorseSlot(name, horse, memo?, folder?) -> boolean
-		const name = outfitName ? `${charName} ${outfitName}` : charName;
+		const base = outfitName ? `${charName} ${outfitName}` : charName;
+		// saveHorseSlot keys slots by name and overwrites without asking, and a roster can
+		// hold several copies of the same uma — so pick a free name rather than clobbering
+		// whatever is already saved under this one.
+		const existing = getHorseSlots();
+		let name = base;
+		for (let i = 2; name in existing; i++) name = `${base} (${i})`;
 		const ok = saveHorseSlot(name, state, 'Imported from roster');
 		setNotice(ok ? `Saved "${name}" to the Saved tab.` : `Could not save "${name}" — storage may be full.`);
 	}, [course]);
@@ -79,7 +87,7 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 		const ids = new Set<number>();
 		roster.forEach(u => u.skills.forEach(s => ids.add(s.id)));
 		return [...ids]
-			.map(id => ({ id, name: (skillnames as any)[String(id)]?.[0] ?? String(id) }))
+			.map(id => ({ id, name: (skillnames as any)[String(id)]?.[0] ?? `Unknown (${id})` }))
 			.sort((a, b) => a.name.localeCompare(b.name));
 	}, [roster]);
 
@@ -151,9 +159,9 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 				<div class="rosterEmpty">No umas match these filters.</div>
 			) : (
 				<div class="rosterGrid">
-					{visible.map(uma => (
+					{visible.map((uma, i) => (
 						<RosterUmaCard
-							key={`${uma.card_id}-${uma.create_time ?? ''}-${uma.rank_score ?? ''}`}
+							key={`${uma.card_id}-${uma.create_time ?? ''}-${uma.rank_score ?? ''}-${i}`}
 							uma={uma}
 							course={course}
 							showUma2={currentMode === 'compare'}
