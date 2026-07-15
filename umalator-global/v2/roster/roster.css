@@ -139,3 +139,12 @@
 .rosterControls .rosterInput { flex: 1; }
 .rosterCount { font-size: var(--font-xs); color: var(--color-text-muted); }
 .rosterEmpty { padding: var(--space-lg); text-align: center; color: var(--color-text-muted); font-style: italic; }
+
+/* Mirrors .v2-uma-tab-trainees (v2.css) so the icon+label tab lays out identically.
+   Lives here because v2.css is off-limits for this feature. */
+.v2-uma-tab-umas {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-xs);
+}

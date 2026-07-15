@@ -91,7 +91,14 @@ export function decodedUmaToUmaState(uma: DecodedUma, course: RosterCourse): Uma
 	return {
 		...defaultUmaState,
 		outfitId: String(uma.card_id),
-		uniqueLv: uma.talent_level ?? 1,
+		// talent_level is the awakening/star level (1-5), not the unique-skill level. v4
+		// encodes it as read(3)+1, so clamp: a corrupt code could yield up to 8, and
+		// starCount is typed 1|2|3|4|5.
+		starCount: Math.max(1, Math.min(5, uma.talent_level ?? 3)) as 1 | 2 | 3 | 4 | 5,
+		uniqueLv: (() => {
+			const s = Math.max(1, Math.min(5, uma.talent_level ?? 3));
+			return s % 3 + Math.floor(s / 3); // v2's formula (uma-panel.tsx:595)
+		})(),
 		speed: uma.speed,
 		stamina: uma.stamina,
 		power: uma.power,

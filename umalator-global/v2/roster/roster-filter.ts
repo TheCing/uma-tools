@@ -16,14 +16,14 @@ export interface FilterState {
 
 export const EMPTY_FILTERS: FilterState = { name: '', aptMin: {}, skills: [] };
 
-export type SortKey = 'sp' | 'time' | 'rating';
+export type SortKey = 'sp' | 'rating';
 export type SortDir = 'asc' | 'desc';
 export interface SortState { key: SortKey; dir: SortDir }
 
 export const SORT_LABELS: Record<SortKey, string> = {
-	sp: 'Total SP', time: 'Created', rating: 'Rating'
+	sp: 'Total SP', rating: 'Rating'
 };
-export const DEFAULT_SORT: SortState = { key: 'time', dir: 'desc' };
+export const DEFAULT_SORT: SortState = { key: 'sp', dir: 'desc' };
 
 /**
  * Number of active filter CONSTRAINTS, not categories: each aptitude threshold counts
@@ -58,7 +58,6 @@ function sortValue(uma: DecodedUma, key: SortKey): number {
 	switch (key) {
 		case 'sp': return calcTotalSP(uma.skills);
 		case 'rating': return uma.rank_score ?? 0;
-		case 'time': return uma.create_time ? Date.parse(uma.create_time) || 0 : 0;
 	}
 }
 

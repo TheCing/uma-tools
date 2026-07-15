@@ -260,9 +260,19 @@ test('decodedUmaToUmaState: maps stats, talent level and skills', t => {
 	t.equal(s.power, 900);
 	t.equal(s.guts, 400);
 	t.equal(s.wisdom, 500);
-	t.equal(s.uniqueLv, 3, 'uniqueLv comes from talent_level');
+	t.equal(s.starCount, 3, 'starCount comes from talent_level (the star/awakening level)');
+	t.equal(s.uniqueLv, 1, "uniqueLv is derived from stars via v2's formula, not talent_level itself");
 	t.equal(s.mood, 2, 'mood defaults to Great, matching upstream');
 	t.ok(Array.isArray(s.skills), 'skills is an array of string ids');
+	t.end();
+});
+
+test('decodedUmaToUmaState: a 5-star uma maps stars and derives uniqueLv', t => {
+	const s = decodedUmaToUmaState({ ...UMA, talent_level: 5 }, TURF_SPRINT);
+	t.equal(s.starCount, 5, '5 stars');
+	t.equal(s.uniqueLv, 3, '5 % 3 + floor(5/3) = 3');
+	const clamped = decodedUmaToUmaState({ ...UMA, talent_level: 8 }, TURF_SPRINT);
+	t.equal(clamped.starCount, 5, 'an out-of-range talent_level clamps to 5 rather than corrupting starCount');
 	t.end();
 });
 
