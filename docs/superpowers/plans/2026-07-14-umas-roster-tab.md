@@ -85,8 +85,9 @@ mkdir -p umalator-global/v2/roster
 git show kachi-dev/master:umalator/rosterDecoder.ts > umalator-global/v2/roster/roster-decoder.ts
 ```
 
-Then make exactly two edits to the copied file:
-1. Add this header comment at the very top:
+Then make exactly one edit to the copied file — add this 6-line header comment at the very
+top, and change nothing else (the file must stay byte-identical to upstream below the
+header so it remains diffable):
 ```ts
 /**
  * Roster decoder — ported verbatim from kachi-dev/master:umalator/rosterDecoder.ts
@@ -95,7 +96,6 @@ Then make exactly two edits to the copied file:
  * it stays diffable against upstream.
  */
 ```
-2. Export `BitVector`'s helpers are NOT needed elsewhere — leave everything else untouched.
 
 Verify it is unmodified apart from the header:
 ```bash
@@ -105,15 +105,19 @@ Expected: no output (identical).
 
 - [ ] **Step 2: Write the failing tests**
 
-Create `umalator-global/v2/roster/roster.test.ts`. Node has no `localStorage`, so stub it
-before importing the storage module — that lets us test the persistence and quota paths
-rather than leaving them unverified:
+Create `umalator-global/v2/roster/roster.test.ts`. Node has no `localStorage`, so stub it on
+`globalThis` — that lets us test the persistence and quota paths rather than leaving them
+unverified. This is safe because `roster-storage.ts` only touches `localStorage` *inside*
+its functions, never at module top level, so the stub only has to exist by the time a test
+calls one. (Import statements hoist above the stub assignment; that does not matter here,
+and the stub must NOT be moved into the storage module itself.)
 
 ```ts
 import test from 'tape';
 import { decodeRoster, saveRoster, loadRoster, DecodedUma } from './roster-decoder';
 
-// Minimal localStorage stub — must exist before ./roster-storage is imported.
+// Minimal localStorage stub. roster-storage only reads localStorage inside its functions,
+// so the stub just has to exist before a test calls one.
 let store: Record<string, string> = {};
 let failNextWrite = false;
 (globalThis as any).localStorage = {
@@ -613,10 +617,12 @@ export function calcTotalSP(skills: Array<{ id: number; level: number }>): numbe
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `npm run test:roster`
-Expected: PASS. If "a known white skill costs its base cost" fails with 0, pick a different
-known non-unique id: `jq -r 'to_entries|map(select(.value.rarity==1))|.[0].key' umalator-global/skill_data.json`
-and update the test's id and the group test to two ids sharing a `groupId`
-(`jq -r '."<id>".groupId' skill_meta.json`).
+Expected: PASS.
+
+The fixture ids are verified against the current Global data, so do not substitute them:
+`100011` = rarity 5 (unique tier → excluded from SP); `200011` = rarity 1, `baseCost` 110,
+group `20001`; `200012` = rarity 1, same group `20001`. If one of these assertions fails,
+the aggregation is wrong — fix `calcTotalSP`, not the test.
 
 - [ ] **Step 5: Commit**
 
