@@ -66,6 +66,7 @@ umalator-global/v2/roster/
 ├── roster-decoder.ts        ~300  ported VERBATIM from kachi (pure, no UI/JP coupling)
 ├── roster-storage.ts         ~40  gzip+base64 persistence to localStorage
 ├── roster-mapping.ts         ~60  DecodedUma → UmaState (course-aware); char/icon lookup
+├── roster-sp.ts              ~40  calcTotalSP aggregation over calculateSkillCost
 ├── roster-filter.ts          ~80  pure filter + sort predicates over DecodedUma[]
 ├── umas-tab.tsx             ~200  tab shell: import bar, search, grid, wiring
 ├── roster-uma-card.tsx      ~150  one card + actions
@@ -168,8 +169,12 @@ Ported from upstream:
 - Actions: **Load into Uma 1**, **Load into Uma 2**.
 
 v2 additions:
-- **Reuse `skill-chart-utils.ts`** (`isPurpleSkill`, `calculateSkillCost`) instead of
-  upstream's duplicate SP implementation.
+- **Reuse `skill-chart-utils.ts`** (`skillGroups`, `calculateSkillCost`) instead of
+  upstream's duplicate SP implementation. `calculateSkillCost(id, new Map(), new Map())` is
+  equivalent to upstream's `costForId(id, new Map())` (hint 0 makes `scaleBaseCost` a
+  no-op) and our `skillGroups` sort is functionally identical to upstream's. Only the
+  **aggregation** — exclude uniques (rarity 3–5), take the highest tier owned per group,
+  charge that walk once — is new, and it lives in `roster-sp.ts`.
 - **"Not in game" badges** from `not-in-game.json` for JP-only outfits/skills.
 - **Mobile-correct** per the fixes shipped in `19e96c4`: 1-column grid inside the
   now-full-screen drawer, `font-size: 16px` on inputs (avoids iOS focus zoom), `dvh` units.
