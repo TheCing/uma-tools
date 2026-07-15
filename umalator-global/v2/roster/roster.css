@@ -120,14 +120,29 @@
 .rosterFilterFooter { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); font-size: var(--font-sm); color: var(--color-text-muted); }
 
 .rosterTab { display: flex; flex-direction: column; gap: var(--space-sm); }
-.rosterImportBar { display: flex; gap: 6px; }
-.rosterImportBar .rosterImportInput { flex: 1; }
 .rosterHint { font-size: var(--font-sm); color: var(--color-text-muted); }
 .rosterHint a { color: var(--color-primary); }
 .rosterError { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-primary); font-size: var(--font-sm); }
 .rosterNotice { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-text-muted); font-size: var(--font-sm); }
-.rosterControls { display: flex; gap: 6px; }
+
+/* .v2-button-* carry a FIXED height (md 34px), while .v2-input is padding-driven and
+   computes to ~40px — the fixed height defeats flex stretch and the row looks ragged.
+   Let the buttons take their height from the input instead of hard-coding a number that
+   would drift if the input's padding/font ever changes. */
+.rosterImportBar,
+.rosterControls {
+	display: flex;
+	gap: 6px;
+	align-items: stretch;
+}
+.rosterImportBar .rosterImportInput,
 .rosterControls .rosterSearchInput { flex: 1; }
+.rosterImportBar .v2-button,
+.rosterControls .v2-button {
+	height: auto;
+	align-self: stretch;
+	flex: 0 0 auto;
+}
 .rosterCount { font-size: var(--font-xs); color: var(--color-text-muted); }
 .rosterEmpty { padding: var(--space-lg); text-align: center; color: var(--color-text-muted); font-style: italic; }
 

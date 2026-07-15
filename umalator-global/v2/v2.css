@@ -2993,6 +2993,11 @@ body {
   white-space: nowrap;
 }
 
+.v2-uma-rating {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
 .v2-uma-placeholder {
   font-size: var(--font-base);
   color: var(--color-text-tertiary);

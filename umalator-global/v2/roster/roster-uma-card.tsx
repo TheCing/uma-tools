@@ -4,6 +4,7 @@ import { DecodedUma } from './roster-decoder';
 import { getCharInfo, decodedUmaToUmaState, unknownSkillCount, aptToLetter, RosterCourse } from './roster-mapping';
 import { calcTotalSP } from './roster-sp';
 import { getSkillIcon } from '../skills';
+import { STRATEGY_LABELS } from '../uma-panel';
 import notInGameData from '../../not-in-game.json';
 import skillnames from '../../skillnames.json';
 
@@ -117,7 +118,7 @@ export function RosterUmaCard({ uma, course, showUma2, onLoadUma1, onLoadUma2, o
 			</div>
 
 			<div class="rosterCardLoadInfo" title="Aptitudes are selected for the currently-selected course">
-				Loads as {mapped.strategy} · {mapped.surfaceAptitude}/{mapped.distanceAptitude}/{mapped.strategyAptitude}
+				Loads as {STRATEGY_LABELS[mapped.strategy] ?? mapped.strategy} · {mapped.surfaceAptitude}/{mapped.distanceAptitude}/{mapped.strategyAptitude}
 			</div>
 
 			<div class="rosterCardActions">

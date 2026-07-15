@@ -111,7 +111,8 @@ export function decodedUmaToUmaState(uma: DecodedUma, course: RosterCourse): Uma
 		mood: 2,
 		// Drop ids Global doesn't know so the sim never sees an unknown skill.
 		skills: uma.skills.map(s => String(s.id)).filter(id => id in (skilldata as any)),
-		forcedSkillPositions: {}
+		forcedSkillPositions: {},
+		rosterRating: uma.rank_score,
 	};
 }
 
