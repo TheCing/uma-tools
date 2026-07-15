@@ -8,6 +8,7 @@ import { RosterUmaCard } from './roster-uma-card';
 import { RosterFilterPanel } from './roster-filter-panel';
 import { UmaState } from '../uma-panel';
 import { saveHorseSlot, getHorseSlots } from '../storage';
+import { Button, Input } from '../components';
 import skillnames from '../../skillnames.json';
 import './roster.css';
 
@@ -136,17 +137,16 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 	return (
 		<div class="rosterTab">
 			<div class="rosterImportBar">
-				<input
-					type="text"
-					class="rosterInput"
+				<Input
+					className="rosterImportInput"
 					placeholder="Paste your roster share link or code…"
 					value={code}
-					onInput={e => setCode((e.currentTarget as HTMLInputElement).value)}
+					onInput={setCode}
 					onKeyDown={e => { if ((e as KeyboardEvent).key === 'Enter') handleImport(); }}
 				/>
-				<button type="button" class="rosterCardBtn" onClick={handleImport} disabled={busy || !code.trim()}>
+				<Button variant="primary" onClick={handleImport} disabled={busy || !code.trim()}>
 					{busy ? 'Decoding…' : 'Import'}
-				</button>
+				</Button>
 			</div>
 
 			<div class="rosterHint">
@@ -160,19 +160,18 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 
 			{roster.length > 0 && (
 				<div class="rosterControls">
-					<input
-						type="text"
-						class="rosterInput"
+					<Input
+						className="rosterSearchInput"
 						placeholder="Search umas…"
 						value={filters.name}
-						onInput={e => onStateChange({ ...state, filters: { ...filters, name: (e.currentTarget as HTMLInputElement).value } })}
+						onInput={name => onStateChange({ ...state, filters: { ...filters, name } })}
 					/>
-					<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={() => onStateChange({ ...state, filtersOpen: !filtersOpen })}>
+					<Button variant="secondary" onClick={() => onStateChange({ ...state, filtersOpen: !filtersOpen })}>
 						{filtersOpen ? 'Hide filters' : 'Filters'}
-					</button>
-					<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={handleClear} title="Remove the imported roster">
+					</Button>
+					<Button variant="secondary" onClick={handleClear} title="Remove the imported roster">
 						Clear
-					</button>
+					</Button>
 				</div>
 			)}
 

@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import { FilterState, AptKey, SortState, SortKey, SortDir, SORT_LABELS, activeFilterCount, EMPTY_FILTERS } from './roster-filter';
+import { Button, CustomSelect, Input } from '../components';
+import type { SelectOption } from '../components';
 
 const APT_GRADES: ReadonlyArray<{ label: string; value: number }> = [
 	{ label: '—', value: 0 }, { label: 'G', value: 1 }, { label: 'F', value: 2 }, { label: 'E', value: 3 },
@@ -15,6 +17,11 @@ const APT_FIELDS: ReadonlyArray<{ key: AptKey; label: string }> = [
 	{ key: 'apt_nige', label: 'Front' }, { key: 'apt_senko', label: 'Pace' },
 	{ key: 'apt_sashi', label: 'Late' }, { key: 'apt_oikomi', label: 'End' }
 ];
+
+const APT_GRADE_OPTIONS: SelectOption[] = APT_GRADES.map(g => ({ value: g.value, label: g.label }));
+
+const SORT_OPTIONS: SelectOption[] = (Object.keys(SORT_LABELS) as SortKey[])
+	.map(k => ({ value: k, label: SORT_LABELS[k] }));
 
 interface RosterFilterPanelProps {
 	filters: FilterState;
@@ -50,17 +57,13 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 	return (
 		<div class="rosterFilters">
 			<div class="rosterFilterRow">
-				<label class="rosterFilterLabel" for="rosterSort">Sort</label>
-				<select
-					id="rosterSort"
-					class="rosterSelect"
+				<span class="rosterFilterLabel">Sort</span>
+				<CustomSelect
+					className="rosterSortSelect"
 					value={sort.key}
-					onChange={e => onSortChange({ ...sort, key: (e.currentTarget as HTMLSelectElement).value as SortKey })}
-				>
-					{(Object.keys(SORT_LABELS) as SortKey[]).map(k => (
-						<option value={k} key={k}>{SORT_LABELS[k]}</option>
-					))}
-				</select>
+					onChange={v => onSortChange({ ...sort, key: v as SortKey })}
+					options={SORT_OPTIONS}
+				/>
 				<button
 					type="button"
 					class="rosterSortDir"
@@ -77,13 +80,12 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 					{APT_FIELDS.map(f => (
 						<label class="rosterAptFilter" key={f.key}>
 							<span>{f.label}</span>
-							<select
-								class="rosterSelect"
-								value={String(filters.aptMin[f.key] ?? 0)}
-								onChange={e => setApt(f.key, Number((e.currentTarget as HTMLSelectElement).value))}
-							>
-								{APT_GRADES.map(g => <option value={String(g.value)} key={g.value}>{g.label}</option>)}
-							</select>
+							<CustomSelect
+								className="rosterAptSelect"
+								value={filters.aptMin[f.key] ?? 0}
+								onChange={v => setApt(f.key, Number(v))}
+								options={APT_GRADE_OPTIONS}
+							/>
 						</label>
 					))}
 				</div>
@@ -91,12 +93,10 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 
 			<div class="rosterFilterSection">
 				<div class="rosterFilterSectionTitle">Owns skills</div>
-				<input
-					type="text"
-					class="rosterInput"
+				<Input
 					placeholder="Search skills to filter by…"
 					value={skillQuery}
-					onInput={e => setSkillQuery((e.currentTarget as HTMLInputElement).value)}
+					onInput={setSkillQuery}
 				/>
 				{filters.skills.length > 0 && (
 					<div class="rosterChips">
@@ -135,13 +135,9 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 				{/* activeFilterCount counts active CONSTRAINTS, not categories: each aptitude
 				    threshold counts separately, so "filters active" (not "dimensions"). */}
 				<span>{activeFilterCount(filters)} filters active</span>
-				<button
-					type="button"
-					class="rosterCardBtn rosterCardBtnGhost"
-					onClick={() => onChange(EMPTY_FILTERS)}
-				>
+				<Button variant="ghost" onClick={() => onChange(EMPTY_FILTERS)}>
 					Clear filters
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

@@ -68,18 +68,10 @@
 
 .rosterCardLoadInfo { font-size: var(--font-xs); color: var(--color-text-muted); }
 
+/* Load/Save buttons reuse the Saved tab's own .v2-trainee-load-btn / uma1 / uma2 /
+   v2-trainee-move-btn classes (v2.css) so the card has the same affordance as the
+   Saved tab — same action, same look. */
 .rosterCardActions { display: flex; gap: 6px; margin-top: auto; }
-.rosterCardBtn {
-	flex: 1; padding: 6px 8px; cursor: pointer;
-	background: var(--color-primary); color: var(--color-primary-text);
-	border: none; border-radius: var(--radius-sm);
-	font-size: var(--font-sm); font-weight: 600;
-}
-.rosterCardBtn:hover { background: var(--color-primary-hover); }
-.rosterCardBtnGhost {
-	flex: 0 0 auto; background: var(--color-surface);
-	color: var(--color-text); border: 1px solid var(--color-border);
-}
 
 .rosterFilters {
 	display: flex; flex-direction: column; gap: var(--space-sm);
@@ -96,17 +88,17 @@
 .rosterAptGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; }
 .rosterAptFilter { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: var(--font-sm); color: var(--color-text-muted); }
 
-/* 16px prevents iOS auto-zoom on focus — see commit 19e96c4. */
-.rosterSelect, .rosterInput {
-	font-size: 16px;
-	padding: 6px 8px;
-	background: var(--color-surface);
-	color: var(--color-text);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-sm);
-	min-width: 0;
-}
-.rosterInput { width: 100%; }
+/* Compact CustomSelect for the per-aptitude grade picker — the library default
+   (min-width: 140px) is too wide for a 110px grid cell that also holds a label.
+   Scoped under .rosterAptFilter (specificity 0,2,0) rather than bare .rosterAptSelect
+   (0,1,0): a bare class ties with v2.css's .v2-select{min-width:140px} at equal
+   specificity, and depending on bundle import order the tie can go either way. */
+.rosterAptFilter .rosterAptSelect { min-width: 56px; }
+.rosterAptSelect .v2-select-trigger { padding: 0 6px; height: 28px; }
+
+/* CustomSelect for the sort row — grow with the row but don't take over on wide screens.
+   Same specificity reasoning as above. */
+.rosterFilterRow .rosterSortSelect { flex: 1; max-width: 220px; }
 
 .rosterSortDir {
 	padding: 6px 10px; cursor: pointer;
@@ -129,14 +121,13 @@
 
 .rosterTab { display: flex; flex-direction: column; gap: var(--space-sm); }
 .rosterImportBar { display: flex; gap: 6px; }
-.rosterImportBar .rosterInput { flex: 1; }
-.rosterImportBar .rosterCardBtn { flex: 0 0 auto; }
+.rosterImportBar .rosterImportInput { flex: 1; }
 .rosterHint { font-size: var(--font-sm); color: var(--color-text-muted); }
 .rosterHint a { color: var(--color-primary); }
 .rosterError { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-primary); font-size: var(--font-sm); }
 .rosterNotice { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-text-muted); font-size: var(--font-sm); }
 .rosterControls { display: flex; gap: 6px; }
-.rosterControls .rosterInput { flex: 1; }
+.rosterControls .rosterSearchInput { flex: 1; }
 .rosterCount { font-size: var(--font-xs); color: var(--color-text-muted); }
 .rosterEmpty { padding: var(--space-lg); text-align: center; color: var(--color-text-muted); font-style: italic; }
 

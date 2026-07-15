@@ -121,9 +121,9 @@ export function RosterUmaCard({ uma, course, showUma2, onLoadUma1, onLoadUma2, o
 			</div>
 
 			<div class="rosterCardActions">
-				<button type="button" class="rosterCardBtn" onClick={() => onLoadUma1(uma)}>Load Uma 1</button>
-				{showUma2 && <button type="button" class="rosterCardBtn" onClick={() => onLoadUma2(uma)}>Load Uma 2</button>}
-				<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={() => onPromote(uma)} title="Copy into the Saved tab">Save</button>
+				<button type="button" class="v2-trainee-load-btn uma1" onClick={() => onLoadUma1(uma)}>Load Uma 1</button>
+				{showUma2 && <button type="button" class="v2-trainee-load-btn uma2" onClick={() => onLoadUma2(uma)}>Load Uma 2</button>}
+				<button type="button" class="v2-trainee-load-btn v2-trainee-move-btn" onClick={() => onPromote(uma)} title="Copy into the Saved tab">Save</button>
 			</div>
 		</div>
 	);
