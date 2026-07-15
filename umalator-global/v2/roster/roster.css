@@ -154,3 +154,9 @@
 	justify-content: center;
 	gap: var(--space-xs);
 }
+
+.rosterImportFile { display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
+.rosterPasteFallback { font-size: var(--font-sm); color: var(--color-text-muted); }
+.rosterPasteFallback > summary { cursor: pointer; padding: 2px 0; }
+.rosterPasteFallback > summary:hover { color: var(--color-text); }
+.rosterPasteFallback .rosterImportBar { margin-top: 6px; }

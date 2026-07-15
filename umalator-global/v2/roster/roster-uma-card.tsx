@@ -109,6 +109,9 @@ export function RosterUmaCard({ uma, course, showUma2, onLoadUma1, onLoadUma2, o
 				<span title="Total SP spent (uniques excluded)">{sp} SP</span>
 				<span>{uma.skills.length} skills</span>
 				{uma.talent_level != null && <span>Talent {uma.talent_level}</span>}
+				{uma.create_time && (
+					<span title={`Trained ${uma.create_time}`}>{uma.create_time.slice(0, 10)}</span>
+				)}
 				{uma.rank_score != null && <span>Rating {uma.rank_score}</span>}
 				{unknown > 0 && (
 					<span class="rosterCardWarn" title="Skills in this roster that Global doesn't have — excluded from SP and not loaded">

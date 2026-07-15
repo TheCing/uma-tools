@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useState, useEffect, useMemo, useCallback } from 'preact/hooks';
 import { DecodedUma, decodeRoster } from './roster-decoder';
+import { parseRosterJson } from './roster-json';
 import { readRosterFromStorage, writeRosterToStorage, clearRosterStorage } from './roster-storage';
 import { decodedUmaToUmaState, RosterCourse, getCharInfo } from './roster-mapping';
 import { filterUmas, sortUmas, EMPTY_FILTERS, DEFAULT_SORT, FilterState, SortState } from './roster-filter';
@@ -86,6 +87,40 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 		}
 	}, [code, busy, state, onStateChange]);
 
+	const handleImportFile = useCallback(() => {
+		if (busy) return;
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.json,application/json';
+		input.onchange = async (e) => {
+			const file = (e.target as HTMLInputElement).files?.[0];
+			if (!file) return;
+			setBusy(true);
+			setError('');
+			setNotice('');
+			try {
+				// ~5MB of JSON; reading + parsing is why the button shows a pending state.
+				const decoded = parseRosterJson(await file.text());
+				if (decoded.length === 0) {
+					setError("Couldn't read that file — pick your UmaExtractor data.json.");
+					return;
+				}
+				onStateChange({ ...state, roster: decoded, loaded: true });
+				const written = await writeRosterToStorage(decoded);
+				// `written.ok === true` (not bare `written.ok`) — see handleImport above for why
+				// this project's tsconfig needs the explicit equality check to narrow the union.
+				setNotice(written.ok === true
+					? `Imported ${decoded.length} umas from ${file.name}.`
+					: `Imported ${decoded.length} umas, but they could not be saved (${written.reason}). They'll be gone when you reload.`);
+			} catch {
+				setError("Couldn't read that file — pick your UmaExtractor data.json.");
+			} finally {
+				setBusy(false);
+			}
+		};
+		input.click();
+	}, [busy, state, onStateChange]);
+
 	const handleClear = useCallback(() => {
 		clearRosterStorage();
 		setNotice('');
@@ -136,24 +171,33 @@ export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, curr
 
 	return (
 		<div class="rosterTab">
-			<div class="rosterImportBar">
-				<Input
-					className="rosterImportInput"
-					placeholder="Paste your roster share link or code…"
-					value={code}
-					onInput={setCode}
-					onKeyDown={e => { if ((e as KeyboardEvent).key === 'Enter') handleImport(); }}
-				/>
-				<Button variant="primary" onClick={handleImport} disabled={busy || !code.trim()}>
-					{busy ? 'Decoding…' : 'Import'}
+			<div class="rosterImportFile">
+				<Button variant="primary" onClick={handleImportFile} disabled={busy}>
+					{busy ? 'Reading…' : 'Import data.json'}
 				</Button>
+				<span class="rosterHint">
+					Your roster export from UmaExtractor. Nothing leaves your browser.
+				</span>
 			</div>
 
-			<div class="rosterHint">
-				Export your roster at{' '}
-				<a href="https://uma.guide/roster-viewer/" target="_blank" rel="noopener noreferrer">uma.guide/roster-viewer</a>
-				{' '}and paste the share link here.
-			</div>
+			<details class="rosterPasteFallback">
+				<summary>Or paste a share link</summary>
+				<div class="rosterImportBar">
+					<Input
+						className="rosterImportInput"
+						placeholder="Paste your roster share link or code…"
+						value={code}
+						onInput={setCode}
+					/>
+					<Button variant="secondary" onClick={handleImport} disabled={busy || !code.trim()}>
+						{busy ? 'Decoding…' : 'Import'}
+					</Button>
+				</div>
+				<span class="rosterHint">
+					Export at <a href="https://uma.guide/roster-viewer/" target="_blank" rel="noopener noreferrer">uma.guide/roster-viewer</a>.
+					A share link has no training dates, so "Newest" falls back to export order.
+				</span>
+			</details>
 
 			{error && <div class="rosterError">{error}</div>}
 			{notice && <div class="rosterNotice">{notice}</div>}
