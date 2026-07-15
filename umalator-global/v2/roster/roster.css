@@ -16,6 +16,9 @@
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-md);
 	min-width: 0;
+	/* Rosters can be several hundred umas, unvirtualized; skip offscreen render cost. */
+	content-visibility: auto;
+	contain-intrinsic-size: auto 320px;
 }
 
 .rosterCardHeader { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
@@ -123,3 +126,16 @@
 .rosterSkillMatchesMore { font-size: var(--font-xs); color: var(--color-text-muted); }
 
 .rosterFilterFooter { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); font-size: var(--font-sm); color: var(--color-text-muted); }
+
+.rosterTab { display: flex; flex-direction: column; gap: var(--space-sm); }
+.rosterImportBar { display: flex; gap: 6px; }
+.rosterImportBar .rosterInput { flex: 1; }
+.rosterImportBar .rosterCardBtn { flex: 0 0 auto; }
+.rosterHint { font-size: var(--font-sm); color: var(--color-text-muted); }
+.rosterHint a { color: var(--color-primary); }
+.rosterError { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-primary); font-size: var(--font-sm); }
+.rosterNotice { padding: 6px 8px; border-radius: var(--radius-sm); background: var(--color-surface-overlay); color: var(--color-text-muted); font-size: var(--font-sm); }
+.rosterControls { display: flex; gap: 6px; }
+.rosterControls .rosterInput { flex: 1; }
+.rosterCount { font-size: var(--font-xs); color: var(--color-text-muted); }
+.rosterEmpty { padding: var(--space-lg); text-align: center; color: var(--color-text-muted); font-style: italic; }
