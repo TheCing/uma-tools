@@ -6,7 +6,7 @@
  * Licensed under GPL-3.0-or-later
  */
 
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'preact/hooks';
