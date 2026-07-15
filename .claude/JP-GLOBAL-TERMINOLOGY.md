@@ -18,19 +18,32 @@
 
 ## Running Styles (Strategy)
 
-| Japanese | Romaji | English (Global) | Code Enum | Enum Value |
-|----------|--------|------------------|-----------|------------|
-| 逃げ | nige | Front/Leader | `Strategy.Nige` | 1 |
-| 先行 | senkou | Stalker/Presser | `Strategy.Senkou` | 2 |
-| 差し | sasi | Late/Closer | `Strategy.Sasi` | 3 |
-| 追込 | oikomi | End/Chaser | `Strategy.Oikomi` | 4 |
-| 大逃げ | oonige | (Super Escape) | `Strategy.Oonige` | 5 |
+| Japanese | Romaji | English (Global) | Short | Code Enum | Enum Value |
+|----------|--------|------------------|-------|-----------|------------|
+| 逃げ | nige | **Front Runner** | Front | `Strategy.Nige` | 1 |
+| 先行 | senkou | **Pace Chaser** | Pace | `Strategy.Senkou` | 2 |
+| 差し | sasi | **Late Surger** | Late | `Strategy.Sasi` | 3 |
+| 追込 | oikomi | **End Closer** | End | `Strategy.Oikomi` | 4 |
+| 大逃げ | oonige | **Runaway** | — | `Strategy.Oonige` | 5 |
 
-**Location**: `uma-skill-tools/HorseTypes.ts:3`
+**Location**: enum at `uma-skill-tools/HorseTypes.ts:3`.
+**Source of truth for the LABELS**: `STRATEGIES` in `umalator-global/v2/uma-panel.tsx`, re-exported as
+`STRATEGY_LABELS` (a derived `Record<strategy, label>`). Import that rather than hand-writing
+labels — this table went stale once already because the strings were copied by hand.
 
 **Notes**:
-- `Oonige` is treated as equivalent to `Nige` in strategy matching logic
-- Global release uses "Front/Stalker/Late/End" but community also uses "Leader/Presser/Closer/Chaser"
+- Use the full label ("Pace Chaser") in prose and controls; the **Short** column is for
+  compact UI only (e.g. an aptitude grid column header). Never show the romaji/JP value
+  (`Senkou`) in Global UI — that's the bug this table exists to prevent.
+- `Oonige` is treated as equivalent to `Nige` in strategy matching logic.
+- ⚠️ This table previously claimed "Front/Leader", "Stalker/Presser", "Late/Closer",
+  "End/Chaser". **All of those were wrong** — they matched neither the app nor the Global
+  release. Corrected 2026-07-15 against the shipped UI.
+- ⚠️ **`components/SkillList.tsx` uses a different, older vocabulary** — Runner / Leader /
+  Betweener / Chaser (its `nige`/`senkou`/`sasi`/`oikomi` filter labels). That file is only
+  reachable through `components/HorseDef.tsx` → `umalator/app.tsx`, i.e. the **v1** path,
+  which is deprecated and no longer updated — so it is left as-is. Do **not** copy those
+  strings into v2; they are almost certainly where this table's stale labels came from.
 
 ---
 
@@ -57,14 +70,18 @@
 
 | Japanese | Romaji | English (Global) | Code Value |
 |----------|--------|------------------|------------|
-| 絶好調 | zekkocho | Great/Perfect | `2` (Mood) |
-| 好調 | kocho | Good | `1` |
-| 普通 | futsuu | Normal | `0` |
-| 不調 | fuchou | Bad | `-1` |
-| 絶不調 | zekkufuchou | Terrible/Awful | `-2` |
+| 絶好調 | zekkocho | **Great** | `2` (Mood) |
+| 好調 | kocho | **Good** | `1` |
+| 普通 | futsuu | **Normal** | `0` |
+| 不調 | fuchou | **Bad** | `-1` |
+| 絶不調 | zekkufuchou | **Awful** | `-2` |
 
 **Type**: `Mood = -2 | -1 | 0 | 1 | 2`
-**Location**: `uma-skill-tools/RaceParameters.ts:1`
+**Location**: enum at `uma-skill-tools/RaceParameters.ts:1`; labels in `MOOD_OPTIONS`
+(`umalator-global/v2/uma-panel.tsx`) — that's the source of truth.
+
+**Note**: previously listed as "Great/Perfect" and "Terrible/Awful"; the shipped labels are
+plain **Great** and **Awful**. Corrected 2026-07-15.
 
 ---
 
@@ -102,29 +119,37 @@
 
 ## Seasons
 
-| Japanese | Romaji | English | Code Enum | Enum Value |
-|----------|--------|---------|-----------|------------|
-| 春 | haru | Spring | `Season.Spring` | 1 |
-| 夏 | natsu | Summer | `Season.Summer` | 2 |
-| 秋 | aki | Autumn | `Season.Autumn` | 3 |
-| 冬 | fuyu | Winter | `Season.Winter` | 4 |
-| 桜花賞 | oukashow | Sakura (special) | `Season.Sakura` | 5 |
+| Japanese | Romaji | English | Code Enum | Enum Value | Region |
+|----------|--------|---------|-----------|------------|--------|
+| 春 | haru | Spring | `Season.Spring` | 1 | Both |
+| 夏 | natsu | Summer | `Season.Summer` | 2 | Both |
+| 秋 | aki | Autumn | `Season.Autumn` | 3 | Both |
+| 冬 | fuyu | Winter | `Season.Winter` | 4 | Both |
+| 桜花賞 | oukashow | Sakura (special) | `Season.Sakura` | 5 | **JP only** |
 
 **Location**: `uma-skill-tools/RaceParameters.ts:4`
+
+**Note**: `Season.Sakura` is **JP only** — it exists in the enum but Global does not use it,
+so v2's picker offers only the four seasons (`SEASON_LABELS` in `conditions.tsx`). Keep the
+row: this table documents the enum, not just the Global UI.
 
 ---
 
 ## Time of Day
 
-| Japanese | Romaji | English | Code Enum | Enum Value |
-|----------|--------|---------|-----------|------------|
-| (なし) | - | No Time | `Time.NoTime` | 0 |
-| 朝 | asa | Morning | `Time.Morning` | 1 |
-| 昼 | hiru | Midday | `Time.Midday` | 2 |
-| 夕 | yuu | Evening | `Time.Evening` | 3 |
-| 夜 | yoru | Night | `Time.Night` | 4 |
+| Japanese | Romaji | English | Code Enum | Enum Value | Region |
+|----------|--------|---------|-----------|------------|--------|
+| (なし) | - | No Time | `Time.NoTime` | 0 | **JP only** |
+| 朝 | asa | Morning | `Time.Morning` | 1 | **JP only** |
+| 昼 | hiru | Midday | `Time.Midday` | 2 | Both |
+| 夕 | yuu | Evening | `Time.Evening` | 3 | Both |
+| 夜 | yoru | Night | `Time.Night` | 4 | Both |
 
 **Location**: `uma-skill-tools/RaceParameters.ts:5`
+
+**Note**: `NoTime` and `Morning` are **JP only** — they exist in the enum but Global does not
+use them, so v2's picker offers Midday/Evening/Night (`TIME_LABELS` in `conditions.tsx`, which
+is indexed `t - 2`). Keep the rows: this table documents the enum, not just the Global UI.
 
 ---
 
