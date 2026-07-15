@@ -194,7 +194,7 @@ Create `umalator-global/v2/roster/roster-json.ts`:
  * Why this exists: the share code is a lossy transport. It carries no `create_time` at all
  * (its v4 fixed prefix is exactly V4_MIN_BITS with no room for one), and no `running_style`
  * — so strategy has to be inferred from the best style aptitude, which measured wrong for
- * 49 of 249 umas (20%) on a real roster. This file reads both for real.
+ * 54 of 249 umas (22%) on a real roster. This file reads both for real.
  *
  * PRIVACY: this is a WHITELIST. The source record has 51 fields including account
  * identifiers (viewer_id, owner_viewer_id, trained_chara_id, nickname_id) and ~1.8MB of
@@ -443,7 +443,7 @@ implementation-defined on that format and must not be used."
 ### Task 3: Use the real running style
 
 This is the correctness win: strategy is currently inferred from the best style aptitude, and
-that inference is **wrong for 49 of 249 umas (20%)** on a real roster.
+that inference is **wrong for 54 of 249 umas (22%)** on a real roster.
 
 **Files:**
 - Modify: `umalator-global/v2/roster/roster-mapping.ts`
@@ -461,7 +461,7 @@ Append to `umalator-global/v2/roster/roster.test.ts`:
 test('decodedUmaToUmaState: uses the real running_style over the aptitude guess', t => {
 	// UMA's best style aptitude is senko (8) => the guess says Senkou. But this uma is
 	// actually run as Oikomi. The real value must win: measured on a real roster, the guess
-	// disagrees with running_style for 49 of 249 umas.
+	// disagrees with running_style for 54 of 249 umas.
 	const s = decodedUmaToUmaState({ ...UMA, running_style: 4 }, TURF_SPRINT);
 	t.equal(s.strategy, 'Oikomi', 'real running_style wins over best-aptitude inference');
 	t.equal(s.strategyAptitude, 'D', "strategyAptitude follows the CHOSEN style (oikomi=4 => 'D')");
@@ -504,7 +504,7 @@ In `umalator-global/v2/roster/roster-mapping.ts`, add this map next to the exist
 ```ts
 // data.json's running_style: 1=nige, 2=senko, 3=sashi, 4=oikomi. Verified against a real
 // export: each style's mean aptitude for its own style is ~7, and it disagrees with the
-// best-aptitude guess for 49 of 249 umas — which is exactly why we prefer it.
+// best-aptitude guess for 54 of 249 umas — which is exactly why we prefer it.
 const RUNNING_STYLE_KEY: Record<number, StratKey> = {
 	1: 'apt_nige', 2: 'apt_senko', 3: 'apt_sashi', 4: 'apt_oikomi'
 };
@@ -554,7 +554,7 @@ git commit -m "v2 roster: use the real running style when we have it
 
 Strategy was inferred from the best style aptitude because the share code does
 not carry one. Measured against a real 249-uma data.json, that inference
-disagrees with the actual running_style for 49 umas (20%) - each of those loaded
+disagrees with the actual running_style for 54 umas (22%) - each of those loaded
 with the wrong strategy and therefore wrong sim numbers.
 
 A data.json import now uses running_style directly. Share codes keep the

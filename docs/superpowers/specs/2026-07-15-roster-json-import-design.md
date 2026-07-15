@@ -56,8 +56,8 @@ Verified against the user's real export: **249 records** (the same 249 as their 
 2. **The current strategy is a guess, and it's wrong 20% of the time.** `decodedUmaToUmaState`
    infers strategy from the best style aptitude (plus a canonical-outfit tie-break), because
    the share code doesn't carry it. Measured against the real file: `running_style` disagrees
-   with the best-aptitude guess for **49 of 249 umas (20%)** — those load with the wrong
-   strategy and therefore wrong simulation numbers. Reading `running_style` fixes all 49.
+   with the best-aptitude guess for **54 of 249 umas (22%)** — those load with the wrong
+   strategy and therefore wrong simulation numbers. Reading `running_style` fixes all 54.
 
 ## 2. Architecture — normalise, don't fork
 
