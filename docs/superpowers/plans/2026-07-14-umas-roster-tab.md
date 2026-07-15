@@ -47,11 +47,18 @@ decode fixtures for v1/v2/v4 *before* any cleanup.
 - **Wire format is frozen.** The decoder's bit layouts, field order, bit widths and
   `+1` offsets are dictated by the producer (uma.guide) and must match upstream exactly.
   Clean up *style*, never *layout*. Any layout change is a bug, not a refactor.
-- **Type gate:** `npm run test:roster` runs `ts-node --transpile-only` (needed because the
-  root tsconfig's `moduleResolution: bundler` conflicts with ts-node), so **the tests do not
-  type-check**. The type gate is `npx tsc --noEmit -p tsconfig.json` from the **repo root**
-  — it covers the roster files and is clean repo-wide (0 errors) as of Task 2. There is no
-  tsconfig in `umalator-global/v2`; `tsc -p .` there fails with TS5057.
+- **Type gate: `npm run typecheck:roster`.** `npm run test:roster` runs
+  `ts-node --transpile-only` (needed because the root tsconfig's `moduleResolution: bundler`
+  conflicts with ts-node), so **the tests do not type-check**. Run `npm run typecheck:roster`
+  instead; it must print `roster typecheck clean`.
+  Background, so nobody re-derives this the hard way: this repo has **never** type-checked —
+  there is no `tsc` in any build script, `build-all.sh`, or CI; esbuild/vite transpile only.
+  `tsc -p .` from `umalator-global/v2` fails (no tsconfig there, TS5057), and
+  `tsc -p tsconfig.json` from the root **crashes** (`RangeError: Map maximum size exceeded`)
+  because the root tsconfig has no `include` and pulls in the entire repo. So the gate is a
+  *scoped* check over `roster/*.ts*` that filters to `roster/` errors only. The repo has
+  pre-existing errors elsewhere (`uma-skill-tools` const-enum `hasOwnProperty` ×5,
+  `ocr-modal.tsx`, `skill-chart-utils.ts`) — those are NOT yours; do not fix them here.
 
 ## File Structure
 
@@ -1357,11 +1364,9 @@ Create `umalator-global/v2/roster/roster.css` (v2 tokens only; per-feature CSS f
 
 - [ ] **Step 3: Typecheck**
 
-Run (from the repo root — there is NO tsconfig in umalator-global/v2):
-`npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "roster/"`
-Expected: no output. The repo-wide check is clean (0 errors) as of Task 2, so any roster/
-error is yours. Note `npm run test:roster` runs with `--transpile-only` and does NOT
-type-check — this command is the type gate, so do not skip it.
+Run: `npm run typecheck:roster`
+Expected: `roster typecheck clean` (exit 0). `npm run test:roster` runs `--transpile-only`
+and does NOT type-check, so this is the type gate — do not skip it.
 
 - [ ] **Step 4: Commit**
 
@@ -1595,10 +1600,9 @@ Append to `umalator-global/v2/roster/roster.css`:
 
 - [ ] **Step 3: Typecheck**
 
-Run (from the repo root — there is NO tsconfig in umalator-global/v2):
-`npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "roster/"`
-Expected: no output. `npm run test:roster` runs `--transpile-only` and does NOT type-check,
-so this command is the type gate — do not skip it.
+Run: `npm run typecheck:roster`
+Expected: `roster typecheck clean` (exit 0). `npm run test:roster` runs `--transpile-only`
+and does NOT type-check, so this is the type gate — do not skip it.
 
 - [ ] **Step 4: Commit**
 
@@ -1824,10 +1828,9 @@ Append to `umalator-global/v2/roster/roster.css`:
 
 - [ ] **Step 3: Typecheck**
 
-Run (from the repo root — there is NO tsconfig in umalator-global/v2):
-`npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "roster/"`
-Expected: no output. `npm run test:roster` runs `--transpile-only` and does NOT type-check,
-so this command is the type gate — do not skip it.
+Run: `npm run typecheck:roster`
+Expected: `roster typecheck clean` (exit 0). `npm run test:roster` runs `--transpile-only`
+and does NOT type-check, so this is the type gate — do not skip it.
 
 - [ ] **Step 4: Commit**
 
@@ -1920,7 +1923,7 @@ appear to do nothing while the user is still looking at the roster grid.
 
 Run:
 ```bash
-npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "roster/|app-v2"
+npm run typecheck:roster
 cd umalator-global/v2 && npx vite build 2>&1 | tail -3 ; cd ../..
 ```
 Expected: no roster/app-v2 type errors; `✓ built in …`.
@@ -1966,8 +1969,8 @@ roster umas load with course-correct aptitudes."
 ## Verification checklist
 
 - [ ] `npm run test:roster` passes.
-- [ ] `npx tsc --noEmit -p tsconfig.json` is clean (the type gate — the tests are
-      `--transpile-only` and do not type-check).
+- [ ] `npm run typecheck:roster` prints `roster typecheck clean` (the type gate — the tests
+      are `--transpile-only` and do not type-check).
 - [ ] `cd umalator-global/v2 && npx vite build` succeeds.
 - [ ] Invalid code shows an inline error and never throws.
 - [ ] A JP-only card renders as `Unknown (id)` + "Not in game" rather than crashing.
