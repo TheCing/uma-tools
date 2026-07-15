@@ -120,5 +120,6 @@
 }
 .rosterSkillMatch.selected { border-color: var(--color-primary); color: var(--color-primary); }
 .rosterSkillMatches { max-height: 160px; overflow-y: auto; }
+.rosterSkillMatchesMore { font-size: var(--font-xs); color: var(--color-text-muted); }
 
 .rosterFilterFooter { display: flex; align-items: center; justify-content: space-between; gap: var(--space-sm); font-size: var(--font-sm); color: var(--color-text-muted); }

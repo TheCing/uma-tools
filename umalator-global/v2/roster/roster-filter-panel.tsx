@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { FilterState, AptKey, SortState, SortKey, SortDir, SORT_LABELS, activeFilterCount } from './roster-filter';
+import { FilterState, AptKey, SortState, SortKey, SortDir, SORT_LABELS, activeFilterCount, EMPTY_FILTERS } from './roster-filter';
 
 const APT_GRADES: ReadonlyArray<{ label: string; value: number }> = [
 	{ label: '—', value: 0 }, { label: 'G', value: 1 }, { label: 'F', value: 2 }, { label: 'E', value: 3 },
@@ -40,9 +40,12 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 		onChange({ ...filters, skills });
 	}
 
-	const matches = skillQuery.trim()
-		? availableSkills.filter(s => s.name.toLowerCase().includes(skillQuery.trim().toLowerCase())).slice(0, 30)
+	const MAX_SKILL_MATCHES = 30;
+	const needle = skillQuery.trim().toLowerCase();
+	const allMatches = needle
+		? availableSkills.filter(s => s.name.toLowerCase().includes(needle))
 		: [];
+	const matches = allMatches.slice(0, MAX_SKILL_MATCHES);
 
 	return (
 		<div class="rosterFilters">
@@ -121,6 +124,11 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 						))}
 					</div>
 				)}
+				{allMatches.length > MAX_SKILL_MATCHES && (
+					<div class="rosterSkillMatchesMore">
+						Showing {MAX_SKILL_MATCHES} of {allMatches.length} matches — refine your search.
+					</div>
+				)}
 			</div>
 
 			<div class="rosterFilterFooter">
@@ -130,7 +138,7 @@ export function RosterFilterPanel({ filters, onChange, sort, onSortChange, avail
 				<button
 					type="button"
 					class="rosterCardBtn rosterCardBtnGhost"
-					onClick={() => onChange({ name: filters.name, aptMin: {}, skills: [] })}
+					onClick={() => onChange(EMPTY_FILTERS)}
 				>
 					Clear filters
 				</button>
