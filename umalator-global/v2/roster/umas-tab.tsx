@@ -11,24 +11,52 @@ import { saveHorseSlot, getHorseSlots } from '../storage';
 import skillnames from '../../skillnames.json';
 import './roster.css';
 
+/**
+ * Persistent Umas-tab state. Lives in app-v2 because this tab is conditionally rendered and
+ * therefore unmounts on every tab switch — and Load deliberately switches tabs, so keeping
+ * this local would discard the user's roster, filters and sort on the primary workflow.
+ * Ephemeral UI (paste box, error/notice, busy) stays local and is meant to reset.
+ */
+export interface UmasTabState {
+	roster: DecodedUma[];
+	filters: FilterState;
+	sort: SortState;
+	filtersOpen: boolean;
+	/** Whether the one-time localStorage read has happened, so remounts don't re-gunzip. */
+	loaded: boolean;
+}
+
+export const initialUmasTabState: UmasTabState = {
+	roster: [],
+	filters: EMPTY_FILTERS,
+	sort: DEFAULT_SORT,
+	filtersOpen: false,
+	loaded: false
+};
+
 export interface UmasTabProps {
+	state: UmasTabState;
+	onStateChange: (next: UmasTabState) => void;
 	onLoadToUma1: (state: UmaState) => void;
 	onLoadToUma2: (state: UmaState) => void;
 	currentMode: 'compare' | 'skill' | 'stamina';
 	course: RosterCourse;
 }
 
-export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: UmasTabProps) {
-	const [roster, setRoster] = useState<DecodedUma[]>([]);
+export function UmasTab({ state, onStateChange, onLoadToUma1, onLoadToUma2, currentMode, course }: UmasTabProps) {
+	const { roster, filters, sort, filtersOpen } = state;
 	const [code, setCode] = useState('');
 	const [error, setError] = useState('');
 	const [notice, setNotice] = useState('');
 	const [busy, setBusy] = useState(false);
-	const [filters, setFilters] = useState<FilterState>(EMPTY_FILTERS);
-	const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
-	const [filtersOpen, setFiltersOpen] = useState(false);
 
-	useEffect(() => { readRosterFromStorage().then(setRoster); }, []);
+	// Read localStorage once per session, not on every remount — this tab unmounts whenever
+	// the user switches drawer tabs, and re-gunzipping on each visit also flashed the empty
+	// state before the roster reappeared.
+	useEffect(() => {
+		if (state.loaded) return;
+		readRosterFromStorage().then(roster => onStateChange({ ...state, roster, loaded: true }));
+	}, [state.loaded]);
 
 	const handleImport = useCallback(async () => {
 		if (!code.trim() || busy) return;
@@ -41,7 +69,7 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 				setError('Could not decode — check the code and try again.');
 				return;
 			}
-			setRoster(decoded);
+			onStateChange({ ...state, roster: decoded });
 			setCode('');
 			const written = await writeRosterToStorage(decoded);
 			// `written.ok === true` (not bare `written.ok`) because this project's tsconfig has
@@ -55,21 +83,18 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 		} finally {
 			setBusy(false);
 		}
-	}, [code, busy]);
+	}, [code, busy, state, onStateChange]);
 
 	const handleClear = useCallback(() => {
-		setRoster([]);
 		clearRosterStorage();
 		setNotice('');
 		setError('');
 		// Otherwise a stale filter silently hides the next roster that gets imported.
-		setFilters(EMPTY_FILTERS);
-		setSort(DEFAULT_SORT);
-		setFiltersOpen(false);
-	}, []);
+		onStateChange({ ...state, roster: [], filters: EMPTY_FILTERS, sort: DEFAULT_SORT, filtersOpen: false });
+	}, [state, onStateChange]);
 
 	const handlePromote = useCallback((uma: DecodedUma) => {
-		const state = decodedUmaToUmaState(uma, course);
+		const umaState = decodedUmaToUmaState(uma, course);
 		const { charName, outfitName } = getCharInfo(uma.card_id);
 		const base = outfitName ? `${charName} ${outfitName}` : charName;
 		// saveHorseSlot keys slots by name and overwrites without asking, and a roster can
@@ -78,7 +103,7 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 		const existing = getHorseSlots();
 		let name = base;
 		for (let i = 2; name in existing; i++) name = `${base} (${i})`;
-		const ok = saveHorseSlot(name, state, 'Imported from roster');
+		const ok = saveHorseSlot(name, umaState, 'Imported from roster');
 		setNotice(ok ? `Saved "${name}" to the Saved tab.` : `Could not save "${name}" — storage may be full.`);
 	}, [course]);
 
@@ -140,9 +165,9 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 						class="rosterInput"
 						placeholder="Search umas…"
 						value={filters.name}
-						onInput={e => setFilters({ ...filters, name: (e.currentTarget as HTMLInputElement).value })}
+						onInput={e => onStateChange({ ...state, filters: { ...filters, name: (e.currentTarget as HTMLInputElement).value } })}
 					/>
-					<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={() => setFiltersOpen(o => !o)}>
+					<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={() => onStateChange({ ...state, filtersOpen: !filtersOpen })}>
 						{filtersOpen ? 'Hide filters' : 'Filters'}
 					</button>
 					<button type="button" class="rosterCardBtn rosterCardBtnGhost" onClick={handleClear} title="Remove the imported roster">
@@ -154,9 +179,9 @@ export function UmasTab({ onLoadToUma1, onLoadToUma2, currentMode, course }: Uma
 			{filtersOpen && roster.length > 0 && (
 				<RosterFilterPanel
 					filters={filters}
-					onChange={setFilters}
+					onChange={f => onStateChange({ ...state, filters: f })}
 					sort={sort}
-					onSortChange={setSort}
+					onSortChange={s => onStateChange({ ...state, sort: s })}
 					availableSkills={availableSkills}
 				/>
 			)}
