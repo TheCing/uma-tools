@@ -265,3 +265,37 @@ test('decodedUmaToUmaState: maps stats, talent level and skills', t => {
 	t.ok(Array.isArray(s.skills), 'skills is an array of string ids');
 	t.end();
 });
+
+import { calcTotalSP } from './roster-sp';
+
+test('calcTotalSP: no skills costs nothing', t => {
+	t.equal(calcTotalSP([]), 0);
+	t.end();
+});
+
+test('calcTotalSP: unknown skill ids are ignored, never throw', t => {
+	t.equal(calcTotalSP([{ id: 999999999, level: 1 }]), 0);
+	t.end();
+});
+
+test('calcTotalSP: uniques (rarity 3-5) do not count toward SP', t => {
+	// 100011 is a unique-tier skill in skill_data.json (rarity 3-5) -> excluded.
+	t.equal(calcTotalSP([{ id: 100011, level: 1 }]), 0);
+	t.end();
+});
+
+test('calcTotalSP: a known white skill costs its base cost', t => {
+	const sp = calcTotalSP([{ id: 200011, level: 1 }]);
+	t.ok(sp > 0, `expected a positive SP cost, got ${sp}`);
+	t.end();
+});
+
+test('calcTotalSP: same-group skills charge only the highest tier once', t => {
+	// Two members of one group must not be additive: the rollup takes the highest index
+	// in the group and charges the walk up to it exactly once.
+	const single = calcTotalSP([{ id: 200011, level: 1 }]);
+	const both = calcTotalSP([{ id: 200011, level: 1 }, { id: 200012, level: 1 }]);
+	t.ok(both >= single, 'higher tier costs at least the lower tier');
+	t.ok(both < single * 2, 'group members are not naively summed');
+	t.end();
+});
