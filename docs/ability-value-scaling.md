@@ -19,7 +19,7 @@ Each skill effect in `skill_data` has an `ability_value_usage` column that contr
 | 11 | Final Corner Place Change | Multiplied by positions gained at final corner |
 | 12 | Fan Count | Multiplied by fan count |
 | 13 | Maximum Raw Stats | Multiplied by highest raw stat value |
-| 14 | Activated Passive Skills | Scales by green skill count (tag 601-615): 0-2 = 0.0x, 3-4 = 1.0x, 5 = 2.0x, 6+ = 3.0x |
+| 14 | Activated Passive Skills (`MultiplyActivateSpecificTagSkillCount`) | Scales by the number of green skills (tag 601-615) **activated during the race**: 0-2 = 0.0x, 3-4 = 1.0x, 5 = 2.0x, 6+ = 3.0x. Note the 0.0x floor — below 3 greens the effect contributes nothing at all. |
 | 15 | Activated Heal Skills | Scales by number of heal skills activated |
 | 16 | Position at Final Corner | Scales by position at final corner |
 | 17 | Number of Team Members | Scales by team size |
@@ -34,13 +34,21 @@ Each skill effect in `skill_data` has an `ability_value_usage` column that contr
 
 ## Additional Activation Types
 
-Separate from scaling, some skills have an `ability_additional_activation` column:
+Separate from scaling, some skills have an `ability_additional_activation` column that applies a multiplier to the effect value based on runtime conditions:
 
-| ID | Name |
-|----|------|
-| 1 | Approaching Behind |
-| 2 | Activate Skills, Up to 2 |
-| 3 | Activate Skills, Up to 3 |
+| ID | Name | Formula |
+|----|------|---------|
+| 1 | Approaching Behind | Base multiplier 0.25. If 20m+ behind first place, +0.1 (total 0.35). |
+| 2 | Activate Skills, Up to 2 | Activates additional skill effects, up to 2 |
+| 3 | Activate Skills, Up to 3 | Activates additional skill effects, up to 3 |
+
+### Example: Lyricism at Journey's End (100571)
+
+`ability_additional_activation = 1` (Approaching Behind)
+
+- Effect: TargetSpeed +2500
+- Close to first place: 2500 × 0.25 = **625** effective
+- 20m+ behind first: 2500 × 0.35 = **875** effective
 
 ## Database Columns
 
@@ -57,10 +65,28 @@ Where `[alt]` is the alternative index (1 or 2) and `[effect]` is the effect ind
 - Effect 1: Speed +4500, Direct (1) — flat +0.45 speed
 - Effect 2: Recovery -10000, Random Roll (8) — 60% no drain, 30% = 2% HP, 10% = 4% HP
 
-**Luck Comes to the Prepared (100981)**
-- Effect 1: Speed +2500, Direct (1) — flat +0.25 speed
-- Effect 2: Speed +500, Activated Passive Skills (14) — 0/+500/+1000/+1500 based on green skill count
-- Effect 3: Accel +500, Activated Passive Skills (14) — 0/+500/+1000/+1500 based on green skill count
+**Luck Runs My Way (100981)** — Copano Rickey unique, `phase_laterhalf_random==1`, baseDuration 50000
+
+> Renamed by Cygames in the 2026-07 Global data drop; it was **"Luck Comes to the Prepared"**
+> before. In-game description: *"Moderately increase velocity sometime upon approaching
+> late-race, then increase velocity and acceleration based on how many passive skills the
+> skill user has in effect."* — those "passive skills" are the greens.
+>
+> **This is the only skill in the game that uses usage 14.** Of every effect in the 2026-07
+> Global data, 824 are Direct (1) and hers are the sole two `14`s.
+
+- Effect 1: TargetSpeed +2500, Direct (1) — flat +0.25 m/s regardless of green count
+- Effect 2: TargetSpeed +500, Activated Passive Skills (14) — scales with green skill count
+- Effect 3: Accel +500, Activated Passive Skills (14) — scales with green skill count
+
+In-game effect at each green skill breakpoint:
+
+| Green skills | TargetSpeed (Eff. 1) | TargetSpeed (Eff. 2) | Accel (Eff. 3) | Total TargetSpeed | Total Accel |
+|---|---|---|---|---|---|
+| 0–2 | +0.25 m/s | +0.00 m/s | +0.00 m/s² | **+0.25 m/s** | **+0.00 m/s²** |
+| 3–4 | +0.25 m/s | +0.05 m/s | +0.05 m/s² | **+0.30 m/s** | **+0.05 m/s²** |
+| 5   | +0.25 m/s | +0.10 m/s | +0.10 m/s² | **+0.35 m/s** | **+0.10 m/s²** |
+| 6+  | +0.25 m/s | +0.15 m/s | +0.15 m/s² | **+0.40 m/s** | **+0.15 m/s²** |
 
 **Radiant Star (210061)**
 - Effect 1: Speed +2500, Race Wins (10) — ranges from +2000 (0.8x) to +3000 (1.2x)
@@ -69,6 +95,49 @@ Where `[alt]` is the alternative index (1 or 2) and `[effect]` is the effect ind
 
 ## Simulator Note
 
-The Moomoolator currently does **not** implement `ability_value_usage`. All modifiers are treated as Direct. This means skills with non-Direct scaling (12 skills as of March 2026) may have incorrect effect magnitudes in simulation.
+*Verified against the code and the 2026-07 Global data. The previous version of this section
+was wrong on every point — it named a field that doesn't exist (`valueUsage`), said nothing
+read it, and undercounted the affected skills. Re-verify before trusting; don't assume.*
 
-The `valueUsage` field has been added to `umalator-global/skill_data.json` for the affected skills but is not yet read by `RaceSolverBuilder.ts`.
+**The data path is live.** In `umalator-global/skill_data.json` the field is **`scaling`** (not
+`valueUsage` — no effect carries that name). `RaceSolverBuilder.ts:277` reads it:
+
+```ts
+valueScaling: ef.scaling > 1 ? ef.scaling : undefined
+```
+
+…and `RaceSolver.ts:1438` consumes it in `activateSkill`.
+
+**What is actually implemented:** only **8 / 9** (Random Roll). `RaceSolver.ts:1438` applies the
+60/30/10 → 0.0x/0.02x/0.04x roll and records it in `randomRolls`. Everything else falls through
+and is applied at **full value**, i.e. silently as if Direct.
+
+| usage | in data? | in solver? | skills affected |
+|---|---|---|---|
+| 1 (Direct) | ✅ | ✅ (no-op) | the overwhelming majority |
+| 3, 4, 5, 6, 7 (Aoharu team stats) | ✅ | ❌ full value | `210011/12` `210021/22` `210031/32` `210041/42` `210051/52` — Burning/Ignited Spirit SPD·STA·PWR·GUTS·WIT |
+| 8 (Random Roll) | ✅ | ✅ | `202031` Nothing Ventured, `202032` Risky Business |
+| 10 (Race Wins, Climax) | ✅ | ❌ full value | `210061` Radiant Star, `210062` Glittering Star |
+| **14 (green count)** | ❌ **dropped by the generator** | ❌ full value | `100981` Luck Runs My Way |
+
+That's **14 skills** carrying non-Direct scaling, plus `100981` which *should* and doesn't.
+
+**The `100981` gap is the worst of these**, because it's wrong in both directions rather than
+merely conservative:
+
+- The generator never records `scaling: 14` — all three of her effects land in
+  `skill_data.json` with no `scaling` at all, so `ef.scaling` is `undefined`, `valueScaling`
+  is `undefined`, and the solver's `8|9` branch never fires.
+- So both `usage=14` effects apply as a flat **+500 / +500**.
+- With ≤2 greens the real multiplier is **0.0x** — we grant a bonus that shouldn't exist.
+- With 6+ greens it's **3.0x** — we apply a third of what we should.
+
+Note also that `RaceSolver.ts` deliberately **imports no skill data** (`PendingSkill` carries
+`skillId`/`rarity`/`effects`, no tags), so implementing 14 cannot be done by looking up
+`skill_meta` inside the solver. The green-ness has to be injected at the builder seam, the way
+`valueScaling` already is.
+
+Green skills for the purposes of usage 14 are those tagged **601–615** in `skill_meta.json`
+(`tags` array) — e.g. `200011` Right-Handed ◎ (`rotation==1`), `200031` Tokyo Racecourse ◎
+(`track_id==10006`). 110 of them exist in the current Global data. Note tags 601–615 are *not*
+exclusive to greens: inherited uniques carry them too, so a count must also filter on rarity.
