@@ -59,12 +59,14 @@ import {
   Book,
   Calendar,
   Heart,
+  LayoutGrid,
 } from "lucide-react";
 import { V2TrackSelect } from "./track-select";
 import { CompactConditions } from "./conditions";
 import { presets, visiblePresets, DEFAULT_PRESET } from "./presets";
 import { V2UmaPanel, UmaState, defaultUmaState } from "./uma-panel";
 import { TraineesTab } from "./trainees-tab";
+import { UmasTab, UmasTabState, initialUmasTabState } from "./roster/umas-tab";
 import { V2ResultsPane, CompareResults, RaceSnapshot } from "./results-pane";
 import { VelocityOverlay } from "./velocity-overlay";
 import { TourProvider, TourOverlay } from "./tour";
@@ -271,7 +273,9 @@ function App() {
 
   // Panel visibility
   const [umaDrawerOpen, setUmaDrawerOpen] = useState(false);
-  const [activeUmaTab, setActiveUmaTab] = useState<1 | 2 | "trainees">(1);
+  const [activeUmaTab, setActiveUmaTab] = useState<1 | 2 | "trainees" | "umas">(1);
+  // Lifted so the roster/filters/sort survive the tab unmount that Load triggers.
+  const [umasState, setUmasState] = useState<UmasTabState>(initialUmasTabState);
   const [summaryDrawerOpen, setSummaryDrawerOpen] = useState(false);
   const [feedbackDrawerOpen, setFeedbackDrawerOpen] = useState(false);
 
@@ -1888,6 +1892,14 @@ function App() {
                     <Users size={14} />
                     Saved
                   </button>
+                  <button
+                    type="button"
+                    class={`v2-uma-tab-umas ${activeUmaTab === "umas" ? "active" : ""}`}
+                    onClick={() => setActiveUmaTab("umas")}
+                  >
+                    <LayoutGrid size={14} />
+                    Umas
+                  </button>
                 </div>
 
                 <div class="v2-drawer-content">
@@ -1934,6 +1946,16 @@ function App() {
                       currentMode={mode}
                       currentUma1={uma1}
                       currentUma2={uma2}
+                    />
+                  )}
+                  {activeUmaTab === "umas" && (
+                    <UmasTab
+                      state={umasState}
+                      onStateChange={setUmasState}
+                      onLoadToUma1={(s) => { handleUma1Load(s); setActiveUmaTab(1); }}
+                      onLoadToUma2={(s) => { handleUma2Load(s); setActiveUmaTab(2); }}
+                      currentMode={mode}
+                      course={courseData[courseId]}
                     />
                   )}
                 </div>

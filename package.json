@@ -21,7 +21,9 @@
     "preview:release-timeline": "cd release-timeline && npx vite preview",
     "dev:mechanics": "cd umalator-global/mechanics-explorer && node build.mjs --serve 3000",
     "build:mechanics": "cd umalator-global/mechanics-explorer && node build.mjs",
-    "test:mechanics": "npx ts-node umalator-global/mechanics-explorer/mechanics.test.ts"
+    "test:mechanics": "npx ts-node umalator-global/mechanics-explorer/mechanics.test.ts",
+    "test:roster": "npx ts-node --transpile-only --compiler-options \"{\\\"moduleResolution\\\":\\\"node\\\",\\\"module\\\":\\\"commonjs\\\"}\" umalator-global/v2/roster/roster.test.ts",
+    "typecheck:roster": "bash tools/typecheck-roster.sh"
   },
   "author": "pecan",
   "license": "GPL-3.0-or-later",

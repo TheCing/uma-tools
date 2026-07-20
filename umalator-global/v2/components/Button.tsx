@@ -19,6 +19,7 @@ interface ButtonProps {
 	className?: string;
 	icon?: ComponentChildren;  // Lucide icon or other component
 	iconPosition?: 'left' | 'right';
+	title?: string;
 }
 
 export function Button({
@@ -30,7 +31,8 @@ export function Button({
 	type = 'button',
 	className = '',
 	icon,
-	iconPosition = 'left'
+	iconPosition = 'left',
+	title
 }: ButtonProps) {
 	return (
 		<button
@@ -38,6 +40,7 @@ export function Button({
 			class={`v2-button v2-button-${variant} v2-button-${size} ${className}`}
 			onClick={onClick}
 			disabled={disabled}
+			title={title}
 		>
 			{icon && iconPosition === 'left' && icon}
 			{children}
