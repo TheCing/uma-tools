@@ -14,6 +14,13 @@ node_modules/
 # It is regenerated locally from docs/master.mdb via `node umalator-global/build.mjs`;
 # deploys read the committed version directly (master.mdb is not deployed).
 
+# Discord bot — source is kept out of the public repo (deployed directly to
+# Railway). A few files (package.json, package-lock.json, tsconfig.json,
+# src/gemini-ocr.ts) were committed earlier and stay tracked; this rule only
+# stops NEW bot files from being swept in by `git add`. Already-tracked files
+# are unaffected by gitignore and can still be edited/committed normally.
+/uma-tools-bot/
+
 # Large media files
 videos/
 # Raw game exports (training logs, UmaExtractor dumps) can contain LIVE CREDENTIALS —
