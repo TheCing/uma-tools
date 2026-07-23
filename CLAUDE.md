@@ -299,11 +299,15 @@ flow across two environments:
 | OCR proxy | `uma-tools-worker/webhook-proxy.js` | Cloudflare Worker | Server `GEMINI_API_KEY` secret |
 | Discord bot | `uma-tools-bot/src/gemini-ocr.ts` | Node | Server key |
 
-**SDK + model:** uses the unified **`@google/genai`** SDK against **`gemini-2.5-flash`**
-— a GA model with a **free tier**. Do **not** use `gemini-flash-latest` (floating alias,
-no guaranteed free tier) or `gemini-2.0-flash*` (shut down 2026-06-01). The model is a
-`MODEL` constant in `components/GeminiOCR.ts` and `uma-tools-bot/src/gemini-ocr.ts`
-(2 places); the worker is model-agnostic.
+**SDK + model:** uses the unified **`@google/genai`** SDK against **`gemini-3.5-flash`**
+— a GA model with a **free tier** (vision + structured output). Do **not** use
+`gemini-flash-latest` (floating alias, no guaranteed free tier). **Model retirements
+break OCR with a 404 `NOT_FOUND` "no longer available to new users"** — `gemini-2.0-flash*`
+shut down 2026-06-01, and `gemini-2.5-flash` was retired for new users ~2026-06 (that's why
+we moved to 3.5-flash on 2026-07-23). Prefer a stable free-tier **Flash** model; avoid the
+bleeding-edge one until its free tier is confirmed. The model is a `MODEL` constant in
+`components/GeminiOCR.ts` and `uma-tools-bot/src/gemini-ocr.ts` (2 places); the worker is
+model-agnostic.
 
 **Structured output:** the call sets `responseMimeType: 'application/json'` +
 `responseSchema` (the `OCRHorseData` shape, with `enum`s for aptitude/strategy), so

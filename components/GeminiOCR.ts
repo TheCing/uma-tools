@@ -13,10 +13,12 @@ import skills from '../umalator-global/skill_data.json';
 import umas from '../umalator-global/umas.json';
 import { GoogleGenAI, Type } from '@google/genai';
 
-// gemini-2.5-flash: current GA model with a free tier (gemini-flash-latest / 2.0-flash
-// have no guaranteed free tier). To change the model, edit this constant here and in
-// uma-tools-bot/src/gemini-ocr.ts.
-const MODEL = 'gemini-2.5-flash';
+// gemini-3.5-flash: current GA model with a free tier. Supports vision + structured
+// output. Replaced gemini-2.5-flash, which was retired for new users ~2026-06 (404
+// "no longer available to new users"). Avoid gemini-flash-latest (floating alias, no
+// guaranteed free tier) and gemini-3.6-flash (newer, free-tier status unconfirmed).
+// To change the model, edit this constant here and in uma-tools-bot/src/gemini-ocr.ts.
+const MODEL = 'gemini-3.5-flash';
 
 // Structured-output schema → Gemini returns guaranteed-valid JSON (no markdown fences).
 const RESPONSE_SCHEMA = {
