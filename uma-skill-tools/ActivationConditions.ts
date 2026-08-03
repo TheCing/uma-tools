@@ -789,6 +789,7 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 	order_rate: orderFilter((rate: number, numUmas: number) => Math.round(numUmas * (rate / 100.0))),
 	order_rate_in20_continue: orderInFilter(0.2),
 	order_rate_in40_continue: orderInFilter(0.4),
+	order_rate_in50_continue: orderInFilter(0.5),
 	order_rate_in80_continue: orderInFilter(0.8),
 	order_rate_out20_continue: orderOutFilter(0.2),
 	order_rate_out40_continue: orderOutFilter(0.4),
@@ -882,6 +883,23 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 			return regions.rmap(r => r.intersect(bounds));
 		}
 	}),
+	// Non-random form of phase_laterhalf_random: the later half of phase N, entered
+	// immediately rather than sampled. e.g. 110801 Geothermal Overdrive uses
+	// phase_laterhalf==0 for 「中盤が迫ったとき」 (as the middle phase approaches).
+	phase_laterhalf: {
+		samplePolicy: ImmediatePolicy,
+		filterEq(regions: RegionList, phase: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			CourseHelpers.assertIsPhase(phase);
+			const start = CourseHelpers.phaseStart(course.distance, phase);
+			const end = CourseHelpers.phaseEnd(course.distance, phase);
+			return regions.rmap(r => r.intersect(new Region((start + end) / 2, end)));
+		},
+		filterNeq: notSupported,
+		filterLt: notSupported,
+		filterLte: notSupported,
+		filterGt: notSupported,
+		filterGte: notSupported
+	},
 	phase_laterhalf_random: random({
 		filterEq(regions: RegionList, phase: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
 			CourseHelpers.assertIsPhase(phase);
@@ -898,6 +916,39 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 			return regions.rmap(r => r.intersect(bounds));
 		}
 	}),
+	// Straights restricted to one half of a phase. 104202111 Riding the Mistral uses
+	// phase_first_half_straight_random==2 for 「終盤始めの方の直線」; 104702111 Heroic
+	// Radiance uses phase_latter_half_straight_random==1 for 「終盤が迫ったときの直線」.
+	phase_first_half_straight_random: {
+		samplePolicy: StraightRandomPolicy,
+		filterEq(regions: RegionList, phase: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			CourseHelpers.assertIsPhase(phase);
+			const start = CourseHelpers.phaseStart(course.distance, phase);
+			const end = CourseHelpers.phaseEnd(course.distance, phase);
+			const bounds = new Region(start, (start + end) / 2);
+			return regions.rmap(r => course.straights.map(s => r.intersect(s))).rmap(r => r.intersect(bounds));
+		},
+		filterNeq: notSupported,
+		filterLt: notSupported,
+		filterLte: notSupported,
+		filterGt: notSupported,
+		filterGte: notSupported
+	},
+	phase_latter_half_straight_random: {
+		samplePolicy: StraightRandomPolicy,
+		filterEq(regions: RegionList, phase: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			CourseHelpers.assertIsPhase(phase);
+			const start = CourseHelpers.phaseStart(course.distance, phase);
+			const end = CourseHelpers.phaseEnd(course.distance, phase);
+			const bounds = new Region((start + end) / 2, end);
+			return regions.rmap(r => course.straights.map(s => r.intersect(s))).rmap(r => r.intersect(bounds));
+		},
+		filterNeq: notSupported,
+		filterLt: notSupported,
+		filterLte: notSupported,
+		filterGt: notSupported,
+		filterGte: notSupported
+	},
 	phase_straight_random: {
 		samplePolicy: StraightRandomPolicy,
 		filterEq(regions: RegionList, phase: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
@@ -984,6 +1035,14 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 	running_style_temptation_count_senko: noopSectionRandom(2,9),
 	running_style_temptation_count_sashi: noopSectionRandom(2,9),
 	running_style_temptation_count_oikomi: noopSectionRandom(2,9),
+	// *_opponent_* variants count rushed opponents rather than the whole field. A
+	// single-uma sim has no opponents to count, so they get the same noop treatment
+	// as the non-opponent forms above (assume satisfied, sample over the mid-race
+	// sections where temptation actually happens).
+	running_style_temptation_opponent_count_nige: noopSectionRandom(2,9),
+	running_style_temptation_opponent_count_senko: noopSectionRandom(2,9),
+	running_style_temptation_opponent_count_sashi: noopSectionRandom(2,9),
+	running_style_temptation_opponent_count_oikomi: noopSectionRandom(2,9),
 	same_skill_horse_count: noopImmediate,
 	season: valueFilter((_0: CourseData, _1: HorseParameters, extra: RaceParameters) => extra.season),
 	slope: immediate({
@@ -1040,6 +1099,8 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 	temptation_count: noopImmediate,
 	temptation_count_behind: noopSectionRandom(2,9),
 	temptation_count_infront: noopSectionRandom(2,9),
+	temptation_opponent_count_behind: noopSectionRandom(2,9),
+	temptation_opponent_count_infront: noopSectionRandom(2,9),
 	time: valueFilter((_0: CourseData, _1: HorseParameters, extra: RaceParameters) => extra.time),
 	track_id: valueFilter((course: CourseData, _: HorseParameters, extra: RaceParameters) => course.raceTrackId),
 	up_slope_random: random({
@@ -1047,6 +1108,16 @@ export const Conditions: {[cond: string]: Condition} = Object.freeze({
 			assert(one == 1, 'must be up_slope_random==1');
 			const slopes = course.slopes.filter(s => s.slope > 0).map(s => new Region(s.start, s.start + s.length));
 			return regions.rmap(r => slopes.map(s => r.intersect(s)));
+		}
+	}),
+	// NB: here "later_half" is the later half of the RACE, not of a phase — 103003111
+	// Summit Meal reads 「レース後半の上り坂」 (uphill in the second half of the race).
+	up_slope_random_later_half: random({
+		filterEq(regions: RegionList, one: number, course: CourseData, _: HorseParameters, extra: RaceParameters) {
+			assert(one == 1, 'must be up_slope_random_later_half==1');
+			const secondHalf = new Region(course.distance / 2, course.distance);
+			const slopes = course.slopes.filter(s => s.slope > 0).map(s => new Region(s.start, s.start + s.length));
+			return regions.rmap(r => slopes.map(s => r.intersect(s))).rmap(r => r.intersect(secondHalf));
 		}
 	}),
 	visiblehorse: noopImmediate,

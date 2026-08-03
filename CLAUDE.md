@@ -401,12 +401,47 @@ cd umalator-global
 update.bat [path-to-master.mdb]
 
 # Linux/Mac
-perl make_global_skill_data.pl /path/to/master.mdb > skill_data.json
 perl make_global_skillnames.pl /path/to/master.mdb > skillnames.json
 perl make_global_course_data.pl /path/to/master.mdb courseeventparams > course_data.json
 ```
 
 Requires Perl with `DBI` and `DBD::SQLite` modules.
+
+⚠️ **There is no `make_global_skill_data.pl`** — it does not exist in this repo or upstream.
+The JP `uma-skill-tools/tools/make_skill_data.pl` does run against the Global mdb, but it
+predates the current schema: it emits only `modifier`/`target`/`type` per effect, so its
+output **drops `scaling`** (which `RaceSolverBuilder.ts` reads), plus `wisdomCheck` and
+`tags`. Don't regenerate `skill_data.json` with it. See "Keeping skill_data.json in sync"
+below.
+
+### Keeping skill_data.json in sync
+
+`umalator-global/skill_data.json` is a **JP superset** (~1530 entries): ~680 skills live on
+Global, plus ~850 fast-forwarded from JP. Two rules follow from that:
+
+1. **Never *replace* it wholesale from the Global mdb** — that wipes the fast-forwarded JP
+   entries, which are the point of the superset.
+2. **But it does need periodic *merging*.** For skills already live on Global, `master.mdb`
+   is authoritative, and Cygames rebalances them. `tools/fast-forward-global.ts` only ever
+   ADDS entries (see its `existingIds` guard), so it can never refresh a skill it already
+   imported. Left alone, live-skill definitions freeze at whatever they were on first import.
+
+   This is not hypothetical: by 2026-07-30, **79 Global-live skills** had conditions that
+   disagreed with `master.mdb` — e.g. `100051` Lights of Vaudeville still carried the JP
+   definition (`is_finalcorner==1&corner==0&order_rate<=30&behind_near_lane_time_set1>=1`)
+   where Global is simply `remain_distance<=300`.
+
+**The correct operation is a merge:** take the current definition for every skill live in
+`docs/master.mdb`; leave every JP-only entry untouched. Two things to preserve when doing it:
+
+- `make_skill_data.pl`'s `patch_modifier()` deliberately multiplies ~23 scenario-skill IDs
+  (`210011`…`210291`) by **1.2**. Re-apply it, or those magnitudes silently drop ~17%.
+- Match the file's existing format — tab indent, original top-level key order — or the diff
+  becomes unreviewable whitespace churn.
+
+`fast-forward-global.ts` now **detects and reports this drift** on every run
+(`⚠️ [STALE DATA] N Global-live skill(s) no longer match master.mdb`). It cannot fix it —
+that warning is your cue to re-run the merge.
 
 ### Updating Global master.mdb
 

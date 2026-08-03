@@ -124,9 +124,14 @@ export function runComparison(nsamples: number, course: CourseData, racedef: Rac
 			standard.addSkill(id, Perspective.Other, undefined, uma2Wisdom, lv);
 		}
 	});
+	// Asitame (足を貯める / Conserve Power) shipped on Global early, so it applies in both
+	// regions. Stamina syoubu (スタミナ勝負) is still JP-only.
+	// Matches upstream alpha123/uma-tools 91f624e ("global does not have stamina syoubu yet").
+	standard.withAsiwotameru();
+	compare.withAsiwotameru();
 	if (!CC_GLOBAL) {
-		standard.withAsiwotameru().withStaminaSyoubu();
-		compare.withAsiwotameru().withStaminaSyoubu();
+		standard.withStaminaSyoubu();
+		compare.withStaminaSyoubu();
 	}
 
 	let pacerHorse = null;

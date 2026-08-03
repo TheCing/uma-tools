@@ -179,7 +179,9 @@ export function runHpCalc(
 		});
 	}
 
-	if (!CC_GLOBAL) b0.withAsiwotameru().withStaminaSyoubu();
+	// Asitame applies on Global too; stamina syoubu is still JP-only. See compare.ts.
+	b0.withAsiwotameru();
+	if (!CC_GLOBAL) b0.withStaminaSyoubu();
 
 	if (options.posKeepMode === PosKeepMode.Approximate) {
 		b0.useDefaultPacer(true);
