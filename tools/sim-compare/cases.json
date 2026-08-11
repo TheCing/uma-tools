@@ -1,0 +1,136 @@
+{
+	"_comment": [
+		"Corpus for compare-sims.mjs. Every skill and course here is present in BOTH engines'",
+		"data/ with a semantically identical definition, so a failure points at the engine, not",
+		"at our JP data being stale. compare-sims re-verifies this at runtime and tags any case",
+		"whose data has since drifted apart.",
+		"",
+		"Chosen to span the sample-policy space: immediate/static regions, the *_random",
+		"policies (corner, phase, final corner), accumulatetime distributions, and the",
+		"debuff path that gain.ts splits into a separate solver."
+	],
+	"horsesDir": "horses",
+	"cases": [
+		{
+			"id": "control/no-skill/senkou-nakayama2000",
+			"_why": "No CLI skill: both solvers run the same build. Expectation is 0 gain in both engines; isolates pure RNG/integration drift.",
+			"horse": "senkou", "course": 10504, "skills": []
+		},
+		{
+			"id": "control/no-skill/nige-tokyo2400",
+			"horse": "nige", "course": 10606, "skills": []
+		},
+
+		{
+			"id": "immediate/accel/phase2-corner-senkou-nakayama2000",
+			"_why": "100271 Let's Anabolic! — phase>=2&corner!=0. Fires at 0m delay when phase 2 opens mid-corner; the premium accel bucket.",
+			"horse": "senkou", "course": 10504, "skills": [100271]
+		},
+		{
+			"id": "immediate/accel/phase2-corner-oikomi-kyoto3000",
+			"horse": "oikomi", "course": 10810, "skills": [100271]
+		},
+		{
+			"id": "immediate/accel/final-corner-sasi-tokyo2400",
+			"_why": "100041 Red Flame Gear — is_finalcorner==1. Separate bucket from phase2&corner; Tokyo 2400 is where finalCorner.start ~= phase2 start.",
+			"horse": "sasi", "course": 10606, "skills": [100041]
+		},
+		{
+			"id": "immediate/accel/remain-distance-window-senkou-hanshin2200",
+			"_why": "100701 Seirios — narrow remain_distance window, exercises tight region intersection.",
+			"horse": "senkou", "course": 10906, "skills": [100701]
+		},
+		{
+			"id": "immediate/velocity/distance-rate-band-sasi-nakayama2000",
+			"_why": "100071 Unsinkable Ship, Anchored! — distance_rate band, plain TargetSpeed with no dynamic gate. Fires mid-race, so it tests speed carryover into phase 2.",
+			"horse": "sasi", "course": 10504, "skills": [100071]
+		},
+		{
+			"id": "immediate/velocity/last-straight-oikomi-kyoto3000",
+			"_why": "100031 Ultimate Teio Step — is_last_straight==1, a large TargetSpeed deep in the spurt.",
+			"horse": "oikomi", "course": 10810, "skills": [100031]
+		},
+		{
+			"id": "immediate/alternatives/slope-fallback-senkou-nakayama2000",
+			"_why": "110391 Invigorating Strength — slope==0@slope==2. The '@' makes it the only case exercising buildSkillData's alternative-selection fallback.",
+			"horse": "senkou", "course": 10504, "skills": [110391]
+		},
+		{
+			"id": "immediate/mixed/currentspeed-plus-accel-oikomi-tokyo2400",
+			"_why": "100011 Shooting Star — type 22 CurrentSpeedWithNaturalDeceleration + type 31 Accel in one skill.",
+			"horse": "oikomi", "course": 10606, "skills": [100011]
+		},
+
+		{
+			"id": "random/all-corner/senkou-kyoto3000",
+			"_why": "200331 Archline Professor — all_corner_random, RandomPolicy sampled across every corner.",
+			"horse": "senkou", "course": 10810, "skills": [200331]
+		},
+		{
+			"id": "random/all-corner/nige-nakayama2000",
+			"horse": "nige", "course": 10504, "skills": [200331]
+		},
+		{
+			"id": "random/phase/senkou-tokyo2400",
+			"_why": "210011 Aoharu Burning Speed — phase_random. Also one of the scenario skills carrying the x1.2 modifier patch.",
+			"horse": "senkou", "course": 10606, "skills": [210011]
+		},
+		{
+			"id": "random/final-corner/nige-hanshin2200",
+			"_why": "200551 Runaway — is_finalcorner_random, nige-gated accel.",
+			"horse": "nige", "course": 10906, "skills": [200551]
+		},
+		{
+			"id": "random/straight/senkou-nakayama2000",
+			"_why": "200371 Gust of Wind — straight_random, accel + velocity together on a StraightRandomPolicy.",
+			"horse": "senkou", "course": 10504, "skills": [200371]
+		},
+		{
+			"id": "random/phase-first-half/sasi-kyoto3000",
+			"_why": "203331 Thorough Preparation — phase_firsthalf_random, gated to sasi; samples only the first half of a phase.",
+			"horse": "sasi", "course": 10810, "skills": [203331]
+		},
+
+		{
+			"id": "distribution/accumulatetime/sasi-tokyo-dirt2400",
+			"_why": "202301 Leisurely Dust Bath — ground_type==2 & accumulatetime, the distribution-sampled policy. Needs a dirt course to activate at all.",
+			"horse": "sasi", "course": 10108, "skills": [202301]
+		},
+
+		{
+			"id": "control/recovery-inert/oikomi-kyoto3000",
+			"_why": "100451 Purity of Heart — recovery (type 9). gain.ts runs NoopHpPolicy, so this is expected to measure exactly 0 in both engines. Kept as a control: if it ever stops reading 0, one engine started simulating HP here.",
+			"horse": "oikomi", "course": 10810, "skills": [100451]
+		},
+		{
+			"id": "debuff/velocity/sasi-nakayama2000",
+			"_why": "100251 Chasing After You — mixed buff + negative modifier; gain.ts splits the negative effects onto the *baseline* solver.",
+			"horse": "sasi", "course": 10504, "skills": [100251]
+		},
+
+		{
+			"id": "multi/three-skill-stack-senkou-nakayama2000",
+			"_why": "Stacked kit: overlapping durations and multiple concurrent modifiers are where small integration differences compound.",
+			"horse": "senkou", "course": 10504, "skills": [100271, 200331, 100071]
+		},
+		{
+			"id": "multi/three-skill-stack-oikomi-tokyo2400",
+			"horse": "oikomi", "course": 10606, "skills": [100011, 210011, 100041]
+		},
+
+		{
+			"id": "conditions/ground-heavy-senkou-nakayama2000",
+			"_why": "Same case as the phase2-corner baseline but on heavy ground, exercising the speed/power ground modifiers.",
+			"horse": "senkou", "course": 10504, "skills": [100271], "ground": "heavy"
+		},
+		{
+			"id": "conditions/mood-minus2-senkou-nakayama2000",
+			"horse": "senkou", "course": 10504, "skills": [100271], "mood": -2
+		},
+		{
+			"id": "conditions/short-course-nige-nakayama1200",
+			"_why": "Sprint: phases are compressed, so region intersection is much tighter.",
+			"horse": "nige", "course": 10501, "skills": [200331]
+		}
+	]
+}
