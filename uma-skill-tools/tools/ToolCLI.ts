@@ -8,7 +8,7 @@ import { PRNG } from '../Random';
 import { ActivationSamplePolicy, ImmediatePolicy } from '../ActivationSamplePolicy';
 import { Conditions } from '../ActivationConditions';
 import { getParser, UnknownConditionError } from '../ConditionParser';
-import { RaceSolver, DynamicCondition, SkillType, SkillRarity, SkillEffect } from '../RaceSolver';
+import { RaceSolver, DynamicCondition, SkillType, SkillRarity, SkillEffect, PosKeepMode } from '../RaceSolver';
 import { NoopHpPolicy } from '../HpPolicy';
 
 import skills from '../data/skill_data.json';
@@ -186,6 +186,25 @@ export function buildHorseParameters(horseDesc, course: CourseData, mood: Mood, 
 	});
 }
 
+export function parsePosKeepMode(m: string) {
+	switch (m.toLowerCase()) {
+	case 'none': return PosKeepMode.None;
+	case 'approximate': return PosKeepMode.Approximate;
+	case 'virtual': return PosKeepMode.Virtual;
+	default: throw new InvalidArgumentError('Invalid position keep mode.');
+	}
+}
+
+// The opening-leg accels the app's approximate pacemaker carries (jiga + white sente); see
+// RaceSolverBuilder#useDefaultPacer(true). Without them the pacemaker sets off too slowly and
+// the uma behind it never has to pace down.
+const OpeningLegPacerSkills = Object.freeze([
+	{skillId: '201601', rarity: SkillRarity.White, trigger: new Region(0, 100), extraCondition: (_) => true,
+		effects: [{type: SkillType.Accel, baseDuration: 3.0, modifier: 0.2}]},
+	{skillId: '200532', rarity: SkillRarity.White, trigger: new Region(0, 100), extraCondition: (_) => true,
+		effects: [{type: SkillType.Accel, baseDuration: 1.2, modifier: 0.2}]}
+]);
+
 export type PacerProvider = (rng: PRNG) => RaceSolver | null;
 export type CliAction = (
 	horse: HorseParameters, course: CourseData,
@@ -213,6 +232,13 @@ export class ToolCLI {
 			.option('--skills <ids>', 'comma-separated list of skill IDs', (value,_) => value.split(',').map(id => parseInt(id,10)), [])
 			.option('--position-keep <pacer>', 'load a horse from the <pacer> JSON file to simulate position keep (by default, uses a nige version of the horse in <horsefile> with no skills) (position keep is not simulated for nige/oonige)')
 			.option('--no-position-keep', 'disable position keep simulation')
+			// NB. the web simulator defaults to PosKeepMode.Approximate; these tools default to
+			// none, so CLI numbers are NOT directly comparable to what the app reports. That is
+			// deliberate for now — see the warning on `--pos-keep-mode approximate` below.
+			.addOption(new Option('--pos-keep-mode <mode>', 'position keep model. WARNING: "approximate" (what the web simulator uses) currently produces implausible gains for some velocity skills — e.g. skill 110391 measures -1.06 bashin where it should be +1.63 — so it is not yet the default here')
+				.choices(['none', 'approximate', 'virtual'])
+				.default(PosKeepMode.None, 'none')
+				.argParser(parsePosKeepMode))
 			.addOption(new Option('--timestep <dt>', 'integration timestep in seconds (can be an integer, decimal, or fraction)')
 				.default(1/60, '1/60')
 				.argParser(ts => ts.split('/').reduceRight((a,b) => +b / +a, 1.0)))  // reduceRight with initial acc = 1.0 to make the types work
@@ -246,7 +272,14 @@ export class ToolCLI {
 		function getPacer(rng: PRNG) {
 			let pacer: RaceSolver | null = null;
 			if (horse.strategy != Strategy.Nige && horse.strategy != Strategy.Oonige && opts.positionKeep !== false) {
-				pacer = new RaceSolver({horse: pacerHorseParams, course, rng, hp: NoopHpPolicy, skills: []});
+				pacer = new RaceSolver({
+					horse: pacerHorseParams, course, rng, hp: NoopHpPolicy,
+					skills: opts.posKeepMode == PosKeepMode.Approximate ? OpeningLegPacerSkills.map(s => Object.assign({}, s)) as any : [],
+					posKeepMode: opts.posKeepMode,
+					// position keep runs to section 10 rather than section 3 in a head-to-head, which
+					// is the situation these tools actually model
+					mode: 'compare'
+				});
 				// top is jiga and bottom is white sente
 				// arguably it's more realistic to include these, but also a lot of the time they prevent the exact pace down effects
 				// that we're trying to investigate
