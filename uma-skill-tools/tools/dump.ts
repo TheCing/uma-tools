@@ -71,6 +71,8 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 		horse, course, skills,
 		hp: NoopHpPolicy,
 		rng: solverRng,
+		posKeepMode: cliOptions.posKeepMode,
+		mode: 'compare',
 		onSkillActivate: (s,skillId) => {
 			plotData.skills[skillId] = [skillTypes[skillId],s.accumulatetime.t,0,s.pos,0];
 		},
@@ -79,6 +81,15 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 			plotData.skills[skillId][4] = s.pos;
 		}
 	});
+	// Wire in a pacemaker so position keep can actually run, matching gain.ts and the web
+	// simulator; getPacer() returns null for nige/oonige and under --no-position-keep.
+	const pacer = getPacer(pacerRng);
+	if (pacer != null) {
+		s.initUmas([pacer]);
+		pacer.initUmas([s]);
+		s.updatePacer(pacer);
+	}
+
 	plotData.v.push(s.currentSpeed);
 	plotData.targetv.push(s.targetSpeed);
 	plotData.a.push(s.accel);
@@ -87,6 +98,7 @@ cli.run((horse: HorseParameters, course: CourseData, defSkills: SkillData[], cli
 	let paceDownToggle = false;
 	const dt = cliOptions.timestep;
 	while (s.pos < course.distance) {
+		if (pacer != null && pacer.pos < course.distance) pacer.step(dt);
 		s.step(dt);
 		plotData.t.push(s.accumulatetime.t);
 		plotData.pos.push(s.pos);
