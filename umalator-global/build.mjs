@@ -126,6 +126,20 @@ function generateNotInGame() {
 	try {
 		const dbSkillsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
 		const dbSkills = new Set(dbSkillsRaw.trim().split('\n'));
+
+		// docs/master.mdb is synced by hand and routinely lags the live client, which makes
+		// already-released skills show a "Not in game" badge. Upstream regenerates their Global
+		// skill_data.json from a current DB, so union their key set in.
+		// UNION, not replace: upstream's generator drops scenario/bonus skills (its filter is
+		// is_general_skill=1 OR rarity>=3), so swapping outright would wrongly flag skills the
+		// mdb correctly reports as live. Refresh with tools/sync-global-live-skills.mjs.
+		const livePath = path.join(dirname, 'global-live-skills.json');
+		let upstreamLive = 0;
+		if (fs.existsSync(livePath)) {
+			const before = dbSkills.size;
+			for (const id of JSON.parse(fs.readFileSync(livePath, 'utf-8')).skills || []) dbSkills.add(id);
+			upstreamLive = dbSkills.size - before;
+		}
 		const dbOutfitsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM card_data"`, { encoding: 'utf-8' });
 		const dbOutfits = new Set(dbOutfitsRaw.trim().split('\n'));
 
@@ -139,7 +153,8 @@ function generateNotInGame() {
 		};
 
 		fs.writeFileSync(outPath, JSON.stringify(result));
-		console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`);
+		console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`
+			+ (upstreamLive ? ` (${upstreamLive} more counted live via global-live-skills.json)` : ''));
 	} catch (e) {
 		console.warn(`Failed to regenerate not-in-game.json: ${e.message}. Leaving existing file in place.`);
 	}
