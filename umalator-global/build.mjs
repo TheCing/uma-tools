@@ -284,7 +284,7 @@ function syncSkillNames() {
 
 		console.log(`skillnames.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
 		for (const c of changes) console.log(`  ${c}`);
-		if (!dryRun) fs.writeFileSync(namesPath, JSON.stringify(skillnames, null, 2) + '\n');
+		if (!dryRun) fs.writeFileSync(namesPath, JSON.stringify(skillnames, null, '\t') + '\n');
 	} catch (e) {
 		// e.g. sqlite3 CLI absent on the Cloudflare build image, or a DB read error.
 		// Non-fatal: keep the committed skillnames.json as-is, like the other syncs.
