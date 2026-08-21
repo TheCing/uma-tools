@@ -1221,9 +1221,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "distance_diff_top<=5&remain_distance<=300&order_rate<=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -1231,7 +1233,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"100301": {
 		"alternatives": [
@@ -3506,9 +3512,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "near_count>=3&phase==1&corner!=0&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -3516,7 +3524,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"110201": {
 		"alternatives": [
@@ -3983,15 +3995,18 @@
 		"alternatives": [
 			{
 				"baseDuration": 60000,
-				"condition": "is_lastspurt==1&is_last_straight==1&order_rate>=40",
+				"condition": "is_lastspurt==1&is_finalcorner==1&corner==0&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -3999,7 +4014,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"110361": {
 		"alternatives": [
@@ -4382,9 +4401,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "phase>=2&is_finalcorner_laterhalf==1&order_rate<=75&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -4392,7 +4413,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"110511": {
 		"alternatives": [
@@ -4560,19 +4585,23 @@
 			{
 				"baseDuration": 50000,
 				"condition": "is_last_straight_onetime==1&order_rate<=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": -500,
+						"scaling": 1,
 						"target": 9,
 						"type": 21
 					},
 					{
 						"modifier": -500,
+						"scaling": 1,
 						"target": 10,
 						"type": 21
 					}
@@ -4580,7 +4609,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401,
+			406
+		],
+		"wisdomCheck": 0
 	},
 	"110591": {
 		"alternatives": [
@@ -17370,14 +17404,17 @@
 			{
 				"baseDuration": 27000,
 				"condition": "phase_firsthalf_random==1&running_style==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 4500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": -400,
+						"scaling": 1,
 						"target": 1,
 						"type": 9
 					}
@@ -17385,21 +17422,30 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 2
+		"rarity": 2,
+		"tags": [
+			101,
+			302,
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"202392": {
 		"alternatives": [
 			{
 				"baseDuration": 27000,
 				"condition": "phase_firsthalf_random==1&running_style==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": -400,
+						"scaling": 1,
 						"target": 1,
 						"type": 9
 					}
@@ -17407,7 +17453,13 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			101,
+			302,
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"202401": {
 		"alternatives": [
@@ -21225,9 +21277,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "distance_diff_top<=5&remain_distance<=300&order_rate<=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -21235,7 +21289,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"900301": {
 		"alternatives": [
@@ -21581,9 +21639,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "remain_distance<=201&remain_distance>=199&distance_diff_top<=5&order>=2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -21593,9 +21653,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "remain_distance<=201&remain_distance>=199&distance_diff_top<=10&order>=2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -21603,7 +21665,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"900431": {
 		"alternatives": [
@@ -22981,9 +23047,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "near_count>=3&phase==1&corner!=0&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -22991,7 +23059,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"910201": {
 		"alternatives": [
@@ -23434,15 +23506,18 @@
 		"alternatives": [
 			{
 				"baseDuration": 36000,
-				"condition": "is_lastspurt==1&is_last_straight==1&order_rate>=40",
+				"condition": "is_lastspurt==1&is_finalcorner==1&corner==0&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -23450,7 +23525,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"910361": {
 		"alternatives": [
@@ -23821,9 +23900,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "phase>=2&is_finalcorner_laterhalf==1&order_rate<=75&order_rate>=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -23831,7 +23912,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"910511": {
 		"alternatives": [
@@ -23999,19 +24084,23 @@
 			{
 				"baseDuration": 30000,
 				"condition": "is_last_straight_onetime==1&order_rate<=40",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": -250,
+						"scaling": 1,
 						"target": 9,
 						"type": 21
 					},
 					{
 						"modifier": -250,
+						"scaling": 1,
 						"target": 10,
 						"type": 21
 					}
@@ -24019,7 +24108,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401,
+			406
+		],
+		"wisdomCheck": 1
 	},
 	"910591": {
 		"alternatives": [
