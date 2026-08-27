@@ -27,7 +27,11 @@ const STRATEGY_ROWS: Array<{ key: keyof DuelingRates; label: string; sub?: strin
 	{ key: 'endCloser',   label: 'End Closer',   sub: 'Oikomi' },
 ];
 
+export type SimEngine = 'v1' | 'v2';
+
 interface SimSettingsProps {
+	engine: SimEngine;
+	setEngine: (v: SimEngine) => void;
 	samples: number;
 	setSamples: (v: number) => void;
 	seed: number;
@@ -54,6 +58,8 @@ interface SimSettingsProps {
 }
 
 export function SimulationSettings({
+	engine,
+	setEngine,
 	samples,
 	setSamples,
 	seed,
@@ -189,6 +195,22 @@ export function SimulationSettings({
 					</label>
 				</Tooltip>
 
+				{/* Engine v1 is alpha123's published solver, vendored verbatim (see
+				    tools/sync-upstream-engine.mjs); v2 is ours. Rush, dueling, lead competition
+				    and lane movement exist only in v2, so they disable under v1 rather than
+				    silently doing nothing. */}
+				<Tooltip content="v2 is our engine. v1 is alpha123's upstream engine — fewer mechanics, useful as a reference point." position="bottom">
+					<label class="v2-switch">
+						<input
+							type="checkbox"
+							checked={engine === 'v2'}
+							onChange={() => setEngine(engine === 'v2' ? 'v1' : 'v2')}
+						/>
+						<span class="v2-switch-slider" />
+						<span class="v2-switch-label">Engine {engine}</span>
+					</label>
+				</Tooltip>
+
 				<Tooltip content={mode === "stamina" ? "Always enabled in Stamina mode" : "Skills check wisdom for activation"} position="bottom">
 					<label class="v2-switch">
 						<input
@@ -206,8 +228,9 @@ export function SimulationSettings({
 					<label class="v2-switch">
 						<input
 							type="checkbox"
-							checked={rushedKakari}
+							checked={rushedKakari && engine === 'v2'}
 							onChange={() => setRushedKakari(!rushedKakari)}
+							disabled={engine === 'v1'}
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Rush/Kakari</span>
@@ -218,8 +241,9 @@ export function SimulationSettings({
 					<label class="v2-switch">
 						<input
 							type="checkbox"
-							checked={leadCompetition}
+							checked={leadCompetition && engine === 'v2'}
 							onChange={() => setLeadCompetition(!leadCompetition)}
+							disabled={engine === 'v1'}
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Spot Struggle</span>
@@ -231,8 +255,9 @@ export function SimulationSettings({
 						<label class="v2-switch">
 							<input
 								type="checkbox"
-								checked={competeFight}
+								checked={competeFight && engine === 'v2'}
 								onChange={() => setCompeteFight(!competeFight)}
+								disabled={engine === 'v1'}
 							/>
 							<span class="v2-switch-slider" />
 							<span class="v2-switch-label">Dueling</span>
@@ -312,8 +337,9 @@ export function SimulationSettings({
 					<label class="v2-switch">
 						<input
 							type="checkbox"
-							checked={laneMovement}
+							checked={laneMovement && engine === 'v2'}
 							onChange={() => setLaneMovement(!laneMovement)}
+							disabled={engine === 'v1'}
 						/>
 						<span class="v2-switch-slider" />
 						<span class="v2-switch-label">Lane Movement</span>

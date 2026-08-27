@@ -268,6 +268,8 @@ function App() {
     localStorage.setItem('umalator_v2_duelingRates', JSON.stringify(duelingRates));
   }, [duelingRates]);
   const [laneMovement, setLaneMovement] = useState(true);
+  // 'v2' = our engine, 'v1' = alpha123's vendored upstream engine (tools/sync-upstream-engine.mjs)
+  const [engine, setEngine] = useState<'v1' | 'v2'>('v2');
   const [autoSeed, setAutoSeed] = useState(false);
   const [forceFullSpurt, setForceFullSpurt] = useState(true);
 
@@ -822,6 +824,7 @@ function App() {
             competeFight,
             duelingRates: competeFight ? duelingRates : undefined,
             laneMovement,
+            engine,
           }),
         },
       });
@@ -854,6 +857,7 @@ function App() {
               competeFight,
               duelingRates: competeFight ? duelingRates : undefined,
               laneMovement,
+              engine,
             }),
             forceFullSpurt,
           },
@@ -882,6 +886,7 @@ function App() {
     competeFight,
     duelingRates,
     laneMovement,
+    engine,
     autoSeed,
     handleRunSkillChart,
   ]);
@@ -1514,6 +1519,8 @@ function App() {
               duelingRates={duelingRates}
               setDuelingRates={setDuelingRates}
               laneMovement={laneMovement}
+              engine={engine}
+              setEngine={setEngine}
               setLaneMovement={setLaneMovement}
               autoSeed={autoSeed}
               setAutoSeed={setAutoSeed}
@@ -2288,6 +2295,8 @@ function App() {
                         duelingRates={duelingRates}
                         setDuelingRates={setDuelingRates}
                         laneMovement={laneMovement}
+                        engine={engine}
+                        setEngine={setEngine}
                         setLaneMovement={setLaneMovement}
                         autoSeed={autoSeed}
                         setAutoSeed={setAutoSeed}

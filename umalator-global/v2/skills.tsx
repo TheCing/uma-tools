@@ -6,7 +6,7 @@
  * Licensed under GPL-3.0-or-later
  */
 
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState, useMemo, useCallback, useRef, useEffect } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
 import { X, Search, Plus, ArrowUpDown, ChevronDown, GitCompare } from 'lucide-react';
@@ -15,7 +15,7 @@ import { Dropdown, SegmentedControl } from './components';
 // Import condition matching
 import { getParser } from '../../uma-skill-tools/ConditionParser';
 import * as Matcher from '../../uma-skill-tools/tools/ConditionMatcher';
-import { levelScalingCoef } from '../../uma-skill-tools/RaceSolverBuilder';
+import { levelScalingCoef } from '../../components/skillLevelScaling';
 
 // Import data - use Global versions
 import skilldata from '../skill_data.json';
@@ -574,7 +574,7 @@ export function SkillDetailsBody({ skillId, skill, courseDistance, lv }: SkillDe
 	const hasMultipleAlternatives = alternatives.length > 1;
 
 	return (
-		<>
+		<Fragment>
 			<div class="v2-skill-detail-row">
 				<span class="v2-skill-detail-label">ID:</span>
 				<span class="v2-skill-detail-value">{skillId}</span>
@@ -665,7 +665,7 @@ export function SkillDetailsBody({ skillId, skill, courseDistance, lv }: SkillDe
 			>
 				View conditions in GameTora
 			</a>
-		</>
+		</Fragment>
 	);
 }
 

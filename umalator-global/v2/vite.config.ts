@@ -9,7 +9,12 @@ const projectRoot = path.resolve(__dirname, '../..');
 // Custom plugin to redirect data file imports to Global versions
 // This matches esbuild's redirectData plugin behavior
 function redirectDataFiles(): Plugin {
-  const umaSkillToolsDataDir = path.join(projectRoot, 'uma-skill-tools/data');
+  // Both engines resolve their data to the same Global files: engine v2 (ours) and
+  // engine v1 (vendored alpha123, see tools/sync-upstream-engine.mjs).
+  const engineDataDirs = [
+    path.join(projectRoot, 'uma-skill-tools/data'),
+    path.join(projectRoot, 'uma-skill-tools-v1/data')
+  ];
 
   return {
     name: 'redirect-data-files',
@@ -21,11 +26,11 @@ function redirectDataFiles(): Plugin {
       if (source.startsWith('./') || source.startsWith('../')) {
         const resolvedPath = path.resolve(path.dirname(importer), source);
 
-        // If the resolved path is within uma-skill-tools/data/, redirect to umalator-global/
-        if (resolvedPath.startsWith(umaSkillToolsDataDir)) {
-          const relativePath = resolvedPath.slice(umaSkillToolsDataDir.length + 1);
-          const redirectedPath = path.join(rootDir, relativePath);
-          return redirectedPath;
+        // If the resolved path is within either engine's data/, redirect to umalator-global/
+        for (const dataDir of engineDataDirs) {
+          if (resolvedPath.startsWith(dataDir + path.sep)) {
+            return path.join(rootDir, resolvedPath.slice(dataDir.length + 1));
+          }
         }
       }
 
