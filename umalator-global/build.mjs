@@ -281,8 +281,20 @@ function syncSkillNames() {
 			})
 		);
 
+		// Skills upstream also ships are named by tools/sync-upstream-data.mjs, which takes
+		// upstream's strings: it regenerates from a current client DB while docs/master.mdb
+		// is synced by hand and lags it by weeks. Overriding those here would undo genuine
+		// Cygames renames -- this is exactly how 202401 "Lightning Surge" kept reverting to
+		// the stale "Flash Forward". So only name skills upstream has no opinion on.
+		let upstreamNamed = new Set();
+		try {
+			const livePath = path.join(dirname, 'global-live-skills.json');
+			if (fs.existsSync(livePath)) upstreamNamed = new Set(JSON.parse(fs.readFileSync(livePath, 'utf-8')).skills || []);
+		} catch { /* fall through: without the list, behave as before */ }
+
 		const changes = [];
 		for (const id of inGame) {
+			if (upstreamNamed.has(id)) continue;
 			const off = official.get(id);
 			if (!off) continue;
 			const cur = skillnames[id];
