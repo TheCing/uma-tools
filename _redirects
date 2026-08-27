@@ -16,6 +16,17 @@
 # Clean URL for the Mechanics Explorer (rewrite, URL stays as /mechanics-explorer/)
 /mechanics-explorer/* /umalator-global/mechanics-explorer/:splat 200
 
+# v1 was retired 2026-08-27. Its two app roots now serve v2 at the apex.
+# These are EXACT paths on purpose: /umalator-global/ is also the parent of the
+# skill visualizer and mechanics explorer, which must stay reachable, so a
+# /umalator-global/* wildcard here would break them.
+/umalator-global / 301
+/umalator-global/ / 301
+/umalator-global/index.html / 301
+/umalator / 301
+/umalator/ / 301
+/umalator/index.html / 301
+
 # Backward compat: old v2 URLs → root
 /umalator-global/v2/* /:splat 301
 /v2/* /:splat 301
