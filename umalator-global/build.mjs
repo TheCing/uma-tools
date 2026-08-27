@@ -402,16 +402,8 @@ function generateCMPresets() {
 
 generateCMPresets();
 
-const buildOptions = {
-	entryPoints: [{in: '../umalator/app.tsx', out: 'bundle'}, '../umalator/simulator.worker.ts'],
-	bundle: true,
-	minify: !debug,
-	outdir: '.',
-	write: !serve,
-	define: {CC_DEBUG: debug.toString(), CC_GLOBAL: 'true', CC_DEV: isDev.toString(), CC_OCR_PROXY: JSON.stringify(process.env.OCR_PROXY_URL || ''), CC_TURNSTILE_SITEKEY: JSON.stringify(process.env.TURNSTILE_SITEKEY || ''), CC_COW_SKIN: JSON.stringify(process.env.COW_SKIN || '')},
-	external: ['*.ttf'],
-	plugins: [redirectData, mockAssert, redirectTable, seedrandomPlugin],
-};
+// v1 was retired 2026-08-27; its routes now serve v2 at the root (see _redirects).
+// Only the v2 bundle is built here.
 
 // v2 experimental build options
 // Note: v2 uses npm @tanstack/react-table directly (v8 API), not the vendor files (v9 alpha API)
@@ -501,27 +493,10 @@ function runServer(ctx, port) {
 }
 
 if (serve) {
-	// Build both main and v2 in serve mode
-	const ctx = await esbuild.context(buildOptions);
 	const ctxV2 = await esbuild.context(buildOptionsV2);
-
-	// Combine contexts for rebuilding
-	const combinedCtx = {
-		async rebuild() {
-			const [result1, result2] = await Promise.all([ctx.rebuild(), ctxV2.rebuild()]);
-			return {
-				outputFiles: [...result1.outputFiles, ...result2.outputFiles]
-			};
-		}
-	};
-
-	runServer(combinedCtx, port);
+	runServer(ctxV2, port);
 	console.log(`Serving on http://[::]:${port}/ ...`);
-	console.log(`  v1: http://localhost:${port}/umalator-global/`);
 	console.log(`  v2: use Vite — cd v2 && npm run dev`);
 } else {
-	await Promise.all([
-		esbuild.build(buildOptions),
-		esbuild.build(buildOptionsV2)
-	]);
+	await esbuild.build(buildOptionsV2);
 }

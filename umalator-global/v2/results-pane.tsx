@@ -279,9 +279,15 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 	const finishTime = getFinishTime(snapshot, umaIndex);
 	const maxSpeed = getMaxVelocity(snapshot, umaIndex);
 	const startDelay = snapshot.sdly[umaIndex];
-	const rushed = allruns.rushed[umaIndex];
-	const leadComp = allruns.leadCompetition[umaIndex];
-	const duel = allruns.competeFight[umaIndex];
+	// Engine v1 (vendored upstream) simulates position keep and kakari but emits no
+	// cross-run aggregates, so `allruns` is absent there. Fall back to zeroed stats: the
+	// mechanics block below is frequency-gated and simply doesn't render.
+	const NO_STATS = {frequency: 0, mean: 0} as any;
+	// v1 reports no spurt/stamina aggregates either; show em-dashes rather than crashing.
+	const stamina = staminaStats ?? {fullSpurtRate: NaN, staminaSurvivalRate: NaN} as any;
+	const rushed = allruns?.rushed?.[umaIndex] ?? NO_STATS;
+	const leadComp = allruns?.leadCompetition?.[umaIndex] ?? NO_STATS;
+	const duel = allruns?.competeFight?.[umaIndex] ?? NO_STATS;
 
 	// Get skill activations from the snapshot
 	const skillActivations = snapshot.sk[umaIndex];
@@ -311,12 +317,12 @@ function UmaStatsCard({ label, snapshot, umaIndex, staminaStats, allruns, colorC
 					</div>
 					<div class="v2-stat-item">
 						<Heart size={14} />
-						<span class="value">{staminaStats.fullSpurtRate.toFixed(0)}%</span>
+						<span class="value">{Number.isNaN(stamina.fullSpurtRate) ? '—' : stamina.fullSpurtRate.toFixed(0) + '%'}</span>
 						<span class="label">Full Spurt</span>
 					</div>
 					<div class="v2-stat-item">
 						<Shield size={14} />
-						<span class="value">{staminaStats.staminaSurvivalRate.toFixed(1)}%</span>
+						<span class="value">{Number.isNaN(stamina.staminaSurvivalRate) ? '—' : stamina.staminaSurvivalRate.toFixed(1) + '%'}</span>
 						<span class="label">HP Survival</span>
 					</div>
 				</div>
@@ -468,7 +474,7 @@ export function V2ResultsPane({ results, isRunning, progress, onRunSimulation, d
 						label="Uma 1"
 						snapshot={currentSnapshot}
 						umaIndex={0}
-						staminaStats={results.staminaStats.uma1}
+						staminaStats={results.staminaStats?.uma1}
 						allruns={results.runData.allruns}
 						colorClass="uma1"
 					/>
@@ -476,7 +482,7 @@ export function V2ResultsPane({ results, isRunning, progress, onRunSimulation, d
 						label="Uma 2"
 						snapshot={currentSnapshot}
 						umaIndex={1}
-						staminaStats={results.staminaStats.uma2}
+						staminaStats={results.staminaStats?.uma2}
 						allruns={results.runData.allruns}
 						colorClass="uma2"
 					/>

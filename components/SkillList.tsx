@@ -5,7 +5,7 @@ import { IntlProvider, Text, Localizer } from 'preact-i18n';
 import { getParser } from '../uma-skill-tools/ConditionParser';
 import * as Matcher from '../uma-skill-tools/tools/ConditionMatcher';
 import { SkillRarity } from '../uma-skill-tools/RaceSolver.ts';
-import { levelScalingCoef } from '../uma-skill-tools/RaceSolverBuilder';
+import { levelScalingCoef } from './skillLevelScaling';
 
 import { useLanguage } from './Language';
 import { Tooltip } from './Tooltip';
