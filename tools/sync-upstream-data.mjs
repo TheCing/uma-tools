@@ -14,9 +14,13 @@
  *      Upstream ships the unpatched values, so syncing them would silently cut those
  *      magnitudes ~17%. They are skipped, and we verify each skipped one really is an
  *      exact 1.2 ratio so a genuine upstream change can't hide in that set.
- *   3. For NAMES, docs/master.mdb is authoritative, not upstream. Upstream has at least
- *      two wrong (202401 "Flash Forward", 910221 "Best day ever"). We take the mdb's
- *      official strings and keep our extra search aliases and "(obsolete)" markers.
+ *   3. For NAMES, UPSTREAM wins for anything Global-live, and docs/master.mdb only fills
+ *      in what upstream lacks. Our mdb is synced by hand and lags the client by weeks --
+ *      that lag is why global-live-skills.json exists at all -- so treating it as the
+ *      naming authority silently blocks genuine Cygames renames. 202401 was renamed
+ *      "Flash Forward" -> "Lightning Surge"; an earlier version of this script pinned the
+ *      stale value and kept the rename out. Our extra search aliases and "(obsolete)"
+ *      markers are still preserved.
  *
  * Usage: node tools/sync-upstream-data.mjs [--check]
  *        --check reports what would change and writes nothing (exit 1 if drift).
@@ -135,42 +139,46 @@ const upSkills = up('skill_data.json');
 	}
 }
 
-// ---- 5. names: master.mdb is authoritative, upstream only fills gaps ----------
+// ---- 5. names: upstream wins for live skills, master.mdb fills the rest ------
 {
-	if (!existsSync(MDB)) { console.log('  skillnames: master.mdb absent, skipping'); }
-	else {
-		const names = read('skillnames.json');
-		const upNames = up('skillnames.json');
-		const mdb = new Map(sh('sqlite3', ['-separator', '\t', MDB,
-			'SELECT "index", text FROM text_data WHERE category=47;']).trim().split('\n')
-			.map(l => { const i = l.indexOf('\t'); return [l.slice(0, i), l.slice(i + 1)]; }));
-		let direct = 0, derived = 0;
-		for (const id of Object.keys(names)) {
-			const cur = names[id];
-			if (!Array.isArray(cur) || !cur.length) continue;
-			if (cur[0].includes('(obsolete)')) continue;      // our own annotation; never strip
-			const off = mdb.get(id);
-			if (off != null) { if (cur[0] !== off) { cur[0] = off; ++direct; } continue; }
-			if (/^9/.test(id)) {                               // inherited variant mirrors its base
-				const base = mdb.get('1' + id.slice(1));
-				if (base != null) {
-					const want = base + ' (inherited)';
-					// only when upstream independently agrees, so we don't invent the suffix convention
-					if (cur[0] !== want && upNames[id]?.[0] === want) { cur[0] = want; ++derived; }
-				}
+	const names = read('skillnames.json');
+	const upNames = up('skillnames.json');
+	const before = Object.keys(names).length;
+	const mdb = existsSync(MDB)
+		? new Map(sh('sqlite3', ['-separator', '\t', MDB,
+				'SELECT "index", text FROM text_data WHERE category=47;']).trim().split('\n')
+				.map(l => { const i = l.indexOf('\t'); return [l.slice(0, i), l.slice(i + 1)]; }))
+		: new Map();
+	if (!mdb.size) console.log('  skillnames: master.mdb absent, upstream only');
+
+	let fromUp = 0, fromMdb = 0, derived = 0;
+	for (const id of Object.keys(names)) {
+		const cur = names[id];
+		if (!Array.isArray(cur) || !cur.length) continue;
+		if (cur[0].includes('(obsolete)')) continue;       // our own annotation; never strip
+
+		// upstream regenerates from a current client DB, so it wins wherever it has an entry
+		const u = upNames[id]?.[0];
+		if (u != null) { if (cur[0] !== u) { cur[0] = u; ++fromUp; } continue; }
+
+		const off = mdb.get(id);
+		if (off != null) { if (cur[0] !== off) { cur[0] = off; ++fromMdb; } continue; }
+
+		if (/^9/.test(id)) {                                // inherited variant mirrors its base
+			const baseUp = upNames['1' + id.slice(1)]?.[0], baseMdb = mdb.get('1' + id.slice(1));
+			const base = baseUp ?? baseMdb;
+			if (base != null) {
+				const want = base + ' (inherited)';
+				if (cur[0] !== want) { cur[0] = want; ++derived; }
 			}
 		}
-		if (direct || derived) {
-			changes.push(`skillnames: ${direct + derived} corrected`);
-			console.log(`  skillnames: ${direct} from master.mdb, ${derived} inherited variants`);
-			write('skillnames.json', names);
-		}
-		// guard: the two upstream gets wrong must still match the mdb
-		for (const id of ['202401', '910221']) {
-			const off = mdb.get(id);
-			if (off && names[id]?.[0] !== off) fail(`${id} should be "${off}" (mdb) but is "${names[id]?.[0]}"`);
-		}
 	}
+	if (fromUp || fromMdb || derived) {
+		changes.push(`skillnames: ${fromUp + fromMdb + derived} updated`);
+		console.log(`  skillnames: ${fromUp} from upstream, ${fromMdb} from master.mdb, ${derived} inherited`);
+		write('skillnames.json', names);
+	}
+	if (Object.keys(names).length !== before) fail('skillnames key count changed');
 }
 
 if (!changes.length) { console.log('\nAlready up to date.'); process.exit(0); }
