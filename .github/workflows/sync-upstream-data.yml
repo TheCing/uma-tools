@@ -1,0 +1,76 @@
+name: Sync upstream Global data
+
+# Hands-off. alpha123 pushes Global game data constantly (231 commits in six months);
+# this pulls it in and commits on its own. There is no review step: the rules that make
+# a blind merge unsafe are enforced inside tools/sync-upstream-data.mjs, which aborts
+# without writing if any guard trips. A tripped guard fails the run loudly instead of
+# committing something wrong.
+
+on:
+  schedule:
+    - cron: '17 5 * * *'      # daily, offset off the hour
+  workflow_dispatch:           # and on demand
+
+concurrency:
+  group: sync-upstream-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          # need real history so the script's git operations work
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pull upstream data
+        id: sync
+        run: |
+          node tools/sync-upstream-data.mjs
+          if [ -f .sync-summary.txt ]; then
+            echo "summary=$(cat .sync-summary.txt)" >> "$GITHUB_OUTPUT"
+            echo "changed=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify the result actually builds
+        if: steps.sync.outputs.changed == 'yes'
+        run: |
+          npm ci --no-audit --no-fund
+          cd umalator-global && node build.mjs
+          cd v2 && npx vite build
+
+      - name: Run engine tests
+        if: steps.sync.outputs.changed == 'yes'
+        run: cd uma-skill-tools && npm ci --no-audit --no-fund && npm test
+
+      - name: Commit
+        if: steps.sync.outputs.changed == 'yes'
+        run: |
+          rm -f .sync-summary.txt
+          git config user.name  'uma-tools bot'
+          git config user.email 'noreply@umalator.app'
+          # data only. bundles are rebuilt by Pages; never commit build output here.
+          git add umalator-global/skill_data.json \
+                  umalator-global/skillnames.json \
+                  umalator-global/course_data.json \
+                  umalator-global/tracknames.json \
+                  umalator-global/global-live-skills.json \
+                  umalator-global/not-in-game.json
+          if git diff --cached --quiet; then
+            echo "nothing staged after all"; exit 0
+          fi
+          git commit -m "data: sync Global data from upstream" \
+                     -m "${{ steps.sync.outputs.summary }}" \
+                     -m "Automated by .github/workflows/sync-upstream-data.yml."
+          git push origin HEAD:dev

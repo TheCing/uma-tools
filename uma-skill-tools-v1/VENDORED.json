@@ -1,0 +1,16 @@
+{
+	"engine": {
+		"repo": "https://github.com/alpha123/uma-skill-tools.git",
+		"ref": "8b3f5e27e939e77431679876403d3fb2f0709e2a",
+		"rev": "8b3f5e2 2026-03-17"
+	},
+	"glue": {
+		"repo": "https://github.com/alpha123/uma-tools.git",
+		"ref": "21a4d43",
+		"rev": "21a4d43 2026-03-16",
+		"files": {
+			"compare.ts": "compare-v1.ts",
+			"hpcalc.ts": "hpcalc-v1.ts"
+		}
+	}
+}

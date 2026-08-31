@@ -28,3 +28,5 @@ videos/
 # Drop personal samples in docs/private/ instead; it is ignored wholesale.
 /docs/private/
 /docs/Oguri Cap*.json
+.upstream-engine-cache/
+.sync-summary.txt

@@ -7,6 +7,33 @@ import { fromJS, Map as ImmMap } from 'immutable';
 import { HorseState } from '../../components/HorseDefTypes';
 import { runComparison } from '../../umalator/compare';
 import { runHpCalc } from '../../umalator/hpcalc';
+import { runComparison as runComparisonV1 } from '../../umalator/compare-v1';
+import { runHpCalc as runHpCalcV1 } from '../../umalator/hpcalc-v1';
+
+// Engine v1 is alpha123's published solver, vendored verbatim (tools/sync-upstream-engine.mjs).
+// Its glue takes a seed tuple where ours takes a pacemaker, and it emits only p/v/hp/sk/sdly/dh
+// per run -- no pacerGap, position-keep, dueling or lead-competition telemetry, and no allruns.
+// The panes that render those check `engine` and show an unavailable state rather than blanks.
+// Upstream's HorseState carries `popularity` and `samplePolicies`; ours does not (see
+// components/HorseDefTypes). Rather than patch the vendored glue, widen the horse at the
+// boundary. skills stays an Immutable Map because the v1 glue calls .keys()/.values() on it.
+function toV1Horse(uma: any) {
+	if (uma == null) return uma;
+	const base = typeof uma.toObject === 'function' ? uma.toObject() : {...uma};
+	return {...base, popularity: base.popularity ?? 1, samplePolicies: base.samplePolicies ?? ImmMap()};
+}
+
+function pickEngine(options: any) {
+	const v1 = options?.engine === 'v1';
+	return {
+		v1,
+		runComparison: v1 ? runComparisonV1 : runComparison,
+		runHpCalc: v1 ? runHpCalcV1 : runHpCalc,
+		// 6th positional arg: seed tuple for v1, pacemaker HorseState for v2
+		sixth: (pacer: any, seed: any) => v1 ? [(seed ?? 0) >>> 0, 0] as [number, number] : pacer,
+		horse: (uma: any) => v1 ? toV1Horse(uma) : uma
+	};
+}
 
 /**
  * Merge skill activation maps from two result sets
@@ -82,17 +109,19 @@ function runCompare({ nsamples, course, racedef, uma1, uma2, pacer, options }: {
 	const pacer_ = pacer ? convertToHorseState(pacer) : null;
 
 	const compareOptions = { ...options, mode: 'compare' };
+	const engine = pickEngine(options);
+	const arg6 = engine.sixth(pacer_, options?.seed);
 
 	// Progressive sampling: start small and increase
 	// This provides early feedback to the UI
 	let results: any;
 	for (let n = Math.min(20, nsamples), mul = 6; n < nsamples; n = Math.min(n * mul, nsamples), mul = Math.max(mul - 1, 2)) {
-		results = runComparison(n, course, racedef, uma1_, uma2_, pacer_, compareOptions);
+		results = engine.runComparison(n, course, racedef, engine.horse(uma1_), engine.horse(uma2_), arg6, compareOptions);
 		self.postMessage({ type: 'compare', results });
 	}
 
 	// Final run with full sample count
-	results = runComparison(nsamples, course, racedef, uma1_, uma2_, pacer_, compareOptions);
+	results = engine.runComparison(nsamples, course, racedef, engine.horse(uma1_), engine.horse(uma2_), arg6, compareOptions);
 	self.postMessage({ type: 'compare', results });
 	self.postMessage({ type: 'compare-complete' });
 
@@ -145,7 +174,9 @@ function runChartRound(
 		const withSkill = uma.set('skills', skillsToUse.set(skillmeta[id].groupId, id));
 
 		// Run comparison
-		const { results, runData } = runComparison(nsamples, course, racedef, uma, withSkill, pacer, options);
+		const chartEngine = pickEngine(options);
+		const { results, runData } = chartEngine.runComparison(nsamples, course, racedef, chartEngine.horse(uma), chartEngine.horse(withSkill),
+			chartEngine.sixth(pacer, options?.seed), options);
 
 		// Calculate statistics
 		const mid = Math.floor(results.length / 2);
@@ -252,7 +283,9 @@ function runHpCalcWorker({ nsamples, course, racedef, uma, pacer, options }: {
 }) {
 	const uma_ = convertToHorseState(uma);
 	const pacer_ = pacer ? convertToHorseState(pacer) : null;
-	const results = runHpCalc(nsamples, course, racedef, uma_, pacer_, options);
+	const hpEngine = pickEngine(options);
+	const results = hpEngine.runHpCalc(nsamples, course, racedef, hpEngine.horse(uma_),
+		hpEngine.sixth(pacer_, options?.seed), options);
 	self.postMessage({ type: 'hpcalc', results });
 	self.postMessage({ type: 'hpcalc-complete' });
 }

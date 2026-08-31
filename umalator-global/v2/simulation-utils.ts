@@ -136,6 +136,7 @@ export interface DuelingRates {
 }
 
 export interface SimulationOptions {
+	engine?: 'v1' | 'v2';
 	seed: number;
 	syncRng: boolean;
 	skillWisdomCheck: boolean;
@@ -161,6 +162,8 @@ export function buildSimulationOptions(options: Partial<SimulationOptions> = {})
 		competeFight: options.competeFight ?? false,
 		duelingRates: options.duelingRates,
 		laneMovement: options.laneMovement ?? true,
+		// which solver the worker dispatches to: 'v2' = ours, 'v1' = vendored upstream
+		engine: (options as any).engine ?? 'v2',
 	};
 }
 
