@@ -1,6 +1,6 @@
 {
 	"_comment": "Skill IDs live on Global per upstream, used to supplement docs/master.mdb when it lags the client. Regenerate with tools/sync-global-live-skills.mjs.",
-	"source": "alpha123/uma-tools@d1ad6e5 2026-08-26",
+	"source": "alpha123/uma-tools@b19c28c 2026-09-01",
 	"skills": [
 		"100011",
 		"100021",
@@ -66,6 +66,7 @@
 		"100711",
 		"100721",
 		"100741",
+		"100781",
 		"10081",
 		"100871",
 		"10091",
@@ -659,6 +660,7 @@
 		"900711",
 		"900721",
 		"900741",
+		"900781",
 		"900871",
 		"900981",
 		"910011",
