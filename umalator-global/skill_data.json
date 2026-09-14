@@ -3595,14 +3595,17 @@
 			{
 				"baseDuration": 60000,
 				"condition": "activate_count_middle>=2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 250,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -3610,7 +3613,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"110221": {
 		"alternatives": [
@@ -3995,9 +4002,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "is_last_straight_onetime==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 11,
 						"target": 1,
 						"type": 27
 					}
@@ -4005,7 +4014,11 @@
 				"precondition": "phase>=2&corner!=0&order_rate>=60&is_overtake==1"
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"110351": {
 		"alternatives": [
@@ -23146,14 +23159,17 @@
 			{
 				"baseDuration": 36000,
 				"condition": "activate_count_middle>=2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 250,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -23161,7 +23177,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"910221": {
 		"alternatives": [
@@ -23522,9 +23542,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "is_last_straight_onetime==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 11,
 						"target": 1,
 						"type": 27
 					}
@@ -23532,7 +23554,11 @@
 				"precondition": "phase>=2&corner!=0&order_rate>=60&is_overtake==1"
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"910351": {
 		"alternatives": [
