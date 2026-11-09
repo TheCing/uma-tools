@@ -2206,9 +2206,11 @@
 			{
 				"baseDuration": 60000,
 				"condition": "distance_type==1&phase_laterhalf_random==1&order_rate<=50@distance_type==2&phase_laterhalf_random==1&order_rate<=50",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -2218,9 +2220,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "distance_type==3&phase_laterhalf_random==1&order_rate<=50@distance_type==4&phase_laterhalf_random==1&order_rate<=50",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -2228,7 +2232,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 0
 	},
 	"100661": {
 		"alternatives": [
@@ -3840,14 +3848,17 @@
 			{
 				"baseDuration": 40000,
 				"condition": "distance_rate>=60&slope==2&phase==1&order>=2&distance_diff_top<=10&distance_type==3",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 1000,
+						"scaling": 1,
 						"target": 1,
 						"type": 31
 					}
@@ -3857,9 +3868,11 @@
 			{
 				"baseDuration": 40000,
 				"condition": "distance_rate>=60&slope==2&phase==1&order>=2&distance_diff_top<=10&distance_type!=3",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -3867,7 +3880,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401,
+			403
+		],
+		"wisdomCheck": 0
 	},
 	"110281": {
 		"alternatives": [
@@ -3969,14 +3987,17 @@
 			{
 				"baseDuration": 60000,
 				"condition": "phase_firsthalf_random==1&order_rate<=30",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 350,
+						"scaling": 1,
 						"target": 1,
 						"type": 9
 					}
@@ -3984,7 +4005,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401,
+			402
+		],
+		"wisdomCheck": 0
 	},
 	"110321": {
 		"alternatives": [
@@ -13038,9 +13064,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "running_style==1&all_corner_random==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -13048,7 +13076,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 2
+		"rarity": 2,
+		"tags": [
+			101,
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"201261": {
 		"alternatives": [
@@ -13766,9 +13799,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "running_style==3&all_corner_random==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -13776,7 +13811,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 2
+		"rarity": 2,
+		"tags": [
+			103,
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"201401": {
 		"alternatives": [
@@ -16186,9 +16226,11 @@
 			{
 				"baseDuration": 24000,
 				"condition": "down_slope_random==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 3500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -16196,7 +16238,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 2
+		"rarity": 2,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"202172": {
 		"alternatives": [
@@ -18231,9 +18277,11 @@
 			{
 				"baseDuration": -1,
 				"condition": "always==1",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 100000,
+						"scaling": 1,
 						"target": 1,
 						"type": 29
 					}
@@ -18241,7 +18289,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			405
+		],
+		"wisdomCheck": 0
 	},
 	"202521": {
 		"alternatives": [
@@ -22350,9 +22402,11 @@
 			{
 				"baseDuration": 36000,
 				"condition": "distance_type==1&phase_laterhalf_random==1&order_rate<=50@distance_type==2&phase_laterhalf_random==1&order_rate<=50",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -22362,9 +22416,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "distance_type==3&phase_laterhalf_random==1&order_rate<=50@distance_type==4&phase_laterhalf_random==1&order_rate<=50",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -22372,7 +22428,11 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401
+		],
+		"wisdomCheck": 1
 	},
 	"900661": {
 		"alternatives": [
@@ -23514,14 +23574,17 @@
 			{
 				"baseDuration": 24000,
 				"condition": "distance_rate>=60&slope==2&phase==1&order>=2&distance_diff_top<=10&distance_type==3",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 31
 					}
@@ -23531,9 +23594,11 @@
 			{
 				"baseDuration": 24000,
 				"condition": "distance_rate>=60&slope==2&phase==1&order>=2&distance_diff_top<=10&distance_type!=3",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 1500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -23541,7 +23606,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401,
+			403
+		],
+		"wisdomCheck": 1
 	},
 	"910281": {
 		"alternatives": [
@@ -23631,14 +23701,17 @@
 			{
 				"baseDuration": 36000,
 				"condition": "phase_firsthalf_random==1&order_rate<=30",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 50,
+						"scaling": 1,
 						"target": 1,
 						"type": 9
 					}
@@ -23646,7 +23719,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401,
+			402
+		],
+		"wisdomCheck": 1
 	},
 	"910321": {
 		"alternatives": [
