@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Umalator has been retired</title>
-<meta name="description" content="Umalator, the Uma Musume race simulator, has been retired. Thank you for racing with us.">
+<title>Moomoolator has been retired</title>
+<meta name="description" content="Moomoolator, the Uma Musume race simulator, has been retired. Thank you for racing with us.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%84%3C/text%3E%3C/svg%3E">
 <style>
@@ -16,25 +16,14 @@
 }
 
 :root {
-  --bg: #f6f7fa;
-  --surface: #ffffff;
-  --text: #111827;
-  --text-muted: #4b5563;
-  --border: rgba(0, 0, 0, 0.08);
-  /* #4a8a3c read better but failed AA as link text (3.93:1 on the page background). */
-  --accent: #40793a;
-  --accent-soft: rgba(64, 121, 58, 0.10);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #08090c;
-    --surface: #12151c;
-    --text: #f0f2f5;
-    --text-muted: #a8aebb;
-    --border: rgba(255, 255, 255, 0.08);
-    --accent: #7dbb63;
-    --accent-soft: rgba(125, 187, 99, 0.10);
-  }
+  color-scheme: dark;
+  --bg: #08090c;
+  --surface: #12151c;
+  --text: #f0f2f5;
+  --text-muted: #a8aebb;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #7dbb63;
+  --accent-soft: rgba(125, 187, 99, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -55,14 +44,14 @@ main { width: 100%; max-width: 620px; }
 
 /* The track cow, asleep. Row 3 of the sleep sheet (64px frames, 4 frames). */
 .cow {
-  width: 128px;
-  height: 128px;
-  margin: 0 auto 8px;
-  background: url("/uma-tools/icons/cow/White_Cow_Sleeping.png") 0 -384px / 512px 512px no-repeat;
+  width: 192px;
+  height: 192px;
+  margin: 0 auto;
+  background: url("/icons/cow/White_Cow_Sleeping.png") 0 -576px / 768px 768px no-repeat;
   image-rendering: pixelated;
   animation: snooze 2.4s steps(4) infinite;
 }
-@keyframes snooze { to { background-position-x: -512px; } }
+@keyframes snooze { to { background-position-x: -768px; } }
 @media (prefers-reduced-motion: reduce) { .cow { animation: none; } }
 
 h1 {
@@ -117,26 +106,28 @@ footer {
 <body>
 <main>
   <div class="cow" role="img" aria-label="A small pixel cow, asleep"></div>
-  <h1>Umalator has been retired</h1>
+  <h1>Moomoolator has been retired</h1>
   <p class="date">November 2026</p>
 
   <!-- Only shown when someone arrives through an old shared simulation link
        (umalator.app/#H4sI...) or a preset link (?preset=N). -->
   <section class="card shared" id="shared-note" hidden>
-    <p>You followed a shared simulation link. Umalator no longer runs simulations, so it can't be opened here &mdash; but one of the simulators below can model the same race.</p>
+    <p>You followed a shared simulation link. Moomoolator no longer runs simulations, so it can't be opened here &mdash; but one of the simulators below can model the same race.</p>
   </section>
 
   <section class="card">
     <h2>Thank you for racing with us</h2>
-    <p>Umalator estimated skill and build value by running thousands of Monte Carlo approximations of a single uma on a course. It was always a model of the race rather than the race itself.</p>
-    <p>There are now race simulators that model the real thing, the full field included, and they answer these questions better than this site ever could. So it's time for Umalator to step off the track.</p>
+    <p>Moomoolator estimated skill and build value by running thousands of Monte Carlo approximations of a single uma on a course. It was always a model of the race rather than the race itself.</p>
+    <p>There are now race simulators that model the real thing, the full field included, and they answer these questions better than this site ever could. So it's time for Moomoolator to step off the track.</p>
   </section>
 
   <section class="card">
     <h2>Where to go instead</h2>
-    <!-- SUNSET-TODO: replacement simulators. Fill these in before this ships to production. -->
     <ul class="links">
-      <li><a href="#">Replacement simulator</a></li>
+      <li><a href="https://alpha123.github.io/uma-tools/umalator-global/">Umalator (alpha123)</a></li>
+      <li><a href="https://torena-sim.pages.dev">Torena Sim</a></li>
+      <li><a href="https://hakuraku.moe">Hakuraku</a></li>
+      <li><a href="https://uma.moe/simulator/race">uma.moe race simulator</a></li>
     </ul>
   </section>
 
@@ -147,7 +138,7 @@ footer {
   </section>
 
   <footer>
-    The source code stays available under GPL-3.0 at
+    Source available in archive under GPL-3.0 at
     <a href="https://github.com/TheCing/uma-tools">github.com/TheCing/uma-tools</a>.
   </footer>
 </main>
