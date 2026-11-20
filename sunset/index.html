@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moomoolator has been retired</title>
+<meta name="description" content="Moomoolator, the Uma Musume race simulator, has been retired. Thank you for racing with us.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%84%3C/text%3E%3C/svg%3E">
+<style>
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter-VariableFont_opsz,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #08090c;
+  --surface: #12151c;
+  --text: #f0f2f5;
+  --text-muted: #a8aebb;
+  --border: rgba(255, 255, 255, 0.08);
+  --accent: #7dbb63;
+  --accent-soft: rgba(125, 187, 99, 0.10);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px 20px;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-soft) 0%, transparent 60%),
+    var(--bg);
+  color: var(--text);
+  font: 16px/1.6 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+main { width: 100%; max-width: 620px; }
+
+/* The track cow, asleep. Row 3 of the sleep sheet (64px frames, 4 frames). */
+.cow {
+  width: 192px;
+  height: 192px;
+  margin: 0 auto;
+  background: url("/icons/cow/White_Cow_Sleeping.png") 0 -576px / 768px 768px no-repeat;
+  image-rendering: pixelated;
+  animation: snooze 2.4s steps(4) infinite;
+}
+@keyframes snooze { to { background-position-x: -768px; } }
+@media (prefers-reduced-motion: reduce) { .cow { animation: none; } }
+
+h1 {
+  margin: 0 0 4px;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.date {
+  margin: 0 0 32px;
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+}
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.card p { margin: 0 0 12px; color: var(--text-muted); }
+.card p:last-child { margin-bottom: 0; }
+
+.shared {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.shared p { color: var(--text); }
+
+ul.links { list-style: none; margin: 0; padding: 0; }
+ul.links li + li { margin-top: 8px; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+
+.credits { font-size: 0.92rem; }
+footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="cow" role="img" aria-label="A small pixel cow, asleep"></div>
+  <h1>Moomoolator has been retired</h1>
+  <p class="date">November 2026</p>
+
+  <!-- Only shown when someone arrives through an old shared simulation link
+       (umalator.app/#H4sI...) or a preset link (?preset=N). -->
+  <section class="card shared" id="shared-note" hidden>
+    <p>You followed a shared simulation link. Moomoolator no longer runs simulations, so it can't be opened here &mdash; but one of the simulators below can model the same race.</p>
+  </section>
+
+  <section class="card">
+    <h2>Thank you for racing with us</h2>
+    <p>Moomoolator estimated skill and build value by running thousands of Monte Carlo approximations of a single uma on a course. It was always a model of the race rather than the race itself.</p>
+    <p>There are now race simulators that model the real thing, and they answer these questions better than this site ever could. So it's time for Moomoolator to step off the track.</p>
+  </section>
+
+  <section class="card">
+    <h2>Where to go instead</h2>
+    <ul class="links">
+      <li><a href="https://alpha123.github.io/uma-tools/umalator-global/">Umalator (alpha123)</a></li>
+      <li><a href="https://torena-sim.pages.dev">Torena Sim</a></li>
+      <li><a href="https://hakuraku.moe">Hakuraku</a></li>
+      <li><a href="https://uma.moe/simulator/race">uma.moe race simulator</a></li>
+    </ul>
+  </section>
+
+  <section class="card credits">
+    <h2>Credits</h2>
+    <p>Built on the original Umalator by <strong>pecan</strong> (<a href="https://github.com/alpha123/uma-tools">alpha123</a>) and the VFalator work of <strong>kachi</strong> and <strong>Jecht</strong>. Skill data courtesy of <a href="https://gametora.com/umamusume">GameTora</a>. Thanks to everyone at MooMooCord who tested, reported, and argued about bashin.</p>
+    <p>Uma Musume: Pretty Derby &copy; Cygames, Inc.</p>
+  </section>
+
+  <footer>
+    Source available in archive under GPL-3.0 at
+    <a href="https://github.com/TheCing/uma-tools">github.com/TheCing/uma-tools</a>.
+  </footer>
+</main>
+
+<script>
+  // Old share links carry their state in the hash (#H4sI...) and presets in ?preset=N.
+  // Neither can be honoured any more, but they deserve an explanation rather than silence.
+  (function () {
+    var shared = /^#H4sI/.test(location.hash) || /[?&]preset=/.test(location.search);
+    if (shared) document.getElementById('shared-note').hidden = false;
+  })();
+</script>
+</body>
+</html>
