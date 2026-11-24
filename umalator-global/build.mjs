@@ -3,9 +3,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as http from 'node:http';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 
 import { program, Option } from 'commander';
+
+import { runNotInGame, runUmaNames, runSkillNames, runCMPresets, fmtSource } from '../tools/lib/global-data-sync.mjs';
+const { resolveMasterDb } = createRequire(import.meta.url)('../tools/lib/master-db-path.cjs');
 
 program
 	.option('--debug')
@@ -100,319 +103,21 @@ export default function seedrandom(seed) {
 	}
 };
 
-// Regenerate not-in-game.json by diffing local data against Global master.mdb.
-// When master.mdb is absent (e.g. on Cloudflare Pages CI), we leave the
-// committed not-in-game.json alone — it's the source of truth at deploy time.
-// (Previous behavior: fall back to diffing against `kachi-dev/master`, which
-// is a different community fork and not authoritative for Global. That
-// fallback could produce a wrong filter; it has been removed.)
-function generateNotInGame() {
-	const outPath = path.join(dirname, 'not-in-game.json');
-	const masterDb = path.join(root, 'docs', 'master.mdb');
+// Data steps derived from the Global master.mdb (not-in-game.json, umas.json names,
+// skillnames.json names, v2/cm-presets.generated.json). The logic lives in
+// tools/lib/global-data-sync.mjs, shared with tools/ingest-master-mdb.mjs. The DB comes
+// from tools/lib/master-db-path.cjs: $UMA_MASTER_MDB, ~/.local/share/uma-tools/master.mdb,
+// then the legacy docs/master.mdb. When none exists (e.g. Cloudflare Pages CI) every step
+// leaves its committed file alone -- those files are the source of truth at deploy time.
+const masterDb = resolveMasterDb();
+console.log(masterDb
+	? `Global master.mdb: ${fmtSource(masterDb)}`
+	: 'Global master.mdb: not found ($UMA_MASTER_MDB, ~/.local/share/uma-tools/master.mdb, docs/master.mdb); using committed data files');
 
-	if (!fs.existsSync(masterDb)) {
-		const exists = fs.existsSync(outPath);
-		console.log(
-			`not-in-game.json: master.mdb not present — ${exists
-				? 'leaving committed file alone'
-				: 'no committed file either, writing empty list'}`
-		);
-		if (!exists) {
-			fs.writeFileSync(outPath, JSON.stringify({ skills: [], outfits: [] }));
-		}
-		return;
-	}
-
-	try {
-		const dbSkillsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
-		const dbSkills = new Set(dbSkillsRaw.trim().split('\n'));
-
-		// docs/master.mdb is synced by hand and routinely lags the live client, which makes
-		// already-released skills show a "Not in game" badge. Upstream regenerates their Global
-		// skill_data.json from a current DB, so union their key set in.
-		// UNION, not replace: upstream's generator drops scenario/bonus skills (its filter is
-		// is_general_skill=1 OR rarity>=3), so swapping outright would wrongly flag skills the
-		// mdb correctly reports as live. Refresh with tools/sync-global-live-skills.mjs.
-		const livePath = path.join(dirname, 'global-live-skills.json');
-		let upstreamLive = 0;
-		if (fs.existsSync(livePath)) {
-			const before = dbSkills.size;
-			for (const id of JSON.parse(fs.readFileSync(livePath, 'utf-8')).skills || []) dbSkills.add(id);
-			upstreamLive = dbSkills.size - before;
-		}
-		const dbOutfitsRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM card_data"`, { encoding: 'utf-8' });
-		const dbOutfits = new Set(dbOutfitsRaw.trim().split('\n'));
-
-		const localSkills = JSON.parse(fs.readFileSync(path.join(dirname, 'skill_data.json'), 'utf-8'));
-		const localUmas = JSON.parse(fs.readFileSync(path.join(dirname, 'umas.json'), 'utf-8'));
-		const localOutfits = Object.keys(localUmas).flatMap(id => Object.keys(localUmas[id].outfits || {}));
-
-		const result = {
-			skills: Object.keys(localSkills).filter(id => !dbSkills.has(id)),
-			outfits: localOutfits.filter(id => !dbOutfits.has(id))
-		};
-
-		fs.writeFileSync(outPath, JSON.stringify(result));
-		console.log(`not-in-game.json (master.mdb): ${result.skills.length} skills, ${result.outfits.length} outfits`
-			+ (upstreamLive ? ` (${upstreamLive} more counted live via global-live-skills.json)` : ''));
-	} catch (e) {
-		console.warn(`Failed to regenerate not-in-game.json: ${e.message}. Leaving existing file in place.`);
-	}
-}
-
-generateNotInGame();
-
-// Sync character/outfit names in umas.json from Global master.mdb.
-// Outfits/charas not yet in the Global DB keep their existing (JP) strings;
-// once they release on Global, the localized epithet replaces the JP one on
-// the next build. Pass --dry-run-umas to preview without writing.
-function syncUmaLocalizations() {
-	const masterDb = path.join(root, 'docs', 'master.mdb');
-	if (!fs.existsSync(masterDb)) {
-		console.log('umas.json sync: master.mdb not present, skipping');
-		return;
-	}
-
-	const dryRun = process.argv.includes('--dry-run-umas');
-	const umasPath = path.join(dirname, 'umas.json');
-
-	try {
-	const umas = JSON.parse(fs.readFileSync(umasPath, 'utf-8'));
-
-	// text_data category 5 = outfit epithet (e.g. "[Edomurasaki]")
-	// text_data category 170 = character name (e.g. "Inari One")
-	const epithetsRaw = execSync(
-		`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 5"`,
-		{ encoding: 'utf-8' }
-	);
-	const epithets = new Map(
-		epithetsRaw.trim().split('\n').filter(Boolean).map(line => {
-			const tab = line.indexOf('\t');
-			return [line.slice(0, tab), line.slice(tab + 1)];
-		})
-	);
-
-	const namesRaw = execSync(
-		`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 170"`,
-		{ encoding: 'utf-8' }
-	);
-	const names = new Map(
-		namesRaw.trim().split('\n').filter(Boolean).map(line => {
-			const tab = line.indexOf('\t');
-			return [line.slice(0, tab), line.slice(tab + 1)];
-		})
-	);
-
-	const changes = [];
-	for (const [charaId, chara] of Object.entries(umas)) {
-		const globalName = names.get(charaId);
-		if (globalName && Array.isArray(chara.name) && chara.name[1] !== globalName) {
-			changes.push(`${charaId} name: "${chara.name[1]}" → "${globalName}"`);
-			chara.name[1] = globalName;
-		}
-		for (const [outfitId, current] of Object.entries(chara.outfits || {})) {
-			const globalEpithet = epithets.get(outfitId);
-			if (!globalEpithet) continue;
-			// Outfits are stored either as the bare epithet string (fast-forwarded
-			// chars) or as a full object with an `epithet` field (proper entries).
-			if (typeof current === 'string') {
-				if (current !== globalEpithet) {
-					changes.push(`${outfitId}: "${current}" → "${globalEpithet}"`);
-					chara.outfits[outfitId] = globalEpithet;
-				}
-			} else if (current && typeof current === 'object') {
-				if (current.epithet !== globalEpithet) {
-					changes.push(`${outfitId}: "${current.epithet}" → "${globalEpithet}"`);
-					current.epithet = globalEpithet;
-				}
-			}
-		}
-	}
-
-	if (changes.length === 0) {
-		console.log('umas.json sync: no changes');
-		return;
-	}
-
-	console.log(`umas.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
-	for (const c of changes) console.log(`  ${c}`);
-	if (!dryRun) fs.writeFileSync(umasPath, JSON.stringify(umas, null, 2) + '\n');
-	} catch (e) {
-		// e.g. sqlite3 CLI not installed (Cloudflare build image) or a DB read
-		// error. Non-fatal: keep the committed umas.json strings as-is, like
-		// generateNotInGame() does for not-in-game.json.
-		console.warn(`umas.json sync skipped: ${e.message}. Leaving existing file in place.`);
-	}
-}
-
-syncUmaLocalizations();
-
-// Sync skill names in skillnames.json from Global master.mdb.
-// Fast-forwarded (not-yet-Global) skills keep their community names; once a skill
-// releases on Global, its official localized name (text_data category 47) replaces
-// the community one on the next build. Only skills present in the Global DB's
-// skill_data (i.e. in-game) are touched. Pass --dry-run-skillnames to preview.
-function syncSkillNames() {
-	const masterDb = path.join(root, 'docs', 'master.mdb');
-	if (!fs.existsSync(masterDb)) {
-		console.log('skillnames.json sync: master.mdb not present, skipping');
-		return;
-	}
-
-	const dryRun = process.argv.includes('--dry-run-skillnames');
-	const namesPath = path.join(dirname, 'skillnames.json');
-
-	try {
-		const skillnames = JSON.parse(fs.readFileSync(namesPath, 'utf-8'));
-
-		// In-game skill IDs (present in the Global DB).
-		const inGameRaw = execSync(`sqlite3 "${masterDb}" "SELECT id FROM skill_data"`, { encoding: 'utf-8' });
-		const inGame = new Set(inGameRaw.trim().split('\n').filter(Boolean));
-
-		// Official English skill names (text_data category 47), keyed by skill id.
-		const officialRaw = execSync(
-			`sqlite3 -separator $'\\t' "${masterDb}" "SELECT \\"index\\", text FROM text_data WHERE category = 47"`,
-			{ encoding: 'utf-8' }
-		);
-		const official = new Map(
-			officialRaw.trim().split('\n').filter(Boolean).map(line => {
-				const tab = line.indexOf('\t');
-				return [line.slice(0, tab), line.slice(tab + 1)];
-			})
-		);
-
-		// Skills upstream also ships are named by tools/sync-upstream-data.mjs, which takes
-		// upstream's strings: it regenerates from a current client DB while docs/master.mdb
-		// is synced by hand and lags it by weeks. Overriding those here would undo genuine
-		// Cygames renames -- this is exactly how 202401 "Lightning Surge" kept reverting to
-		// the stale "Flash Forward". So only name skills upstream has no opinion on.
-		let upstreamNamed = new Set();
-		try {
-			const livePath = path.join(dirname, 'global-live-skills.json');
-			if (fs.existsSync(livePath)) upstreamNamed = new Set(JSON.parse(fs.readFileSync(livePath, 'utf-8')).skills || []);
-		} catch { /* fall through: without the list, behave as before */ }
-
-		const changes = [];
-		for (const id of inGame) {
-			if (upstreamNamed.has(id)) continue;
-			const off = official.get(id);
-			if (!off) continue;
-			const cur = skillnames[id];
-			if (Array.isArray(cur) && cur[0] !== off) {
-				changes.push(`${id}: "${cur[0]}" → "${off}"`);
-				cur[0] = off;
-			}
-		}
-
-		if (changes.length === 0) {
-			console.log('skillnames.json sync: no changes');
-			return;
-		}
-
-		console.log(`skillnames.json sync: ${changes.length} change(s)${dryRun ? ' (dry run)' : ''}`);
-		for (const c of changes) console.log(`  ${c}`);
-		if (!dryRun) fs.writeFileSync(namesPath, JSON.stringify(skillnames, null, '\t') + '\n');
-	} catch (e) {
-		// e.g. sqlite3 CLI absent on the Cloudflare build image, or a DB read error.
-		// Non-fatal: keep the committed skillnames.json as-is, like the other syncs.
-		console.warn(`skillnames.json sync skipped: ${e.message}. Leaving existing file in place.`);
-	}
-}
-
-syncSkillNames();
-
-// Generate v2/cm-presets.generated.json — Champions Meeting presets for Global.
-// Global CM N replays JP CM N exactly (course + season/weather/ground/time),
-// verified 1:1 against the shipped Global schedule. So:
-//   - race conditions come from the JP DB (docs/master(1).mdb), available far ahead
-//   - run dates come from the Global DB (authoritative) for CMs the client knows,
-//     falling back to the hand/MANT-maintained v2/cm-dates.json for future CMs
-//   - CM names are derived from the zodiac cycle (CM 1 = Taurus)
-// A CM is only emitted once a Global date is resolvable; undated future CMs are
-// skipped until their date is known.
-function generateCMPresets() {
-	const outPath = path.join(dirname, 'v2', 'cm-presets.generated.json');
-	const jpDb = path.join(root, 'docs', 'master(1).mdb');
-	const globalDb = path.join(root, 'docs', 'master.mdb');
-	const datesPath = path.join(dirname, 'v2', 'cm-dates.json');
-
-	if (!fs.existsSync(jpDb)) {
-		const exists = fs.existsSync(outPath);
-		console.log(
-			`cm-presets: JP master.mdb (docs/master(1).mdb) not present — ${exists
-				? 'leaving committed file alone'
-				: 'no committed file either, skipping'}`
-		);
-		return;
-	}
-
-	try {
-		// JP conditions per CM number (round 0 is representative; all rounds share conditions)
-		const jpRaw = execSync(
-			`sqlite3 -separator '|' "${jpDb}" "` +
-			`SELECT cs.id, r.course_set, rc.season, rc.weather, rc.ground, ri.time ` +
-			`FROM champions_schedule cs ` +
-			`JOIN champions_race_condition crc ON crc.champions_id = cs.id AND crc.round_id = 0 ` +
-			`JOIN race_instance ri ON ri.id = crc.race_instance_id ` +
-			`JOIN race r ON r.id = ri.race_id ` +
-			`JOIN race_condition rc ON rc.id = crc.race_condition_id ` +
-			`ORDER BY cs.id"`,
-			{ encoding: 'utf-8' }
-		);
-		const jp = new Map();
-		for (const line of jpRaw.trim().split('\n').filter(Boolean)) {
-			const [id, course, season, weather, ground, time] = line.split('|').map(Number);
-			jp.set(id, { courseId: course, season, weather, ground, time });
-		}
-
-		// Authoritative Global run dates per CM number (when the client knows them)
-		const globalDates = new Map();
-		if (fs.existsSync(globalDb)) {
-			const gRaw = execSync(
-				`sqlite3 -separator '|' "${globalDb}" "SELECT id, strftime('%Y-%m-%d', start_date, 'unixepoch') FROM champions_schedule"`,
-				{ encoding: 'utf-8' }
-			);
-			for (const line of gRaw.trim().split('\n').filter(Boolean)) {
-				const [id, date] = line.split('|');
-				globalDates.set(Number(id), date);
-			}
-		}
-
-		// Hand/MANT date map for CMs beyond the Global client horizon
-		let handDates = {};
-		if (fs.existsSync(datesPath)) handDates = JSON.parse(fs.readFileSync(datesPath, 'utf-8'));
-
-		const ZODIAC = ['Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra',
-			'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces', 'Aries'];
-
-		const out = [];
-		for (const [id, cond] of jp) {
-			const confirmed = globalDates.has(id);
-			const date = globalDates.get(id) ?? handDates[id];
-			if (!date) continue;  // no Global date known yet — can't place this event
-			out.push({
-				id,
-				type: 0,  // EventType.CM
-				name: `${ZODIAC[(id - 1) % 12]} Cup`,
-				date,
-				courseId: cond.courseId,
-				season: cond.season,
-				ground: cond.ground,
-				weather: cond.weather,
-				time: cond.time,
-				confirmed,
-			});
-		}
-		out.sort((a, b) => a.id - b.id);
-		fs.writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
-		const nConfirmed = out.filter(p => p.confirmed).length;
-		console.log(`cm-presets.generated.json: ${out.length} presets (${nConfirmed} confirmed, ${out.length - nConfirmed} from hand map)`);
-	} catch (e) {
-		console.warn(`Failed to regenerate cm-presets.generated.json: ${e.message}. Leaving existing file in place.`);
-	}
-}
-
-generateCMPresets();
+runNotInGame({dir: dirname, db: masterDb});
+runUmaNames({dir: dirname, db: masterDb, dryRun: !!options.dryRunUmas});
+runSkillNames({dir: dirname, db: masterDb, dryRun: !!options.dryRunSkillnames});
+runCMPresets({dir: dirname, root, db: masterDb});
 
 // v1 was retired 2026-08-27; its routes now serve v2 at the root (see _redirects).
 // Only the v2 bundle is built here.

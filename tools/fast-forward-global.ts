@@ -72,7 +72,11 @@ const REF_FILES = {
 	championsMeetings: path.join(DOCS_DIR, 'jp-champions-meetings.json'),
 };
 
-const GLOBAL_MASTER_MDB = path.join(DOCS_DIR, 'master.mdb');
+// Global DB location is shared with every other tool: $UMA_MASTER_MDB, then
+// ~/.local/share/uma-tools/master.mdb, then the legacy docs/master.mdb.
+const { resolveMasterDb } = require('./lib/master-db-path.cjs');
+const GLOBAL_MASTER: { path: string; source: string } | null = resolveMasterDb();
+const GLOBAL_MASTER_MDB: string = GLOBAL_MASTER ? GLOBAL_MASTER.path : path.join(DOCS_DIR, 'master.mdb');
 const MANIFEST_FILE_NAME = 'fast-forward-log.json';
 
 // ============================================================================
@@ -929,7 +933,7 @@ async function main() {
 	if (mdbDelta) {
 		const { umasNotOnGlobal, skillsNotOnGlobal } = mdbDelta;
 		if (umasNotOnGlobal.length > 0 || skillsNotOnGlobal.length > 0) {
-			console.log(`\n[master.mdb cross-check]`);
+			console.log(`\n[master.mdb cross-check] (${GLOBAL_MASTER ? GLOBAL_MASTER.source + ": " + GLOBAL_MASTER.path : "not found"})`);
 			console.log(`  ${umasNotOnGlobal.length} uma(s) in JSON but not yet on Global game (previously fast-forwarded)`);
 			console.log(`  ${skillsNotOnGlobal.length} skill(s) in JSON but not yet on Global game (previously fast-forwarded)`);
 		}
