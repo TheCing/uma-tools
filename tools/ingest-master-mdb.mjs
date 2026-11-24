@@ -36,12 +36,17 @@ import { createRequire } from 'node:module';
 import { existsSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { homedir } from 'node:os';
 
 import { MasterDb } from './lib/master-db.mjs';
 import { readJsonFile, writeJsonFile } from './lib/json-file.mjs';
 import { GuardError, mergeSkillData, applyOfficialName, assertNamesKept } from './lib/skill-data-rules.mjs';
 import { checkSchema, readGlobalMaster, readCmDates } from './lib/global-master.mjs';
 import { computeNotInGame, syncUmaNames, readJpCmConditions, computeCMPresets, resolveJpDb } from './lib/global-data-sync.mjs';
+
+// Paths that end up in the PR body: show the home directory as ~ so the account name never leaks.
+const HOME = homedir();
+const tilde = p => (HOME && (p === HOME || p.startsWith(HOME + '/') || p.startsWith(HOME + '\\')) ? '~' + p.slice(HOME.length) : p);
 
 const { resolveMasterDb, masterDbMissingMessage } = createRequire(import.meta.url)('./lib/master-db-path.cjs');
 
@@ -196,7 +201,7 @@ function main() {
 	if (jpPath) {
 		const handDates = load('v2/cm-dates.json', {optional: true}).data ?? {};
 		cmPresets = computeCMPresets({jp: readJpCmConditions(new MasterDb(jpPath)), globalDates: g.cmDates, handDates});
-		cmNote = `regenerated with JP DB ${jpPath}`;
+		cmNote = `regenerated with JP DB ${tilde(jpPath)}`;
 	} else {
 		cmNote = 'JP DB not present ($UMA_JP_MASTER_MDB or docs/master(1).mdb): v2/cm-presets.generated.json left as committed';
 	}
@@ -243,7 +248,7 @@ function main() {
 	const md = [
 		`# Global master.mdb ingest${opts.dryRun ? ' (dry run)' : ''}`,
 		'',
-		`- DB: \`${mdbPath}\` (${mdbSource}), sha256 \`${sha256}\`, ${db.size()} bytes, ${g.tableCount} tables, integrity ok`,
+		`- DB: \`${tilde(mdbPath)}\` (${mdbSource}), sha256 \`${sha256}\`, ${db.size()} bytes, ${g.tableCount} tables, integrity ok`,
 		`- Staged metadata: ${staged.note}`,
 		`- Baseline: ${baseline.source}`,
 		`- Skills: ${baseline.skillCount} -> ${g.skillIds.length}${baseline.derived ? ' (old count derived from committed data)' : ''}`,
@@ -317,7 +322,7 @@ function loadBaseline(opts, files) {
 		if (!existsSync(p)) throw new Error(`--baseline-mdb not found: ${p}`);
 		const b = new MasterDb(p);
 		const skills = new Set(b.ids('skill_data')), outfits = new Set(b.ids('card_data'));
-		return {source: `--baseline-mdb ${p}`, skills, outfits, cmDates: readCmDates(b),
+		return {source: `--baseline-mdb ${tilde(p)}`, skills, outfits, cmDates: readCmDates(b),
 			skillCount: skills.size, outfitCount: outfits.size, derived: false};
 	}
 	const s = files.snapshot.data;
