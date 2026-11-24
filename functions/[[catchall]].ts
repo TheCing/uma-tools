@@ -448,11 +448,11 @@ export const onRequest: PagesFunction = async (context) => {
     return Response.redirect(dest.toString(), 301);
   }
 
-  // SUNSET (2026-11): Umalator is retired, and the Canva guides with it. Functions run
-  // before _redirects, so the /canva rule there never fires — send the subdomain and the
-  // /canva paths to the farewell page here. Delete this block to restore the guides.
+  // RETIRED (2026-11): only the main simulator stays online; the Canva guides are gone.
+  // Functions run before _redirects, so send the subdomain and /canva paths to the
+  // retirement notice here. Delete this block to restore the guides.
   if (url.hostname === CANVA_HOST || url.pathname === '/canva' || url.pathname.startsWith('/canva/')) {
-    return Response.redirect(`https://${APEX_HOST}/`, 302);
+    return Response.redirect(`https://${APEX_HOST}/retired/`, 302);
   }
 
   // Canva guides — multi-embed by slug (see EMBEDS above). Served on the

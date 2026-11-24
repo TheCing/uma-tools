@@ -99,9 +99,10 @@ const DISCORD_FEEDBACK_WEBHOOK = import.meta.env.VITE_DISCORD_WEBHOOK || '';
 // Feedback drawer feature flag. Defaults to enabled. Set VITE_ENABLE_FEEDBACK=false in
 // .env.local (or the build environment) to hide the drawer + floating toggle entirely.
 // Also auto-hides when no webhook URL is configured — submission would fail anyway.
-const FEEDBACK_ENABLED =
-  import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' &&
-  DISCORD_FEEDBACK_WEBHOOK !== '';
+// RETIRED (2026-11): the webhook proxy worker is gone, so feedback is switched off for good.
+// To restore: put the original condition back:
+//   import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' && DISCORD_FEEDBACK_WEBHOOK !== ''
+const FEEDBACK_ENABLED = false;
 
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
@@ -659,7 +660,7 @@ function App() {
   }, []);
 
   // Notification banner — set NOTIFICATION_ID to show, or '' to hide
-  const NOTIFICATION_ID = '';
+  const NOTIFICATION_ID = 'retired-2026-11';
 
   const [showNotification, setShowNotification] = useState(
     () => NOTIFICATION_ID !== '' && savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
@@ -1239,7 +1240,7 @@ function App() {
           >
             {showNotification && (
               <NotificationBanner onDismiss={dismissNotification}>
-                Notice: Upcoming in-game maintenance period - <MaintenanceTime />.
+                Moomoolator is retired<span class="v2-notification-long">: no longer maintained, data frozen Nov 2026</span>. <a href="/retired/">More</a>
               </NotificationBanner>
             )}
 
@@ -1487,28 +1488,11 @@ function App() {
                   }
                   items={[
                     {
-                      id: "hp-calc",
-                      label: "HP Calculator",
-                      icon: <Calculator size={16} />,
-                      onClick: () =>
-                        window.open(
-                          "/hp-calculator/",
-                          "_blank",
-                        ),
-                    },
-                    {
-                      id: "events",
-                      label: "Events",
-                      icon: <Calendar size={16} />,
-                      onClick: () =>
-                        window.open("/events/", "_blank"),
-                    },
-                    {
-                      id: "docs",
-                      label: "Docs",
+                      id: "retired",
+                      label: "Retired — about & alternatives",
                       icon: <Book size={16} />,
                       onClick: () =>
-                        window.open("/docs/", "_blank"),
+                        window.open("/retired/", "_blank"),
                     },
                   ]}
                 />
@@ -2094,11 +2078,11 @@ function App() {
                 </a>
                 &nbsp;|&nbsp;
                 <a
-                  href="/hp-calculator/"
+                  href="/retired/"
                   target="_blank"
                   rel="noopener"
                 >
-                  HP Calculator
+                  Retired
                 </a>
               </div>
             </footer>
@@ -2363,38 +2347,24 @@ function App() {
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"
-                        onClick={() => window.open("/hp-calculator/", "_blank")}
-                        icon={<Calculator size={14} />}
-                      >
-                        HP Calculator
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="v2-mobile-settings-btn"
-                        onClick={() => window.open("/events/", "_blank")}
-                        icon={<Calendar size={14} />}
-                      >
-                        Events
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        className="v2-mobile-settings-btn"
-                        onClick={() => window.open("/docs/", "_blank")}
+                        onClick={() => window.open("/retired/", "_blank")}
                         icon={<Book size={14} />}
                       >
-                        Docs
+                        Retired — about & alternatives
                       </Button>
                     </div>
                     <div class="v2-mobile-settings-section">
                       <h4>Actions</h4>
-                      <Button
-                        variant="secondary"
-                        className="v2-mobile-settings-btn"
-                        onClick={() => setFeedbackDrawerOpen(true)}
-                        icon={<MessageSquare size={14} />}
-                      >
-                        Send Feedback
-                      </Button>
+                      {FEEDBACK_ENABLED && (
+                        <Button
+                          variant="secondary"
+                          className="v2-mobile-settings-btn"
+                          onClick={() => setFeedbackDrawerOpen(true)}
+                          icon={<MessageSquare size={14} />}
+                        >
+                          Send Feedback
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"

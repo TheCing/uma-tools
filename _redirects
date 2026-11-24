@@ -1,49 +1,49 @@
-# Cloudflare Pages redirect rules -- SUNSET (2026-11)
-#
-# Umalator is retired. The root serves the farewell page (sunset/index.html, copied
-# to /index.html by build-all.sh), and every app path below is sent there.
-#
-# These are 302s on purpose, not 301s: browsers cache a 301 indefinitely, so if the
-# site is ever revived these would keep bouncing returning users for months.
-#
-# Each prefix gets an exact rule plus a splat rule. There is deliberately no global
-# /* catch-all: it would also match / and loop, and it would redirect the farewell
-# page's own assets. Pages applies _redirects BEFORE static files (verified against
-# prod: /umalator-global/v2/ still has an index.html in git yet redirects), so the
-# app bundles still in the repo are unreachable without deleting any source.
-#
-# To revive: restore the pre-sunset _redirects and build-all.sh from git history.
+# Moomoolator is retired (2026-11) and kept online as an unmaintained archive of the
+# main simulator only. Every sub-app sends visitors to the notice at /retired/.
+# 302, not 301, so a future change isn't stuck in browser caches.
+# Rules match top to bottom: keep the simulator's own aliases ABOVE the /umalator-global
+# catch-all. Pages Functions run before this file (see functions/), so /canva and
+# /events are also handled there.
 
-# Kept: the farewell page loads its sprite and font through the /uma-tools/ prefix.
+# Asset prefix the simulator uses for icons/fonts.
 /uma-tools/* /:splat 200
 
-/umalator-global / 302
-/umalator-global/* / 302
-/umalator / 302
-/umalator/* / 302
-/v2 / 302
-/v2/* / 302
-/skill-visualizer / 302
-/skill-visualizer/* / 302
-/skill-visualizer-jp / 302
-/skill-visualizer-jp/* / 302
-/skill-visualizer-global / 302
-/skill-visualizer-global/* / 302
-/mechanics-explorer / 302
-/mechanics-explorer/* / 302
-/hp-calculator / 302
-/hp-calculator/* / 302
-/events / 302
-/events/* / 302
-/team-trials / 302
-/team-trials/* / 302
-/release-timeline / 302
-/release-timeline/* / 302
-/build-planner / 302
-/build-planner/* / 302
-/canva / 302
-/canva/* / 302
-/courseimages / 302
-/courseimages/* / 302
-/docs / 302
-/docs/* / 302
+# Old simulator URLs -> the simulator at the root (keeps old #H4sI share links working).
+/umalator-global/v2/* /:splat 301
+/v2/* /:splat 301
+
+# Retired sub-apps -> notice page.
+/skill-visualizer /retired/ 302
+/skill-visualizer/* /retired/ 302
+/skill-visualizer-jp /retired/ 302
+/skill-visualizer-jp/* /retired/ 302
+/skill-visualizer-global /retired/ 302
+/skill-visualizer-global/* /retired/ 302
+/mechanics-explorer /retired/ 302
+/mechanics-explorer/* /retired/ 302
+/hp-calculator /retired/ 302
+/hp-calculator/* /retired/ 302
+/events /retired/ 302
+/events/* /retired/ 302
+/team-trials /retired/ 302
+/team-trials/* /retired/ 302
+/release-timeline /retired/ 302
+/release-timeline/* /retired/ 302
+/build-planner /retired/ 302
+/build-planner/* /retired/ 302
+/canva /retired/ 302
+/canva/* /retired/ 302
+/docs /retired/ 302
+/docs/* /retired/ 302
+/courseimages /retired/ 302
+/courseimages/* /retired/ 302
+/umalator-global/skill-visualizer /retired/ 302
+/umalator-global/skill-visualizer/* /retired/ 302
+/umalator-global/mechanics-explorer /retired/ 302
+/umalator-global/mechanics-explorer/* /retired/ 302
+
+# Retired v1 simulators -> the simulator at the root.
+/umalator-global / 301
+/umalator-global/* / 301
+/umalator / 301
+/umalator/* / 301
