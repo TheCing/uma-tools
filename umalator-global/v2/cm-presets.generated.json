@@ -195,73 +195,73 @@
     "id": 17,
     "type": 0,
     "name": "Virgo Cup",
-    "date": "2026-08-02",
+    "date": "2026-08-05",
     "courseId": 11103,
     "season": 3,
     "ground": 2,
     "weather": 1,
     "time": 3,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 18,
     "type": 0,
     "name": "Libra Cup",
-    "date": "2026-08-23",
+    "date": "2026-08-25",
     "courseId": 10903,
     "season": 3,
     "ground": 1,
     "weather": 2,
     "time": 2,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 19,
     "type": 0,
     "name": "Scorpio Cup",
-    "date": "2026-09-13",
+    "date": "2026-09-15",
     "courseId": 10808,
     "season": 3,
     "ground": 1,
     "weather": 1,
     "time": 2,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 20,
     "type": 0,
     "name": "Sagittarius Cup",
-    "date": "2026-10-04",
+    "date": "2026-10-07",
     "courseId": 10506,
     "season": 4,
     "ground": 2,
     "weather": 2,
     "time": 2,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 21,
     "type": 0,
     "name": "Capricorn Cup",
-    "date": "2026-10-25",
+    "date": "2026-10-27",
     "courseId": 10701,
     "season": 4,
     "ground": 1,
     "weather": 1,
     "time": 2,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 22,
     "type": 0,
     "name": "Aquarius Cup",
-    "date": "2026-11-15",
+    "date": "2026-11-17",
     "courseId": 10611,
     "season": 4,
     "ground": 3,
     "weather": 4,
     "time": 2,
-    "confirmed": false
+    "confirmed": true
   },
   {
     "id": 23,
