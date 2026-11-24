@@ -2,8 +2,8 @@
 /**
  * Regenerate umalator-global/global-live-skills.json from alpha123/uma-tools.
  *
- * Our docs/master.mdb lags the live Global client (it is synced by hand from another
- * machine), so skills that have already released show up in not-in-game.json and get a
+ * The local Global master.mdb used to lag the live client (it was synced by hand), so
+ * skills that had already released showed up in not-in-game.json and got a
  * "Not in game" badge. Upstream regenerates their Global skill_data.json straight from a
  * current client DB, so their key set is a better answer to "what has shipped".
  *
@@ -34,15 +34,17 @@ try {
 	process.exit(1);
 }
 
-const ids = Object.keys(JSON.parse(json)).sort((a, b) => a.localeCompare(b));
-const rev = git(['rev-parse', '--short', REF]).trim();
-const date = git(['log', '-1', '--format=%cs', REF]).trim();
-
 let prev = [];
 try { prev = JSON.parse(readFileSync(OUT, 'utf8')).skills ?? []; } catch {}
 
+// Union, never drop: tools/ingest-master-mdb.mjs adds the Global DB's IDs (including the
+// scenario/bonus skills upstream omits) and replacing the list would undo that.
+const ids = [...new Set([...prev, ...Object.keys(JSON.parse(json))])].sort((a, b) => a.localeCompare(b));
+const rev = git(['rev-parse', '--short', REF]).trim();
+const date = git(['log', '-1', '--format=%cs', REF]).trim();
+
 writeFileSync(OUT, JSON.stringify({
-	_comment: 'Skill IDs live on Global per upstream, used to supplement docs/master.mdb when it lags the client. Regenerate with tools/sync-global-live-skills.mjs.',
+	_comment: 'Skill IDs live on Global (upstream list unioned with earlier entries, e.g. from tools/ingest-master-mdb.mjs). Regenerate with tools/sync-global-live-skills.mjs.',
 	source: `alpha123/uma-tools@${rev} (${date})`,
 	skills: ids
 }, null, '\t') + '\n');

@@ -11,8 +11,13 @@ node_modules/
 /assets/
 /simulator.worker.js
 # umalator-global/not-in-game.json is now committed.
-# It is regenerated locally from docs/master.mdb via `node umalator-global/build.mjs`;
-# deploys read the committed version directly (master.mdb is not deployed).
+# It is regenerated locally from the Global master.mdb via `node umalator-global/build.mjs`
+# or tools/ingest-master-mdb.mjs; deploys read the committed version directly.
+
+# Game databases are never committed. The Global DB lives outside the repo
+# (~/.local/share/uma-tools/master.mdb or $UMA_MASTER_MDB; see tools/lib/master-db-path.cjs).
+docs/master.mdb
+docs/*.mdb
 
 # Discord bot — source is kept out of the public repo (deployed directly to
 # Railway). A few files (package.json, package-lock.json, tsconfig.json,

@@ -53,7 +53,7 @@ umalator-global/
 │                           #   - seedrandom polyfill
 │                           #   - Path rewriting for /uma-tools/
 ├── index.html              # Slightly different title
-└── update.bat              # Windows script to regenerate all data
+└── (update.bat removed: data refresh is tools/ingest-master-mdb.mjs)
 ```
 
 #### English Data Files (replace JP data)
@@ -295,7 +295,7 @@ Some icons use `/uma-tools/icons/global/` prefix for Global-specific assets.
 
 1. **Global data**: Edit files directly in `/umalator-global/*.json`
 2. **JP data**: Edit files in `/uma-skill-tools/data/` or root
-3. **Regenerate from game**: Run `update.bat` (Windows) or Perl scripts
+3. **Regenerate from game**: `node tools/ingest-master-mdb.mjs --mdb <path>` (see CLAUDE.md, "Updating Global master.mdb")
 
 ### Adding Global-Only Features
 
