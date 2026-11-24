@@ -99,9 +99,10 @@ const DISCORD_FEEDBACK_WEBHOOK = import.meta.env.VITE_DISCORD_WEBHOOK || '';
 // Feedback drawer feature flag. Defaults to enabled. Set VITE_ENABLE_FEEDBACK=false in
 // .env.local (or the build environment) to hide the drawer + floating toggle entirely.
 // Also auto-hides when no webhook URL is configured — submission would fail anyway.
-const FEEDBACK_ENABLED =
-  import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' &&
-  DISCORD_FEEDBACK_WEBHOOK !== '';
+// RETIRED (2026-11): the webhook proxy worker is gone, so feedback is switched off for good.
+// To restore: put the original condition back:
+//   import.meta.env.VITE_ENABLE_FEEDBACK !== 'false' && DISCORD_FEEDBACK_WEBHOOK !== ''
+const FEEDBACK_ENABLED = false;
 
 /**
  * Detect if a glyph renders as a "tofu" missing glyph rectangle.
@@ -2354,14 +2355,16 @@ function App() {
                     </div>
                     <div class="v2-mobile-settings-section">
                       <h4>Actions</h4>
-                      <Button
-                        variant="secondary"
-                        className="v2-mobile-settings-btn"
-                        onClick={() => setFeedbackDrawerOpen(true)}
-                        icon={<MessageSquare size={14} />}
-                      >
-                        Send Feedback
-                      </Button>
+                      {FEEDBACK_ENABLED && (
+                        <Button
+                          variant="secondary"
+                          className="v2-mobile-settings-btn"
+                          onClick={() => setFeedbackDrawerOpen(true)}
+                          icon={<MessageSquare size={14} />}
+                        >
+                          Send Feedback
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         className="v2-mobile-settings-btn"
