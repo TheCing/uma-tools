@@ -1,35 +1,49 @@
-# Cloudflare Pages redirect rules
+# Moomoolator is retired (2026-11) and kept online as an unmaintained archive of the
+# main simulator only. Every sub-app sends visitors to the notice at /retired/.
+# 302, not 301, so a future change isn't stuck in browser caches.
+# Rules match top to bottom: keep the simulator's own aliases ABOVE the /umalator-global
+# catch-all. Pages Functions run before this file (see functions/), so /canva and
+# /events are also handled there.
 
-# NOTE: hostname-based routing — the www → apex canonical 301 and the
-# canva.umalator.app slug routing (the EMBEDS guide registry) — is handled in
-# functions/[[catchall]].ts. Cloudflare Pages _redirects matches on the request
-# PATH only, so any rule whose `from` includes a scheme/host is silently ignored.
-# Don't re-add www/canva rules here; they will not work.
+# Asset prefix the simulator uses for icons/fonts.
+/uma-tools/* /:splat 200
 
-# Clean URL for the v2 Global skill visualizer (rewrite, URL stays as /skill-visualizer/)
-# Legacy paths remain reachable directly:
-#   - JP visualizer:        /skill-visualizer-jp/
-#   - Global v1 visualizer: /umalator-global/skill-visualizer/
-#   - Global v2 visualizer: /umalator-global/skill-visualizer/v2/ (also served at /skill-visualizer/ via this rule)
-/skill-visualizer/* /umalator-global/skill-visualizer/v2/:splat 200
-
-# Clean URL for the Mechanics Explorer (rewrite, URL stays as /mechanics-explorer/)
-/mechanics-explorer/* /umalator-global/mechanics-explorer/:splat 200
-
-# v1 was retired 2026-08-27. Its two app roots now serve v2 at the apex.
-# These are EXACT paths on purpose: /umalator-global/ is also the parent of the
-# skill visualizer and mechanics explorer, which must stay reachable, so a
-# /umalator-global/* wildcard here would break them.
-/umalator-global / 301
-/umalator-global/ / 301
-/umalator-global/index.html / 301
-/umalator / 301
-/umalator/ / 301
-/umalator/index.html / 301
-
-# Backward compat: old v2 URLs → root
+# Old simulator URLs -> the simulator at the root (keeps old #H4sI share links working).
 /umalator-global/v2/* /:splat 301
 /v2/* /:splat 301
 
-# Rewrite /uma-tools/* paths to root for compatibility with GitHub Pages paths
-/uma-tools/* /:splat 200
+# Retired sub-apps -> notice page.
+/skill-visualizer /retired/ 302
+/skill-visualizer/* /retired/ 302
+/skill-visualizer-jp /retired/ 302
+/skill-visualizer-jp/* /retired/ 302
+/skill-visualizer-global /retired/ 302
+/skill-visualizer-global/* /retired/ 302
+/mechanics-explorer /retired/ 302
+/mechanics-explorer/* /retired/ 302
+/hp-calculator /retired/ 302
+/hp-calculator/* /retired/ 302
+/events /retired/ 302
+/events/* /retired/ 302
+/team-trials /retired/ 302
+/team-trials/* /retired/ 302
+/release-timeline /retired/ 302
+/release-timeline/* /retired/ 302
+/build-planner /retired/ 302
+/build-planner/* /retired/ 302
+/canva /retired/ 302
+/canva/* /retired/ 302
+/docs /retired/ 302
+/docs/* /retired/ 302
+/courseimages /retired/ 302
+/courseimages/* /retired/ 302
+/umalator-global/skill-visualizer /retired/ 302
+/umalator-global/skill-visualizer/* /retired/ 302
+/umalator-global/mechanics-explorer /retired/ 302
+/umalator-global/mechanics-explorer/* /retired/ 302
+
+# Retired v1 simulators -> the simulator at the root.
+/umalator-global / 301
+/umalator-global/* / 301
+/umalator / 301
+/umalator/* / 301

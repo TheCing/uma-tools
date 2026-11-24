@@ -185,6 +185,9 @@ function buildHtml(title: string, description: string, canonicalUrl: string, ima
 // --- Handler ---
 
 export const onRequest: PagesFunction = async (context) => {
+  // RETIRED (2026-11): the events page is gone; let _redirects send visitors (and link-preview
+  // bots) to /retired/ instead of serving event cards. Delete these lines to restore.
+  return context.next();
   const userAgent = context.request.headers.get('User-Agent') || '';
   const url = new URL(context.request.url);
   const pathParts = url.pathname.replace(/^\/events\/?/, '').split('/').filter(Boolean);

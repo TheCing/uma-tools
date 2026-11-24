@@ -8,10 +8,6 @@ echo "Building uma-tools applications..."
 echo "========================================="
 
 echo ""
-echo "Generating static Canva guide pages (canva/<slug>/index.html)..."
-node tools/gen-canva-static.mjs
-
-echo ""
 echo "Building umalator-global..."
 cd umalator-global
 node build.mjs
@@ -23,11 +19,11 @@ cd umalator-global/v2
 npx vite build
 cd ../..
 
-# Copy v2 dist to project root (v2 is the default landing page)
 # Retired 2026-11: the site stays up as an unmaintained archive. The notice page
 # (linked from the v2 banner) lives at /retired/.
 mkdir -p retired && cp sunset/index.html retired/index.html
 
+# Copy v2 dist to project root (v2 is the default landing page)
 echo "Copying v2 to root..."
 cp umalator-global/v2/dist/index.html ./index.html
 cp umalator-global/v2/dist/favicon.svg ./favicon.svg 2>/dev/null || true
@@ -35,58 +31,10 @@ cp umalator-global/v2/dist/simulator.worker.js ./simulator.worker.js 2>/dev/null
 rm -rf assets
 cp -r umalator-global/v2/dist/assets ./assets
 
-# NOTE: the JP v1 app (umalator/app.tsx + its build.mjs) was retired on 2026-08-27;
-# /umalator and /umalator-global now 301 to the v2 root via _redirects. umalator/ still
-# holds shared sim glue (compare.ts, hpcalc.ts, BasinnChart.tsx) that v2 imports, but
-# there is nothing to build there. Leaving the old `cd umalator && node build.mjs` here
-# broke every Pages build for a week: set -e aborted the script at that step, so the
-# deploy failed and the site kept serving pre-merge assets.
-
-echo ""
-echo "Building skill-visualizer (JP) → /skill-visualizer-jp/..."
-cd skill-visualizer-jp
-node build.mjs
-cd ..
-
-# Builds both Global v1 (/umalator-global/skill-visualizer/) and v2
-# (/umalator-global/skill-visualizer/v2/).
-# The v2 build is also surfaced at the clean URL /skill-visualizer/ via the
-# _redirects rewrite at repo root.
-echo ""
-echo "Building skill-visualizer (Global v1 + v2)..."
-cd umalator-global/skill-visualizer
-node build.mjs
-cd ../..
-
-echo ""
-echo "Building mechanics-explorer..."
-cd umalator-global/mechanics-explorer
-node build.mjs
-cd ../..
-
-echo ""
-echo "Building team-trials..."
-cd team-trials
-node build.mjs
-cd ..
-
-echo ""
-echo "Building release-timeline..."
-cd release-timeline
-node build.mjs
-cd ..
-
-echo ""
-echo "Building build-planner..."
-cd build-planner
-../node_modules/.bin/esbuild app.tsx --bundle --external:node:assert --outfile=bundle.js
-../node_modules/.bin/unassert bundle.js > bundle.2.js
-rm -f bundle.2.js
-cd ..
+# Retired 2026-11: only the main simulator (v2, at the root) is published. The other
+# sub-apps are no longer built; _redirects sends their URLs to /retired/.
 
 echo ""
 echo "========================================="
-echo "Build complete! All applications ready."
+echo "Build complete! (main simulator only)"
 echo "========================================="
-# Note: hp-calculator uses Vite (requires Node 20+) and is built locally.
-# Pre-built files (bundle.js, bundle.css, index.html) are committed to git.
