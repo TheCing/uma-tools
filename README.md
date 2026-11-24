@@ -133,17 +133,32 @@ umalator-global/
 
 ### Updating Game Data
 
-After game updates, regenerate data files from the master database:
+Global game data comes from the Steam Global client's `master.mdb`. The DB is no longer stored in git and is no longer pulled from MEGA.
 
-**Windows:**
-```batch
-update.bat [path-to-master.mdb]
-```
+1. **The PC stages a snapshot.** A watcher on the gaming PC reads `%USERPROFILE%\AppData\LocalLow\Cygames\Umamusume\master\master.mdb` (read-only, via SQLite's backup API), writes `master-<sha256>.mdb` plus `latest.json` (sha256, file, source mtime, Steam build id, skill/table counts, integrity) to `%USERPROFILE%\Dev\uma-master-staging\`, and keeps the newest 5 copies.
+2. **The Mac pulls it:**
+   ```bash
+   mkdir -p ~/.local/share/uma-tools
+   scp <pc>:Dev/uma-master-staging/latest.json ~/.local/share/uma-tools/latest.json
+   FILE=$(node -p "require(process.env.HOME + '/.local/share/uma-tools/latest.json').file")
+   scp "<pc>:Dev/uma-master-staging/$FILE" ~/.local/share/uma-tools/master.mdb
+   ```
+3. **Ingest it into the data files:**
+   ```bash
+   node tools/ingest-master-mdb.mjs --mdb ~/.local/share/uma-tools/master.mdb --dry-run --summary /tmp/ingest.md
+   node tools/ingest-master-mdb.mjs --mdb ~/.local/share/uma-tools/master.mdb --summary /tmp/ingest.md
+   ```
+   Exit codes: `0` data changed, `3` no data change, `2` refused by a safety check (nothing written), `1` error.
+   It only writes `umalator-global/*.json` data files (skill data/meta/names merge, umas names, live-skill list, not-in-game, CM presets when the JP DB is present, and `global-master-snapshot.json`, the baseline for the next run).
+4. **Build and test:** `cd umalator-global && node build.mjs`, `cd umalator-global/v2 && npx vite build`, `cd uma-skill-tools && npm test`.
+5. **Open a PR into `dev`** with the changed data files and the summary as the description.
 
-**Linux/Mac:**
+Scripts find the DB in this order: `$UMA_MASTER_MDB`, `~/.local/share/uma-tools/master.mdb`, then the legacy `docs/master.mdb` (see `tools/lib/master-db-path.cjs`). Requires the `sqlite3` CLI (shipped with macOS).
+
+Do not use `update.bat` (removed) or the Perl generators `make_skill_data.pl`, `make_global_skillnames.pl` and `make_global_skill_meta.pl` for Global data: they overwrite whole files, which wipes the fast-forwarded JP entries, search aliases and "(obsolete)" markers. `make_global_course_data.pl` is still the course-data generator (the ingest does not touch course data):
+
 ```bash
-perl make_global_skill_data.pl /path/to/master.mdb > skill_data.json
-perl make_global_skillnames.pl /path/to/master.mdb > skillnames.json
+cd umalator-global
 perl make_global_course_data.pl /path/to/master.mdb courseeventparams > course_data.json
 ```
 

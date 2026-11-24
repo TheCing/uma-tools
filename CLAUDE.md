@@ -47,9 +47,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ├── events/                      # Events page
 ├── uma-skill-tools/             # Core simulation library
 ├── tools/                       # Utility scripts
-│   └── pull-master-mdb.sh      # Pull latest Global master.mdb from MEGA
+│   ├── ingest-master-mdb.mjs   # Ingest a Global master.mdb into umalator-global/*.json
+│   └── lib/                    # Shared helpers: DB path resolver, merge rules, data sync
 ├── docs/                        # Documentation and reference data
-│   └── master.mdb              # Global master.mdb (source of truth for in-game data)
+│   └── master.mdb              # legacy, untracked: the Global DB lives in ~/.local/share/uma-tools/
 ├── uma-tools-worker/            # Cloudflare Worker for webhooks
 ├── components/                  # Shared UI components
 │   ├── HorseDef.tsx
@@ -368,7 +369,7 @@ The `CC_GLOBAL` flag controls UI strings (e.g., "Firm/Good/Soft/Heavy" vs "良/�
 ### Data Files
 
 **Game Data:**
-- `docs/master.mdb`: Global master.mdb — source of truth for what's in-game on Global (pulled from MEGA)
+- Global master.mdb — source of truth for what's in-game on Global. Not in git; resolved via `tools/lib/master-db-path.cjs` (`$UMA_MASTER_MDB`, `~/.local/share/uma-tools/master.mdb`, legacy `docs/master.mdb`). See "Updating Global master.mdb".
 - `uma-skill-tools/data/skill_data.json`: JP game skill definitions
 - `uma-skill-tools/data/skillnames.json`: JP skill name translations
 - `uma-skill-tools/data/course_data.json`: JP race course definitions
@@ -393,15 +394,9 @@ The `CC_GLOBAL` flag controls UI strings (e.g., "Firm/Good/Soft/Heavy" vs "良/�
 - `make_course_data.pl`: Generates course_data.json
 - Root directory: `make_skill_meta.pl`, `make_uma_info.pl`, `extract_resource.pl`
 
-**Global Version:**
+**Global Version:** use `tools/ingest-master-mdb.mjs` (see "Updating Global master.mdb"). `update.bat` was removed. Do not run `make_skill_data.pl`, `make_global_skillnames.pl` or `make_global_skill_meta.pl` against Global data: they overwrite whole files, wiping fast-forwarded JP entries, search aliases and "(obsolete)" markers. `make_global_course_data.pl` is still the course-data generator (the ingest does not touch course data):
 ```bash
 cd umalator-global
-
-# Windows
-update.bat [path-to-master.mdb]
-
-# Linux/Mac
-perl make_global_skillnames.pl /path/to/master.mdb > skillnames.json
 perl make_global_course_data.pl /path/to/master.mdb courseeventparams > course_data.json
 ```
 
@@ -432,7 +427,8 @@ Global, plus ~850 fast-forwarded from JP. Two rules follow from that:
    where Global is simply `remain_distance<=300`.
 
 **The correct operation is a merge:** take the current definition for every skill live in
-`docs/master.mdb`; leave every JP-only entry untouched. Two things to preserve when doing it:
+the Global master.mdb; leave every JP-only entry untouched. `tools/ingest-master-mdb.mjs` does
+exactly this (rules shared with `tools/sync-upstream-data.mjs` in `tools/lib/skill-data-rules.mjs`). Two things to preserve when doing it:
 
 - `make_skill_data.pl`'s `patch_modifier()` deliberately multiplies ~23 scenario-skill IDs
   (`210011`…`210291`) by **1.2**. Re-apply it, or those magnitudes silently drop ~17%.
@@ -441,39 +437,42 @@ Global, plus ~850 fast-forwarded from JP. Two rules follow from that:
 
 `fast-forward-global.ts` now **detects and reports this drift** on every run
 (`⚠️ [STALE DATA] N Global-live skill(s) no longer match master.mdb`). It cannot fix it —
-that warning is your cue to re-run the merge.
+that warning is your cue to re-run the merge (`node tools/ingest-master-mdb.mjs`).
 
 ### Updating Global master.mdb
 
-The Global `master.mdb` (SQLite database extracted from the game client) is the source of truth for what skills, characters, and courses are currently in the Global version. It is stored at `docs/master.mdb` and automatically synced to MEGA (`/uma/master.mdb`) from another machine.
+The Global `master.mdb` (SQLite database from the Steam Global client) is the source of truth for what skills, characters, outfits and Champions Meetings are currently in the Global version. It is **not stored in git** (it was untracked from `docs/master.mdb`; history was not rewritten) and is **no longer pulled from MEGA**.
 
-**Pull the latest DB:**
-```bash
-./tools/pull-master-mdb.sh          # Download latest from MEGA → docs/master.mdb
-./tools/pull-master-mdb.sh --check  # Check if a newer version is available
-```
+**Flow:**
+1. The PC watcher snapshots `%USERPROFILE%\AppData\LocalLow\Cygames\Umamusume\master\master.mdb` (read-only, SQLite backup API; capital-U `Umamusume` is Steam Global, never the lowercase DMM JP folder) into `%USERPROFILE%\Dev\uma-master-staging\master-<sha256>.mdb` and writes `latest.json` (sha256, file, sourcePath, sourceMtime, stagedAt, steamBuildId, skillCount, tableCount, integrity). Newest 5 copies are kept.
+2. The Mac pulls it:
+   ```bash
+   mkdir -p ~/.local/share/uma-tools
+   scp <pc>:Dev/uma-master-staging/latest.json ~/.local/share/uma-tools/latest.json
+   FILE=$(node -p "require(process.env.HOME + '/.local/share/uma-tools/latest.json').file")
+   scp "<pc>:Dev/uma-master-staging/$FILE" ~/.local/share/uma-tools/master.mdb
+   ```
+3. Ingest:
+   ```bash
+   node tools/ingest-master-mdb.mjs --mdb ~/.local/share/uma-tools/master.mdb --dry-run --summary /tmp/ingest.md
+   node tools/ingest-master-mdb.mjs --mdb ~/.local/share/uma-tools/master.mdb --summary /tmp/ingest.md
+   ```
+   Exit codes: `0` data changed, `3` no data change, `2` refused by a safety check, `1` error. Nothing is written on 1 or 2.
+4. `cd umalator-global && node build.mjs`, `cd umalator-global/v2 && npx vite build`, `cd uma-skill-tools && npm test`, then a PR into `dev` with the summary as its description.
 
-**Prerequisites:**
-- `brew install megatools`
-- `~/.megarc` with MEGA credentials:
-  ```
-  [Login]
-  Username = your@email.com
-  Password = yourpassword
-  ```
+**What the ingest writes** (only `umalator-global/` data JSON): `skill_data.json` (merge per "Keeping skill_data.json in sync"), `skill_meta.json`, `skillnames.json` (official names; aliases and "(obsolete)" kept), `umas.json` (Global names/epithets), `global-live-skills.json` (union, never drops IDs), `not-in-game.json`, `v2/cm-presets.generated.json` (only when the JP DB is available via `$UMA_JP_MASTER_MDB` or `docs/master(1).mdb`), and `global-master-snapshot.json` (IDs/counts of the ingested DB, the baseline for the next run's guards and summary). Running it twice on the same DB is a no-op (exit 3).
 
-After pulling a new DB, rebuild to update the not-in-game filter:
-```bash
-cd umalator-global && node build.mjs
-```
+**Refusals (exit 2):** integrity check fails; required tables/columns missing; skill or outfit count drops below the baseline; a x1.2 scenario skill no longer matches exactly; `skill_data.json` or `skillnames.json` would lose an entry; a `master-<sha256>.mdb` file whose content hash differs from its name; a path inside `AppData/LocalLow` (ingest a staged copy, never the live file). `--baseline-mdb <older.mdb>` compares against an older DB instead of the snapshot.
+
+**DB location for every script** (`tools/lib/master-db-path.cjs`): `$UMA_MASTER_MDB`, then `~/.local/share/uma-tools/master.mdb`, then legacy `docs/master.mdb`. `build.mjs` logs which one it used and leaves committed files alone when none exists (Cloudflare Pages).
 
 ### Not-In-Game Filter
 
 The build generates `umalator-global/not-in-game.json` listing skills and outfits that exist in our data files but aren't in the Global game yet (fast-forwarded from JP). The UI uses this to show a "Not in game" badge and allow filtering.
 
-**How it works** (in `umalator-global/build.mjs` → `generateNotInGame()`):
-1. **Primary**: Diffs `skill_data.json` and `umas.json` against `docs/master.mdb` via `sqlite3` CLI
-2. **Fallback**: If `master.mdb` is unavailable (e.g., on Cloudflare Pages CI), diffs against `kachi-dev/master` git remote
+**How it works** (`umalator-global/build.mjs` → `runNotInGame()` in `tools/lib/global-data-sync.mjs`):
+1. **Primary**: Diffs `skill_data.json` and `umas.json` against the resolved Global master.mdb via the `sqlite3` CLI (DB IDs unioned with `global-live-skills.json`); shared logic in `tools/lib/global-data-sync.mjs`
+2. **No DB** (e.g., on Cloudflare Pages CI): the committed `not-in-game.json` is left alone and used as-is
 
 **UI usage**: Skills filter in `v2/skills.tsx`, uma panel in `v2/uma-panel.tsx`, skill charts in `v2/skill-chart-pane.tsx`
 
