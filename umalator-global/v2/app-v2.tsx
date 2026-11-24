@@ -660,7 +660,7 @@ function App() {
   }, []);
 
   // Notification banner — set NOTIFICATION_ID to show, or '' to hide
-  const NOTIFICATION_ID = 'retired-2026-11';
+  const NOTIFICATION_ID = 'retired-2026-11b';
 
   const [showNotification, setShowNotification] = useState(
     () => NOTIFICATION_ID !== '' && savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
