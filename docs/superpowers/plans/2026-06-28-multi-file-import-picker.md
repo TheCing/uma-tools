@@ -142,7 +142,7 @@ The outer `<div class="v2-trainee-card">` and the `<div class="v2-trainee-action
 - [ ] **Step 3: Typecheck the two files**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "trainee-card-preview|trainees-tab" | head
 echo "clean for these two files if empty above"
 ```
@@ -151,7 +151,7 @@ Expected: no errors referencing `trainee-card-preview.tsx` or `trainees-tab.tsx`
 - [ ] **Step 4: Build v2 to confirm visual block compiles**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx vite build 2>&1 | tail -3
 ```
 Expected: `✓ built in …`, no errors.
@@ -159,7 +159,7 @@ Expected: `✓ built in …`, no errors.
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add umalator-global/v2/trainee-card-preview.tsx umalator-global/v2/trainees-tab.tsx
 git commit -m "v2: extract shared TraineeCardPreview from TraineeCard"
 ```
@@ -236,7 +236,7 @@ export function importHorseJsonMulti(): Promise<{ candidates: ImportCandidate[];
 - [ ] **Step 2: Typecheck storage.ts**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "storage.ts" | head
 echo "clean if empty"
 ```
@@ -245,14 +245,14 @@ Expected: no new errors in `storage.ts`.
 - [ ] **Step 3: Build v2**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2 && npx vite build 2>&1 | tail -2
+cd <repo>/umalator-global/v2 && npx vite build 2>&1 | tail -2
 ```
 Expected: builds clean.
 
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add umalator-global/v2/storage.ts
 git commit -m "v2 storage: add importHorseJsonMulti for multi-file import"
 ```
@@ -342,7 +342,7 @@ Append to `umalator-global/v2/v2.css` (the v2 stylesheet imported by the app; if
 - [ ] **Step 3: Typecheck + build**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "import-picker" | head
 npx vite build 2>&1 | tail -2
 ```
@@ -351,7 +351,7 @@ Expected: no `import-picker` type errors; build clean. (`Modal` is exported from
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add umalator-global/v2/import-picker.tsx umalator-global/v2/v2.css
 git commit -m "v2: add ImportPickerModal for multi-file import"
 ```
@@ -429,17 +429,17 @@ If you can't locate an existing modal render site, add it just before the final 
 - [ ] **Step 4: Typecheck + build both v1 and v2**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "uma-panel" | head
 npx vite build 2>&1 | tail -3
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global && node build.mjs 2>&1 | tail -3
+cd <repo>/umalator-global && node build.mjs 2>&1 | tail -3
 ```
 Expected: no `uma-panel` type errors; both the v2 Vite build and the esbuild `build.mjs` succeed.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add umalator-global/v2/uma-panel.tsx
 git commit -m "v2: multi-file import opens a picker (single file loads directly)"
 ```

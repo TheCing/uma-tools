@@ -214,7 +214,7 @@ Expected:
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add uma-tools-worker/webhook-proxy.js
 git commit -m "Worker: gate /gemini behind Origin allowlist + Turnstile verification"
 ```
@@ -276,7 +276,7 @@ TURNSTILE_SITEKEY=
 - [ ] **Step 4: Verify the define is wired (no build error, value embedded)**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global
+cd <repo>/umalator-global
 TURNSTILE_SITEKEY=1x00000000000000000000AA OCR_PROXY_URL=https://proxy.umalator.app node build.mjs 2>&1 | tail -3
 grep -c "1x00000000000000000000AA" bundle.js
 ```
@@ -286,7 +286,7 @@ Expected: build completes (no errors); the grep prints a count `>= 1` (the sitek
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add umalator-global/build.mjs umalator-global/v2/vite.config.ts umalator-global/v2/.env.local umalator-global/v2/.env.example
 git commit -m "Build: add CC_TURNSTILE_SITEKEY define + TURNSTILE_SITEKEY env"
 ```
@@ -457,7 +457,7 @@ export async function extractHorseDataFromImage(
 - [ ] **Step 3: Typecheck GeminiOCR + helper against the SDK types**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 npx tsc --noEmit --skipLibCheck --moduleResolution bundler --module esnext --target es2018 --jsx react-jsx --lib es2018,dom components/turnstile.ts components/GeminiOCR.ts 2>&1 | grep -E "turnstile.ts|GeminiOCR.ts|error TS" | head
 echo "exit: clean if empty above"
 ```
@@ -467,7 +467,7 @@ Expected: no errors referencing `turnstile.ts` or `GeminiOCR.ts`. (Pre-existing 
 - [ ] **Step 4: Verify the v1 build embeds the sitekey + builds clean**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global
+cd <repo>/umalator-global
 TURNSTILE_SITEKEY=1x00000000000000000000AA OCR_PROXY_URL=https://proxy.umalator.app node build.mjs 2>&1 | tail -3
 grep -c "1x00000000000000000000AA" bundle.js
 grep -c "challenges.cloudflare.com" bundle.js
@@ -478,7 +478,7 @@ Expected: build completes; both greps print `>= 1` (sitekey embedded + Turnstile
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add components/turnstile.ts components/GeminiOCR.ts
 git commit -m "OCR client: acquire Turnstile token + send via proxy X-Turnstile-Token header"
 ```
@@ -566,7 +566,7 @@ with:
 - [ ] **Step 5: Build both v1 and v2**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global
+cd <repo>/umalator-global
 TURNSTILE_SITEKEY=1x00000000000000000000AA OCR_PROXY_URL=https://proxy.umalator.app node build.mjs 2>&1 | tail -3
 cd v2 && TURNSTILE_SITEKEY=1x00000000000000000000AA OCR_PROXY_URL=https://proxy.umalator.app npx vite build 2>&1 | tail -4
 ```
@@ -576,7 +576,7 @@ Expected: both builds succeed with no errors (v1 esbuild prints its done line; v
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add components/OCRModal.tsx umalator-global/v2/ocr-modal.tsx
 git commit -m "OCR modals: fetch Turnstile token before extraction (both v1 + v2)"
 ```
@@ -624,7 +624,7 @@ Set it with `npx wrangler secret put TURNSTILE_SECRET`.
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add CLAUDE.md uma-tools-worker/README.md
 git commit -m "Docs: OCR proxy Origin + Turnstile abuse gate"
 ```
