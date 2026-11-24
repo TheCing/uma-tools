@@ -6,10 +6,13 @@
  *   1. skill_data.json is a JP SUPERSET over the Global-live set. Only entries the
  *      incoming source also has may be updated; JP-only entries are never touched, no
  *      entry is ever removed, and the key count may never shrink.
- *   2. Scenario skills 210011-210291 carry make_skill_data.pl's patch_modifier() x1.2.
- *      Sources ship the unpatched values, so syncing them would silently cut those
- *      magnitudes ~17%. They are skipped, and each skipped one must be an exact 1.2
- *      ratio of the incoming value so a genuine change can't hide in that set.
+ *   2. The scenario skills in X12_SKILLS (23 IDs between 210011 and 210291) carry
+ *      make_skill_data.pl's patch_modifier() x1.2. Sources ship the unpatched values,
+ *      so syncing them would silently cut those magnitudes ~17%. Their effects are
+ *      skipped, and each must be an exact 1.2 ratio of the incoming value so a genuine
+ *      change can't hide in that set. Their tags/wisdomCheck are still refreshed.
+ *      The other scenario skills in that ID range (210091-210141) are NOT patched and
+ *      merge like any other skill.
  *   3. Names: our extra search aliases (entries [1..]) and "(obsolete)" markers are
  *      never stripped; only the display name (entry [0]) is refreshed.
  */
@@ -64,23 +67,36 @@ export function applyX12(id, skill) {
 
 /**
  * Merge incoming (unpatched) definitions into ours. Never removes, never touches IDs the
- * incoming set lacks, skips (and verifies) the x1.2 scenario skills.
+ * incoming set lacks, skips (and verifies) the x1.2 scenario skills' effects.
  * @param {'norm'|'exact'} compare  'exact' also treats tags/wisdomCheck changes as drift
  * @returns {{data, updated: string[], added: string[], skipped: string[], before: number, after: number}}
+ *   updated also lists x1.2 skills whose tags/wisdomCheck were refreshed (effects kept).
  */
 export function mergeSkillData(ours, incoming, {compare = 'norm'} = {}) {
 	const key = compare === 'exact' ? exactSkill : normSkill;
 	const data = structuredClone(ours);
 	const before = Object.keys(data).length;
+	const isX12 = k => X12_SKILLS.has(String(k));
 
 	const drift = Object.keys(incoming).filter(k => k in data && key(incoming[k]) !== key(data[k]));
-	const updated = drift.filter(k => !isScenarioSkill(k));
-	const skipped = drift.filter(isScenarioSkill);
+	const updated = drift.filter(k => !isX12(k));
+	const skipped = drift.filter(isX12);
 	for (const k of skipped) checkX12(k, incoming[k], data[k]);
 
 	const added = Object.keys(incoming).filter(k => !(k in data));
 	for (const k of updated) data[k] = incoming[k];
 	for (const k of added) data[k] = applyX12(k, incoming[k]);
+
+	// x1.2 skills: effects stay patched, but tags/wisdomCheck come from the source.
+	if (compare === 'exact') for (const k of skipped) {
+		let changed = false;
+		for (const f of ['tags', 'wisdomCheck']) {
+			if (!(f in incoming[k]) || JSON.stringify(incoming[k][f]) === JSON.stringify(data[k][f])) continue;
+			data[k][f] = structuredClone(incoming[k][f]);
+			changed = true;
+		}
+		if (changed) updated.push(k);
+	}
 
 	const after = Object.keys(data).length;
 	if (after < before) throw new GuardError(`skill_data key count shrank (${before} -> ${after})`);
