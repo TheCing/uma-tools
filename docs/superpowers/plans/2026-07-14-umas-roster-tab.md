@@ -117,7 +117,7 @@ happily pin whatever bug the cleanup introduced.
 The upstream file has **zero imports** and no JP/UI coupling, so it drops straight in:
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 mkdir -p umalator-global/v2/roster
 git show kachi-dev/master:umalator/rosterDecoder.ts > umalator-global/v2/roster/roster-decoder.ts
 ```

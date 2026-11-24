@@ -269,7 +269,7 @@ the `const path = …` declared later in `onRequest`.)
 
 Run:
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 npx esbuild 'functions/[[catchall]].ts' --loader:.ts=ts --bundle=false >/dev/null && echo "parses OK"
 ```
 Expected: `parses OK` (no esbuild errors).
@@ -277,7 +277,7 @@ Expected: `parses OK` (no esbuild errors).
 - [ ] **Step 4: Build an isolated wrangler test project**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 T=/tmp/canva-multi
 rm -rf "$T"; mkdir -p "$T/functions" "$T/uma-tools/umalator-global"
 cp 'functions/[[catchall]].ts' "$T/functions/[[catchall]].ts"
@@ -342,7 +342,7 @@ echo "cleaned up"
 - [ ] **Step 8: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add 'functions/[[catchall]].ts'
 git commit -m "Add multi-embed Canva slug routing (registry + per-slug render)"
 ```
@@ -358,7 +358,7 @@ git commit -m "Add multi-embed Canva slug routing (registry + per-slug render)"
 - [ ] **Step 1: Delete the obsolete static embed page**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git rm canva/index.html
 ```
 
@@ -410,7 +410,7 @@ to publish.
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add canva/index.html CLAUDE.md
 git commit -m "Remove static canva page; document the Canva guide registry"
 ```

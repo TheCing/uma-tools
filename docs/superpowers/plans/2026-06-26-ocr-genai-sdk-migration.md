@@ -33,7 +33,7 @@
 - [ ] **Step 1: Install in the root (browser apps)**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 npm install @google/genai
 ```
 Expected: `package.json` gains `"@google/genai": "^1.x.x"` under `dependencies`; `node_modules/@google/genai` exists.
@@ -41,7 +41,7 @@ Expected: `package.json` gains `"@google/genai": "^1.x.x"` under `dependencies`;
 - [ ] **Step 2: Install in the bot**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/uma-tools-bot
+cd <repo>/uma-tools-bot
 npm install @google/genai
 ```
 Expected: `uma-tools-bot/package.json` gains `"@google/genai"` under `dependencies`.
@@ -49,7 +49,7 @@ Expected: `uma-tools-bot/package.json` gains `"@google/genai"` under `dependenci
 - [ ] **Step 3: Verify it resolves**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 node -e "const {GoogleGenAI, Type} = require('@google/genai'); console.log(typeof GoogleGenAI, typeof Type.OBJECT)"
 ```
 Expected: prints `function string` (the class and the `Type` enum exist).
@@ -57,7 +57,7 @@ Expected: prints `function string` (the class and the `Type` enum exist).
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add package.json package-lock.json uma-tools-bot/package.json uma-tools-bot/package-lock.json
 git commit -m "Add @google/genai SDK dependency for OCR migration"
 ```
@@ -154,7 +154,7 @@ Leave `handleWebhook` (the Discord route) exactly as-is.
 - [ ] **Step 2: Validate the worker bundles/typechecks**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/uma-tools-worker
+cd <repo>/uma-tools-worker
 npx wrangler deploy --dry-run --outdir /tmp/worker-dryrun 2>&1 | tail -5
 ```
 Expected: a successful dry-run (`Total Upload` / compiled output, no syntax errors). It does **not** deploy.
@@ -162,7 +162,7 @@ Expected: a successful dry-run (`Total Upload` / compiled output, no syntax erro
 - [ ] **Step 3: Smoke-test routing locally with `wrangler dev`**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/uma-tools-worker
+cd <repo>/uma-tools-worker
 npx wrangler dev --port 8799 > /tmp/wdev.log 2>&1 &
 for i in $(seq 1 20); do curl -s -o /dev/null http://127.0.0.1:8799/ 2>/dev/null && break; sleep 1; done
 echo "1) OPTIONS preflight (expect 204 + CORS allow-headers incl x-goog-api-key):"
@@ -191,7 +191,7 @@ Set the OCR secret with: `wrangler secret put GEMINI_API_KEY`
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add uma-tools-worker/webhook-proxy.js uma-tools-worker/README.md
 git commit -m "Make worker /gemini a model-agnostic reverse proxy for the genai SDK"
 ```
@@ -378,7 +378,7 @@ export async function extractHorseDataFromImage(
 - [ ] **Step 5: Build the v1 app (esbuild) — confirms the SDK bundles for the browser**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global
+cd <repo>/umalator-global
 node build.mjs --debug 2>&1 | tail -5
 ```
 Expected: builds with no errors. If esbuild reports unresolved Node built-ins from `@google/genai`, the SDK pulled a Node-only path — add the browser condition by passing `conditions: ['browser']` / `mainFields` to the esbuild `buildOptions` in `umalator-global/build.mjs`, or mark the offending built-in `external`. Re-run until clean; report if unresolved.
@@ -386,7 +386,7 @@ Expected: builds with no errors. If esbuild reports unresolved Node built-ins fr
 - [ ] **Step 6: Build the v2 app (vite)**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/umalator-global/v2
+cd <repo>/umalator-global/v2
 npx vite build 2>&1 | tail -8
 ```
 Expected: `✓ built` with no resolution errors. (Vite resolves the `browser` export condition by default, so the SDK should bundle cleanly.)
@@ -394,7 +394,7 @@ Expected: `✓ built` with no resolution errors. (Vite resolves the `browser` ex
 - [ ] **Step 7: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add components/GeminiOCR.ts
 git commit -m "Migrate browser OCR client to @google/genai SDK + gemini-2.5-flash with structured output"
 ```
@@ -535,7 +535,7 @@ export async function extractHorseDataFromImage(
 - [ ] **Step 4: Typecheck the bot**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1/uma-tools-bot
+cd <repo>/uma-tools-bot
 npx tsc --noEmit 2>&1 | tail -10 && echo "tsc OK"
 ```
 Expected: `tsc OK` with no errors. If `tsc` complains that `@google/genai`'s ESM types don't resolve under the bot's CommonJS config, set `"moduleResolution": "node16"` (or `"bundler"`) in `uma-tools-bot/tsconfig.json` and re-run.
@@ -543,7 +543,7 @@ Expected: `tsc OK` with no errors. If `tsc` complains that `@google/genai`'s ESM
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add uma-tools-bot/src/gemini-ocr.ts uma-tools-bot/tsconfig.json
 git commit -m "Migrate Discord bot OCR to @google/genai SDK + gemini-2.5-flash"
 ```
@@ -599,7 +599,7 @@ the new model has a free tier if you rely on the proxy).
 - [ ] **Step 2: Commit**
 
 ```bash
-cd /Users/jptyndalljr/Dev/uma-tools-1
+cd <repo>
 git add CLAUDE.md
 git commit -m "Document the OCR pipeline (genai SDK, gemini-2.5-flash, reverse proxy)"
 ```
