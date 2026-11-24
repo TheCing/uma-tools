@@ -904,6 +904,15 @@ body {
 }
 
 @media (max-width: 640px) {
+  .v2-notification {
+    font-size: 12px;
+    padding-left: var(--space-md);
+    padding-right: 40px;
+  }
+}
+
+/* Very narrow phones: even at 12px the full notice wraps under the header. */
+@media (max-width: 359px) {
   .v2-notification-long {
     display: none;
   }

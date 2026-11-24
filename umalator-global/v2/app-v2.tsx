@@ -1240,7 +1240,7 @@ function App() {
           >
             {showNotification && (
               <NotificationBanner onDismiss={dismissNotification}>
-                Moomoolator is retired<span class="v2-notification-long">: no longer maintained, data frozen Nov 2026</span>. <a href="/retired/">More</a>
+                Moomoolator is retired.<span class="v2-notification-long"> Last updated Nov 2026.</span> <a href="/retired/">More</a>.
               </NotificationBanner>
             )}
 
