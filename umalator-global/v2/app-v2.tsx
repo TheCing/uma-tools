@@ -659,7 +659,7 @@ function App() {
   }, []);
 
   // Notification banner — set NOTIFICATION_ID to show, or '' to hide
-  const NOTIFICATION_ID = '';
+  const NOTIFICATION_ID = 'retired-2026-11';
 
   const [showNotification, setShowNotification] = useState(
     () => NOTIFICATION_ID !== '' && savedPrefs.current.notificationDismissed !== NOTIFICATION_ID,
@@ -1239,7 +1239,7 @@ function App() {
           >
             {showNotification && (
               <NotificationBanner onDismiss={dismissNotification}>
-                Notice: Upcoming in-game maintenance period - <MaintenanceTime />.
+                Moomoolator is retired<span class="v2-notification-long">: no longer maintained, data frozen Nov 2026</span>. <a href="/retired/">More</a>
               </NotificationBanner>
             )}
 

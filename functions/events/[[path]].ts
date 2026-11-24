@@ -185,9 +185,6 @@ function buildHtml(title: string, description: string, canonicalUrl: string, ima
 // --- Handler ---
 
 export const onRequest: PagesFunction = async (context) => {
-  // SUNSET (2026-11): the events page is retired; stop serving its OG cards to bots and
-  // let _redirects send everyone to the farewell page. Delete these lines to restore.
-  return context.next();
   const userAgent = context.request.headers.get('User-Agent') || '';
   const url = new URL(context.request.url);
   const pathParts = url.pathname.replace(/^\/events\/?/, '').split('/').filter(Boolean);

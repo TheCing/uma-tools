@@ -897,6 +897,18 @@ body {
   flex: 1;
 }
 
+.v2-notification a {
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .v2-notification-long {
+    display: none;
+  }
+}
+
 .v2-notification-close {
   position: absolute;
   right: var(--space-md);
