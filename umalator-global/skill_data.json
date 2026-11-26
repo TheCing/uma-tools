@@ -1620,14 +1620,17 @@
 			{
 				"baseDuration": 50000,
 				"condition": "compete_fight_count>0&ground_type==2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 4000,
+						"scaling": 1,
 						"target": 1,
 						"type": 31
 					}
@@ -1637,9 +1640,11 @@
 			{
 				"baseDuration": 50000,
 				"condition": "compete_fight_count>0",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 2500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -1647,7 +1652,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 5
+		"rarity": 5,
+		"tags": [
+			401,
+			403
+		],
+		"wisdomCheck": 0
 	},
 	"100441": {
 		"alternatives": [
@@ -21862,14 +21872,17 @@
 			{
 				"baseDuration": 30000,
 				"condition": "compete_fight_count>0&ground_type==2",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					},
 					{
 						"modifier": 2000,
+						"scaling": 1,
 						"target": 1,
 						"type": 31
 					}
@@ -21879,9 +21892,11 @@
 			{
 				"baseDuration": 30000,
 				"condition": "compete_fight_count>0",
+				"durationScaling": 1,
 				"effects": [
 					{
 						"modifier": 500,
+						"scaling": 1,
 						"target": 1,
 						"type": 27
 					}
@@ -21889,7 +21904,12 @@
 				"precondition": ""
 			}
 		],
-		"rarity": 1
+		"rarity": 1,
+		"tags": [
+			401,
+			403
+		],
+		"wisdomCheck": 1
 	},
 	"900441": {
 		"alternatives": [
